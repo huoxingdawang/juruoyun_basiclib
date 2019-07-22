@@ -61,7 +61,8 @@ int jry_bl_string_link(jry_bl_string *s1,jry_bl_string *s2)
 			return 0;
 		s1->s=sb;
 	}
-	stpcpy(s1->s+s1->len,s2->s);
+	for(int i=0;i<s2->len;i++)
+		s1->s[s1->len+i]=s2->s[i];
 	s1->len=(s1->len+s2->len);
 	return 1;
 }
@@ -76,7 +77,8 @@ int jry_bl_string_add(jry_bl_string *s1,char * s2)
 			return 0;
 		s1->s=sb;
 	}
-	stpcpy(s1->s+s1->len,s2);	
+	for(int i=0;i<s2_len;i++)
+		s1->s[s1->len+i]=s2[i];	
 	s1->len=(s1->len+s2_len);
 	return 1;
 }
