@@ -25,12 +25,6 @@ jry_bl_string::jry_bl_string(const char *in)
 		jry_bl_exception("ERR memory error");
 	for(JRY_BL_STRING_SIZE_TYPE i=0;i<len;s[i]=in[i],i++);
 }
-void jry_bl_string::view(FILE * file)
-{
-	fprintf(file,"len:\t%lld\nsize:\t%lld\ns:\t",(long long)len,(long long)size);
-	for(JRY_BL_STRING_SIZE_TYPE i=0;i<len;fprintf(file,"%c",s[i++]));
-	fprintf(file,"\n");
-}
 char & jry_bl_string::operator[](JRY_BL_STRING_SIZE_TYPE i)
 {
 	if(i<len)
@@ -42,27 +36,6 @@ const char & jry_bl_string::operator[](JRY_BL_STRING_SIZE_TYPE i) const
 	if(i<len)
 		return s[i];
 	jry_bl_exception("ERR try to get too long");
-}
-#if JRY_BL_STRING_IOSTREAM_USE==1
-std::ostream &operator<< (std::ostream& out, const jry_bl_string& that)
-{
-	for(JRY_BL_STRING_SIZE_TYPE i=0;i<that.len;i++)
-	   out<<that.s[i];
-	return out;
-}
-#endif
-jry_bl_string jry_bl_string::operator=(const jry_bl_string& s2)
-{
-	if(size<s2.len)
-	{
-		size=(ceil((long double)s2.len/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
-		char * sb=(char *)jry_bl_realloc(s,size);
-		if(sb==NULL)
-			jry_bl_exception("ERR memory error");
-		s=sb;
-	}
-	for(len=0;len<s2.len;s[len]=s2.s[len],len++);
-	return *this;
 }
 jry_bl_string jry_bl_string::operator+=(const jry_bl_string& s2)
 {
@@ -98,12 +71,6 @@ jry_bl_string jry_bl_string::operator+=(const char * s2)
 	s[len]=0;
 	return *this;
 }
-void jry_bl_string::free()
-{
-	len=0;
-	size=0;
-	jry_bl_free(s);
-}
 jry_bl_string jry_bl_string::operator+=(long long in)
 {
 	register int f=(in<0),cnt=20;
@@ -120,6 +87,41 @@ jry_bl_string jry_bl_string::operator+=(long long in)
 		b[cnt--]='-';
 	*this+=(const char *)(b+cnt+1);
 	return *this;
+}
+jry_bl_string jry_bl_string::operator=(const jry_bl_string& s2)
+{
+	if(size<s2.len)
+	{
+		size=(ceil((long double)s2.len/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
+		char * sb=(char *)jry_bl_realloc(s,size);
+		if(sb==NULL)
+			jry_bl_exception("ERR memory error");
+		s=sb;
+	}
+	for(len=0;len<s2.len;s[len]=s2.s[len],len++);
+	return *this;
+}
+#if JRY_BL_STRING_USE_IOSTREAM==1
+std::ostream &operator<< (std::ostream& out, const jry_bl_string& that)
+{
+	for(JRY_BL_STRING_SIZE_TYPE i=0;i<that.len;i++)
+	   out<<that.s[i];
+	return out;
+}
+#endif
+#if JRY_BL_STRING_USE_CSTDIO==1
+void jry_bl_string::view(FILE * file)
+{
+	fprintf(file,"len:\t%lld\nsize:\t%lld\ns:\t",(long long)len,(long long)size);
+	for(JRY_BL_STRING_SIZE_TYPE i=0;i<len;fprintf(file,"%c",s[i++]));
+	fprintf(file,"\n");
+}
+#endif
+void jry_bl_string::free()
+{
+	len=0;
+	size=0;
+	jry_bl_free(s);
 }
 long long jry_bl_string::getint(JRY_BL_STRING_SIZE_TYPE start)
 {
