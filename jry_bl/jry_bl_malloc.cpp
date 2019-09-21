@@ -17,12 +17,12 @@ void* jry_bl_realloc(void* ptr,size_t size)
 #ifdef linux	
 	return realloc(ptr,size);
 #else
-	void * p=malloc(size);
+	void * p=jry_bl_malloc(size);
 	if(p==NULL)
 		return NULL;
 	size_t s=_msize(ptr);
 	memcpy(p,ptr,s);
-	free(ptr);
+	jry_bl_free(ptr);
 	return p;
 #endif
 }
