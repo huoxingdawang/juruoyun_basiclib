@@ -93,6 +93,7 @@ class jry_bl_string
 
 #if JRY_BL_STRING_USE_IOSTREAM==1
 		friend std::ostream &	operator <<		(std::ostream& out, const jry_bl_string& that);
+		friend std::istream &	operator >>		(std::istream& in, jry_bl_string& that);
 #endif	
 #if JRY_BL_STRING_USE_CSTDIO==1
 		void 			view						(FILE * file);
@@ -106,6 +107,7 @@ class jry_bl_string
 		long double		get_float					(JRY_BL_STRING_SIZE_TYPE start);
 		bool			get_is_light_copy			();
 		jry_bl_string 	to_json						();
+		void 			from_json					(jry_bl_string &in);
 		void 			from_json					(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start);
 		JRY_BL_STRING_SIZE_TYPE get_length			();
 };

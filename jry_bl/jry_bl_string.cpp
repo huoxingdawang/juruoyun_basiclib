@@ -167,11 +167,24 @@ jry_bl_string jry_bl_string::operator>>(jry_bl_string& b)
 	b.light_copy=true;
 }
 #if JRY_BL_STRING_USE_IOSTREAM==1
-std::ostream &operator<< (std::ostream& out, const jry_bl_string& that)
+std::ostream &operator<< (std::ostream& out,const jry_bl_string& that)
 {
 	for(JRY_BL_STRING_SIZE_TYPE i=0;i<that.len;i++)
 	   out<<that.s[i];
 	return out;
+}
+std::istream &operator>> (std::istream& in,jry_bl_string& that)
+{
+	register char a;
+	that.free();
+	for(;;)
+	{
+		in>>std::noskipws>>a;
+		if(a==' '||a=='\n'||a=='\t')
+			return in;
+		that+=a;
+	}
+	return in;
 }
 #endif
 #if JRY_BL_STRING_USE_CSTDIO==1
@@ -259,6 +272,7 @@ jry_bl_string jry_bl_string::to_json()
 	a+='"';
 	return a;
 }
+void jry_bl_string::from_json(jry_bl_string &in){(*this).from_json(in,0);}
 void jry_bl_string::from_json(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start)
 {
 	len=0;

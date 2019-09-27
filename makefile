@@ -14,15 +14,18 @@ ifeq ($(shell uname),Linux)
 else
 	H = \\
 endif
-all: string.o jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
-	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
+all: string json
 init:
 	mkdir tmp
 	mkdir tmp$(H)examples
 	mkdir tmp$(H)jry_bl
 	mkdir exes
-string.o:
+string:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
 	$(CC) -c -lm -o tmp$(H)examples$(H)string.o examples$(H)string.cpp
+	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
+json:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
+	$(CC) -c -lm -o tmp$(H)examples$(H)json.o examples$(H)json.cpp	
+	$(CC) -o exes$(H)json tmp$(H)examples$(H)json.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
 jry_bl_string.o:
 	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.cpp
 jry_bl_array.o:
