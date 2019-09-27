@@ -62,6 +62,32 @@ class jry_bl_string
 		jry_bl_string 			operator =		(double in);
 		jry_bl_string 			operator =		(long double in);
 		
+		jry_bl_string 			operator +		(const jry_bl_string& in);	//深拷贝
+		jry_bl_string 			operator +		(const char * in);
+		jry_bl_string 			operator +		(char in);
+		jry_bl_string 			operator +		(int in);
+		jry_bl_string 			operator +		(long in);
+		jry_bl_string 			operator +		(long long in);
+		jry_bl_string 			operator +		(unsigned int in);
+		jry_bl_string 			operator +		(unsigned long in);
+		jry_bl_string 			operator +		(unsigned long long in);
+		jry_bl_string 			operator +		(float in);
+		jry_bl_string 			operator +		(double in);
+		jry_bl_string 			operator +		(long double in);
+		
+		friend jry_bl_string	operator +		(const char * in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(char in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(int in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(long in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(long long in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(unsigned int in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(unsigned long in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(unsigned long long in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(float in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(double in,jry_bl_string &in2);
+		friend jry_bl_string	operator +		(long double in,jry_bl_string &in2);
+		
+		jry_bl_string 			operator <<		(const jry_bl_string& b);	//浅拷贝 b拷贝到自身，如果可能，light_copy标记不被放到b，内存管理权被放到自身
 		jry_bl_string 			operator <<		(jry_bl_string& b);			//浅拷贝 b拷贝到自身，如果可能，light_copy标记被放到b，内存管理权被放到自身
 		jry_bl_string 			operator >>		(jry_bl_string& b);			//浅拷贝 自身拷贝到b，如果可能，light_copy标记被放到b，内存管理权被放到自身
 
@@ -69,15 +95,16 @@ class jry_bl_string
 		friend std::ostream &	operator <<		(std::ostream& out, const jry_bl_string& that);
 #endif	
 #if JRY_BL_STRING_USE_CSTDIO==1
-		void 		view						(FILE * file);
+		void 			view						(FILE * file);
 #endif
-		void 		free						();
-		void 		parse						();
-		void 		extend						(JRY_BL_STRING_SIZE_TYPE sizee);
-		long long 	get_int						();
-		long long	get_int						(JRY_BL_STRING_SIZE_TYPE start);
-		long double get_float					();
-		long double	get_float					(JRY_BL_STRING_SIZE_TYPE start);
-		bool		get_is_light_copy			();
+		void 			free						();
+		void 			parse						();
+		void 			extend						(JRY_BL_STRING_SIZE_TYPE sizee);
+		long long 		get_int						();
+		long long		get_int						(JRY_BL_STRING_SIZE_TYPE start);
+		long double 	get_float					();
+		long double		get_float					(JRY_BL_STRING_SIZE_TYPE start);
+		bool			get_is_light_copy			();
+		jry_bl_string 	to_json						();
 };
 #endif

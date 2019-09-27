@@ -100,18 +100,51 @@ jry_bl_string jry_bl_string::operator+=(long double in)
 	*this+=((unsigned long long)(in*ji));
 	return *this;
 }
-jry_bl_string jry_bl_string::operator=(const jry_bl_string& in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(const char * in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(char in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(int in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(long in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(long long in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(unsigned int in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(unsigned long in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(unsigned long long in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(float in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(double in){len=0;return (*this+=in);};
-jry_bl_string jry_bl_string::operator=(long double in){len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(const jry_bl_string& in)	{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(const char * in)			{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(char in)					{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(int in)					{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(long in)					{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(long long in)			{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(unsigned int in)			{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(unsigned long in)		{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(unsigned long long in)	{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(float in)				{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(double in)				{len=0;return (*this+=in);};
+jry_bl_string jry_bl_string::operator=(long double in)			{len=0;return (*this+=in);};
+
+jry_bl_string jry_bl_string::operator+(const jry_bl_string& in)	{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(const char * in)			{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(char in)					{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(int in)					{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(long in)					{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(long long in)			{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(unsigned int in)			{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(unsigned long in)		{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(unsigned long long in)	{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(float in)				{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(double in)				{jry_bl_string a;a=*this;a+=in;return a;};
+jry_bl_string jry_bl_string::operator+(long double in)			{jry_bl_string a;a=*this;a+=in;return a;};
+
+jry_bl_string operator + (const char *in,jry_bl_string &in2)		{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (char in,jry_bl_string &in2)				{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (int in,jry_bl_string &in2)				{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (long in,jry_bl_string &in2)				{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (long long in,jry_bl_string &in2)			{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (unsigned int in,jry_bl_string &in2)		{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (unsigned long in,jry_bl_string &in2)		{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (unsigned long long in,jry_bl_string &in2)	{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (float in,jry_bl_string &in2)				{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (double in,jry_bl_string &in2)				{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string operator + (long double in,jry_bl_string &in2)		{jry_bl_string a;a=in;a+=in2;return a;}
+jry_bl_string jry_bl_string::operator<<(const jry_bl_string& b)
+{
+	free();
+	len=b.len;
+	size=b.size;
+	s=b.s;
+	light_copy=b.light_copy;
+}
 jry_bl_string jry_bl_string::operator<<(jry_bl_string& b)
 {
 	free();
@@ -212,4 +245,13 @@ long double jry_bl_string::get_float()
 bool jry_bl_string::get_is_light_copy()
 {
 	return light_copy;
+}
+jry_bl_string jry_bl_string::to_json()
+{
+	jry_bl_string a;
+	a='"';
+	for(JRY_BL_STRING_SIZE_TYPE i=0;i<len;i++)
+		a+=(s[i]=='"'?"\\":""),a+=s[i];
+	a+='"';
+	return a;
 }
