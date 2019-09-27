@@ -2,22 +2,32 @@
 #   Juruoyun basic lib is licensed under the Mulan PSL v1.
 #   You can use this software according to the terms and conditions of the Mulan PSL v1.
 #   You may obtain a copy of Mulan PSL v1 at:
-#      http://license.coscl.org.cn/MulanPSL
+#      http://license.coscl.org.cn$(H)MulanPSL
 #   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
 #   IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
 
 CC = g++
-all: main.o jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
-	$(CC) -o main tmp/main.o tmp/jry_bl_string.o tmp/jry_bl_exception.o tmp/jry_bl_malloc.o -lm
-main.o:
-	$(CC) -c -lm -o tmp/main.o main.cpp
+ifeq ($(shell uname),Linux)
+	H = /
+else
+	H = \\
+endif
+all: string.o jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
+	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
+init:
+	mkdir tmp
+	mkdir tmp$(H)examples
+	mkdir tmp$(H)jry_bl
+	mkdir exes
+string.o:
+	$(CC) -c -lm -o tmp$(H)examples$(H)string.o examples$(H)string.cpp
 jry_bl_string.o:
-	$(CC) -c -lm -o tmp/jry_bl_string.o ./jry_bl/jry_bl_string.cpp
+	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.cpp
 jry_bl_array.o:
-	$(CC) -c -lm -o tmp/jry_bl_array.o ./jry_bl/jry_bl_array.cpp
+	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_array.o jry_bl$(H)jry_bl_array.cpp
 jry_bl_exception.o:
-	$(CC) -c -lm -o tmp/jry_bl_exception.o ./jry_bl/jry_bl_exception.cpp	
+	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_exception.o jry_bl$(H)jry_bl_exception.cpp	
 jry_bl_malloc.o:
-	$(CC) -c -lm -o tmp/jry_bl_malloc.o ./jry_bl/jry_bl_malloc.cpp	
+	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_malloc.o jry_bl$(H)jry_bl_malloc.cpp	

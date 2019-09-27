@@ -15,4 +15,5 @@
 void* jry_bl_malloc(size_t size);
 void* jry_bl_realloc(void* ptr,size_t size);
 void* jry_bl_free(void * p);
+size_t jry_bl_realloc(void* ptr);
 #endif

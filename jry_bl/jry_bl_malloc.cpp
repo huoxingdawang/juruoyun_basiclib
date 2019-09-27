@@ -12,6 +12,14 @@ void* jry_bl_malloc(size_t size)
 {
 	return malloc(size);
 }
+size_t jry_bl_realloc(void* ptr)
+{
+#ifdef linux	
+	return malloc_usable_size(ptr);
+#else
+	return _msize(ptr);
+#endif
+}
 void* jry_bl_realloc(void* ptr,size_t size)
 {
 #ifdef linux	
@@ -21,6 +29,8 @@ void* jry_bl_realloc(void* ptr,size_t size)
 	if(p==NULL)
 		return NULL;
 	size_t s=_msize(ptr);
+	if(s>size)
+		s=size;
 	memcpy(p,ptr,s);
 	jry_bl_free(ptr);
 	return p;
