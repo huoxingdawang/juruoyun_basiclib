@@ -106,5 +106,7 @@ class jry_bl_string
 		long double		get_float					(JRY_BL_STRING_SIZE_TYPE start);
 		bool			get_is_light_copy			();
 		jry_bl_string 	to_json						();
+		void 			from_json					(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start);
+		JRY_BL_STRING_SIZE_TYPE get_length			();
 };
 #endif

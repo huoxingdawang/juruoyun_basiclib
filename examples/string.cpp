@@ -92,7 +92,13 @@ int main()
 	s1="qiankaobei\"345435";
 	s2<<s1.to_json();
 	std::cout<<s2<<std::endl;
+	s1.free();s2.free();s3.free();
+	s1="\"qiankaobei345\\\"435\"";
+	std::cout<<s1<<std::endl;
+	s2.from_json(s1,0);
+	std::cout<<s2<<std::endl;
 	s1.free();s2.free();s3.free();	
+	
 	
 	return 0;
 }

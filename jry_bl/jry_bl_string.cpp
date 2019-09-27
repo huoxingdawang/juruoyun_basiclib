@@ -29,12 +29,16 @@ jry_bl_string::jry_bl_string(const char *in)
 }
 char & jry_bl_string::operator[](JRY_BL_STRING_SIZE_TYPE i)
 {
+	if(i<0)
+		jry_bl_exception("ERR try to get too short");
 	if(i<len)
 		return s[i];
 	jry_bl_exception("ERR try to get too long");
 }
 const char & jry_bl_string::operator[](JRY_BL_STRING_SIZE_TYPE i) const
 {
+	if(i<0)
+		jry_bl_exception("ERR try to get too short");
 	if(i<len)
 		return s[i];
 	jry_bl_exception("ERR try to get too long");
@@ -255,3 +259,13 @@ jry_bl_string jry_bl_string::to_json()
 	a+='"';
 	return a;
 }
+void jry_bl_string::from_json(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start)
+{
+	len=0;
+	register JRY_BL_STRING_SIZE_TYPE i=start,n=in.get_length();
+	for(;(i<n)&&(!(in[i]=='"'&&(i==0||in[i-1]!='\\')));++i);
+	for(++i;i<n&&!(in[i]=='"'&&in[i-1]!='\\');(in[i]=='\\'&&(i+1)<n&&in[i+1]=='"')?(1):(*this+=in[i]),++i);
+	if(i==n)
+		len=0;
+}
+JRY_BL_STRING_SIZE_TYPE jry_bl_string::get_length(){return len;}
