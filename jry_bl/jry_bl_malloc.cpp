@@ -12,7 +12,7 @@ void* jry_bl_malloc(size_t size)
 {
 	return malloc(size);
 }
-size_t jry_bl_realloc(void* ptr)
+size_t jry_bl_malloc_size(void* ptr)
 {
 #ifdef linux	
 	return malloc_usable_size(ptr);
