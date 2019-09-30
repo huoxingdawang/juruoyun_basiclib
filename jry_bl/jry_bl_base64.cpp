@@ -7,7 +7,7 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-   #include "jry_bl_base64.h"
+#include "jry_bl_base64.h"
 jry_bl_string jry_bl_base64_encode(jry_bl_string &a)
 {
 	register JRY_BL_STRING_SIZE_TYPE i=0,len=a.get_length();

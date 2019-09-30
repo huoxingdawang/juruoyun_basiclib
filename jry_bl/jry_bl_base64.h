@@ -10,9 +10,6 @@
 #ifndef __JRY_BL_BASE64_H
 #define __JRY_BL_BASE64_H
 #include "jry_bl_string.h"
-#include <iostream>
-#include <string>
-#include <cstring>
 jry_bl_string jry_bl_base64_encode(jry_bl_string &a);
 jry_bl_string jry_bl_base64_decode(jry_bl_string &a);
 #endif
