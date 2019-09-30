@@ -7,14 +7,13 @@
 #   IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
-
 CC = g++
 ifeq ($(shell uname),Linux)
 	H = /
 else
 	H = \\
 endif
-all: string json base64
+all: string json base64 md5
 init:
 	mkdir tmp
 	mkdir tmp$(H)examples
@@ -29,6 +28,9 @@ json:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
 base64:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o jry_bl_base64.o
 	$(CC) -c -lm -o tmp$(H)examples$(H)base64.o examples$(H)base64.cpp	
 	$(CC) -o exes$(H)base64 tmp$(H)examples$(H)base64.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_base64.o -lm	
+md5:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o jry_bl_md5.o
+	$(CC) -c -lm -o tmp$(H)examples$(H)md5.o examples$(H)md5.cpp	
+	$(CC) -o exes$(H)md5 tmp$(H)examples$(H)md5.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_md5.o -lm		
 jry_bl_string.o:
 	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.cpp
 jry_bl_array.o:
@@ -39,3 +41,5 @@ jry_bl_malloc.o:
 	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_malloc.o jry_bl$(H)jry_bl_malloc.cpp	
 jry_bl_base64.o:jry_bl_string.o
 	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_base64.o jry_bl$(H)jry_bl_base64.cpp	
+jry_bl_md5.o:jry_bl_string.o
+	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_md5.o jry_bl$(H)jry_bl_md5.cpp	

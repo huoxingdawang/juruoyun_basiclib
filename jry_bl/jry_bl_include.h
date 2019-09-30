@@ -14,6 +14,7 @@
 #include "jry_bl_malloc.h"
 #include "jry_bl_exception.h"
 #include "jry_bl_base64.h"
+#include "jry_bl_md5.h"
 
 
 
