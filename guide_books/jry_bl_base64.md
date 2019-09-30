@@ -27,7 +27,7 @@
 
 暂无
 
-##其他
+## 其他
 ```c++
 jry_bl_string jry_bl_base64_encode(jry_bl_string &a) //加密一个字符串，使用<<承接
 jry_bl_string jry_bl_base64_decode(jry_bl_string &a) //解密一个字符串，使用<<承接
