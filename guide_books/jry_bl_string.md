@@ -113,4 +113,8 @@ s1='a'+"123123123"+123;//会发生内存泄露
 
 12.void from_json(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start); 从in的start位开始解码JSON至字符串类型
 
-13.JRY_BL_STRING_SIZE_TYPE get_length(); 获取字符串长度
+13.const char * get_s(); 获取字符串
+
+14.JRY_BL_STRING_SIZE_TYPE get_length(); 获取字符串长度
+
+15.JRY_BL_STRING_SIZE_TYPE get_size(); 获取字符串空间
