@@ -10,7 +10,6 @@
 #ifndef __JRY_BL_MD5_H
 #define __JRY_BL_MD5_H
 #include "jry_bl_string.h"
-
 #define JRY_BL_MD5_F(x,y,z) (((x)&(y))|((~x)&(z)))
 #define JRY_BL_MD5_G(x,y,z) (((x)&(z))|((y)&(~z)))
 #define JRY_BL_MD5_H(x,y,z) ((x)^(y)^(z))
@@ -21,7 +20,6 @@
 #define JRY_BL_MD5_HH(a,b,c,d,x,s,ac) {(a)+=JRY_BL_MD5_H((b),(c),(d))+(x)+ac;(a)=JRY_BL_MD5_ROTATE_LEFT((a),(s));(a)+=(b);}
 #define JRY_BL_MD5_II(a,b,c,d,x,s,ac) {(a)+=JRY_BL_MD5_I((b),(c),(d))+(x)+ac;(a)=JRY_BL_MD5_ROTATE_LEFT((a),(s));(a)+=(b);}
 const char jry_bl_md5_hex_humbers[]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};;
-
 class jry_bl_md5
 {
 	public:
