@@ -10,11 +10,11 @@
 #include "jry_bl_string.h"
 jry_bl_string::jry_bl_string()						{len=size=0;s=NULL;light_copy=false;}
 jry_bl_string::jry_bl_string(const char *in)		{len=size=0;s=NULL;light_copy=false;*this+=in;}
-jry_bl_string::jry_bl_string(int in)			{len=size=0;s=NULL;light_copy=false;*this+=in;}
-jry_bl_string::jry_bl_string(long in)			{len=size=0;s=NULL;light_copy=false;*this+=in;}
+jry_bl_string::jry_bl_string(int in)				{len=size=0;s=NULL;light_copy=false;*this+=in;}
+jry_bl_string::jry_bl_string(long in)				{len=size=0;s=NULL;light_copy=false;*this+=in;}
 jry_bl_string::jry_bl_string(long long in)			{len=size=0;s=NULL;light_copy=false;*this+=in;}
-jry_bl_string::jry_bl_string(unsigned int in)	{len=size=0;s=NULL;light_copy=false;*this+=in;}
-jry_bl_string::jry_bl_string(unsigned long in)	{len=size=0;s=NULL;light_copy=false;*this+=in;}
+jry_bl_string::jry_bl_string(unsigned int in)		{len=size=0;s=NULL;light_copy=false;*this+=in;}
+jry_bl_string::jry_bl_string(unsigned long in)		{len=size=0;s=NULL;light_copy=false;*this+=in;}
 jry_bl_string::jry_bl_string(unsigned long long in)	{len=size=0;s=NULL;light_copy=false;*this+=in;}
 jry_bl_string::jry_bl_string(float in)				{len=size=0;s=NULL;light_copy=false;*this+=in;}
 jry_bl_string::jry_bl_string(double in)				{len=size=0;s=NULL;light_copy=false;*this+=in;}
@@ -313,4 +313,6 @@ void jry_bl_string::from_json(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start)
 	if(i==n)
 		len=0;
 }
+const char * 			jry_bl_string::get_s(){return s;}
 JRY_BL_STRING_SIZE_TYPE jry_bl_string::get_length(){return len;}
+JRY_BL_STRING_SIZE_TYPE jry_bl_string::get_size(){return size;}

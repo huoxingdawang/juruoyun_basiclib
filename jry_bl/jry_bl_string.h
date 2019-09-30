@@ -126,6 +126,8 @@ class jry_bl_string
 		jry_bl_string 	to_json						();
 		void 			from_json					(jry_bl_string &in);
 		void 			from_json					(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start);
+		const char *	get_s						();//注意请不要修改返回值，否则可能导致错误
 		JRY_BL_STRING_SIZE_TYPE get_length			();
+		JRY_BL_STRING_SIZE_TYPE get_size			();
 };
 #endif
