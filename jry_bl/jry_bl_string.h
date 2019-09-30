@@ -31,8 +31,16 @@ class jry_bl_string
 		bool 					light_copy;
 	public:
 		jry_bl_string							();
-		jry_bl_string							(JRY_BL_STRING_SIZE_TYPE sizee);
 		jry_bl_string							(const char *in);
+		jry_bl_string							(int in);
+		jry_bl_string							(long in);
+		jry_bl_string							(long long in);
+		jry_bl_string 							(unsigned int in);
+		jry_bl_string 							(unsigned long in);
+		jry_bl_string 							(unsigned long long in);
+		jry_bl_string							(float in);
+		jry_bl_string							(double in);
+		jry_bl_string							(long double in);
 		char & 					operator []		(JRY_BL_STRING_SIZE_TYPE i);
 		const char & 			operator []		(JRY_BL_STRING_SIZE_TYPE i) const;
 
@@ -87,6 +95,14 @@ class jry_bl_string
 		friend jry_bl_string	operator +		(double in,jry_bl_string &in2);
 		friend jry_bl_string	operator +		(long double in,jry_bl_string &in2);
 		
+		bool 					operator ==		(const jry_bl_string& b);
+		bool 					operator <		(const jry_bl_string& b);
+		bool 					operator >		(const jry_bl_string& b);
+		bool 					operator !=		(const jry_bl_string& b);
+		bool 					operator <=		(const jry_bl_string& b);
+		bool 					operator >=		(const jry_bl_string& b);
+		
+		
 		jry_bl_string 			operator <<		(const jry_bl_string& b);	//浅拷贝 b拷贝到自身，如果可能，light_copy标记不被放到b，内存管理权被放到自身
 		jry_bl_string 			operator <<		(jry_bl_string& b);			//浅拷贝 b拷贝到自身，如果可能，light_copy标记被放到b，内存管理权被放到自身
 		jry_bl_string 			operator >>		(jry_bl_string& b);			//浅拷贝 自身拷贝到b，如果可能，light_copy标记被放到b，内存管理权被放到自身
@@ -98,6 +114,7 @@ class jry_bl_string
 #if JRY_BL_STRING_USE_CSTDIO==1
 		void 			view						(FILE * file);
 #endif
+		void 			clear						();
 		void 			free						();
 		void 			parse						();
 		void 			extend						(JRY_BL_STRING_SIZE_TYPE sizee);

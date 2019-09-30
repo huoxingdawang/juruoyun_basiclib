@@ -12,14 +12,14 @@ int main()
 		if(a==0)
 		{
 			cout<<"encode"<<endl;
-			s2<<s1.to_json();
+			s2<<jry_bl_base64_encode(s1);
 		}
 		else
 		{
-			cout<<"decode"<<endl;
-			s2.from_json(s1);
-		}
+			cout<<"encode"<<endl;
+			s2<<jry_bl_base64_decode(s1);
+		}	
 		cout<<s2<<endl<<endl<<endl;
-	}
-	return 0;
+	}	
+    return 0;
 }

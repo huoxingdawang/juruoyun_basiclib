@@ -9,8 +9,8 @@ int main()
 	printf("-------------------默认初始化-----------------------\n");
 	jry_bl_string s1;
 	s1.view(stdout);
-	printf("-------------------初始化大小-----------------------\n");
-	jry_bl_string s2(2048);
+	printf("-------------------初始化为数字-----------------------\n");
+	jry_bl_string s2=123123.123;
 	s2.view(stdout);
 	printf("-------------------由正产字符串初始化---------------\n");
 	jry_bl_string s3("juruoyun");
@@ -38,8 +38,7 @@ int main()
 	s1.view(stdout);s2.view(stdout);s3.view(stdout);
 */
 //数字拼接、字符串转数字
-/*
-	printf("-------------------数字拼接、字符串转数字-----------\n");
+/*	printf("-------------------数字拼接、字符串转数字-----------\n");
 	printf("-------------------拼接整数--------------------------\n");
 	s1+=(123);std::cout<<s1<<std::endl;s1.free();
 	printf("-------------------拼接小数--------------------------\n");
@@ -55,8 +54,7 @@ int main()
 	s1.free();s2.free();s3.free();
 */
 //浅拷贝
-/*
-	printf("-------------------浅拷贝----------------------------\n");
+/*	printf("-------------------浅拷贝----------------------------\n");
 	printf("-------------------原串s1----------------------------\n");
 	s1="qiankaobei";
 	s1.view(stdout);
@@ -89,7 +87,7 @@ int main()
 	s1.free();s2.free();s3.free();
 */
 //JSON
-	s1="qiankaobei\"345435";
+/*	s1="qiankaobei\"345435";
 	s2<<s1.to_json();
 	std::cout<<s2<<std::endl;
 	s1.free();s2.free();s3.free();
@@ -98,7 +96,45 @@ int main()
 	s2.from_json(s1,0);
 	std::cout<<s2<<std::endl;
 	s1.free();s2.free();s3.free();	
-	
-	
+*/
+//比较
+/*	printf("-------------------比较----------------------------\n");
+	s1=123123;
+	s2=123123;	
+	std::cout<<s1<<"=="<<s2<<":"<<(s1==s2)<<std::endl;
+	std::cout<<s1<<"< "<<s2<<":"<<(s1< s2)<<std::endl;
+	std::cout<<s1<<"> "<<s2<<":"<<(s1> s2)<<std::endl;
+	std::cout<<s1<<"!="<<s2<<":"<<(s1!=s2)<<std::endl;
+	std::cout<<s1<<"<="<<s2<<":"<<(s1<=s2)<<std::endl;
+	std::cout<<s1<<">="<<s2<<":"<<(s1>=s2)<<std::endl;
+	std::cout<<std::endl;
+	s1=123124;
+	s2=123123;
+	std::cout<<s1<<"=="<<s2<<":"<<(s1==s2)<<std::endl;
+	std::cout<<s1<<"< "<<s2<<":"<<(s1< s2)<<std::endl;
+	std::cout<<s1<<"> "<<s2<<":"<<(s1> s2)<<std::endl;
+	std::cout<<s1<<"!="<<s2<<":"<<(s1!=s2)<<std::endl;
+	std::cout<<s1<<"<="<<s2<<":"<<(s1<=s2)<<std::endl;
+	std::cout<<s1<<">="<<s2<<":"<<(s1>=s2)<<std::endl;
+	std::cout<<std::endl;
+	s1=123123;
+	s2=123124;
+	std::cout<<s1<<"=="<<s2<<":"<<(s1==s2)<<std::endl;
+	std::cout<<s1<<"< "<<s2<<":"<<(s1< s2)<<std::endl;
+	std::cout<<s1<<"> "<<s2<<":"<<(s1> s2)<<std::endl;
+	std::cout<<s1<<"!="<<s2<<":"<<(s1!=s2)<<std::endl;
+	std::cout<<s1<<"<="<<s2<<":"<<(s1<=s2)<<std::endl;
+	std::cout<<s1<<">="<<s2<<":"<<(s1>=s2)<<std::endl;
+	std::cout<<std::endl;
+	s1=123123;
+	s2<<s1;
+	std::cout<<s1<<"=="<<s2<<":"<<(s1==s2)<<std::endl;
+	std::cout<<s1<<"< "<<s2<<":"<<(s1< s2)<<std::endl;
+	std::cout<<s1<<"> "<<s2<<":"<<(s1> s2)<<std::endl;
+	std::cout<<s1<<"!="<<s2<<":"<<(s1!=s2)<<std::endl;
+	std::cout<<s1<<"<="<<s2<<":"<<(s1<=s2)<<std::endl;
+	std::cout<<s1<<">="<<s2<<":"<<(s1>=s2)<<std::endl;
+*/
+			
 	return 0;
 }
