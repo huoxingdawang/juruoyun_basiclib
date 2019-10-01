@@ -252,6 +252,13 @@ void jry_bl_string::extend(JRY_BL_STRING_SIZE_TYPE sizee)
 		s=sb;
 	}	
 }
+void jry_bl_string::add(const char * s2,JRY_BL_STRING_SIZE_TYPE s2_len)
+{
+	extend(len+s2_len);
+	for(JRY_BL_STRING_SIZE_TYPE i=0;i<s2_len;i++)
+		s[len+i]=s2[i];
+	len=(len+s2_len);
+}
 long long jry_bl_string::get_int(JRY_BL_STRING_SIZE_TYPE start)
 {
 	if(len==0&&start==0)

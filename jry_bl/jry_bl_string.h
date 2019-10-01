@@ -118,6 +118,7 @@ class jry_bl_string
 		void 			free						();
 		void 			parse						();
 		void 			extend						(JRY_BL_STRING_SIZE_TYPE sizee);
+		void 			add							(const char * s2,JRY_BL_STRING_SIZE_TYPE s2_len);
 		long long 		get_int						();
 		long long		get_int						(JRY_BL_STRING_SIZE_TYPE start);
 		long double 	get_float					();
