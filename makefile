@@ -13,25 +13,28 @@ ifeq ($(shell uname),Linux)
 else
 	H = \\
 endif
-all: string json base64 md5
+all: string json base64 md5 string_we
 init:
 	mkdir tmp
 	mkdir tmp$(H)examples
 	mkdir tmp$(H)jry_bl
 	mkdir exes
-string:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
+string:jry_bl_string.o
 	$(CC) -c -lm -o tmp$(H)examples$(H)string.o examples$(H)string.cpp
 	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
-json:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o
+string_we:jry_bl_string.o
+	$(CC) -c -lm -o tmp$(H)examples$(H)string_we.o examples$(H)string_we.cpp
+	$(CC) -o exes$(H)string_we tmp$(H)examples$(H)string_we.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm	
+json:jry_bl_string.o
 	$(CC) -c -lm -o tmp$(H)examples$(H)json.o examples$(H)json.cpp	
 	$(CC) -o exes$(H)json tmp$(H)examples$(H)json.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
-base64:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o jry_bl_base64.o
+base64:jry_bl_string.o jry_bl_base64.o
 	$(CC) -c -lm -o tmp$(H)examples$(H)base64.o examples$(H)base64.cpp	
 	$(CC) -o exes$(H)base64 tmp$(H)examples$(H)base64.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_base64.o -lm	
-md5:jry_bl_string.o jry_bl_array.o jry_bl_exception.o jry_bl_malloc.o jry_bl_md5.o
+md5:jry_bl_md5.o
 	$(CC) -c -lm -o tmp$(H)examples$(H)md5.o examples$(H)md5.cpp	
 	$(CC) -o exes$(H)md5 tmp$(H)examples$(H)md5.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_md5.o -lm		
-jry_bl_string.o:
+jry_bl_string.o:jry_bl_exception.o jry_bl_malloc.o
 	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.cpp
 jry_bl_array.o:
 	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_array.o jry_bl$(H)jry_bl_array.cpp

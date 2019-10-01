@@ -41,7 +41,6 @@ jry_bl_string jry_bl_string::operator+=(const jry_bl_string& s2)
 	for(JRY_BL_STRING_SIZE_TYPE i=0;i<s2.len;i++)
 		s[len+i]=s2.s[i];
 	len=(len+s2.len);
-	s[len]=0;
 	return *this;
 }
 jry_bl_string jry_bl_string::operator+=(const char * s2)
@@ -49,10 +48,9 @@ jry_bl_string jry_bl_string::operator+=(const char * s2)
 	JRY_BL_STRING_SIZE_TYPE s2_len=0;
 	while(s2[s2_len++]);s2_len--;
 	extend(len+s2_len);
-	for(int i=0;i<s2_len;i++)
-		s[len+i]=s2[i];	
+	for(JRY_BL_STRING_SIZE_TYPE i=0;i<s2_len;i++)
+		s[len+i]=s2[i];
 	len=(len+s2_len);
-	s[len]=0;
 	return *this;
 }
 jry_bl_string jry_bl_string::operator+=(char c)
