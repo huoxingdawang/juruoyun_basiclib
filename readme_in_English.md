@@ -2,7 +2,7 @@
 ![](http://www.juruoyun.top/jry_wb/jry_wb_netdisk/jry_nd_do_file.php?action=open&share_id=4&file_id=15)
 
 Creat an issues if you have any question.
-I'm looking forward wo your Pull Request.
+I'm looking forward to your Pull Request.
 ## Introduction
 A C++ basic lib.
 The aim is to use C++ like The World's Best Language.
