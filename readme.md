@@ -5,7 +5,23 @@
 
 目前已经包含
 
-1.字符串
+1.内存管理(Windows/Linux api封装)[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_malloc.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_malloc.md)]
+
+2.异常处理(极致简介exit版.....)[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_exception.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_exception.md)]
+
+3.字符串[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_base64.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_malloc.md)]
+
+4.BASE64加解密[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_base64.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_base64.md)]
+
+5.MD5加密[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_md5.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_md5.md)]
+
+6.AES加解密[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_aes.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_aes.md)]
+
+正在开发项目
+
+1.数组
+
+2.对象(然鹅找不到....)
 
 ## 使用指南
 初次编译请先运行make init创建目录
