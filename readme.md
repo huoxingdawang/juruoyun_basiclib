@@ -1,9 +1,13 @@
 # 蒟蒻云基础库
 ![](http://www.juruoyun.top/jry_wb/jry_wb_netdisk/jry_nd_do_file.php?action=open&share_id=4&file_id=15)
+
+有问题发issues,欢迎PR
 ## 简介
 一套C++的基础库
 
-目前已经包含
+目标是像使用<世界上最好的语言>一样写C++
+
+### 目前已经包含
 
 1.内存管理(Windows/Linux api封装)[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_malloc.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_malloc.md)]
 
@@ -17,7 +21,7 @@
 
 6.AES加解密[[github手册](https://github.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_aes.md) [gitee手册](https://gitee.com/huoxingdawang/juruoyun_bl/blob/master/guide_books/jry_bl/jry_bl_aes.md)]
 
-正在开发项目
+### 正在开发项目
 
 1.数组
 
