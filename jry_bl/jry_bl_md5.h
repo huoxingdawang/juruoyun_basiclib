@@ -26,6 +26,7 @@ class jry_bl_md5
 		jry_bl_md5							(jry_bl_string& message);
 		const unsigned char* 	get_digest	();
 		jry_bl_string 			get_string	();
+		jry_bl_string* 			get_string	(jry_bl_string& str);
 	private:
 		void 					init		(const unsigned char*input,JRY_BL_STRING_SIZE_TYPE len);
 		void 					transform	(const unsigned char block[64]);

@@ -12,7 +12,7 @@ int main()
 		if(a==0)
 		{
 			cout<<"encode"<<endl;
-			s2<<s1.to_json();
+			s1.to_json(s2);
 		}
 		else
 		{

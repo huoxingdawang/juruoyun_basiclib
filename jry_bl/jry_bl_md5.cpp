@@ -91,12 +91,17 @@ const unsigned char* jry_bl_md5::get_digest()
 	memcpy(count,oldcount,8);
 	return digest;
 }
-jry_bl_string jry_bl_md5::get_string()
+jry_bl_string* jry_bl_md5::get_string(jry_bl_string& str)
 {
 	register const unsigned char* digestt=get_digest();
-	jry_bl_string str;
 	str.extend(16<<1);
 	for (JRY_BL_STRING_SIZE_TYPE i=0;i<16;++i)
 		str+=jry_bl_md5_hex_humbers[digestt[i]/16],str+=jry_bl_md5_hex_humbers[digestt[i]%16];
+	return &str;
+}
+jry_bl_string jry_bl_md5::get_string()
+{
+	jry_bl_string str;
+	get_string(str);
 	return str;
 }

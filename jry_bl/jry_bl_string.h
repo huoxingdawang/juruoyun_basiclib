@@ -41,47 +41,50 @@ class jry_bl_string
 		jry_bl_string							(float in);
 		jry_bl_string							(double in);
 		jry_bl_string							(long double in);
+		~jry_bl_string							();
 		char & 					operator []		(JRY_BL_STRING_SIZE_TYPE i);
 		const char & 			operator []		(JRY_BL_STRING_SIZE_TYPE i) const;
 
-		jry_bl_string 			operator +=		(const jry_bl_string& b);
-		jry_bl_string 			operator +=		(const char * s2);
-		jry_bl_string 			operator +=		(char c);
-		jry_bl_string 			operator +=		(int in);
-		jry_bl_string 			operator +=		(long in);
-		jry_bl_string 			operator +=		(long long in);
-		jry_bl_string 			operator +=		(unsigned int in);
-		jry_bl_string 			operator +=		(unsigned long in);
-		jry_bl_string 			operator +=		(unsigned long long in);
-		jry_bl_string 			operator +=		(float in);
-		jry_bl_string 			operator +=		(double in);
-		jry_bl_string 			operator +=		(long double in);
+		jry_bl_string*			operator +=		(const jry_bl_string& b);
+		jry_bl_string*			operator +=		(const jry_bl_string* b);
+		jry_bl_string* 			operator +=		(const char * s2);
+		jry_bl_string* 			operator +=		(char c);
+		jry_bl_string* 			operator +=		(int in);
+		jry_bl_string* 			operator +=		(long in);
+		jry_bl_string* 			operator +=		(long long in);
+		jry_bl_string* 			operator +=		(unsigned int in);
+		jry_bl_string* 			operator +=		(unsigned long in);
+		jry_bl_string* 			operator +=		(unsigned long long in);
+		jry_bl_string* 			operator +=		(float in);
+		jry_bl_string* 			operator +=		(double in);
+		jry_bl_string* 			operator +=		(long double in);
 		
-		jry_bl_string 			operator =		(const jry_bl_string& in);	//深拷贝
-		jry_bl_string 			operator =		(const char * in);
-		jry_bl_string 			operator =		(char in);
-		jry_bl_string 			operator =		(int in);
-		jry_bl_string 			operator =		(long in);
-		jry_bl_string 			operator =		(long long in);
-		jry_bl_string 			operator =		(unsigned int in);
-		jry_bl_string 			operator =		(unsigned long in);
-		jry_bl_string 			operator =		(unsigned long long in);
-		jry_bl_string 			operator =		(float in);
-		jry_bl_string 			operator =		(double in);
-		jry_bl_string 			operator =		(long double in);
+		jry_bl_string* 			operator =		(const jry_bl_string& in);	//深拷贝
+		jry_bl_string* 			operator =		(const jry_bl_string* in);	//深拷贝
+		jry_bl_string* 			operator =		(const char * in);
+		jry_bl_string* 			operator =		(char in);
+		jry_bl_string* 			operator =		(int in);
+		jry_bl_string* 			operator =		(long in);
+		jry_bl_string* 			operator =		(long long in);
+		jry_bl_string* 			operator =		(unsigned int in);
+		jry_bl_string* 			operator =		(unsigned long in);
+		jry_bl_string* 			operator =		(unsigned long long in);
+		jry_bl_string* 			operator =		(float in);
+		jry_bl_string* 			operator =		(double in);
+		jry_bl_string* 			operator =		(long double in);
 		
-		jry_bl_string 			operator +		(const jry_bl_string& in);	//深拷贝
-		jry_bl_string 			operator +		(const char * in);
-		jry_bl_string 			operator +		(char in);
-		jry_bl_string 			operator +		(int in);
-		jry_bl_string 			operator +		(long in);
-		jry_bl_string 			operator +		(long long in);
-		jry_bl_string 			operator +		(unsigned int in);
-		jry_bl_string 			operator +		(unsigned long in);
-		jry_bl_string 			operator +		(unsigned long long in);
-		jry_bl_string 			operator +		(float in);
-		jry_bl_string 			operator +		(double in);
-		jry_bl_string 			operator +		(long double in);
+		jry_bl_string			operator +		(const jry_bl_string& in);	//深拷贝
+		jry_bl_string			operator +		(const char * in);
+		jry_bl_string			operator +		(char in);
+		jry_bl_string			operator +		(int in);
+		jry_bl_string			operator +		(long in);
+		jry_bl_string			operator +		(long long in);
+		jry_bl_string			operator +		(unsigned int in);
+		jry_bl_string			operator +		(unsigned long in);
+		jry_bl_string			operator +		(unsigned long long in);
+		jry_bl_string			operator +		(float in);
+		jry_bl_string			operator +		(double in);
+		jry_bl_string			operator +		(long double in);
 		
 		friend jry_bl_string	operator +		(const char * in,jry_bl_string &in2);
 		friend jry_bl_string	operator +		(char in,jry_bl_string &in2);
@@ -103,7 +106,6 @@ class jry_bl_string
 		bool 					operator >=		(const jry_bl_string& b);
 		
 		
-		jry_bl_string 			operator <<		(const jry_bl_string& b);	//浅拷贝 b拷贝到自身，如果可能，light_copy标记不被放到b，内存管理权被放到自身
 		jry_bl_string 			operator <<		(jry_bl_string& b);			//浅拷贝 b拷贝到自身，如果可能，light_copy标记被放到b，内存管理权被放到自身
 		jry_bl_string 			operator >>		(jry_bl_string& b);			//浅拷贝 自身拷贝到b，如果可能，light_copy标记被放到b，内存管理权被放到自身
 
@@ -125,6 +127,7 @@ class jry_bl_string
 		long double		get_float					(JRY_BL_STRING_SIZE_TYPE start);
 		bool			get_is_light_copy			();
 		jry_bl_string 	to_json						();
+		jry_bl_string* 	to_json						(jry_bl_string &a);
 		void 			from_json					(jry_bl_string &in);
 		void 			from_json					(jry_bl_string &in,JRY_BL_STRING_SIZE_TYPE start);
 		const char *	get_s						();//注意请不要修改返回值，否则可能导致错误

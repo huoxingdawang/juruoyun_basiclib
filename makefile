@@ -13,7 +13,7 @@ ifeq ($(shell uname),Linux)
 else
 	H = \\
 endif
-all: string json base64 md5 string_we
+all: string json base64 md5
 init:
 	mkdir tmp
 	mkdir tmp$(H)examples
@@ -25,9 +25,6 @@ clean:
 string:jry_bl/jry_bl_string
 	$(CC) -c -lm -o tmp$(H)examples$(H)string.o examples$(H)string.cpp
 	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
-string_we:jry_bl/jry_bl_string
-	$(CC) -c -lm -o tmp$(H)examples$(H)string_we.o examples$(H)string_we.cpp
-	$(CC) -o exes$(H)string_we tmp$(H)examples$(H)string_we.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm	
 json:jry_bl/jry_bl_string
 	$(CC) -c -lm -o tmp$(H)examples$(H)json.o examples$(H)json.cpp	
 	$(CC) -o exes$(H)json tmp$(H)examples$(H)json.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm

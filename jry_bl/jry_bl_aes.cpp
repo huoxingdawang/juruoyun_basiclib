@@ -106,14 +106,19 @@ unsigned char* jry_bl_aes::encode(const unsigned char* a,unsigned char* b)
 			b[c*4+r]=state[r][c];
 	return b;	
 }
+jry_bl_string* jry_bl_aes::encode(jry_bl_string a,jry_bl_string &out)
+{
+	unsigned char *in=(unsigned char *)a.get_s();
+	unsigned char buf[16];
+	out.extend(a.get_length());
+	for(register JRY_BL_STRING_SIZE_TYPE i=0,len=a.get_length();i<len;i+=16)
+		out.add((const char *)encode(in+i,buf),16);
+	return &out;	
+}
 jry_bl_string jry_bl_aes::encode(jry_bl_string a)
 {
 	jry_bl_string b;
-	unsigned char *in=(unsigned char *)a.get_s();
-	unsigned char buf[16];
-	b.extend(a.get_length());
-	for(register JRY_BL_STRING_SIZE_TYPE i=0,len=a.get_length();i<len;i+=16)
-		b.add((const char *)encode(in+i,buf),16);
+	encode(a,b);
 	return b;
 }
 unsigned char* jry_bl_aes::decode(unsigned char* a){return decode(a,a);}
@@ -152,14 +157,19 @@ unsigned char* jry_bl_aes::decode(const unsigned char* a,unsigned char *b)
 			b[c*4+r]=state[r][c];
 	return b;
 }
+jry_bl_string* jry_bl_aes::decode(jry_bl_string a,jry_bl_string &out)
+{
+	unsigned char *in=(unsigned char *)a.get_s();
+	unsigned char buf[16];
+	out.extend(a.get_length());
+	for(register JRY_BL_STRING_SIZE_TYPE i=0,len=a.get_length();i<len;i+=16)
+		out.add((const char *)decode(in+i,buf),16);
+	return &out;
+}
 jry_bl_string jry_bl_aes::decode(jry_bl_string a)
 {
 	jry_bl_string b;
-	unsigned char *in=(unsigned char *)a.get_s();
-	unsigned char buf[16];
-	b.extend(a.get_length());
-	for(register JRY_BL_STRING_SIZE_TYPE i=0,len=a.get_length();i<len;i+=16)
-		b.add((const char *)decode(in+i,buf),16);
+	decode(a,b);
 	return b;
 }
 void jry_bl_aes::add_round_key(unsigned char state[][4], unsigned char k[][4])

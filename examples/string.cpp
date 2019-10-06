@@ -18,10 +18,6 @@ int main()
 	s1.free();s2.free();s3.free();
 //输出、动态扩容、字符串拼接
 /*	printf("-------------------输出、动态扩容、字符串拼接------\n");
-	printf("-------------------逐个输出--------------------------\n");
-	std::cout<<s3[1];
-	std::cout<<s3[2];
-	std::cout<<s3[3]<<std::endl;
 	printf("-------------------一起输出--------------------------\n");
 	std::cout<<s3<<std::endl;
 	s2=s3;
@@ -88,7 +84,7 @@ int main()
 */
 //JSON
 /*	s1="qiankaobei\"345435";
-	s2<<s1.to_json();
+	s2=s1.to_json();
 	std::cout<<s2<<std::endl;
 	s1.free();s2.free();s3.free();
 	s1="\"qiankaobei345\\\"435\"";
