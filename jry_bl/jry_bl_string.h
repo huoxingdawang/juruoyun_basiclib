@@ -114,7 +114,7 @@ class jry_bl_string
 		friend std::istream &	operator >>		(std::istream& in, jry_bl_string& that);
 #endif	
 #if JRY_BL_STRING_USE_CSTDIO==1
-		void 			view						(FILE * file);
+		void 			view						(FILE * file=stderr);
 #endif
 		void 			clear						();
 		void 			free						();

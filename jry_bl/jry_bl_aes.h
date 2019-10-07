@@ -17,10 +17,10 @@ class jry_bl_aes
 		unsigned char* 	encode			(unsigned char* a);
 		unsigned char* 	encode			(const unsigned char* a,unsigned char* b);
 		jry_bl_string 	encode			(jry_bl_string a);
-		jry_bl_string* 	encode			(jry_bl_string a,jry_bl_string &out);
+		jry_bl_string* 	encode			(jry_bl_string &out,jry_bl_string a);
 		unsigned char* 	decode			(unsigned char* a);
 		unsigned char*	decode			(const unsigned char* a,unsigned char *b);	
-		jry_bl_string* 	decode			(jry_bl_string a,jry_bl_string &out);
+		jry_bl_string* 	decode			(jry_bl_string &out,jry_bl_string a);
 		jry_bl_string 	decode			(jry_bl_string a);
 	private:
 		unsigned char 	w[11][4][4];

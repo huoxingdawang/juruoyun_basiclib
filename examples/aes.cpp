@@ -25,13 +25,14 @@ int main()
 	jry_bl_string a="juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun",b;
 	printf("Origin:\n");
 	cout<<a<<endl;
-	aes.encode(a,b);
+	aes.encode(b,a);
 //	aes.encode(a,b);
 	printf("After encode:\n");
 	for(int j=0; j<32; j++)printf("%X ",(unsigned char)b[j]);	
 	printf("\nAfter decode:\n");
-	aes.decode(b,b);
-	cout<<b;
+	a.clear();
+	aes.decode(a,b);
+	cout<<a;
 
 	
 }
