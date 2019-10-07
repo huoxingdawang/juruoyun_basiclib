@@ -13,7 +13,7 @@ ifeq ($(shell uname),Linux)
 else
 	H = \\
 endif
-all: string json base64 md5
+all: string json base64 md5 aes
 init:
 	mkdir tmp
 	mkdir tmp$(H)examples
@@ -21,6 +21,7 @@ init:
 	mkdir exes
 clean:
 	del tmp\*.o /s
+	del exes\*.exe /s
 #examples
 string:jry_bl/jry_bl_string
 	$(CC) -c -lm -o tmp$(H)examples$(H)string.o examples$(H)string.cpp
