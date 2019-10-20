@@ -22,6 +22,7 @@ init:
 clean:
 	del tmp\*.o /s
 	del exes\*.exe /s
+	del testfiles\*.out /s
 #examples
 aes:jry_bl/jry_bl_aes
 	$(CC) -c -lm -o tmp$(H)examples$(H)aes.o examples$(H)aes.c

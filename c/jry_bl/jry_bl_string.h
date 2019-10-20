@@ -31,8 +31,8 @@ typedef struct
 }jry_bl_string;
 void	jry_bl_string_init						(jry_bl_string *this);
 void	jry_bl_string_free						(jry_bl_string *this);
-char*	jry_bl_string_get						(jry_bl_string *this,jry_bl_string_size_type i);
-char*	jry_bl_string_set						(jry_bl_string *this,jry_bl_string_size_type i,char a);
+char	jry_bl_string_get						(jry_bl_string *this,jry_bl_string_size_type i);
+char	jry_bl_string_set						(jry_bl_string *this,jry_bl_string_size_type i,char a);
 void	jry_bl_string_clear						(jry_bl_string *this);
 void	jry_bl_string_parse						(jry_bl_string *this);
 void	jry_bl_string_extend					(jry_bl_string *this,jry_bl_string_size_type size);

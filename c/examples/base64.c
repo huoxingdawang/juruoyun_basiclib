@@ -1,24 +1,20 @@
 #include "main.h"
-using namespace std;
 int main()
 {
-	jry_bl_string s1,s2;
-	int a;
-	for(;;)
-	{
-		cout<<"input 0 or 1,0 means encode,1 means decode;"<<endl;
-		cin>>a;getchar();
-		if(a==0)
-			cout<<"encode"<<endl;
-		else
-			cout<<"decode"<<endl;
-		cin>>s1;
-		if(a==0)
-			jry_bl_base64_encode(s2,s1);
-		else
-			jry_bl_base64_decode(s2,s1);
-		cout<<s2<<endl<<endl<<endl;
-		s1.clear();s2.clear();
-	}	
+	jry_bl_string s1,s2,s3;jry_bl_string_inits(3,&s1,&s2,&s3);	
+	jry_bl_string_equal_char_pointer(&s1,"juruoyun");		jry_bl_string_view(&s1,stderr);
+	jry_bl_base64_encode(&s1,&s2);							jry_bl_string_view(&s2,stderr);
+	jry_bl_base64_decode(&s2,&s3);							jry_bl_string_view(&s3,stderr);
+	jry_bl_string_frees(3,&s1,&s2,&s3);
+	jry_bl_string_clear(&s1);jry_bl_string_clear(&s2);jry_bl_string_clear(&s3);
+	FILE * fp;
+	fp=fopen("testfiles/test.txt","r");
+	jry_bl_string_equal_file(&s1,fp);
+	fclose(fp);
+	jry_bl_base64_encode(&s1,&s2);
+	fp=fopen("testfiles/base64_encode.out","w");jry_bl_string_print(&s2,fp);fclose(fp);
+	jry_bl_base64_decode(&s2,&s3);
+	fp=fopen("testfiles/base64_decode.out","w");jry_bl_string_print(&s3,fp);fclose(fp);
+	
     return 0;
 }

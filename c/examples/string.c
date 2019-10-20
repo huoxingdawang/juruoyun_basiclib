@@ -26,7 +26,7 @@ int main()
 //	jry_bl_string_equal_file_end_by(&s1,stdin,'\n');		jry_bl_string_view(&s1,stderr);
 /*
 	FILE * fp;
-	fp=fopen ("test.txt","r");
+	fp=fopen ("testfiles/test.txt","r");
 //	jry_bl_string_equal_file_end_by(&s1,fp,'\n');			jry_bl_string_view(&s1,stderr);
 	jry_bl_string_equal_file(&s1,fp);						jry_bl_string_view(&s1,stderr);
 	fclose(fp);

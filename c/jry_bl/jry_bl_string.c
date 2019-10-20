@@ -10,20 +10,20 @@
 #include "jry_bl_string.h"
 inline void 	jry_bl_string_init	(jry_bl_string *this)			{this->len=this->size=0;this->s=NULL;this->light_copy=false;}
 inline void 	jry_bl_string_free	(jry_bl_string *this)			{if(!this->light_copy)jry_bl_free(this->s);this->len=this->size=0;this->s=NULL;this->light_copy=false;}
-inline char * jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
+inline char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
 {
 	if(i<0)
 		jry_bl_exception("ERR try to get too short");
 	if(i<this->size)
-		return &this->s[i];
+		return this->s[i];
 	jry_bl_exception("ERR try to get too long");	
 }
-inline char * jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_type i,char a)
+inline char jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_type i,char a)
 {
 	if(i<0)
 		jry_bl_exception("ERR try to set too short");
 	if(i<this->size)
-		return this->s[i]=a,&this->s[i];
+		return this->s[i]=a;
 	jry_bl_exception("ERR try to get set long");	
 }
 inline void jry_bl_string_clear(jry_bl_string *this){this->len=0;}

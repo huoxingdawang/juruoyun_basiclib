@@ -8,67 +8,38 @@
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_base64.h"
-jry_bl_string jry_bl_base64_encode(jry_bl_string &a)
+void jry_bl_base64_encode(jry_bl_string *this,jry_bl_string *result)
 {
-	jry_bl_string result;
-	jry_bl_base64_encode(result,a);
-	return result;
-}
-jry_bl_string* jry_bl_base64_encode(jry_bl_string &result,jry_bl_string &a)
-{
-	register jry_bl_string_size_type i=0,len=a.get_length();
+	register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(this);
 	const char table[]= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; 
 	while(len>2)
-	{
-		result+=table[a[i+0]>>2];
-		result+=table[((a[i+0]&0x03)<<4)+(a[i+1]>>4)];
-		result+=table[((a[i+1]&0x0f)<<2)+(a[i+2]>>6)];
-		result+=table[a[i+2]&0x3f];
-		i+=3;
-		len-=3;
-	}
+		jry_bl_string_add_char(result,table[jry_bl_string_get(this,i+0)>>2]),jry_bl_string_add_char(result,table[((jry_bl_string_get(this,i+0)&0x03)<<4)+(jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[((jry_bl_string_get(this,i+1)&0x0f)<<2)+(jry_bl_string_get(this,i+2)>>6)]),jry_bl_string_add_char(result,table[jry_bl_string_get(this,i+2)&0x3f]),i+=3,len-=3;
 	if(len>0)
 	{
-		result+=table[a[i+0]>>2];
+		jry_bl_string_add_char(result,table[jry_bl_string_get(this,i+0)>>2]);
 		if(len%3==1)
-		{
-			result+=table[(a[i+0]&0x03)<<4];
-			result+="==";
-		}
+			jry_bl_string_add_char(result,table[(jry_bl_string_get(this,i+0)&0x03)<<4]),jry_bl_string_add_char(result,'='),	jry_bl_string_add_char(result,'=');
 		else if(len%3==2)
-		{
-			result+=table[((a[i+0]&0x03)<<4)+(a[i+1]>>4)];
-			result+=table[(a[i+1]&0x0f)<<2];
-			result+="=";
-		}
+			jry_bl_string_add_char(result,table[((jry_bl_string_get(this,i+0)&0x03)<<4)+(jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[(jry_bl_string_get(this,i+1)&0x0f)<<2]),jry_bl_string_add_char(result,'=');
 	}
-	return &result;	
 }
-jry_bl_string jry_bl_base64_decode(jry_bl_string &a)
-{
-	jry_bl_string result;
-	jry_bl_base64_decode(result,a);
-	return result;
-}
-jry_bl_string* jry_bl_base64_decode(jry_bl_string &result,jry_bl_string &a)
+
+void jry_bl_base64_decode(jry_bl_string *this,jry_bl_string *result)
 {
 	const char table[]={-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,62,-2,-2,-2,63,52,53,54,55,56,57,58,59,60,61,-2,-2,-2,-2,-2,-2,-2,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-2,-2,-2,-2,-2,-2,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2};
-	register jry_bl_string_size_type i=0,len=a.get_length();
+	register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(this);
 	register char bin=0,ch;
 	while(len-->0)
 	{
-		ch=a[i];
-		if (ch=='=')
+		ch=jry_bl_string_get(this,i);
+		if(ch=='=')
 		{
-			if (a[i+1]!='='&&(i%4)==1)
-			{
-				result.clear();
-				return &result;
-			}
+			if(jry_bl_string_get(this,i+1)!='='&&(i%4)==1)
+				return jry_bl_string_clear(result);
 			continue;
 		}
 		ch=table[ch];
-		if (ch<0)
+		if(ch<0)
 			continue;
 		switch(i%4)
 		{
@@ -76,21 +47,15 @@ jry_bl_string* jry_bl_base64_decode(jry_bl_string &result,jry_bl_string &a)
 				bin=ch<<2;
 				break;
 			case 1:
-				bin|=ch>>4;
-				result+=bin;
-				bin=(ch&0x0f)<<4;
+				bin|=ch>>4,jry_bl_string_add_char(result,bin),bin=(ch&0x0f)<<4;
 				break;
 			case 2:
-				bin|=ch>>2;
-				result+=bin;
-				bin=(ch&0x03)<<6;
+				bin|=ch>>2,jry_bl_string_add_char(result,bin),bin=(ch&0x03)<<6;
 				break;
 			case 3:
-				bin|=ch;
-				result+=bin;
+				bin|=ch,jry_bl_string_add_char(result,bin);
 				break;
 		}
 		i++;
 	}	
-	return &result;
 }
