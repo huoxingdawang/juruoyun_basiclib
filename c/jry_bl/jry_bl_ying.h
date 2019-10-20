@@ -7,6 +7,6 @@
 	#define false 0
 #endif
 #ifndef true
-	#define true 0
+	#define true 1
 #endif
 #endif
