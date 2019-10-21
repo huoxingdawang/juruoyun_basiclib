@@ -1,0 +1,19 @@
+<?php
+	if(file_exists($argv[1]))
+	{
+		$fp=fopen($argv[1],"r");
+		$str=fread($fp,filesize($argv[1]));
+		fclose($fp);
+		$fp=fopen("testfiles/base64_encode.ans","w");
+		fwrite($fp,base64_encode($str));
+		fclose($fp);
+	}
+	if(file_exists("testfiles/base64_encode.out"))
+	{
+		$fp=fopen("testfiles/base64_encode.out","r");
+		$str=fread($fp,filesize("testfiles/base64_encode.out"));
+		fclose($fp);
+		$fp=fopen("testfiles/base64_decode.ans","w");
+		fwrite($fp,base64_decode($str));
+		fclose($fp);		
+	}

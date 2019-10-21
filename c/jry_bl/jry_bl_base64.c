@@ -11,16 +11,17 @@
 void jry_bl_base64_encode(jry_bl_string *this,jry_bl_string *result)
 {
 	register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(this);
+	jry_bl_string_extend(result,jry_bl_string_get_length(result)+len/3*4+4);
 	const char table[]= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; 
 	while(len>2)
-		jry_bl_string_add_char(result,table[jry_bl_string_get(this,i+0)>>2]),jry_bl_string_add_char(result,table[((jry_bl_string_get(this,i+0)&0x03)<<4)+(jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[((jry_bl_string_get(this,i+1)&0x0f)<<2)+(jry_bl_string_get(this,i+2)>>6)]),jry_bl_string_add_char(result,table[jry_bl_string_get(this,i+2)&0x3f]),i+=3,len-=3;
+		jry_bl_string_add_char(result,table[(unsigned char)jry_bl_string_get(this,i+0)>>2]),jry_bl_string_add_char(result,table[(((unsigned char)jry_bl_string_get(this,i+0)&0x03)<<4)+((unsigned char)jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[(((unsigned char)jry_bl_string_get(this,i+1)&0x0f)<<2)+((unsigned char)jry_bl_string_get(this,i+2)>>6)]),jry_bl_string_add_char(result,table[(unsigned char)jry_bl_string_get(this,i+2)&0x3f]),i+=3,len-=3;
 	if(len>0)
 	{
-		jry_bl_string_add_char(result,table[jry_bl_string_get(this,i+0)>>2]);
+		jry_bl_string_add_char(result,table[(unsigned char)jry_bl_string_get(this,i+0)>>2]);
 		if(len%3==1)
-			jry_bl_string_add_char(result,table[(jry_bl_string_get(this,i+0)&0x03)<<4]),jry_bl_string_add_char(result,'='),	jry_bl_string_add_char(result,'=');
+			jry_bl_string_add_char(result,table[((unsigned char)jry_bl_string_get(this,i+0)&0x03)<<4]),jry_bl_string_add_char(result,'='),jry_bl_string_add_char(result,'=');
 		else if(len%3==2)
-			jry_bl_string_add_char(result,table[((jry_bl_string_get(this,i+0)&0x03)<<4)+(jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[(jry_bl_string_get(this,i+1)&0x0f)<<2]),jry_bl_string_add_char(result,'=');
+			jry_bl_string_add_char(result,table[(((unsigned char)jry_bl_string_get(this,i+0)&0x03)<<4)+((unsigned char)jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[((unsigned char)jry_bl_string_get(this,i+1)&0x0f)<<2]),jry_bl_string_add_char(result,'=');
 	}
 }
 
@@ -29,6 +30,7 @@ void jry_bl_base64_decode(jry_bl_string *this,jry_bl_string *result)
 	const char table[]={-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,62,-2,-2,-2,63,52,53,54,55,56,57,58,59,60,61,-2,-2,-2,-2,-2,-2,-2,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-2,-2,-2,-2,-2,-2,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2};
 	register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(this);
 	register char bin=0,ch;
+	jry_bl_string_extend(result,jry_bl_string_get_length(result)+len/4*3+3);
 	while(len-->0)
 	{
 		ch=jry_bl_string_get(this,i);

@@ -23,6 +23,8 @@ clean:
 	del tmp\*.o /s
 	del exes\*.exe /s
 	del testfiles\*.out /s
+	del testfiles\*.ans /s
+	del testfiles\*.html /s
 #examples
 aes:jry_bl/jry_bl_aes
 	$(CC) -c -lm -o tmp$(H)examples$(H)aes.o examples$(H)aes.c
@@ -45,17 +47,17 @@ string:jry_bl/jry_bl_string
 
 #jry_bl
 jry_bl/jry_bl_aes:jry_bl/jry_bl_string
-	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_aes.o jry_bl$(H)jry_bl_aes.c
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_aes.o jry_bl$(H)jry_bl_aes.c
 jry_bl/jry_bl_array:jry_bl/jry_bl_exception jry_bl/jry_bl_malloc
-	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_array.o jry_bl$(H)jry_bl_array.c
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_array.o jry_bl$(H)jry_bl_array.c
 jry_bl/jry_bl_base64:jry_bl/jry_bl_string
-	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_base64.o jry_bl$(H)jry_bl_base64.c	
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_base64.o jry_bl$(H)jry_bl_base64.c	
 jry_bl/jry_bl_exception:
-	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_exception.o jry_bl$(H)jry_bl_exception.c	
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_exception.o jry_bl$(H)jry_bl_exception.c	
 jry_bl/jry_bl_malloc:
-	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_malloc.o jry_bl$(H)jry_bl_malloc.c
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_malloc.o jry_bl$(H)jry_bl_malloc.c
 jry_bl/jry_bl_md5:jry_bl/jry_bl_string
-	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_md5.o jry_bl$(H)jry_bl_md5.c
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_md5.o jry_bl$(H)jry_bl_md5.c
 jry_bl/jry_bl_string:jry_bl/jry_bl_exception jry_bl/jry_bl_malloc
-	$(CC) -c -lm -o tmp$(H)jry_bl$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.c
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.c
 	

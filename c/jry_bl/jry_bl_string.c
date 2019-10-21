@@ -14,8 +14,10 @@ inline char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
 {
 	if(i<0)
 		jry_bl_exception("ERR try to get too short");
-	if(i<this->size)
+	if(i<this->len)
 		return this->s[i];
+	if(i<this->size)
+		return 0;
 	jry_bl_exception("ERR try to get too long");	
 }
 inline char jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_type i,char a)
@@ -208,7 +210,7 @@ void jry_bl_string_from_json_start(jry_bl_string *this,jry_bl_string *in,jry_bl_
 #if JRY_BL_STRING_USE_STDIO==1
 inline void jry_bl_string_print(jry_bl_string *this,FILE * file)
 {
-	for(jry_bl_string_size_type i=0;i<this->len;fputc(this->s[i++],file));	
+	for(jry_bl_string_size_type i=0;i<this->len;fputc(this->s[i++],file));
 }
 void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a)
 {
@@ -222,15 +224,23 @@ void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a)
 }
 void jry_bl_string_add_file(jry_bl_string *this,FILE * file)
 {
+	fseek(file,0L,SEEK_END);
 	register char c;
-	while((c=fgetc(file))!=EOF)
-		jry_bl_string_add_char(this,c);
+	register jry_bl_string_size_type size=ftell(file),i=0;
+	jry_bl_string_extend(this,this->size+size);
+	fseek(file,0L,SEEK_SET);
+	while(i<size)
+		++i,jry_bl_string_add_char(this,fgetc(file));
 }
 void jry_bl_string_add_file_end_by(jry_bl_string *this,FILE * file,char end)
 {
+	fseek(file,0L,SEEK_END);
 	register char c;
-	while((c=fgetc(file))!=EOF&&c!=end)
-		jry_bl_string_add_char(this,c);
+	register jry_bl_string_size_type size=ftell(file),i=0;
+	jry_bl_string_extend(this,this->size+size);
+	fseek(file,0L,SEEK_SET);
+	while(i<size&&((c=fgetc(file))!=end))
+		++i,jry_bl_string_add_char(this,c);
 }
 inline void jry_bl_string_equal_file		(jry_bl_string *this,FILE * file)			{jry_bl_string_clear(this);jry_bl_string_add_file		(this,file);}
 inline void jry_bl_string_equal_file_end_by	(jry_bl_string *this,FILE * file,char end)	{jry_bl_string_clear(this);jry_bl_string_add_file_end_by(this,file,end);}
