@@ -10,7 +10,7 @@
 #include "jry_bl_string.h"
 inline void 	jry_bl_string_init	(jry_bl_string *this)			{this->len=this->size=0;this->s=NULL;this->light_copy=false;}
 inline void 	jry_bl_string_free	(jry_bl_string *this)			{if(!this->light_copy)jry_bl_free(this->s);this->len=this->size=0;this->s=NULL;this->light_copy=false;}
-inline char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
+inline unsigned char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
 {
 	if(i<0)
 		jry_bl_exception("ERR try to get too short");
@@ -20,7 +20,7 @@ inline char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
 		return 0;
 	jry_bl_exception("ERR try to get too long");	
 }
-inline char jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_type i,char a)
+inline unsigned char jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a)
 {
 	if(i<0)
 		jry_bl_exception("ERR try to set too short");
@@ -36,7 +36,7 @@ void jry_bl_string_parse(jry_bl_string *this)
 	if(this->len==0)
 		return jry_bl_string_free(this);
 	jry_bl_string_size_type size=(ceil((long double)(this->len)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
-	char * s=(this->s==NULL?(char *)jry_bl_malloc(size):(char *)jry_bl_realloc(this->s,size));
+	unsigned char * s=(this->s==NULL?(unsigned char *)jry_bl_malloc(size):(unsigned char *)jry_bl_realloc(this->s,size));
 	if(s!=NULL)
 		this->s=s,this->size=size;
 }
@@ -46,8 +46,9 @@ void jry_bl_string_extend(jry_bl_string *this,jry_bl_string_size_type size)
 		jry_bl_exception("ERR memory error");
 	if(size>this->size)
 	{
+//		printf("\n\textend\n");
 		this->size=(ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
-		char * s=(this->s==NULL?(char *)jry_bl_malloc(this->size):(char *)jry_bl_realloc(this->s,this->size));
+		unsigned char * s=(this->s==NULL?(unsigned char *)jry_bl_malloc(this->size):(unsigned char *)jry_bl_realloc(this->s,this->size));
 		if(s==NULL)
 			jry_bl_exception("ERR memory error");
 		this->s=s;
@@ -60,7 +61,7 @@ void jry_bl_string_add_string(jry_bl_string *this,jry_bl_string *in)
 		this->s[this->len+i]=in->s[i];
 	this->len=(this->len+in->len);
 }
-void jry_bl_string_add_char_pointer(jry_bl_string *this,char *in)
+void jry_bl_string_add_char_pointer(jry_bl_string *this,unsigned char *in)
 {
 	jry_bl_string_size_type in_len=0;
 	while(in[in_len++]);in_len--;
@@ -69,14 +70,14 @@ void jry_bl_string_add_char_pointer(jry_bl_string *this,char *in)
 		this->s[this->len+i]=in[i];
 	this->len=(this->len+in_len);
 }
-void jry_bl_string_add_char_pointer_length(jry_bl_string *this,char *in,jry_bl_string_size_type len)
+void jry_bl_string_add_char_pointer_length(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len)
 {
 	jry_bl_string_extend(this,this->len+len);
 	for(jry_bl_string_size_type i=0;i<len;i++)
 		this->s[this->len+i]=in[i];
 	this->len=(this->len+len);	
 }
-void jry_bl_string_add_char(jry_bl_string *this,char in)
+void jry_bl_string_add_char(jry_bl_string *this,unsigned char in)
 {
 	jry_bl_string_extend(this,this->len+1);
 	this->s[this->len++]=in;
@@ -93,7 +94,7 @@ void jry_bl_string_add_unsigned_long_long(jry_bl_string *this,unsigned long long
 	if(in==0)
 		return jry_bl_string_add_char(this,'0');
 	register int cnt=20;
-	char b[21];
+	unsigned char b[21];
 	b[cnt--]=0;
 	while(in)
 		b[cnt--]=in%10+'0',in/=10;
@@ -123,9 +124,9 @@ void jry_bl_string_equal_long_double_length(jry_bl_string *this,long double in,u
 inline void	jry_bl_string_equal_string				(jry_bl_string *this,jry_bl_string *in)						{jry_bl_string_clear(this);jry_bl_string_add_string(this,in);}
 inline void jry_bl_string_equal_string_light		(jry_bl_string *this,jry_bl_string *in)						{jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=true;}
 inline void jry_bl_string_equal_string_light_move	(jry_bl_string *this,jry_bl_string *in)						{jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=in->light_copy;in->light_copy=true;}
-inline void	jry_bl_string_equal_char_pointer		(jry_bl_string *this,char *in)								{jry_bl_string_clear(this);jry_bl_string_add_char_pointer(this,in);}
-inline void	jry_bl_string_equal_char_pointer_length	(jry_bl_string *this,char *in,jry_bl_string_size_type len)	{jry_bl_string_clear(this);jry_bl_string_add_char_pointer_length(this,in,len);}
-inline void	jry_bl_string_equal_char				(jry_bl_string *this,char in)								{jry_bl_string_clear(this);jry_bl_string_add_char(this,in);}
+inline void	jry_bl_string_equal_char_pointer		(jry_bl_string *this,unsigned char *in)								{jry_bl_string_clear(this);jry_bl_string_add_char_pointer(this,in);}
+inline void	jry_bl_string_equal_char_pointer_length	(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len)	{jry_bl_string_clear(this);jry_bl_string_add_char_pointer_length(this,in,len);}
+inline void	jry_bl_string_equal_char				(jry_bl_string *this,unsigned char in)								{jry_bl_string_clear(this);jry_bl_string_add_char(this,in);}
 inline void	jry_bl_string_equal_long_long			(jry_bl_string *this,long long in)							{jry_bl_string_clear(this);jry_bl_string_add_long_long(this,in);}
 inline void	jry_bl_string_equal_unsigned_long_long	(jry_bl_string *this,unsigned long long in)					{jry_bl_string_clear(this);jry_bl_string_add_unsigned_long_long(this,in);}
 inline void	jry_bl_string_equal_long_double			(jry_bl_string *this,long double in)						{jry_bl_string_clear(this);jry_bl_string_add_long_double(this,in);}
@@ -152,7 +153,7 @@ long long jry_bl_string_get_long_long_start(jry_bl_string *this,jry_bl_string_si
 		return 0;
 	if(start>=this->len)
 		return 0;
-	register char f;register char c;register unsigned long long x=0;jry_bl_string_size_type i; 
+	register unsigned char c,f;register unsigned long long x=0;jry_bl_string_size_type i; 
 	for(f=0,i=start;(c=this->s[i])<'0'||c>'9'&&i<this->len;f=c=='-',++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	return f?-x:x;	
@@ -163,7 +164,7 @@ unsigned long long jry_bl_string_get_unsigned_long_long_start(jry_bl_string *thi
 		return 0;
 	if(start>=this->len)
 		return 0;
-	register char c;register unsigned long long x=0;jry_bl_string_size_type i; 
+	register unsigned char c;register unsigned long long x=0;jry_bl_string_size_type i; 
 	for(i=start;(c=this->s[i])<'0'||c>'9'&&i<this->len;++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	return x;	
@@ -174,7 +175,7 @@ long double	jry_bl_string_get_long_double_start(jry_bl_string *this,jry_bl_strin
 		return 0;
 	if(start>=this->len)
 		return 0;
-	register char f;register char c;register unsigned long long x=0;jry_bl_string_size_type i; 
+	register unsigned char c,f;register unsigned long long x=0;jry_bl_string_size_type i; 
 	for(f=0,i=start;(c=this->s[i])<'0'||c>'9'&&i<this->len;f=c=='-',++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	if(this->s[i]!='.'||i==this->len)
@@ -184,7 +185,7 @@ long double	jry_bl_string_get_long_double_start(jry_bl_string *this,jry_bl_strin
 	return f?-(x+((long double)y/ji)):(x+((long double)y/ji));
 }
 char 	jry_bl_string_if_light_copy				(jry_bl_string *this){return this->light_copy;}
-char* 	jry_bl_string_get_char_pointer			(jry_bl_string *this){this->s[this->len]=0;return this->s;}
+unsigned char* 	jry_bl_string_get_char_pointer			(jry_bl_string *this){this->s[this->len]=0;return this->s;}
 jry_bl_string_size_type 	jry_bl_string_get_length				(jry_bl_string *this){return this->len;}
 jry_bl_string_size_type 	jry_bl_string_get_size					(jry_bl_string *this){return this->size;}
 void jry_bl_string_to_json(jry_bl_string *this,jry_bl_string *result)
@@ -225,25 +226,25 @@ void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a)
 void jry_bl_string_add_file(jry_bl_string *this,FILE * file)
 {
 	fseek(file,0L,SEEK_END);
-	register char c;
+	register unsigned char c;
 	register jry_bl_string_size_type size=ftell(file),i=0;
 	jry_bl_string_extend(this,this->size+size);
 	fseek(file,0L,SEEK_SET);
 	while(i<size)
 		++i,jry_bl_string_add_char(this,fgetc(file));
 }
-void jry_bl_string_add_file_end_by(jry_bl_string *this,FILE * file,char end)
+void jry_bl_string_add_file_end_by(jry_bl_string *this,FILE * file,unsigned char end)
 {
 	fseek(file,0L,SEEK_END);
-	register char c;
+	register unsigned char c;
 	register jry_bl_string_size_type size=ftell(file),i=0;
 	jry_bl_string_extend(this,this->size+size);
 	fseek(file,0L,SEEK_SET);
 	while(i<size&&((c=fgetc(file))!=end))
 		++i,jry_bl_string_add_char(this,c);
 }
-inline void jry_bl_string_equal_file		(jry_bl_string *this,FILE * file)			{jry_bl_string_clear(this);jry_bl_string_add_file		(this,file);}
-inline void jry_bl_string_equal_file_end_by	(jry_bl_string *this,FILE * file,char end)	{jry_bl_string_clear(this);jry_bl_string_add_file_end_by(this,file,end);}
+inline void jry_bl_string_equal_file		(jry_bl_string *this,FILE * file)					{jry_bl_string_clear(this);jry_bl_string_add_file		(this,file);}
+inline void jry_bl_string_equal_file_end_by	(jry_bl_string *this,FILE * file,unsigned char end)	{jry_bl_string_clear(this);jry_bl_string_add_file_end_by(this,file,end);}
 #endif
 #if JRY_BL_STRING_USE_STDARG==1
 inline void	jry_bl_string_inits(int n,...)

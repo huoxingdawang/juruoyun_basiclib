@@ -26,23 +26,23 @@ clean:
 	del testfiles\*.ans /s
 	del testfiles\*.html /s
 #examples
-aes:jry_bl/jry_bl_aes
-	$(CC) -c -lm -o tmp$(H)examples$(H)aes.o examples$(H)aes.c
-	$(CC) -o exes$(H)aes tmp$(H)examples$(H)aes.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_aes.o -lm	
+aes:jry_bl/jry_bl_aes jry_bl/jry_bl_base64
+	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)aes.o examples$(H)aes.c
+	$(CC) -o exes$(H)aes tmp$(H)examples$(H)aes.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_aes.o tmp$(H)jry_bl$(H)jry_bl_base64.o -lm	
 array:jry_bl/jry_bl_array
-	$(CC) -c -lm -o tmp$(H)examples$(H)array.o examples$(H)array.c
+	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)array.o examples$(H)array.c
 	$(CC) -o exes$(H)array tmp$(H)examples$(H)array.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_array.o -lm	
 base64:jry_bl/jry_bl_base64
-	$(CC) -c -lm -o tmp$(H)examples$(H)base64.o examples$(H)base64.c	
+	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)base64.o examples$(H)base64.c	
 	$(CC) -o exes$(H)base64 tmp$(H)examples$(H)base64.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_base64.o -lm	
 json:jry_bl/jry_bl_string
-	$(CC) -c -lm -o tmp$(H)examples$(H)json.o examples$(H)json.c	
+	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)json.o examples$(H)json.c	
 	$(CC) -o exes$(H)json tmp$(H)examples$(H)json.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
 md5:jry_bl/jry_bl_md5
-	$(CC) -c -lm -o tmp$(H)examples$(H)md5.o examples$(H)md5.c	
+	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)md5.o examples$(H)md5.c	
 	$(CC) -o exes$(H)md5 tmp$(H)examples$(H)md5.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_md5.o -lm
 string:jry_bl/jry_bl_string
-	$(CC) -c -lm -o tmp$(H)examples$(H)string.o examples$(H)string.c
+	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)string.o examples$(H)string.c
 	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
 
 #jry_bl

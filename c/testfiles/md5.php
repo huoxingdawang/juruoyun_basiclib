@@ -1,0 +1,10 @@
+<?php
+	if(file_exists($argv[1]))
+	{
+		$fp=fopen($argv[1],"r");
+		$str=fread($fp,filesize($argv[1]));
+		fclose($fp);
+		$fp=fopen("testfiles/md5_encode.ans","w");
+		fwrite($fp,md5($str));
+		fclose($fp);
+	}

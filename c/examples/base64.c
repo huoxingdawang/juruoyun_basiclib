@@ -7,7 +7,9 @@ int main()
 //	jry_bl_base64_decode(&s2,&s3);							jry_bl_string_view(&s3,stderr);
 //	jry_bl_string_clear(&s1);jry_bl_string_clear(&s2);jry_bl_string_clear(&s3);
 	FILE * fp;
-	fp=fopen("testfiles/test.jpg","rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);
+	fp=fopen("testfiles/test.jpg","rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);	
+	
+	
 	jry_bl_base64_encode(&s1,&s2);
 //	fp=fopen("testfiles/base64_encode.ans","rb");jry_bl_string_equal_file(&s2,fp);fclose(fp);
 	jry_bl_base64_decode(&s2,&s3);

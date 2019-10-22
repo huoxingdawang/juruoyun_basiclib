@@ -23,7 +23,7 @@ int main()
 	jry_bl_string_equal_char_pointer(&s2,"12312312");		jry_bl_string_view(&s2,stderr);
 	printf("%d",jry_bl_string_space_ship(&s1,&s2));
 */
-//	jry_bl_string_equal_file_end_by(&s1,stdin,'\n');		jry_bl_string_view(&s1,stderr);
+//	jry_bl_string_equal_file_end_by(&s1,stdin,' ');		jry_bl_string_view(&s1,stderr);
 /*
 	FILE * fp;
 	fp=fopen ("testfiles/test.txt","r");
@@ -47,12 +47,13 @@ int main()
 	
 //	jry_bl_string_equal_char_pointer(&s1,"juruoyun");jry_bl_string_equal_char_pointer(&s1,"ju");		printf("%s",jry_bl_string_get_char_pointer(&s1));
 	
+/*
 	jry_bl_string_equal_char_pointer(&s1,"ju\"ruoyun");
 	jry_bl_string_to_json(&s1,&s2);
 	jry_bl_string_view(&s2,stderr);
 	jry_bl_string_from_json(&s3,&s2);
 	jry_bl_string_view(&s3,stderr);
-	
+*/	
 	
 	
 	

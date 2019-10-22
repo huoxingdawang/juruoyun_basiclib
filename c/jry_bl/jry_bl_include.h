@@ -11,12 +11,12 @@
 #define __JRY_BL_INCLUE_H
 
 #include "jry_bl_config.h"
-//#include "jry_bl_aes.h"
+#include "jry_bl_aes.h"
 //#include "jry_bl_array.h"
 #include "jry_bl_base64.h"
 #include "jry_bl_exception.h"
 #include "jry_bl_malloc.h"
-//#include "jry_bl_md5.h"
+#include "jry_bl_md5.h"
 #include "jry_bl_string.h"
 #include "jry_bl_ying.h"
 
