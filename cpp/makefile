@@ -23,9 +23,9 @@ clean:
 	del tmp\*.o /s
 	del exes\*.exe /s
 #examples
-aes:jry_bl/jry_bl_aes
+aes:jry_bl/jry_bl_aes jry_bl/jry_bl_base64
 	$(CC) -c -lm -o tmp$(H)examples$(H)aes.o examples$(H)aes.cpp
-	$(CC) -o exes$(H)aes tmp$(H)examples$(H)aes.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_aes.o -lm	
+	$(CC) -o exes$(H)aes tmp$(H)examples$(H)aes.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_aes.o tmp$(H)jry_bl$(H)jry_bl_base64.o -lm	
 array:jry_bl/jry_bl_array
 	$(CC) -c -lm -o tmp$(H)examples$(H)array.o examples$(H)array.cpp
 	$(CC) -o exes$(H)array tmp$(H)examples$(H)array.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_array.o -lm	

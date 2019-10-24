@@ -1,0 +1,20 @@
+<?php
+//AES 128 ECB
+	if(file_exists($argv[1]))
+	{
+		$fp=fopen($argv[1],"r");
+		$str=fread($fp,filesize($argv[1]));
+		fclose($fp);
+		$fp=fopen("testfiles/aes_128_ecb_encode.ans","w");
+		fwrite($fp,base64_encode(openssl_encrypt($str,"AES-128-ECB","0CoJUm6Qyw8W8jud",OPENSSL_RAW_DATA,"")));
+		fclose($fp);
+	}
+	if(file_exists("testfiles/aes_128_ecb_encode.out"))
+	{
+		$fp=fopen("testfiles/aes_128_ecb_encode.out","r");
+		$str=fread($fp,filesize("testfiles/aes_128_ecb_encode.out"));
+		fclose($fp);
+		$fp=fopen("testfiles/aes_128_ecb_decode.ans","w");
+		fwrite($fp,openssl_decrypt(base64_decode($str),"AES-128-ECB","0CoJUm6Qyw8W8jud",OPENSSL_RAW_DATA,""));
+		fclose($fp);		
+	}

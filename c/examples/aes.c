@@ -1,38 +1,45 @@
 #include "main.h"
-using namespace std;
 void print(unsigned char* state)
 {
-	for(int i=0;i<16;i++)
+	for(int i=0;i<64;i++)
 		printf("%s%X ",state[i]>15 ? "" : "0",state[i]);
 	printf("\n");
 }
 
 int main()
 {
-	unsigned char out[16]; 
-	unsigned char inp[]={0x32,0x43,0xf6,0xa8,0x88,0x5a,0x30,0x8d,0x31,0x31,0x98,0xa2,0xe0,0x37,0x07,0x34};
-	unsigned char key[]={0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
-	printf("Origin:\n");
-	print(inp);	
-	jry_bl_aes aes(key);
-	aes.encode(inp,out);
-	printf("After encode:\n");
-	print(out);	
-	aes.decode(out);
-	printf("After decode:\n");
-	print(out);
-	
-	jry_bl_string a="juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun",b;
-	printf("Origin:\n");
-	cout<<a<<endl;
-	aes.encode(b,a);
-//	aes.encode(a,b);
-	printf("After encode:\n");
-	for(int j=0; j<32; j++)printf("%X ",(unsigned char)b[j]);	
-	printf("\nAfter decode:\n");
-	a.clear();
-	aes.decode(a,b);
-	cout<<a;
-
-	
+	FILE * fp;
+	unsigned char key[]="0CoJUm6Qyw8W8jud";
+	jry_bl_string s1,s2,s3,s4,s5,s6,s7;jry_bl_string_inits(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);	
+	jry_bl_aes_extened_key keyy;
+	jry_bl_aes_128_extend_key(key,keyy);
+//AES 128 ECB	
+	jry_bl_string_clears(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);
+	fp=fopen("testfiles/test.jpg","rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);	
+	jry_bl_aes_128_ecb_encode(keyy,&s1,&s2);
+	jry_bl_base64_encode(&s2,&s6);
+	jry_bl_aes_128_ecb_decode(keyy,&s2,&s3);
+	fp=fopen("testfiles/aes_128_ecb_encode.out","wb");jry_bl_string_print(&s6,fp);fclose(fp);
+	fp=fopen("testfiles/aes_128_ecb_decode.out","wb");jry_bl_string_print(&s3,fp);fclose(fp);
+	system("php testfiles/aes128ecb.php \"testfiles/test.jpg\"");
+	fp=fopen("testfiles/aes_128_ecb_encode.ans","rb");jry_bl_string_equal_file(&s4,fp);fclose(fp);
+	fp=fopen("testfiles/aes_128_ecb_decode.ans","rb");jry_bl_string_equal_file(&s5,fp);fclose(fp);
+	printf("AES 128 ECB with self:%s\n",((jry_bl_string_space_ship(&s1,&s3)==0)?"YES":"NO"));
+	printf("AES 128 ECB with php encode:%s\n",((jry_bl_string_space_ship(&s6,&s4)==0)?"YES":"NO"));
+	printf("AES 128 ECB with php decode:%s\n",((jry_bl_string_space_ship(&s3,&s5)==0)?"YES":"NO"));
+//AES 128 CBC
+	jry_bl_string_clears(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);
+	fp=fopen("testfiles/test.jpg","rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);	
+	jry_bl_aes_128_cbc_encode(keyy,"0CoJUm6Qyw8W8jud",&s1,&s2);
+	jry_bl_base64_encode(&s2,&s6);
+	jry_bl_aes_128_cbc_decode(keyy,"0CoJUm6Qyw8W8jud",&s2,&s3);
+	fp=fopen("testfiles/aes_128_cbc_encode.out","wb");jry_bl_string_print(&s6,fp);fclose(fp);
+	fp=fopen("testfiles/aes_128_cbc_decode.out","wb");jry_bl_string_print(&s3,fp);fclose(fp);
+	system("php testfiles/aes128cbc.php \"testfiles/test.jpg\"");
+	fp=fopen("testfiles/aes_128_cbc_encode.ans","rb");jry_bl_string_equal_file(&s4,fp);fclose(fp);
+	fp=fopen("testfiles/aes_128_cbc_decode.ans","rb");jry_bl_string_equal_file(&s5,fp);fclose(fp);
+	printf("AES 128 CBC with self:%s\n",((jry_bl_string_space_ship(&s1,&s3)==0)?"YES":"NO"));
+	printf("AES 128 CBC with php encode:%s\n",((jry_bl_string_space_ship(&s6,&s4)==0)?"YES":"NO"));
+	printf("AES 128 CBC with php decode:%s\n",((jry_bl_string_space_ship(&s3,&s5)==0)?"YES":"NO"));
+	jry_bl_string_frees(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);	
 }
