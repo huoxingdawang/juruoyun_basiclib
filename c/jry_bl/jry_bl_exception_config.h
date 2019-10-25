@@ -7,11 +7,8 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JRY_BL_MD5_H
-#define __JRY_BL_MD5_H
-#include "jry_bl_md5_config.h"
-#if JRY_BL_MD5_ENABLE==1
-#include "jry_bl_string.h"
-void jry_bl_md5(jry_bl_string* this,jry_bl_string* out);
-#endif
+#ifndef __JRY_BL_EXCEPTION_CONFIG_H
+#define __JRY_BL_EXCEPTION_CONFIG_H
+#define JRY_BL_EXCEPTION_ENABLE 1
+
 #endif

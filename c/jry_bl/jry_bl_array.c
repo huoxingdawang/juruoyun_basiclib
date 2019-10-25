@@ -8,12 +8,8 @@
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_array.h"
-/*
-template <class jry_bl_array_load>
-jry_bl_array_element<jry_bl_array_load>::jry_bl_array_element()								{nxt=pre=NULL;}
-template <class jry_bl_array_load>
-jry_bl_array_element<jry_bl_array_load>::jry_bl_array_element(const jry_bl_array_load& b)	{nxt=pre=NULL;load=b;}
-*/
+#if JRY_BL_ARRAY_ENABLE==1
+
 
 template <typename jry_bl_array_load>
 jry_bl_array<jry_bl_array_load>::jry_bl_array()		{start=end=NULL;}
@@ -27,4 +23,5 @@ void jry_bl_array<jry_bl_array_load>::view(std::ostream& out)
 {
 	out<<'\n';
 }
+#endif
 #endif

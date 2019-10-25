@@ -10,7 +10,8 @@
 #ifndef __JRY_BL_ARRAY_CONFIG_H
 #define __JRY_BL_ARRAY_CONFIG_H
 
-#define JRY_BL_ARRAY_USE_IOSTREAM 	1								//是否依赖<iostream>
+#define JRY_BL_ARRAY_ENABLE 0
+
 
 
 #endif

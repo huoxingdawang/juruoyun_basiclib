@@ -9,14 +9,18 @@
    See the Mulan PSL v1 for more details.*/
 #ifndef __JRY_BL_AES_H
 #define __JRY_BL_AES_H
+#include "jry_bl_aes_config.h"
+#if JRY_BL_AES_128_ENABLE==1
 #include "jry_bl_string.h"
-typedef unsigned char jry_bl_aes_extened_key[11][4][4];
-void	jry_bl_aes_128_extend_key		(unsigned char* key,jry_bl_aes_extened_key w);
-void	jry_bl_aes_128_ecb_encode		(jry_bl_aes_extened_key w,jry_bl_string *in,jry_bl_string *out);
-void	jry_bl_aes_128_ecb_decode		(jry_bl_aes_extened_key w,jry_bl_string *in,jry_bl_string *out);
-void	jry_bl_aes_128_cbc_encode		(jry_bl_aes_extened_key w,unsigned char *vi,jry_bl_string *in,jry_bl_string *out);
-void	jry_bl_aes_128_cbc_decode		(jry_bl_aes_extened_key w,unsigned char *vi,jry_bl_string *in,jry_bl_string *out);
-
-
-
+typedef unsigned char jry_bl_aes_128_extened_key[11][4][4];
+void	jry_bl_aes_128_extend_key		(unsigned char* key,jry_bl_aes_128_extened_key w);
+#if JRY_BL_AES_128_ECB_ENABLE==1
+void	jry_bl_aes_128_ecb_encode		(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out);
+void	jry_bl_aes_128_ecb_decode		(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out);
+#endif
+#if JRY_BL_AES_128_CBC_ENABLE==1
+void	jry_bl_aes_128_cbc_encode		(jry_bl_aes_128_extened_key w,unsigned char *vi,jry_bl_string *in,jry_bl_string *out);
+void	jry_bl_aes_128_cbc_decode		(jry_bl_aes_128_extened_key w,unsigned char *vi,jry_bl_string *in,jry_bl_string *out);
+#endif
+#endif
 #endif

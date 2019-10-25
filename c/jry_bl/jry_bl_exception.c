@@ -8,8 +8,10 @@
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_exception.h"
+#if JRY_BL_EXCEPTION_ENABLE==1
 void __jry_bl_exception(const char * file,int line,const char* x)
 {
 	fprintf(stderr,"\n%dAt %s %d\n%s\n",file,line,x);
 	exit(0);
 }
+#endif

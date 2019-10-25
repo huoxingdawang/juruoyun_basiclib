@@ -11,7 +11,7 @@ int main()
 	FILE * fp;
 	unsigned char key[]="0CoJUm6Qyw8W8jud";
 	jry_bl_string s1,s2,s3,s4,s5,s6,s7;jry_bl_string_inits(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);	
-	jry_bl_aes_extened_key keyy;
+	jry_bl_aes_128_extened_key keyy;
 	jry_bl_aes_128_extend_key(key,keyy);
 //AES 128 ECB	
 	jry_bl_string_clears(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);

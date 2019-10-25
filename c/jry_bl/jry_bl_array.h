@@ -10,12 +10,8 @@
 #ifndef __JRY_BL_ARRAY_H
 #define __JRY_BL_ARRAY_H
 #include "jry_bl_array_config.h"
-#ifndef NULL
-	#define NULL 0
-#endif
-#if JRY_BL_ARRAY_USE_IOSTREAM==1
-#include <iostream>
-#endif
+#if JRY_BL_ARRAY_ENABLE==1
+
 template <typename jry_bl_array_load>
 class jry_bl_array
 {
@@ -36,4 +32,5 @@ class jry_bl_array
 #endif
 
 };
+#endif
 #endif

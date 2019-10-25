@@ -8,6 +8,7 @@
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_base64.h"
+#if JRY_BL_BASE64_ENABLE==1
 void jry_bl_base64_encode(jry_bl_string *this,jry_bl_string *result)
 {
 	register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(this);
@@ -61,3 +62,4 @@ void jry_bl_base64_decode(jry_bl_string *this,jry_bl_string *result)
 		i++;
 	}	
 }
+#endif

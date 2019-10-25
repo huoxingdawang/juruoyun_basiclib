@@ -8,6 +8,7 @@
 	 PURPOSE.
 	 See the Mulan PSL v1 for more details.*/
 #include "jry_bl_md5.h"
+#if JRY_BL_MD5_ENABLE==1
 #define JRY_BL_MD5_F(x,y,z) (((x)&(y))|((~x)&(z)))
 #define JRY_BL_MD5_G(x,y,z) (((x)&(z))|((y)&(~z)))
 #define JRY_BL_MD5_H(x,y,z) ((x)^(y)^(z))
@@ -95,3 +96,4 @@ void jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsi
 		i = 0;
 	memcpy(&buffer[index],&input[i],len-i);
 }
+#endif

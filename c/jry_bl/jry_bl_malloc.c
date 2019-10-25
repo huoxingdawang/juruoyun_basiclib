@@ -8,6 +8,7 @@
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_malloc.h"
+#if JRY_BL_MALLOC_ENABLE==1
 void* jry_bl_malloc(size_t size)
 {
 	return malloc(size);
@@ -40,3 +41,4 @@ void* jry_bl_free(void * p)
 {
 	free(p);
 }
+#endif

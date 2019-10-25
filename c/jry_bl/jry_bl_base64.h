@@ -9,7 +9,10 @@
    See the Mulan PSL v1 for more details.*/
 #ifndef __JRY_BL_BASE64_H
 #define __JRY_BL_BASE64_H
+#include "jry_bl_base64_config.h"
+#if JRY_BL_BASE64_ENABLE==1
 #include "jry_bl_string.h"
 void jry_bl_base64_encode(jry_bl_string *this,jry_bl_string *result);
 void jry_bl_base64_decode(jry_bl_string *this,jry_bl_string *result);
+#endif
 #endif
