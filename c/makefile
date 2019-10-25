@@ -46,18 +46,21 @@ string:jry_bl/jry_bl_string
 	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
 
 #jry_bl
-jry_bl/jry_bl_aes:jry_bl/jry_bl_string
+jry_bl/jry_bl_aes:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_aes.o jry_bl$(H)jry_bl_aes.c
 jry_bl/jry_bl_array:jry_bl/jry_bl_exception jry_bl/jry_bl_malloc
 	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_array.o jry_bl$(H)jry_bl_array.c
-jry_bl/jry_bl_base64:jry_bl/jry_bl_string
+jry_bl/jry_bl_base64:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_base64.o jry_bl$(H)jry_bl_base64.c	
-jry_bl/jry_bl_exception:
+jry_bl/jry_bl_exception:jry_bl/jry_bl_ying 
 	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_exception.o jry_bl$(H)jry_bl_exception.c	
-jry_bl/jry_bl_malloc:
+jry_bl/jry_bl_malloc:jry_bl/jry_bl_ying 
 	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_malloc.o jry_bl$(H)jry_bl_malloc.c
-jry_bl/jry_bl_md5:jry_bl/jry_bl_string
+jry_bl/jry_bl_md5:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_md5.o jry_bl$(H)jry_bl_md5.c
-jry_bl/jry_bl_string:jry_bl/jry_bl_exception jry_bl/jry_bl_malloc
+jry_bl/jry_bl_string:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc
 	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.c
-	
+jry_bl/jry_bl_var:
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_var.o jry_bl$(H)jry_bl_var.c
+jry_bl/jry_bl_ying:
+	$(CC) -c -std=c99 -lm -o tmp$(H)jry_bl$(H)jry_bl_ying.o jry_bl$(H)jry_bl_ying.c	

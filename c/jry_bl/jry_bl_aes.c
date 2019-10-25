@@ -7,9 +7,6 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-   
-   
-//https://blog.csdn.net/qq_35522513/article/details/83743538
 #include "jry_bl_aes.h"
 #if JRY_BL_AES_128_ENABLE==1
 const unsigned char jry_bl_aes_sbox[] =

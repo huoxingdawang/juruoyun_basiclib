@@ -7,18 +7,13 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JRY_BL_YING_H
-#define __JRY_BL_YING_H
-#include "jry_bl_ying_config.h"
+#ifndef __JRY_BL_YING_CONFIG_H
+#define __JRY_BL_YING_CONFIG_H
+#define JRY_BL_YING_ENABLE		1
 #if JRY_BL_YING_ENABLE==1
-#ifndef NULL
-	#define NULL 0
-#endif
-#ifndef false
-	#define false 0
-#endif
-#ifndef true
-	#define true 1
-#endif
+
+
+
+
 #endif
 #endif

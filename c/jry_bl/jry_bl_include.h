@@ -18,6 +18,7 @@
 #include "jry_bl_malloc.h"
 #include "jry_bl_md5.h"
 #include "jry_bl_string.h"
+#include "jry_bl_var.h"
 #include "jry_bl_ying.h"
 
 
