@@ -10,9 +10,13 @@
 #ifndef __JRY_BL_STRING_CONFIG_H
 #define __JRY_BL_STRING_CONFIG_H
 
+#define JRY_BL_STRING_ENABLE		1
+
+#if JRY_BL_STRING_ENABLE==1
 #define JRY_BL_STRING_BASIC_LENGTH	1024							//步进长度
 #define JRY_BL_STRING_USE_STDIO 	1								//是否依赖<stdio.h>
 #define JRY_BL_STRING_USE_STDARG	1								//是否依赖<stdio.h>
 
 typedef unsigned long long 			jry_bl_string_size_type;		//字符串长度类型
+#endif
 #endif

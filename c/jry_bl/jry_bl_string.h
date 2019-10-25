@@ -9,10 +9,11 @@
    See the Mulan PSL v1 for more details.*/
 #ifndef __JRY_BL_STRING_H
 #define __JRY_BL_STRING_H
+#include "jry_bl_string_config.h"
+#if JRY_BL_STRING_ENABLE==1
 
 #include "jry_bl_ying.h"
 #include "jry_bl_exception.h"
-#include "jry_bl_string_config.h"
 #include "jry_bl_malloc.h"
 #include <math.h>
 #if JRY_BL_STRING_USE_STDIO==1
@@ -91,4 +92,5 @@ void					jry_bl_string_views							(FILE * file,int n,...);
 #define					jry_bl_string_if_small(x,y) 				(jry_bl_string_space_ship(x,y)<0)
 #define					jry_bl_string_if_equal_small(x,y)			(jry_bl_string_space_ship(x,y)<=0)
 #define					jry_bl_string_if_equal_big(x,y) 			(jry_bl_string_space_ship(x,y)>=0)
+#endif
 #endif

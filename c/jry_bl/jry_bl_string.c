@@ -8,6 +8,7 @@
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_string.h"
+#if JRY_BL_STRING_ENABLE==1
 inline void 	jry_bl_string_init	(jry_bl_string *this)			{this->len=this->size=0;this->s=NULL;this->light_copy=false;}
 inline void 	jry_bl_string_free	(jry_bl_string *this)			{if(!this->light_copy)jry_bl_free(this->s);this->len=this->size=0;this->s=NULL;this->light_copy=false;}
 inline unsigned char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
@@ -28,7 +29,7 @@ inline unsigned char jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_ty
 		return this->s[i]=a;
 	jry_bl_exception("ERR try to get set long");	
 }
-inline void jry_bl_string_clear(jry_bl_string *this){this->len=0;}
+inline void jry_bl_string_clear(jry_bl_string *this){this->len=0;if(this->light_copy)this->size=0,this->s=NULL,this->light_copy=false;}
 void jry_bl_string_parse(jry_bl_string *this)
 {
 	if(this->light_copy)
@@ -121,16 +122,16 @@ void jry_bl_string_equal_long_double_length(jry_bl_string *this,long double in,u
 		ji=(ji<<3)+(ji<<1),i++;
 	jry_bl_string_add_unsigned_long_long(this,((unsigned long long)((in*ji+0.5)/10)));
 }
-inline void	jry_bl_string_equal_string				(jry_bl_string *this,jry_bl_string *in)						{jry_bl_string_clear(this);jry_bl_string_add_string(this,in);}
-inline void jry_bl_string_equal_string_light		(jry_bl_string *this,jry_bl_string *in)						{jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=true;}
-inline void jry_bl_string_equal_string_light_move	(jry_bl_string *this,jry_bl_string *in)						{jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=in->light_copy;in->light_copy=true;}
+inline void	jry_bl_string_equal_string				(jry_bl_string *this,jry_bl_string *in)								{jry_bl_string_clear(this);jry_bl_string_add_string(this,in);}
+inline void jry_bl_string_equal_string_light		(jry_bl_string *this,jry_bl_string *in)								{jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=true;}
+inline void jry_bl_string_equal_string_light_move	(jry_bl_string *this,jry_bl_string *in)								{jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=in->light_copy;in->light_copy=true;}
 inline void	jry_bl_string_equal_char_pointer		(jry_bl_string *this,unsigned char *in)								{jry_bl_string_clear(this);jry_bl_string_add_char_pointer(this,in);}
 inline void	jry_bl_string_equal_char_pointer_length	(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len)	{jry_bl_string_clear(this);jry_bl_string_add_char_pointer_length(this,in,len);}
 inline void	jry_bl_string_equal_char				(jry_bl_string *this,unsigned char in)								{jry_bl_string_clear(this);jry_bl_string_add_char(this,in);}
-inline void	jry_bl_string_equal_long_long			(jry_bl_string *this,long long in)							{jry_bl_string_clear(this);jry_bl_string_add_long_long(this,in);}
-inline void	jry_bl_string_equal_unsigned_long_long	(jry_bl_string *this,unsigned long long in)					{jry_bl_string_clear(this);jry_bl_string_add_unsigned_long_long(this,in);}
-inline void	jry_bl_string_equal_long_double			(jry_bl_string *this,long double in)						{jry_bl_string_clear(this);jry_bl_string_add_long_double(this,in);}
-inline void	jry_bl_string_equal_long_double_len		(jry_bl_string *this,long double in,unsigned char l)		{jry_bl_string_clear(this);jry_bl_string_add_long_double_len(this,in,l);}
+inline void	jry_bl_string_equal_long_long			(jry_bl_string *this,long long in)									{jry_bl_string_clear(this);jry_bl_string_add_long_long(this,in);}
+inline void	jry_bl_string_equal_unsigned_long_long	(jry_bl_string *this,unsigned long long in)							{jry_bl_string_clear(this);jry_bl_string_add_unsigned_long_long(this,in);}
+inline void	jry_bl_string_equal_long_double			(jry_bl_string *this,long double in)								{jry_bl_string_clear(this);jry_bl_string_add_long_double(this,in);}
+inline void	jry_bl_string_equal_long_double_len		(jry_bl_string *this,long double in,unsigned char l)				{jry_bl_string_clear(this);jry_bl_string_add_long_double_len(this,in,l);}
 char jry_bl_string_space_ship(jry_bl_string *this,jry_bl_string *that)
 {
 	if(this->s==that->s)
@@ -279,4 +280,5 @@ inline void	jry_bl_string_views(FILE * file,int n,...)
 		jry_bl_string_view_ex(va_arg(valist,jry_bl_string*),file,"views",i);
 	va_end(valist);	
 }
+#endif
 #endif
