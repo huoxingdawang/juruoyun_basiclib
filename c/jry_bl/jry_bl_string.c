@@ -14,20 +14,17 @@ inline void 	jry_bl_string_free	(jry_bl_string *this)			{if(!this->light_copy)jr
 inline unsigned char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
 {
 	if(i<0)
-		jry_bl_exception("ERR try to get too short");
+		return 0;
 	if(i<this->len)
 		return this->s[i];
-	if(i<this->size)
-		return 0;
-	jry_bl_exception("ERR try to get too long");	
+	return 0;
 }
 inline unsigned char jry_bl_string_set(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a)
 {
 	if(i<0)
-		jry_bl_exception("ERR try to set too short");
-	if(i<this->size)
-		return this->s[i]=a;
-	jry_bl_exception("ERR try to get set long");	
+		return 0;
+	jry_bl_string_extend(this,i);
+	return this->s[i]=a;
 }
 inline void jry_bl_string_clear(jry_bl_string *this){this->len=0;if(this->light_copy)this->size=0,this->s=NULL,this->light_copy=false;}
 void jry_bl_string_parse(jry_bl_string *this)
@@ -41,12 +38,12 @@ void jry_bl_string_parse(jry_bl_string *this)
 	if(s!=NULL)
 		this->s=s,this->size=size;
 }
-void jry_bl_string_extend(jry_bl_string *this,jry_bl_string_size_type size)
+inline void jry_bl_string_extend(jry_bl_string *this,jry_bl_string_size_type size)
 {
-	if(this->light_copy)
-		jry_bl_exception("ERR memory error");
 	if(size>this->size)
 	{
+		if(this->light_copy)
+			jry_bl_exception("ERR memory error");
 //		printf("\n\textend\n");
 		this->size=(ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
 		unsigned char * s=(this->s==NULL?(unsigned char *)jry_bl_malloc(this->size):(unsigned char *)jry_bl_realloc(this->s,this->size));
@@ -210,9 +207,14 @@ void jry_bl_string_from_json_start(jry_bl_string *this,jry_bl_string *in,jry_bl_
 		jry_bl_string_clear(this);
 }
 #if JRY_BL_STRING_USE_STDIO==1
+/*#include <time.h>*/
 inline void jry_bl_string_print(jry_bl_string *this,FILE * file)
 {
-	for(jry_bl_string_size_type i=0;i<this->len;fputc(this->s[i++],file));
+	register jry_bl_string_size_type i=0;
+	/*clock_t __start=clock();*/
+	i+=fwrite(this->s+i,1<<10,(this->len-i)>>10,file)<<10;
+	for(;i<this->len;fputc(this->s[i++],file));
+	/*fprintf(stderr,"\n\nUse Time:%fs\n",((double)(clock()-__start)/CLOCKS_PER_SEC));*/
 }
 void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a)
 {
@@ -226,20 +228,23 @@ void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a)
 }
 void jry_bl_string_add_file(jry_bl_string *this,FILE * file)
 {
+	/*clock_t __start=clock();*/
 	fseek(file,0L,SEEK_END);
 	register unsigned char c;
 	register jry_bl_string_size_type size=ftell(file),i=0;
-	jry_bl_string_extend(this,this->size+size);
+	jry_bl_string_extend(this,this->len+size);
 	fseek(file,0L,SEEK_SET);
+	i+=fread(this->s+this->len+i,1<<10,(size-i)>>10,file)<<10;this->len+=i;
 	while(i<size)
 		++i,jry_bl_string_add_char(this,fgetc(file));
+	/*fprintf(stderr,"\n\nUse Time:%fs\n",((double)(clock()-__start)/CLOCKS_PER_SEC));*/
 }
 void jry_bl_string_add_file_end_by(jry_bl_string *this,FILE * file,unsigned char end)
 {
 	fseek(file,0L,SEEK_END);
 	register unsigned char c;
 	register jry_bl_string_size_type size=ftell(file),i=0;
-	jry_bl_string_extend(this,this->size+size);
+	jry_bl_string_extend(this,this->len+size);
 	fseek(file,0L,SEEK_SET);
 	while(i<size&&((c=fgetc(file))!=end))
 		++i,jry_bl_string_add_char(this,c);
