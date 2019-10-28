@@ -13,7 +13,7 @@ ifeq ($(shell uname),Linux)
 else
 	H = \\
 endif
-all:aes array base64 json md5 string
+all:aes array base64 json md5 string var
 init:
 	mkdir tmp
 	mkdir tmp$(H)examples
@@ -44,6 +44,9 @@ md5:jry_bl/jry_bl_md5
 string:jry_bl/jry_bl_string
 	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)string.o examples$(H)string.c
 	$(CC) -o exes$(H)string tmp$(H)examples$(H)string.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o -lm
+var:jry_bl/jry_bl_var
+	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)var.o examples$(H)var.c	
+	$(CC) -o exes$(H)var tmp$(H)examples$(H)var.o tmp$(H)jry_bl$(H)jry_bl_string.o tmp$(H)jry_bl$(H)jry_bl_exception.o tmp$(H)jry_bl$(H)jry_bl_malloc.o tmp$(H)jry_bl$(H)jry_bl_var.o -lm
 
 #jry_bl
 jry_bl/jry_bl_aes:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string

@@ -11,6 +11,7 @@
 #define __JRY_BL_VAR_CONFIG_H
 #define JRY_BL_VAR_ENABLE		1
 #if JRY_BL_VAR_ENABLE==1
+#define JRY_BL_VAR_USE_STDARG	1								//是否依赖<stdarg.h>
 
 
 
