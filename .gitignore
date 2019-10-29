@@ -1,2 +1,6 @@
-*.o
-*.exe
+*/tmp/**/*.o
+*/exes/*
+*/testfiles/*.out
+*/testfiles/*.ans
+*/testfiles/*.html
+*/testfiles/*.jpg

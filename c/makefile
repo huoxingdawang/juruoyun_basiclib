@@ -10,21 +10,23 @@
 CC = gcc
 ifeq ($(shell uname),Linux)
 	H = /
+	rm = rm -f
 else
 	H = \\
+	rm = del
 endif
 all:aes array base64 json md5 string var
+clean:
+	$(rm) tmp$(H)*.o /s
+	$(rm) exes$(H)* /s /Q
+	$(rm) testfiles$(H)*.out /s
+	$(rm) testfiles$(H)*.ans /s
+	$(rm) testfiles$(H)*.html /s
 init:
 	mkdir tmp
 	mkdir tmp$(H)examples
 	mkdir tmp$(H)jry_bl
 	mkdir exes
-clean:
-	del tmp\*.o /s
-	del exes\*.exe /s
-	del testfiles\*.out /s
-	del testfiles\*.ans /s
-	del testfiles\*.html /s
 #examples
 aes:jry_bl/jry_bl_aes jry_bl/jry_bl_base64
 	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)aes.o examples$(H)aes.c

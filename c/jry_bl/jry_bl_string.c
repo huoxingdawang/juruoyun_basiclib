@@ -221,7 +221,7 @@ void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a)
 	if(a>=0)
 		fprintf(file,"jry_bl_string %s %d:\n",str,a);
 	else
-		fprintf(file,"jry_bl_string:\n",str,a);
+		fprintf(file,"jry_bl_string:\n");
 	fprintf(file,"\tlc:\t%d\n\tlen:\t%lld\n\tsize:\t%lld\n\ts:\t",this->light_copy,(long long)this->len,(long long)this->size);
 	jry_bl_string_print(this,file);
 	fputc('\n',file);
