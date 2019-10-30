@@ -24,7 +24,7 @@ int main()
 	
 	
 	fp=fopen("testfiles/test.html","wb");fputs("<img style=\"max-height:100%;max-width:100%;\" src=\"data:image/jpg;base64,",fp);jry_bl_string_print(&s2,fp);fputs("\"/>",fp);fclose(fp);
-	fp=fopen("testfiles/ljt.out","wb");fputs("PICTURE="filename",THUMBNAIL=",fp);jry_bl_string_print(&s2,fp);fputs(";",fp);fclose(fp);
+	fp=fopen(filename".ljt.out","wb");fputs("PICTURE="filename",THUMBNAIL=",fp);jry_bl_string_print(&s2,fp);fputs(";",fp);fclose(fp);
 	
 	
 	jry_bl_string_frees(5,&s1,&s2,&s3,&s4,&s5);

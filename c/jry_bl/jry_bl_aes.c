@@ -54,7 +54,6 @@ unsigned char	jry_bl_aes_128_ffmul			(unsigned char a,unsigned char b);
 void jry_bl_aes_128_extend_key(unsigned char* key,jry_bl_aes_128_extened_key w)
 {
 	unsigned char rc[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36};
-
 	for(register unsigned char r=0;r<4;r++)
 		for(register unsigned char c=0;c<4;c++)
 			w[0][r][c]=key[r+c*4];
@@ -81,7 +80,7 @@ void jry_bl_aes_128_encode_16(jry_bl_aes_128_extened_key w,unsigned char* a,unsi
 	unsigned char state[4][4];
 	for(register unsigned char r=0;r<4;r++)
 		for(register unsigned char c=0;c<4;c++)
-			state[r][c]=a[c*4+r];
+			state[r][c]=a[(c<<2)+r];
 	jry_bl_aes_128_add_round_key(state,w[0]);
 	for(register unsigned char i=1;i<=10;i++)
 	{
@@ -90,19 +89,15 @@ void jry_bl_aes_128_encode_16(jry_bl_aes_128_extened_key w,unsigned char* a,unsi
 				state[r][c]=jry_bl_aes_sbox[state[r][c]];
 		unsigned char t[4];
 		for(register unsigned char r=1;r<4;r++)
-		{
-			for(register unsigned char c=0;c<4;c++)
-				t[c]=state[r][(c+r)%4];
-			for(register unsigned char c=0;c<4;c++)
-				state[r][c]=t[c];
-		}		
+			t[0]=state[r][(0+r)%4],t[1]=state[r][(1+r)%4],t[2]=state[r][(2+r)%4],t[3]=state[r][(3+r)%4],state[r][0]=t[0],state[r][1]=t[1],state[r][2]=t[2],state[r][3]=t[3];
 		if(i!=10)
 			for(register unsigned char c=0;c<4;c++)
 			{
-				for(register unsigned char r=0;r<4;r++)
-					t[r]=state[r][c];
-				for(register unsigned char r=0;r<4;r++)
-					state[r][c]=jry_bl_aes_128_ffmul(0x02,t[r])^jry_bl_aes_128_ffmul(0x03,t[(r+1)%4])^jry_bl_aes_128_ffmul(0x01,t[(r+2)%4])^jry_bl_aes_128_ffmul(0x01,t[(r+3)%4]);
+				t[0]=state[0][c],t[1]=state[1][c],t[2]=state[2][c],t[3]=state[3][c];
+				state[0][c]=jry_bl_aes_128_ffmul(0x02,t[0])^jry_bl_aes_128_ffmul(0x03,t[1])^jry_bl_aes_128_ffmul(0x01,t[2])^jry_bl_aes_128_ffmul(0x01,t[3]);
+				state[1][c]=jry_bl_aes_128_ffmul(0x02,t[1])^jry_bl_aes_128_ffmul(0x03,t[2])^jry_bl_aes_128_ffmul(0x01,t[3])^jry_bl_aes_128_ffmul(0x01,t[0]);
+				state[2][c]=jry_bl_aes_128_ffmul(0x02,t[2])^jry_bl_aes_128_ffmul(0x03,t[3])^jry_bl_aes_128_ffmul(0x01,t[0])^jry_bl_aes_128_ffmul(0x01,t[1]);
+				state[3][c]=jry_bl_aes_128_ffmul(0x02,t[3])^jry_bl_aes_128_ffmul(0x03,t[0])^jry_bl_aes_128_ffmul(0x01,t[1])^jry_bl_aes_128_ffmul(0x01,t[2]);
 			}			
 		jry_bl_aes_128_add_round_key(state,w[i]);
 	}
@@ -152,8 +147,13 @@ inline void jry_bl_aes_128_add_round_key(unsigned char state[][4], unsigned char
 }
 inline unsigned char jry_bl_aes_128_ffmul(unsigned char a,unsigned char b)
 {
+#if JRY_BL_AES_128_FFMUL_CACHE_ENABLE==1	
+	static unsigned char result[256][256];
+	if(result[a][b]!=0)
+		return result[a][b];
+#endif	
 	unsigned char bw[4];
-	register unsigned char res=0;
+	register unsigned char res=0,aa=a;
 	bw[0]=b;
 	for(register unsigned char i=1;i<4;i++)
 	{
@@ -164,7 +164,11 @@ inline unsigned char jry_bl_aes_128_ffmul(unsigned char a,unsigned char b)
 	for(register unsigned char i=0;i<4;i++)
 		if((a>>i)&0x01)
 			res^=bw[i];
+#if JRY_BL_AES_128_FFMUL_CACHE_ENABLE==1	
+	return result[aa][b]=res;
+#else
 	return res;
+#endif	
 }
 #if JRY_BL_AES_128_ECB_ENABLE==1
 void jry_bl_aes_128_ecb_encode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out)
