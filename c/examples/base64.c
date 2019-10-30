@@ -1,5 +1,4 @@
 #include "main.h"
-#define filename "testfiles/test5.jpg"
 int main()
 {
 	jry_bl_string s1,s2,s3,s4,s5;jry_bl_string_inits(5,&s1,&s2,&s3,&s4,&s5);	

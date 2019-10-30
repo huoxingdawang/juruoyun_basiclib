@@ -4,3 +4,5 @@
 */testfiles/*.ans
 */testfiles/*.html
 */testfiles/*.jpg
+*/testfiles/*.png
+*.log

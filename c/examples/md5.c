@@ -9,9 +9,9 @@ int main()
 	jry_bl_string_clear(&s1);jry_bl_string_clear(&s2);jry_bl_string_clear(&s3);
 */
 	FILE * fp;
-	fp=fopen("testfiles/test.txt","rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);	
+	fp=fopen(filename,"rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);
 	jry_bl_md5(&s1,&s2);
-	system("php testfiles/md5.php \"testfiles/test.txt\"");
+	system("php testfiles/md5.php "filename);
 	fp=fopen("testfiles/md5_encode.out","wb");jry_bl_string_print(&s2,fp);fclose(fp);
 	fp=fopen("testfiles/md5_encode.ans","rb");jry_bl_string_equal_file(&s4,fp);fclose(fp);
 	printf("With php encode:%s\n",((jry_bl_string_space_ship(&s2,&s4)==0)?"YES":"NO"));

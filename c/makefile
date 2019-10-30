@@ -27,6 +27,13 @@ init:
 	mkdir tmp$(H)examples
 	mkdir tmp$(H)jry_bl
 	mkdir exes
+run:
+	exes$(H)aes
+	exes$(H)array
+	exes$(H)md5
+	exes$(H)string
+	exes$(H)var
+	exes$(H)base64
 #examples
 aes:jry_bl/jry_bl_aes jry_bl/jry_bl_base64
 	$(CC) -c -std=c99 -lm -o tmp$(H)examples$(H)aes.o examples$(H)aes.c
