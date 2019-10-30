@@ -1,4 +1,5 @@
 #include "main.h"
+#include <time.h>
 int main()
 {
 	jry_bl_string s1,s2,s3,s4,s5;jry_bl_string_inits(5,&s1,&s2,&s3,&s4,&s5);	
@@ -11,11 +12,17 @@ int main()
 
 	FILE * fp;
 	fp=fopen(filename,"rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);
+	clock_t __start=clock();	
 	jry_bl_base64_encode(&s1,&s2);
+	fprintf(stderr,"\nBASE64 encode used time:%fs\n",((double)(clock()-__start)/CLOCKS_PER_SEC));		
+	__start=clock();	
 	jry_bl_base64_decode(&s2,&s3);
+	fprintf(stderr,"\nBASE64 decode used time:%fs\n",((double)(clock()-__start)/CLOCKS_PER_SEC));		
 	fp=fopen("testfiles/base64_encode.out","wb");jry_bl_string_print(&s2,fp);fclose(fp);
 	fp=fopen("testfiles/base64_decode.out","wb");jry_bl_string_print(&s3,fp);fclose(fp);
+	__start=clock();	
 	system("php testfiles/base64.php "filename);
+	fprintf(stderr,"\nPHP BASE64 used time:%fs\n",((double)(clock()-__start)/CLOCKS_PER_SEC));		
 	fp=fopen("testfiles/base64_encode.ans","rb");jry_bl_string_equal_file(&s4,fp);fclose(fp);
 	fp=fopen("testfiles/base64_decode.ans","rb");jry_bl_string_equal_file(&s5,fp);fclose(fp);
 	printf("With self:%s\n",((jry_bl_string_space_ship(&s1,&s3)==0)?"YES":"NO"));
