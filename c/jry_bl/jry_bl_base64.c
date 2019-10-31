@@ -15,14 +15,14 @@ void jry_bl_base64_encode(jry_bl_string *this,jry_bl_string *result)
 	jry_bl_string_extend(result,jry_bl_string_get_length(result)+len/3*4+4);
 	const char table[]= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; 
 	while(len>2)
-		jry_bl_string_add_char(result,table[(unsigned char)jry_bl_string_get(this,i+0)>>2]),jry_bl_string_add_char(result,table[(((unsigned char)jry_bl_string_get(this,i+0)&0x03)<<4)+((unsigned char)jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[(((unsigned char)jry_bl_string_get(this,i+1)&0x0f)<<2)+((unsigned char)jry_bl_string_get(this,i+2)>>6)]),jry_bl_string_add_char(result,table[(unsigned char)jry_bl_string_get(this,i+2)&0x3f]),i+=3,len-=3;
+		jry_bl_string_add_char1(result,table[(unsigned char)jry_bl_string_get1(this,i)>>2]),jry_bl_string_add_char1(result,table[(((unsigned char)jry_bl_string_get1(this,i)&0x03)<<4)+((unsigned char)jry_bl_string_get1(this,i+1)>>4)]),jry_bl_string_add_char1(result,table[(((unsigned char)jry_bl_string_get1(this,i+1)&0x0f)<<2)+((unsigned char)jry_bl_string_get1(this,i+2)>>6)]),jry_bl_string_add_char1(result,table[(unsigned char)jry_bl_string_get1(this,i+2)&0x3f]),i+=3,len-=3;
 	if(len>0)
 	{
-		jry_bl_string_add_char(result,table[(unsigned char)jry_bl_string_get(this,i+0)>>2]);
+		jry_bl_string_add_char1(result,table[(unsigned char)jry_bl_string_get1(this,i)>>2]);
 		if(len%3==1)
-			jry_bl_string_add_char(result,table[((unsigned char)jry_bl_string_get(this,i+0)&0x03)<<4]),jry_bl_string_add_char(result,'='),jry_bl_string_add_char(result,'=');
+			jry_bl_string_add_char1(result,table[((unsigned char)jry_bl_string_get1(this,i)&0x03)<<4]),jry_bl_string_add_char1(result,'='),jry_bl_string_add_char1(result,'=');
 		else if(len%3==2)
-			jry_bl_string_add_char(result,table[(((unsigned char)jry_bl_string_get(this,i+0)&0x03)<<4)+((unsigned char)jry_bl_string_get(this,i+1)>>4)]),jry_bl_string_add_char(result,table[((unsigned char)jry_bl_string_get(this,i+1)&0x0f)<<2]),jry_bl_string_add_char(result,'=');
+			jry_bl_string_add_char1(result,table[(((unsigned char)jry_bl_string_get1(this,i)&0x03)<<4)+((unsigned char)jry_bl_string_get1(this,i+1)>>4)]),jry_bl_string_add_char1(result,table[((unsigned char)jry_bl_string_get1(this,i+1)&0x0f)<<2]),jry_bl_string_add_char1(result,'=');
 	}
 }
 
@@ -34,10 +34,10 @@ void jry_bl_base64_decode(jry_bl_string *this,jry_bl_string *result)
 	jry_bl_string_extend(result,jry_bl_string_get_length(result)+len/4*3+3);
 	while(len-->0)
 	{
-		ch=jry_bl_string_get(this,i);
+		ch=jry_bl_string_get1(this,i);
 		if(ch=='=')
 		{
-			if(jry_bl_string_get(this,i+1)!='='&&(i%4)==1)
+			if(jry_bl_string_get1(this,i+1)!='='&&(i%4)==1)
 				return jry_bl_string_clear(result);
 			continue;
 		}
@@ -50,13 +50,13 @@ void jry_bl_base64_decode(jry_bl_string *this,jry_bl_string *result)
 				bin=ch<<2;
 				break;
 			case 1:
-				bin|=ch>>4,jry_bl_string_add_char(result,bin),bin=(ch&0x0f)<<4;
+				bin|=ch>>4,jry_bl_string_add_char1(result,bin),bin=(ch&0x0f)<<4;
 				break;
 			case 2:
-				bin|=ch>>2,jry_bl_string_add_char(result,bin),bin=(ch&0x03)<<6;
+				bin|=ch>>2,jry_bl_string_add_char1(result,bin),bin=(ch&0x03)<<6;
 				break;
 			case 3:
-				bin|=ch,jry_bl_string_add_char(result,bin);
+				bin|=ch,jry_bl_string_add_char1(result,bin);
 				break;
 		}
 		i++;

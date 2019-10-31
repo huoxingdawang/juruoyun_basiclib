@@ -62,13 +62,21 @@ long double				jry_bl_string_get_long_double				(jry_bl_string *this);
 long long				jry_bl_string_get_long_long_start			(jry_bl_string *this,jry_bl_string_size_type start);
 unsigned long long		jry_bl_string_get_unsigned_long_long_start	(jry_bl_string *this,jry_bl_string_size_type start);
 long double				jry_bl_string_get_long_double_start			(jry_bl_string *this,jry_bl_string_size_type start);
-unsigned char* 			jry_bl_string_get_char_pointer				(jry_bl_string *this);
-char 					jry_bl_string_if_light_copy					(jry_bl_string *this);
+
 void					jry_bl_string_to_json						(jry_bl_string *this,jry_bl_string *result);
 void					jry_bl_string_from_json						(jry_bl_string *this,jry_bl_string *in);
 void					jry_bl_string_from_json_start				(jry_bl_string *this,jry_bl_string *in,jry_bl_string_size_type start);
-jry_bl_string_size_type jry_bl_string_get_length					(jry_bl_string *this);
-jry_bl_string_size_type jry_bl_string_get_size						(jry_bl_string *this);
+
+
+
+
+
+#define jry_bl_string_if_light_copy(this)					((this)->light_copy)
+#define jry_bl_string_get_char_pointer(this)				((this)->s)
+#define jry_bl_string_get_length(this) 						((this)->len)
+#define jry_bl_string_get_size(this) 						((this)->size)
+#define	jry_bl_string_add_char1(this,in)					(this)->s[(this)->len]=(in),++(this)->len
+#define	jry_bl_string_get1(this,i)							(((i)<0||(i)>=(this)->len)?0:(this)->s[(i)])
 
 #if JRY_BL_STRING_USE_STDIO==1
 void 					jry_bl_string_print							(jry_bl_string *this,FILE * file);

@@ -1,8 +1,8 @@
 */tmp/**/*.o
 */exes/*
-*/testfiles/*.out
-*/testfiles/*.ans
-*/testfiles/*.html
-*/testfiles/*.jpg
-*/testfiles/*.png
+*/testfiles/**/*.out
+*/testfiles/**/*.ans
+*/testfiles/**/*.html
+*/testfiles/**/*.jpg
+*/testfiles/**/*.png
 *.log

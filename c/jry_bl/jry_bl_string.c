@@ -75,7 +75,7 @@ void jry_bl_string_add_char_pointer_length(jry_bl_string *this,unsigned char *in
 		this->s[this->len+i]=in[i];
 	this->len=(this->len+len);	
 }
-void jry_bl_string_add_char(jry_bl_string *this,unsigned char in)
+inline void jry_bl_string_add_char(jry_bl_string *this,unsigned char in)
 {
 	jry_bl_string_extend(this,this->len+1);
 	this->s[this->len++]=in;
@@ -182,10 +182,6 @@ long double	jry_bl_string_get_long_double_start(jry_bl_string *this,jry_bl_strin
 	for(c=this->s[i],y=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;y=(y<<3)+(y<<1)+c-'0',ji=(ji<<3)+(ji<<1),++i);
 	return f?-(x+((long double)y/ji)):(x+((long double)y/ji));
 }
-char 	jry_bl_string_if_light_copy				(jry_bl_string *this){return this->light_copy;}
-unsigned char* 	jry_bl_string_get_char_pointer			(jry_bl_string *this){this->s[this->len]=0;return this->s;}
-jry_bl_string_size_type 	jry_bl_string_get_length				(jry_bl_string *this){return this->len;}
-jry_bl_string_size_type 	jry_bl_string_get_size					(jry_bl_string *this){return this->size;}
 void jry_bl_string_to_json(jry_bl_string *this,jry_bl_string *result)
 {
 	jry_bl_string_extend(this,result->len+this->len+2);

@@ -24,22 +24,20 @@ int main()
 	jry_bl_string_equal_char_pointer(&s2,"12312312");		jry_bl_string_view(&s2,stderr);
 	printf("Space ship test:%d\n",jry_bl_string_space_ship(&s1,&s2));
 //	´óÎÄ¼ş¶ÁĞ´²âÊÔ
-/*
 	FILE * fp;
 	jry_bl_string_equal_char_pointer(&s1,"juruoyun");
-	for(int i=0;i<26;i++)
+	for(int i=0;i<25;i++)
 		jry_bl_string_add_string(&s1,&s1);
 	printf("Copy finish\n");
 	fp=fopen ("testfiles/test2.txt","w");
 	jry_bl_string_print(&s1,fp);
 	fclose(fp);
-	printf("Write %d Byte data\n",s1.len);
+	printf("Write %lld Byte data\n",s1.len);
 
 	fp=fopen ("testfiles/test2.txt","r");
 	jry_bl_string_equal_file(&s1,fp);
 	fclose(fp);
-	printf("Read %d Byte data\n",s1.len);
-*/	
+	printf("Read %lld Byte data\n",s1.len);
 	jry_bl_string_equal_char_pointer(&s1,"12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_long_long(&s1));
 	jry_bl_string_equal_char_pointer(&s1,"-12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_long_long(&s1));
 	jry_bl_string_equal_char_pointer(&s1,"-12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_unsigned_long_long(&s1));
