@@ -11,7 +11,10 @@
 #define __JRY_BL_AES_H
 #include "jry_bl_aes_config.h"
 #if JRY_BL_AES_128_ENABLE==1
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
 #include "jry_bl_string.h"
+#include "jry_bl_ying.h"
 typedef unsigned char jry_bl_aes_128_extened_key[11][4][4];
 void	jry_bl_aes_128_extend_key		(unsigned char* key,jry_bl_aes_128_extened_key w);
 #if JRY_BL_AES_128_ECB_ENABLE==1

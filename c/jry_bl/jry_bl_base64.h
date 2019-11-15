@@ -11,7 +11,10 @@
 #define __JRY_BL_BASE64_H
 #include "jry_bl_base64_config.h"
 #if JRY_BL_BASE64_ENABLE==1
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
 #include "jry_bl_string.h"
+#include "jry_bl_ying.h"
 void jry_bl_base64_encode(jry_bl_string *this,jry_bl_string *result);
 void jry_bl_base64_decode(jry_bl_string *this,jry_bl_string *result);
 #endif

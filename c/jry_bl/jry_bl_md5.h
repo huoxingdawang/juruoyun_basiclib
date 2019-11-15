@@ -11,7 +11,10 @@
 #define __JRY_BL_MD5_H
 #include "jry_bl_md5_config.h"
 #if JRY_BL_MD5_ENABLE==1
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
 #include "jry_bl_string.h"
+#include "jry_bl_ying.h"
 void jry_bl_md5(jry_bl_string* this,jry_bl_string* out);
 #endif
 #endif

@@ -10,18 +10,4 @@
 #include "jry_bl_array.h"
 #if JRY_BL_ARRAY_ENABLE==1
 
-
-template <typename jry_bl_array_load>
-jry_bl_array<jry_bl_array_load>::jry_bl_array()		{start=end=NULL;}
-template <typename jry_bl_array_load>
-jry_bl_array<jry_bl_array_load>::~jry_bl_array()	{}
-
-
-#if JRY_BL_ARRAY_USE_IOSTREAM==1
-template <typename jry_bl_array_load>
-void jry_bl_array<jry_bl_array_load>::view(std::ostream& out)
-{
-	out<<'\n';
-}
-#endif
 #endif

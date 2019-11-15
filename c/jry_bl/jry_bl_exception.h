@@ -11,9 +11,19 @@
 #define __JRY_BL_EXCEPTION_H
 #include "jry_bl_exception_config.h"
 #if JRY_BL_EXCEPTION_ENABLE==1
+#include "jry_bl_ying.h"
+#define JRY_BL_ERROR_NO_ERROR		1000000
+#define JRY_BL_ERROR_NULL_POINTER	1000001
+#define JRY_BL_ERROR_MEMORY_ERROR	1000002
+#define JRY_BL_ERROR_TYPE_ERROR		1000003
+
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #define jry_bl_exception(x) __jry_bl_exception(__FILE__,__LINE__,x)
-void __jry_bl_exception(const char * file,int line,const char* x);
+void __jry_bl_exception(const char * file,int line,int x);
 #endif
 #endif

@@ -9,10 +9,10 @@
    See the Mulan PSL v1 for more details.*/
 #ifndef __JRY_BL_VAR_CONFIG_H
 #define __JRY_BL_VAR_CONFIG_H
-#define JRY_BL_VAR_ENABLE		1
-#if JRY_BL_VAR_ENABLE==1
-#define JRY_BL_VAR_USE_STDARG	1								//是否依赖<stdarg.h>
+#include "jry_bl_config.h"
 
+#if JRY_BL_VAR_ENABLE==1
+typedef unsigned char jry_bl_var_type_type;
 
 
 

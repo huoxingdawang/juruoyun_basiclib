@@ -9,6 +9,9 @@
    See the Mulan PSL v1 for more details.*/
 #ifndef __JRY_BL_MD5_CONFIG_H
 #define __JRY_BL_MD5_CONFIG_H
-#define JRY_BL_MD5_ENABLE 1
+#include "jry_bl_config.h"
+#if JRY_BL_MD5_ENABLE==1
 
+
+#endif
 #endif

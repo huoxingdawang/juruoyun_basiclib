@@ -20,5 +20,17 @@
 #ifndef true
 	#define true 1
 #endif
+#define JRY_BL_PRINT_COLORFUL_BLACK			0
+#define JRY_BL_PRINT_COLORFUL_RED			1
+#define JRY_BL_PRINT_COLORFUL_LIGHT_GREEN	2
+#define JRY_BL_PRINT_COLORFUL_YELLOW		3
+#define JRY_BL_PRINT_COLORFUL_PURPLE		4
+#define JRY_BL_PRINT_COLORFUL_GREEN			5
+#define JRY_BL_PRINT_COLORFUL_WHITE			6
+#ifdef __linux__
+	#define jry_bl_print_colorful(f,s,bc,fc) fprintf(f,"\x1b[%d;%dm%s\x1b[0m",bc+40,fc+30,s)
+#else
+	#define jry_bl_print_colorful(f,s,bc,fc) fprintf(f,s)
+#endif
 #endif
 #endif

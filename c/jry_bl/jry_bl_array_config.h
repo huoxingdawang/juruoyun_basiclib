@@ -10,8 +10,9 @@
 #ifndef __JRY_BL_ARRAY_CONFIG_H
 #define __JRY_BL_ARRAY_CONFIG_H
 
-#define JRY_BL_ARRAY_ENABLE 0
+#if JRY_BL_ARRAY_ENABLE==1
 
 
 
+#endif
 #endif

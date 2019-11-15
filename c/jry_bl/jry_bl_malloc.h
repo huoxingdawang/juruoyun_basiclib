@@ -11,12 +11,14 @@
 #define __JRY_BL_MALLOC_H
 #include "jry_bl_malloc_config.h"
 #if JRY_BL_MALLOC_ENABLE==1
+#include "jry_bl_exception.h"
+#include "jry_bl_ying.h"
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
 void* jry_bl_malloc(size_t size);
 void* jry_bl_realloc(void* ptr,size_t size);
-void* jry_bl_free(void * p);
+void jry_bl_free(void * p);
 size_t jry_bl_malloc_size(void* ptr);
 #endif
 #endif

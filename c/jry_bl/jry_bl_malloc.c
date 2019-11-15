@@ -15,7 +15,8 @@ void* jry_bl_malloc(size_t size)
 }
 size_t jry_bl_malloc_size(void* ptr)
 {
-#ifdef __linux__	
+	if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+#ifdef __linux__
 	return malloc_usable_size(ptr);
 #else
 	return _msize(ptr);
@@ -23,6 +24,7 @@ size_t jry_bl_malloc_size(void* ptr)
 }
 void* jry_bl_realloc(void* ptr,size_t size)
 {
+	if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 #ifdef __linux__	
 	return realloc(ptr,size);
 #else
@@ -37,8 +39,9 @@ void* jry_bl_realloc(void* ptr,size_t size)
 	return p;
 #endif
 }
-void* jry_bl_free(void * p)
+void jry_bl_free(void * p)
 {
+	if(p==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	free(p);
 }
 #endif

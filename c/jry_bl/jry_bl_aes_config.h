@@ -9,11 +9,12 @@
    See the Mulan PSL v1 for more details.*/
 #ifndef __JRY_BL_AES_CONFIG_H
 #define __JRY_BL_AES_CONFIG_H
-#define JRY_BL_AES_128_ENABLE 1
+#include "jry_bl_config.h"
+#if JRY_BL_AES_128_ENABLE==1
 #define JRY_BL_AES_128_CBC_ENABLE 1
 #define JRY_BL_AES_128_ECB_ENABLE 1
 #define JRY_BL_AES_128_FFMUL_CACHE_ENABLE 0
 #define JRY_BL_AES_128_FFMUL_TABLE_ENABLE 1
-
+#endif
 
 #endif

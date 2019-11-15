@@ -9,9 +9,28 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_exception.h"
 #if JRY_BL_EXCEPTION_ENABLE==1
-void __jry_bl_exception(const char * file,int line,const char* x)
+void __jry_bl_exception(const char * file,int line,int x)
 {
-	fprintf(stderr,"\nAt %s %d\n%s\n",file,line,x);
+	fprintf(stderr,"-------------------------------------------------------\n");
+	jry_bl_print_colorful(stderr,"ERROR!",JRY_BL_PRINT_COLORFUL_BLACK,JRY_BL_PRINT_COLORFUL_RED);
+	fprintf(stderr,"\nAT\tfile:");
+	jry_bl_print_colorful(stderr,file,JRY_BL_PRINT_COLORFUL_BLACK,JRY_BL_PRINT_COLORFUL_YELLOW);
+	fprintf(stderr,"\n  \tline:");
+	char ss[40];
+	sprintf(ss,"%d",line);jry_bl_print_colorful(stderr,ss,JRY_BL_PRINT_COLORFUL_BLACK,JRY_BL_PRINT_COLORFUL_YELLOW);
+	fprintf(stderr,"\nBecause:");
+	sprintf(ss,"%d",x);jry_bl_print_colorful(stderr,ss,JRY_BL_PRINT_COLORFUL_BLACK,JRY_BL_PRINT_COLORFUL_YELLOW);
+	switch(x)
+	{
+		case JRY_BL_ERROR_NO_ERROR		:fprintf(stderr,":JRY_BL_ERROR_NO_ERROR")		;break;
+		case JRY_BL_ERROR_NULL_POINTER	:fprintf(stderr,":JRY_BL_ERROR_NULL_POINTER")	;break;
+		case JRY_BL_ERROR_MEMORY_ERROR	:fprintf(stderr,":JRY_BL_ERROR_MEMORY_ERROR")	;break;
+		
+	}
+	
+	
+	
+	putc('\n',stderr);
 	exit(0);
 }
 #endif

@@ -12,25 +12,10 @@
 #include "jry_bl_array_config.h"
 #if JRY_BL_ARRAY_ENABLE==1
 
-template <typename jry_bl_array_load>
-class jry_bl_array
-{
-	public:
-		struct element
-		{
-			element *nxt,*pre;
-			jry_bl_array_load load;			
-		};	
-	private:
-		element *start,*end;
-	public:
-		jry_bl_array								();
-		~jry_bl_array								();
-	
-#if JRY_BL_ARRAY_USE_IOSTREAM==1
-		void 			view					(std::ostream& out=std::cout);
-#endif
 
-};
+
+
+
+
 #endif
 #endif

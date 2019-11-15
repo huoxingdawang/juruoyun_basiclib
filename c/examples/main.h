@@ -2,5 +2,6 @@
 #define __MAIN_H
 #include "include.h"
 #include <stdlib.h>
-#define filename "testfiles/test2.txt"
+
+#define filename "testfiles\\cqm\\cqm13.jpg"
 #endif
