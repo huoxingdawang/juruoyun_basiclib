@@ -23,6 +23,9 @@
 #if JRY_BL_EXCEPTION_ENABLE==1
 #include "jry_bl_exception.h"
 #endif
+#if JRY_BL_LINK_LIST_ENABLE==1
+#include "jry_bl_link_list.h"
+#endif
 #if JRY_BL_MALLOC_ENABLE==1
 #include "jry_bl_malloc.h"
 #endif

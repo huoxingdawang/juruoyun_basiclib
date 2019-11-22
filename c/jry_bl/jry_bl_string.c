@@ -291,6 +291,7 @@ inline void	jry_bl_string_clears(int n,...)
 		jry_bl_string_clear(va_arg(valist,jry_bl_string*));
 	va_end(valist);	
 }
+#if JRY_BL_USE_STDIO==1
 inline void	jry_bl_string_views(FILE * file,int n,...)
 {
 	va_list valist;
@@ -298,6 +299,19 @@ inline void	jry_bl_string_views(FILE * file,int n,...)
 	for(int i=0;i<n;i++)
 		jry_bl_string_view_ex(va_arg(valist,jry_bl_string*),file,"views",i);
 	va_end(valist);	
+}
+#endif
+#endif
+#if JRY_BL_LINK_LIST_ENABLE==1
+#include "jry_bl_link_list.h"
+jry_bl_string_size_type jry_bl_string_cut_start(jry_bl_string *this,jry_bl_link_list *list,char cut,jry_bl_string_size_type start)
+{
+	if(this==NULL||list==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	jry_bl_var var;jry_bl_var_init(&var);jry_bl_var_init_as(&var,JRY_BL_VAR_TYPE_STRING);
+	for(;start<this->len;++start,jry_bl_link_list_add_var_light_move(list,&var),jry_bl_string_clear(jry_bl_var_get_string(&var)))
+		for(;start<this->len&&this->s[start]!=cut;jry_bl_string_add_char(jry_bl_var_get_string(&var),this->s[start]),++start);
+	jry_bl_var_free(&var);
+	return (start);	
 }
 #endif
 #endif

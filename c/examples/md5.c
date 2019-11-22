@@ -2,13 +2,10 @@
 #include <time.h>
 int main()
 {
+	printf("--------------------------------" __FILE__ "--------------------------------\n");
+	jry_bl_malloc_init();	
+	
 	jry_bl_string s1,s2,s3,s4,s5;jry_bl_string_inits(5,&s1,&s2,&s3,&s4,&s5);	
-
-/*
-	jry_bl_string_equal_char_pointer(&s1,"juruoyun");	jry_bl_string_view(&s1,stderr);
-	jry_bl_md5(&s1,&s2);								jry_bl_string_view(&s2,stderr);
-	jry_bl_string_clear(&s1);jry_bl_string_clear(&s2);jry_bl_string_clear(&s3);
-*/
 	FILE * fp;
 	fp=fopen(filename,"rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);
 	clock_t __start=clock();	
@@ -20,5 +17,6 @@ int main()
 	printf("With php encode:%s\n",((jry_bl_string_space_ship(&s2,&s4)==0)?"YES":"NO"));
 	
 	jry_bl_string_frees(5,&s1,&s2,&s3,&s4,&s5);
-    return 0;
+	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size); 
+	return 0;
 }

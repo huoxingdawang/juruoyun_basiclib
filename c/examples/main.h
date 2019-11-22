@@ -3,5 +3,5 @@
 #include "include.h"
 #include <stdlib.h>
 
-#define filename "testfiles\\cqm\\cqm13.jpg"
+#define filename "testfiles\\test.txt"
 #endif

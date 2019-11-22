@@ -9,8 +9,12 @@
    See the Mulan PSL v1 for more details.*/   
 #include "jry_bl_var.h"
 #if JRY_BL_VAR_ENABLE==1
-#define	jry_bl_var_get_flag_pointer(this) 	((this)->f.f.flags&(1<<0))
-#define	jry_bl_var_set_flag_pointer(this,a)	((this)->f.f.flags&=~(1<<0)),((this)->f.f.flags|=(1<<0))
+#if JRY_BL_STRING_ENABLE==1	
+#include "jry_bl_string.h"
+#endif
+#if JRY_BL_LINK_LIST_ENABLE==1	
+#include "jry_bl_link_list.h"
+#endif
 inline void jry_bl_var_init(jry_bl_var *this)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -30,6 +34,10 @@ inline void jry_bl_var_init_as(jry_bl_var *this,jry_bl_var_type_type type)
 	else if(this->f.f.type==JRY_BL_VAR_TYPE_STRING)
 		this->data.str=jry_bl_malloc(sizeof(jry_bl_string)),jry_bl_string_init(this->data.str);
 #endif
+#if JRY_BL_LINK_LIST_ENABLE==1	
+	else if(this->f.f.type==JRY_BL_VAR_TYPE_LINK_LIST)
+		this->data.lst=jry_bl_malloc(sizeof(jry_bl_link_list)),jry_bl_link_list_init(this->data.lst);
+#endif
 }
 void jry_bl_var_free(jry_bl_var *this)
 {
@@ -40,27 +48,33 @@ void jry_bl_var_free(jry_bl_var *this)
 	else if(this->f.f.type==JRY_BL_VAR_TYPE_STRING)
 		jry_bl_string_free(this->data.str),((jry_bl_var_get_flag_pointer(this))?(1):(jry_bl_free(this->data.str)));
 #endif
+#if JRY_BL_LINK_LIST_ENABLE==1	
+	else if(this->f.f.type==JRY_BL_VAR_TYPE_LINK_LIST)
+		jry_bl_link_list_free(this->data.lst),((jry_bl_var_get_flag_pointer(this))?(1):(jry_bl_free(this->data.lst)));
+#endif
 	this->f.f.type=JRY_BL_VAR_TYPE_NULL;
 	this->f.f.flags=0;
 }
 void jry_bl_var_equal(jry_bl_var *this,jry_bl_var *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(this->f.f.type<=8)
+	jry_bl_var_init_as(this,that->f.f.type);
+	if(that->f.f.type<=8)
 	{
-		jry_bl_var_free(this);
 		this->f.f.type=that->f.f.type;
 		memcpy(&this->data,&that->data,sizeof that->data);
 	}	
 	else
 	{
-		if(this->f.f.type!=JRY_BL_VAR_TYPE_NULL)
-			jry_bl_var_free(this);		
-		if(this->f.f.type==JRY_BL_VAR_TYPE_VAR)
+		if(that->f.f.type==JRY_BL_VAR_TYPE_VAR)
 			jry_bl_var_equal(this->data.var,that->data.var);
-#if JRY_BL_STRING_ENABLE==1	
-		else if(this->f.f.type==JRY_BL_VAR_TYPE_STRING)
+#if JRY_BL_STRING_ENABLE==1
+		else if(that->f.f.type==JRY_BL_VAR_TYPE_STRING)
 			jry_bl_string_equal_string(this->data.str,that->data.str);
+#endif		
+#if JRY_BL_LINK_LIST_ENABLE==1
+//		else if(that->f.f.type==JRY_BL_VAR_TYPE_LINK_LIST)
+//			jry_bl_link_list_equal(this->data.lst,that->data.lst);
 #endif		
 		this->f.ff=that->f.ff;
 	}
@@ -68,21 +82,23 @@ void jry_bl_var_equal(jry_bl_var *this,jry_bl_var *that)
 void jry_bl_var_equal_light(jry_bl_var *this,jry_bl_var *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(this->f.f.type<=8)
+	jry_bl_var_init_as(this,that->f.f.type);
+	if(that->f.f.type<=8)
 	{
-		jry_bl_var_free(this);
 		this->f.f.type=that->f.f.type;
 		memcpy(&this->data,&that->data,sizeof that->data);
 	}	
 	else
 	{
-		if(this->f.f.type!=JRY_BL_VAR_TYPE_NULL)
-			jry_bl_var_free(this);		
-		if(this->f.f.type==JRY_BL_VAR_TYPE_VAR)
+		if(that->f.f.type==JRY_BL_VAR_TYPE_VAR)
 			jry_bl_var_equal_light(this->data.var,that->data.var);
 #if JRY_BL_STRING_ENABLE==1	
-		else if(this->f.f.type==JRY_BL_VAR_TYPE_STRING)
+		else if(that->f.f.type==JRY_BL_VAR_TYPE_STRING)
 			jry_bl_string_equal_string_light(this->data.str,that->data.str);
+#endif
+#if JRY_BL_LINK_LIST_ENABLE==1
+//		else if(that->f.f.type==JRY_BL_VAR_TYPE_LINK_LIST)
+//			jry_bl_link_list_equal_light(this->data.lst,that->data.lst);
 #endif		
 		this->f.ff=that->f.ff;
 	}
@@ -90,22 +106,24 @@ void jry_bl_var_equal_light(jry_bl_var *this,jry_bl_var *that)
 void jry_bl_var_equal_light_move(jry_bl_var *this,jry_bl_var *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(this->f.f.type<=8)
+	jry_bl_var_init_as(this,that->f.f.type);
+	if(that->f.f.type<=8)
 	{
-		jry_bl_var_free(this);
 		this->f.f.type=that->f.f.type;
 		memcpy(&this->data,&that->data,sizeof that->data);
 	}	
 	else
 	{
-		if(this->f.f.type!=JRY_BL_VAR_TYPE_NULL)
-			jry_bl_var_free(this);		
-		if(this->f.f.type==JRY_BL_VAR_TYPE_VAR)
+		if(that->f.f.type==JRY_BL_VAR_TYPE_VAR)
 			jry_bl_var_equal_light_move(this->data.var,that->data.var);
 #if JRY_BL_STRING_ENABLE==1	
-		else if(this->f.f.type==JRY_BL_VAR_TYPE_STRING)
+		else if(that->f.f.type==JRY_BL_VAR_TYPE_STRING)
 			jry_bl_string_equal_string_light_move(this->data.str,that->data.str);
-#endif		
+#endif
+#if JRY_BL_LINK_LIST_ENABLE==1
+//		else if(that->f.f.type==JRY_BL_VAR_TYPE_LINK_LIST)
+//			jry_bl_link_list_equal_light_move(this->data.lst,that->data.lst);
+#endif			
 		this->f.ff=that->f.ff;
 	}
 }
@@ -122,6 +140,9 @@ char jry_bl_var_space_ship(jry_bl_var *this,jry_bl_var *that)
 #if JRY_BL_STRING_ENABLE==1	
 			case JRY_BL_VAR_TYPE_STRING				:return jry_bl_string_space_ship(this->data.str,that->data.str);break;
 #endif
+#if JRY_BL_LINK_LIST_ENABLE==1	
+//			case JRY_BL_LINK_LIST_ENABLE			:return jry_bl_link_list_space_ship(this->data.lst,that->data.lst);break;
+#endif
 			default:
 				return 0;
 		}		
@@ -130,13 +151,11 @@ char jry_bl_var_space_ship(jry_bl_var *this,jry_bl_var *that)
 	else
 		return (this->f.f.type>that->f.f.type)?1:-1;
 }
-
 #if JRY_BL_STRING_ENABLE==1	
 inline void				jry_bl_var_equal_string				(jry_bl_var *this,jry_bl_string *that){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string(this->data.str,that);}
 inline void				jry_bl_var_equal_string_light		(jry_bl_var *this,jry_bl_string *that){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string_light(this->data.str,that);}
 inline void				jry_bl_var_equal_string_light_move	(jry_bl_var *this,jry_bl_string *that){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string_light_move(this->data.str,that);}
 inline void				jry_bl_var_equal_string_pointer		(jry_bl_var *this,jry_bl_string *that){jry_bl_var_free(this);jry_bl_var_set_flag_pointer(this,1);this->f.f.type=JRY_BL_VAR_TYPE_STRING,this->data.str=that;}
-inline jry_bl_string*	jry_bl_var_get_string				(jry_bl_var *this){if(this->f.f.type!=JRY_BL_VAR_TYPE_STRING)jry_bl_exception(JRY_BL_ERROR_TYPE_ERROR);return this->data.str;}
 inline void				jry_bl_string_equal_var				(jry_bl_string *this,jry_bl_var *that){jry_bl_var_turn(that,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string(this,that->data.str);}
 inline void				jry_bl_string_equal_var_light		(jry_bl_string *this,jry_bl_var *that){jry_bl_var_turn(that,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string_light(this,that->data.str);}
 inline void				jry_bl_string_equal_var_light_move	(jry_bl_string *this,jry_bl_var *that){jry_bl_var_turn(that,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string_light_move(this,that->data.str);}
@@ -285,6 +304,7 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,jry_bl_strin
 		}
 		else if(c=='[')
 		{
+			
 			return i;
 		}
 		else if(c=='-')

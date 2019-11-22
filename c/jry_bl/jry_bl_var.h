@@ -13,11 +13,12 @@
 #if JRY_BL_VAR_ENABLE==1
 #include "jry_bl_exception.h"
 #include "jry_bl_malloc.h"
-#include "jry_bl_string.h"
 #include "jry_bl_ying.h"
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
+#define	jry_bl_var_get_flag_pointer(this) 	((this)->f.f.flags&(1<<0))
+#define	jry_bl_var_set_flag_pointer(this,a)	((this)->f.f.flags&=~(1<<0)),((this)->f.f.flags|=(1<<0))
 
 #define JRY_BL_VAR_TYPE_NULL				0
 #define JRY_BL_VAR_TYPE_LONG_LONG			1
@@ -30,7 +31,14 @@
 #define JRY_BL_VAR_TYPE_VAR					8
 #if JRY_BL_STRING_ENABLE==1
 #define JRY_BL_VAR_TYPE_STRING				9
+#include "jry_bl_string.h"
 #endif
+#if JRY_BL_LINK_LIST_ENABLE==1
+#define JRY_BL_VAR_TYPE_LINK_LIST			10
+typedef struct __jry_bl_link_list jry_bl_link_list;
+#endif
+
+
 typedef struct __jry_bl_var
 {
 	union
@@ -43,6 +51,9 @@ typedef struct __jry_bl_var
 		struct __jry_bl_var* var;
 #if JRY_BL_STRING_ENABLE==1
 		jry_bl_string *str;
+#endif
+#if JRY_BL_STRING_ENABLE==1
+		jry_bl_link_list *lst;
 #endif
 	}data;
 	union
@@ -89,7 +100,7 @@ void					jry_bl_var_equal_string						(jry_bl_var *this,jry_bl_string *that);
 void					jry_bl_var_equal_string_light				(jry_bl_var *this,jry_bl_string *that);
 void					jry_bl_var_equal_string_light_move			(jry_bl_var *this,jry_bl_string *that);
 void					jry_bl_var_equal_string_pointer				(jry_bl_var *this,jry_bl_string *that);
-jry_bl_string*			jry_bl_var_get_string						(jry_bl_var *this);
+#define 				jry_bl_var_get_string(this)					((this)->data.str)
 void					jry_bl_string_equal_var						(jry_bl_string *this,jry_bl_var *that);
 void					jry_bl_string_equal_var_light				(jry_bl_string *this,jry_bl_var *that);
 void					jry_bl_string_equal_var_light_move			(jry_bl_string *this,jry_bl_var *that);

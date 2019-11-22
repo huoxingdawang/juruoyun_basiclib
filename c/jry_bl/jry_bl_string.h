@@ -22,7 +22,7 @@
 #include <stdarg.h>
 #endif
 
-typedef struct
+typedef struct __jry_bl_string
 {
 	jry_bl_string_size_type	len;
 	jry_bl_string_size_type	size;
@@ -97,5 +97,11 @@ void					jry_bl_string_clears								(int n,...);
 void					jry_bl_string_views									(FILE * file,int n,...);
 #endif
 #endif
+#if JRY_BL_LINK_LIST_ENABLE==1
+typedef struct __jry_bl_link_list jry_bl_link_list;
+jry_bl_string_size_type	jry_bl_string_cut_start								(jry_bl_string *this,jry_bl_link_list *list,char cut,jry_bl_string_size_type start);
+#define					jry_bl_string_cut(x,y,z)							jry_bl_string_cut_start(x,y,z,0)
+#endif
+
 #endif	
 #endif

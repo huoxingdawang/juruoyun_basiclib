@@ -1,13 +1,9 @@
 #include "main.h"
-void print(unsigned char* state)
-{
-	for(int i=0;i<64;i++)
-		printf("%s%X ",state[i]>15 ? "" : "0",state[i]);
-	printf("\n");
-}
 #include <time.h>
 int main()
 {
+	printf("--------------------------------" __FILE__ "--------------------------------\n");
+	jry_bl_malloc_init();
 	FILE * fp;
 	unsigned char key[]="0CoJUm6Qyw8W8jud";
 	jry_bl_string s1,s2,s3,s4,s5,s6,s7;jry_bl_string_inits(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);	
@@ -50,5 +46,6 @@ int main()
 	printf("AES 128 CBC with self:%s\n",((jry_bl_string_space_ship(&s1,&s3)==0)?"YES":"NO"));
 	printf("AES 128 CBC with php encode:%s\n",((jry_bl_string_space_ship(&s6,&s4)==0)?"YES":"NO"));
 	printf("AES 128 CBC with php decode:%s\n",((jry_bl_string_space_ship(&s3,&s5)==0)?"YES":"NO"));
-	jry_bl_string_frees(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);	
+	jry_bl_string_frees(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);
+	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);	
 }

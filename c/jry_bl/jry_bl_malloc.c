@@ -9,8 +9,18 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_malloc.h"
 #if JRY_BL_MALLOC_ENABLE==1
+#if JRY_BL_MALLOC_DEBUG_MODE==1
+size_t __jry_bl_malloced_size=0;
+void jry_bl_malloc_init()
+{
+	
+}
+#endif
 void* jry_bl_malloc(size_t size)
 {
+#if JRY_BL_MALLOC_DEBUG_MODE==1
+	__jry_bl_malloced_size+=size;
+#endif
 	return malloc(size);
 }
 size_t jry_bl_malloc_size(void* ptr)
@@ -26,6 +36,10 @@ void* jry_bl_realloc(void* ptr,size_t size)
 {
 	if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 #ifdef __linux__	
+#if JRY_BL_MALLOC_DEBUG_MODE==1
+	__jry_bl_malloced_size-=jry_bl_malloc_size(ptr);
+	__jry_bl_malloced_size+=size;
+#endif		
 	return realloc(ptr,size);
 #else
 	void * p=jry_bl_malloc(size);
@@ -42,6 +56,9 @@ void* jry_bl_realloc(void* ptr,size_t size)
 void jry_bl_free(void * p)
 {
 	if(p==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+#if JRY_BL_MALLOC_DEBUG_MODE==1
+	__jry_bl_malloced_size-=jry_bl_malloc_size(p);
+#endif	
 	free(p);
 }
 #endif

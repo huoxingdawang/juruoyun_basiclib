@@ -7,11 +7,12 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JRY_BL_MALLOC_CONFIG_H
-#define __JRY_BL_MALLOC_CONFIG_H
+#ifndef __JRY_BL_LINK_LIST_CONFIG_H
+#define __JRY_BL_LINK_LIST_CONFIG_H
 #include "jry_bl_config.h"
-#if JRY_BL_MALLOC_ENABLE==1
-#define JRY_BL_MALLOC_DEBUG_MODE 1
+#if JRY_BL_LINK_LIST_ENABLE==1
+typedef unsigned long long jry_bl_link_list_size_type;
+
 
 #endif
 #endif
