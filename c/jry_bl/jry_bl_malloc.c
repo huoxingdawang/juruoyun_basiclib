@@ -19,9 +19,12 @@ void jry_bl_malloc_init()
 void* jry_bl_malloc(size_t size)
 {
 #if JRY_BL_MALLOC_DEBUG_MODE==1
-	__jry_bl_malloced_size+=size;
-#endif
+	void *ptr=malloc(size);
+	__jry_bl_malloced_size+=jry_bl_malloc_size(ptr);
+	return ptr;
+#else
 	return malloc(size);
+#endif
 }
 size_t jry_bl_malloc_size(void* ptr)
 {
@@ -38,9 +41,12 @@ void* jry_bl_realloc(void* ptr,size_t size)
 #ifdef __linux__	
 #if JRY_BL_MALLOC_DEBUG_MODE==1
 	__jry_bl_malloced_size-=jry_bl_malloc_size(ptr);
-	__jry_bl_malloced_size+=size;
-#endif		
+	ptr=realloc(ptr,size);
+	__jry_bl_malloced_size+=jry_bl_malloc_size(ptr);
+	return ptr;
+#else
 	return realloc(ptr,size);
+#endif		
 #else
 	void * p=jry_bl_malloc(size);
 	if(p==NULL)

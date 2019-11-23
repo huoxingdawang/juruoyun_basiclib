@@ -13,7 +13,7 @@
 #define JRY_BL_MD5_G(x,y,z) (((x)&(z))|((y)&(~z)))
 #define JRY_BL_MD5_H(x,y,z) ((x)^(y)^(z))
 #define JRY_BL_MD5_I(x,y,z) ((y)^((x)|(~z)))
-#define JRY_BL_MD5_ROTATE_LEFT(num,n) ((((unsigned long long)(num))<<(n))|(((unsigned long long)(num))>>(32-(n))))
+#define JRY_BL_MD5_ROTATE_LEFT(num,n) ((((jry_bl_uint64)(num))<<(n))|(((jry_bl_uint64)(num))>>(32-(n))))
 #define JRY_BL_MD5_FF(a,b,c,d,x,s,ac) {(a)+=JRY_BL_MD5_F((b),(c),(d))+(x)+ac;(a)=JRY_BL_MD5_ROTATE_LEFT((a),(s));(a)+=(b);}
 #define JRY_BL_MD5_GG(a,b,c,d,x,s,ac) {(a)+=JRY_BL_MD5_G((b),(c),(d))+(x)+ac;(a)=JRY_BL_MD5_ROTATE_LEFT((a),(s));(a)+=(b);}
 #define JRY_BL_MD5_HH(a,b,c,d,x,s,ac) {(a)+=JRY_BL_MD5_H((b),(c),(d))+(x)+ac;(a)=JRY_BL_MD5_ROTATE_LEFT((a),(s));(a)+=(b);}
@@ -31,19 +31,16 @@ void jry_bl_md5(jry_bl_string* this,jry_bl_string* out)
 	jry_bl_string_extend(out,jry_bl_string_get_length(out)+32);
 	jry_bl_md5_init(jry_bl_string_get_char_pointer(this),len,state,count,buffer);
 	unsigned char bits[8];
-	unsigned int  oldstate[4],oldcount[2],index,padlen;
-	memcpy(oldstate,state,16);
-	memcpy(oldcount,count,8);
+	unsigned int  index,padlen;
 	jry_bl_md5_encode(count,bits,8);
 	index=(unsigned int)((count[0]>>3)&0x3f);
 	padlen=(index<56)?(56-index):(120-index);
 	jry_bl_md5_init(padding,padlen,state,count,buffer);
 	jry_bl_md5_init(bits,8,state,count,buffer);
 	jry_bl_md5_encode(state,digest,16);
-	memcpy(state,oldstate,16);
-	memcpy(count,oldcount,8);
 	for (jry_bl_string_size_type i=0;i<16;++i)
-		jry_bl_string_add_char1(out,jry_bl_md5_hex_humbers[digest[i]/16]),jry_bl_string_add_char1(out,jry_bl_md5_hex_humbers[digest[i]%16]);		
+		jry_bl_string_add_char1(out,jry_bl_md5_hex_humbers[digest[i]>>4]),jry_bl_string_add_char1(out,jry_bl_md5_hex_humbers[digest[i]&15]);		
+	return;
 }
 void jry_bl_md5_transform(unsigned int state[4],const unsigned char block[64])
 {
@@ -78,7 +75,7 @@ void jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsi
 {
 	register unsigned int i,index,partlen;
 	index=(unsigned int)((count[0]>>3)&0x3f);
-	if ((count[0]+=((unsigned int)len<<3))<((unsigned int)len<<3))
+	if((count[0]+=((unsigned int)len<<3))<((unsigned int)len<<3))
 		++count[1];
 	count[1]+=((unsigned int)len>>29);
 	partlen=64-index;

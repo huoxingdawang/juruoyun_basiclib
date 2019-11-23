@@ -11,6 +11,7 @@
 #define __JRY_BL_BASE64_CONFIG_H
 #include "jry_bl_config.h"
 #if JRY_BL_BASE64_ENABLE==1
+#include "jry_bl_ying.h"
 
 #endif
 #endif

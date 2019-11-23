@@ -11,6 +11,7 @@
 #define __JRY_BL_MALLOC_CONFIG_H
 #include "jry_bl_config.h"
 #if JRY_BL_MALLOC_ENABLE==1
+#include "jry_bl_ying.h"
 #define JRY_BL_MALLOC_DEBUG_MODE 1
 
 #endif

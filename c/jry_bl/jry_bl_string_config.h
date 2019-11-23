@@ -11,7 +11,8 @@
 #define __JRY_BL_STRING_CONFIG_H
 #include "jry_bl_config.h"
 #if JRY_BL_STRING_ENABLE==1
+#include "jry_bl_ying.h"
 #define JRY_BL_STRING_BASIC_LENGTH	32								//步进长度
-typedef unsigned long long 			jry_bl_string_size_type;		//字符串长度类型
+typedef jry_bl_uint64 			jry_bl_string_size_type;		//字符串长度类型
 #endif
 #endif

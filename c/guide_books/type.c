@@ -8,4 +8,9 @@ jry_bl_var
 
 jry_bl_string
 jry_bl_string_size_type
-			
+
+jry_bl_pointer_int
+jry_bl_int32
+jry_bl_uint32
+jry_bl_int64
+jry_bl_uint64

@@ -18,7 +18,7 @@
 #include <stdarg.h>
 #endif
 #define	jry_bl_var_get_flag_pointer(this) 	((this)->f.f.flags&(1<<0))
-#define	jry_bl_var_set_flag_pointer(this,a)	((this)->f.f.flags&=~(1<<0)),((this)->f.f.flags|=(1<<0))
+#define	jry_bl_var_set_flag_pointer(this,a)	((this)->f.f.flags&=~(1<<0)),((this)->f.f.flags|=((a)<<0))
 
 #define JRY_BL_VAR_TYPE_NULL				0
 #define JRY_BL_VAR_TYPE_LONG_LONG			1
@@ -43,8 +43,8 @@ typedef struct __jry_bl_var
 {
 	union
 	{
-		long long ll;
-		unsigned long long ull;
+		jry_bl_int64 ll;
+		jry_bl_uint64 ull;
 		double d;
 		char c;
 		void * p;

@@ -9,5 +9,9 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_ying.h"
 #if JRY_BL_YING_ENABLE==1
+inline jry_bl_int64 jry_bl_ceil(long double i)
+{
+	return (((jry_bl_int64)i)==i)?((jry_bl_int64)i):(((jry_bl_int64)i)+1);
+}
 
 #endif

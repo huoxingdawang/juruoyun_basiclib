@@ -13,6 +13,8 @@ jry_bl_exception
 jry_bl_var_get_flag_pointer
 jry_bl_var_set_flag_pointer
 
+jry_bl_link_list_set_flag_light_copy
+jry_bl_link_list_set_flag_light_copy
 jry_bl_link_list_init
 jry_bl_link_list_node_init
 jry_bl_link_list_free
@@ -39,9 +41,14 @@ jry_bl_link_list_if_equal
 jry_bl_link_list_if_small
 jry_bl_link_list_if_equal_small
 jry_bl_link_list_if_equal_big
-jry_bl_link_list_copy
-jry_bl_link_list_copy_light
-jry_bl_link_list_copy_light_move
+jry_bl_link_list_equal
+jry_bl_link_list_equal_light
+jry_bl_link_list_equal_light_move
+jry_bl_link_list_to_json
+jry_bl_link_list_from_json
+jry_bl_link_list_from_json_start
+jry_bl_link_list_merge
+jry_bl_link_list_merge_light
 jry_bl_link_list_view
 jry_bl_link_list_view_ex
 jry_bl_link_list_inits
@@ -107,6 +114,7 @@ jry_bl_string_from_json
 jry_bl_string_add_char1
 jry_bl_string_add_double
 jry_bl_string_find_char
+jry_bl_string_delete_1
 jry_bl_string_print
 jry_bl_string_view
 jry_bl_string_view_ex

@@ -14,7 +14,6 @@
 #include "jry_bl_exception.h"
 #include "jry_bl_malloc.h"
 #include "jry_bl_ying.h"
-#include <math.h>
 #if JRY_BL_USE_STDIO==1
 #include <stdio.h>
 #endif
@@ -40,20 +39,20 @@ void					jry_bl_string_add_string							(jry_bl_string *this,jry_bl_string *in);
 void					jry_bl_string_add_char_pointer						(jry_bl_string *this,unsigned char *in);
 void					jry_bl_string_add_char_pointer_length				(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len);
 void					jry_bl_string_add_char								(jry_bl_string *this,unsigned char in);
-void					jry_bl_string_add_long_long							(jry_bl_string *this,long long in);
-void					jry_bl_string_add_unsigned_long_long				(jry_bl_string *this,unsigned long long in);
+void					jry_bl_string_add_long_long							(jry_bl_string *this,jry_bl_int64 in);
+void					jry_bl_string_add_unsigned_long_long				(jry_bl_string *this,jry_bl_uint64 in);
 void					jry_bl_string_add_double_length						(jry_bl_string *this,double in,unsigned char len);
 void					jry_bl_string_equal_string_light					(jry_bl_string *this,jry_bl_string *in);
 void					jry_bl_string_equal_string_light_move				(jry_bl_string *this,jry_bl_string *in);
 char					jry_bl_string_space_ship							(jry_bl_string *this,jry_bl_string *that);
-long long				jry_bl_string_get_long_long_start					(jry_bl_string *this,jry_bl_string_size_type *start);
-unsigned long long		jry_bl_string_get_unsigned_long_long_start			(jry_bl_string *this,jry_bl_string_size_type *start);
+jry_bl_int64			jry_bl_string_get_long_long_start					(jry_bl_string *this,jry_bl_string_size_type *start);
+jry_bl_uint64			jry_bl_string_get_unsigned_long_long_start			(jry_bl_string *this,jry_bl_string_size_type *start);
 double					jry_bl_string_get_double_start						(jry_bl_string *this,jry_bl_string_size_type *start);
 void					jry_bl_string_to_json								(jry_bl_string *this,jry_bl_string *result);
 jry_bl_string_size_type	jry_bl_string_from_json_start						(jry_bl_string *this,jry_bl_string *in,jry_bl_string_size_type start);
 jry_bl_string_size_type	jry_bl_string_find_char_start						(jry_bl_string *this,unsigned char in,jry_bl_string_size_type start);
-long long				jry_bl_string_get_long_long_start_v					(jry_bl_string *this,jry_bl_string_size_type start);
-unsigned long long		jry_bl_string_get_unsigned_long_long_start_v		(jry_bl_string *this,jry_bl_string_size_type start);
+jry_bl_int64			jry_bl_string_get_long_long_start_v					(jry_bl_string *this,jry_bl_string_size_type start);
+jry_bl_uint64			jry_bl_string_get_unsigned_long_long_start_v		(jry_bl_string *this,jry_bl_string_size_type start);
 double					jry_bl_string_get_double_start_v					(jry_bl_string *this,jry_bl_string_size_type start);
 #define					jry_bl_string_get_long_long(this)					jry_bl_string_get_long_long_start_v(this,0)
 #define					jry_bl_string_get_unsigned_long_long(this)			jry_bl_string_get_unsigned_long_long_start_v(this,0)
@@ -78,8 +77,9 @@ double					jry_bl_string_get_double_start_v					(jry_bl_string *this,jry_bl_stri
 #define					jry_bl_string_equal_char_pointer_length(this,in,len)jry_bl_string_clear(this),jry_bl_string_add_char_pointer_length(this,in,len)
 #define					jry_bl_string_from_json(this,in)					jry_bl_string_from_json_start(this,in,0)
 #define					jry_bl_string_add_char1(this,in)					(this)->s[(this)->len]=(in),++(this)->len
-#define					jry_bl_string_add_double(this,in)					jry_bl_string_add_double_length(this,in,15)
+#define					jry_bl_string_add_double(this,in)					jry_bl_string_add_double_length(this,in,10)
 #define					jry_bl_string_find_char(this,in)					jry_bl_string_find_char_start(this,in,0)
+#define					jry_bl_string_delete_1(this)						((this->len)>0?(--(this)->len):(0));
 #if JRY_BL_USE_STDIO==1
 void 					jry_bl_string_print									(jry_bl_string *this,FILE * file);
 #define					jry_bl_string_view(x,y) 							jry_bl_string_view_ex(x,y,#x,__LINE__)

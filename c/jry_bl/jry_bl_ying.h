@@ -27,10 +27,17 @@
 #define JRY_BL_PRINT_COLORFUL_PURPLE		4
 #define JRY_BL_PRINT_COLORFUL_GREEN			5
 #define JRY_BL_PRINT_COLORFUL_WHITE			6
+typedef int						jry_bl_int32;
+typedef unsigned int	jry_bl_uint32;
+typedef long long				jry_bl_int64;
+typedef unsigned long long	jry_bl_uint64;
 #ifdef __linux__
 	#define jry_bl_print_colorful(f,s,bc,fc) fprintf(f,"\x1b[%d;%dm%s\x1b[0m",bc+40,fc+30,s)
+	typedef jry_bl_uint64 jry_bl_pointer_int;
 #else
 	#define jry_bl_print_colorful(f,s,bc,fc) fprintf(f,s)
+	typedef jry_bl_uint32 jry_bl_pointer_int;
 #endif
+jry_bl_int64 jry_bl_ceil(long double i);
 #endif
 #endif

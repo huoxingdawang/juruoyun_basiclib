@@ -25,6 +25,7 @@ void __jry_bl_exception(const char * file,int line,int x)
 		case JRY_BL_ERROR_NO_ERROR		:fprintf(stderr,":JRY_BL_ERROR_NO_ERROR")		;break;
 		case JRY_BL_ERROR_NULL_POINTER	:fprintf(stderr,":JRY_BL_ERROR_NULL_POINTER")	;break;
 		case JRY_BL_ERROR_MEMORY_ERROR	:fprintf(stderr,":JRY_BL_ERROR_MEMORY_ERROR")	;break;
+		case JRY_BL_ERROR_TYPE_ERROR	:fprintf(stderr,":JRY_BL_ERROR_TYPE_ERROR")		;break;
 		
 	}
 	

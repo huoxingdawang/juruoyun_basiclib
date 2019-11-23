@@ -11,7 +11,8 @@
 #define __JRY_BL_LINK_LIST_CONFIG_H
 #include "jry_bl_config.h"
 #if JRY_BL_LINK_LIST_ENABLE==1
-typedef unsigned long long jry_bl_link_list_size_type;
+#include "jry_bl_ying.h"
+typedef jry_bl_uint64 jry_bl_link_list_size_type;
 
 
 #endif

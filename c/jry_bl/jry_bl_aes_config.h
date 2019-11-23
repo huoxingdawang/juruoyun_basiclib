@@ -11,6 +11,7 @@
 #define __JRY_BL_AES_CONFIG_H
 #include "jry_bl_config.h"
 #if JRY_BL_AES_128_ENABLE==1
+#include "jry_bl_ying.h"
 #define JRY_BL_AES_128_CBC_ENABLE 1
 #define JRY_BL_AES_128_ECB_ENABLE 1
 #define JRY_BL_AES_128_FFMUL_CACHE_ENABLE 0

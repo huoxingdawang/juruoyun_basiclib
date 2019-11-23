@@ -36,7 +36,7 @@ void jry_bl_string_parse(jry_bl_string *this)
 		return;
 	if(this->len==0)
 		return jry_bl_string_free(this);
-	jry_bl_string_size_type size=(ceil((long double)(this->len)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
+	jry_bl_string_size_type size=(jry_bl_ceil((long double)(this->len)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
 	unsigned char * s=(this->s==NULL?(unsigned char *)jry_bl_malloc(size):(unsigned char *)jry_bl_realloc(this->s,size));
 	if(s!=NULL)
 		this->s=s,this->size=size;
@@ -49,7 +49,7 @@ inline void jry_bl_string_extend(jry_bl_string *this,jry_bl_string_size_type siz
 		if(this->light_copy)
 			jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
 //		printf("\n\textend\n");
-		this->size=(ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
+		this->size=(jry_bl_ceil((long double)(size)/JRY_BL_STRING_BASIC_LENGTH))*JRY_BL_STRING_BASIC_LENGTH;
 		unsigned char * s=(this->s==NULL?(unsigned char *)jry_bl_malloc(this->size):(unsigned char *)jry_bl_realloc(this->s,this->size));
 		if(s==NULL)
 			jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
@@ -88,7 +88,7 @@ inline void jry_bl_string_add_char(jry_bl_string *this,unsigned char in)
 	jry_bl_string_extend(this,this->len+1);
 	this->s[this->len++]=in;
 }
-inline void jry_bl_string_add_long_long(jry_bl_string *this,long long in)
+inline void jry_bl_string_add_long_long(jry_bl_string *this,jry_bl_int64 in)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_extend(this,this->len+22);
@@ -96,7 +96,7 @@ inline void jry_bl_string_add_long_long(jry_bl_string *this,long long in)
 		jry_bl_string_add_char(this,'-'),in=-in;
 	jry_bl_string_add_unsigned_long_long(this,in);
 }
-void jry_bl_string_add_unsigned_long_long(jry_bl_string *this,unsigned long long in)
+void jry_bl_string_add_unsigned_long_long(jry_bl_string *this,jry_bl_uint64 in)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(in==0)
@@ -114,17 +114,17 @@ void jry_bl_string_add_double_length(jry_bl_string *this,double in,unsigned char
 	if(len>15)
 		len=15;
 	jry_bl_string_extend(this,this->len+40);
-	register long long inn=in;
+	register jry_bl_int64 inn=in;
 	jry_bl_string_add_long_long(this,inn);
 	jry_bl_string_add_char(this,'.');
 	if(in<0)
 		inn=-inn,in=-in;
 	in-=inn;
-	register unsigned long long ji=10;
+	register jry_bl_uint64 ji=10;
 	register unsigned char i=0;
-	while(i<len&&(in*ji!=(unsigned long long)(in*ji)))
+	while(i<len&&(in*ji!=(jry_bl_uint64)(in*ji)))
 		ji=(ji<<3)+(ji<<1),i++;
-	jry_bl_string_add_unsigned_long_long(this,((unsigned long long)((in*ji+0.5)/10)));
+	jry_bl_string_add_unsigned_long_long(this,((jry_bl_uint64)((in*ji+0.5)/10)));
 }
 inline void jry_bl_string_equal_string_light		(jry_bl_string *this,jry_bl_string *in){if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=true;}
 inline void jry_bl_string_equal_string_light_move	(jry_bl_string *this,jry_bl_string *in){if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);jry_bl_string_free(this);this->len=in->len;this->size=in->size;this->s=in->s;this->light_copy=in->light_copy;in->light_copy=true;}
@@ -142,55 +142,50 @@ char jry_bl_string_space_ship(jry_bl_string *this,jry_bl_string *that)
 			return 1;
 	return 0;
 }
-long long jry_bl_string_get_long_long_start(jry_bl_string *this,jry_bl_string_size_type *start)
+jry_bl_int64 jry_bl_string_get_long_long_start(jry_bl_string *this,jry_bl_string_size_type *start)
 {
 	if(this==NULL||start==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_size_type i=*start; 	
-	if(this->len==0&&start==0)
-		return 0;
 	if(i>=this->len)
 		return 0;
-	register unsigned char c,f;register unsigned long long x=0;
+	register unsigned char c,f;register jry_bl_uint64 x=0;
 	for(f=0;(c=this->s[i])<'0'||c>'9'&&i<this->len;f=c=='-',++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
-	if(start!=0)*start=i;
+	*start=i;
 	return f?-x:x;	
 }
-unsigned long long jry_bl_string_get_unsigned_long_long_start(jry_bl_string *this,jry_bl_string_size_type *start)
+jry_bl_uint64 jry_bl_string_get_unsigned_long_long_start(jry_bl_string *this,jry_bl_string_size_type *start)
 {
 	if(this==NULL||start==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_size_type i=*start; 	
-	if(this->len==0&&i==0)
-		return 0;
 	if(i>=this->len)
 		return 0;
-	register unsigned char c;register unsigned long long x=0;
+	register unsigned char c;register jry_bl_uint64 x=0;
 	for(;(c=this->s[i])<'0'||c>'9'&&i<this->len;++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
-	if(start!=0)*start=i;
+	*start=i;
 	return x;	
 }
 double jry_bl_string_get_double_start(jry_bl_string *this,jry_bl_string_size_type *start)
 {
 	if(this==NULL||start==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_size_type i=*start;
-	if(this->len==0&&i==0)
-		return 0;
 	if(i>=this->len)
 		return 0;
-	register unsigned char c,f;register unsigned long long x=0;
+	register unsigned char c,f;register jry_bl_uint64 x=0;
 	for(f=0;(c=this->s[i])<'0'||c>'9'&&i<this->len;f=c=='-',++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
+	*start=i;
 	if(this->s[i]!='.'||i==this->len)
 		return (f?-x:x);
-	register unsigned long long ji=10,y;++i;
+	register jry_bl_uint64 ji=10,y;++i;
 	for(c=this->s[i],y=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;y=(y<<3)+(y<<1)+c-'0',ji=(ji<<3)+(ji<<1),++i);
-	if(start!=0)*start=i;
+	*start=i;
 	return f?-(x+((long double)y/ji)):(x+((long double)y/ji));
 }
-inline long long			jry_bl_string_get_long_long_start_v			(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_long_long_start(this,&start);};
-inline unsigned long long	jry_bl_string_get_unsigned_long_long_start_v(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_unsigned_long_long_start(this,&start);};
-inline double				jry_bl_string_get_double_start_v		(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_double_start(this,&start);};
+inline jry_bl_int64		jry_bl_string_get_long_long_start_v			(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_long_long_start(this,&start);};
+inline jry_bl_uint64	jry_bl_string_get_unsigned_long_long_start_v(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_unsigned_long_long_start(this,&start);};
+inline double			jry_bl_string_get_double_start_v			(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_double_start(this,&start);};
 void jry_bl_string_to_json(jry_bl_string *this,jry_bl_string *result)
 {
 	if(this==NULL||result==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -236,7 +231,7 @@ void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a)
 		fprintf(file,"jry_bl_string %s %d:\n",str,a);
 	else
 		fprintf(file,"jry_bl_string:\n");
-	fprintf(file,"\tlc:\t%d\n\tlen:\t%lld\n\tsize:\t%lld\n\ts:\t",this->light_copy,(long long)this->len,(long long)this->size);
+	fprintf(file,"\tlc:\t%d\n\tlen:\t%lld\n\tsize:\t%lld\n\ts:\t",this->light_copy,(jry_bl_int64)this->len,(jry_bl_int64)this->size);
 	jry_bl_string_print(this,file);
 	fputc('\n',file);
 }

@@ -32,7 +32,7 @@ int main()
 	jry_bl_string_equal_char_pointer(&s1,"j");
 	jry_bl_string_frees(2,&s2,&s3);	
 	jry_bl_string_extend(&s1,1024*1024*1024);
-	for(int i=0;i<0;i++)
+	for(int i=0;i<26;i++)
 		jry_bl_string_add_string(&s1,&s1);
 	printf("Copy finish\n");
 	__start=clock();	

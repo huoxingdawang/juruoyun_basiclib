@@ -107,14 +107,14 @@ void jry_bl_aes_128_extend_key(unsigned char* key,jry_bl_aes_128_extened_key w)
 				w[i][r][j]=w[i-1][r][j]^t[r];
 		}	
 }
-void jry_bl_aes_128_encode_16(jry_bl_aes_128_extened_key w,unsigned char* a,unsigned char* b)
+inline void jry_bl_aes_128_encode_16(jry_bl_aes_128_extened_key w,unsigned char* a,unsigned char* b)
 {
 	unsigned char state[4][4],state2[4][4];
 	state[0][0]=a[0]^w[0][0][0],state[0][1]=a[4]^w[0][0][1],state[0][2]=a[ 8]^w[0][0][2],state[0][3]=a[12]^w[0][0][3];
 	state[1][0]=a[1]^w[0][1][0],state[1][1]=a[5]^w[0][1][1],state[1][2]=a[ 9]^w[0][1][2],state[1][3]=a[13]^w[0][1][3];
 	state[2][0]=a[2]^w[0][2][0],state[2][1]=a[6]^w[0][2][1],state[2][2]=a[10]^w[0][2][2],state[2][3]=a[14]^w[0][2][3];
 	state[3][0]=a[3]^w[0][3][0],state[3][1]=a[7]^w[0][3][1],state[3][2]=a[11]^w[0][3][2],state[3][3]=a[15]^w[0][3][3];
-	for(register unsigned char i=1;i<=9;i++)
+	for(register unsigned char i=1;i<=9;++i)
 	{
 		state2[0][0]=jry_bl_aes_sbox[state[0][0]],state2[0][1]=jry_bl_aes_sbox[state[0][1]],state2[0][2]=jry_bl_aes_sbox[state[0][2]],state2[0][3]=jry_bl_aes_sbox[state[0][3]];
 		state2[1][0]=jry_bl_aes_sbox[state[1][1]],state2[1][1]=jry_bl_aes_sbox[state[1][2]],state2[1][2]=jry_bl_aes_sbox[state[1][3]],state2[1][3]=jry_bl_aes_sbox[state[1][0]];
@@ -167,14 +167,14 @@ void jry_bl_aes_128_encode_16(jry_bl_aes_128_extened_key w,unsigned char* a,unsi
 	b[2]=jry_bl_aes_sbox[state[2][2]]^w[10][2][0],b[6]=jry_bl_aes_sbox[state[2][3]]^w[10][2][1],b[10]=jry_bl_aes_sbox[state[2][0]]^w[10][2][2],b[14]=jry_bl_aes_sbox[state[2][1]]^w[10][2][3];
 	b[3]=jry_bl_aes_sbox[state[3][3]]^w[10][3][0],b[7]=jry_bl_aes_sbox[state[3][0]]^w[10][3][1],b[11]=jry_bl_aes_sbox[state[3][1]]^w[10][3][2],b[15]=jry_bl_aes_sbox[state[3][2]]^w[10][3][3];
 }
-void jry_bl_aes_128_decode_16(jry_bl_aes_128_extened_key w,unsigned char* a,unsigned char *b)
+inline void jry_bl_aes_128_decode_16(jry_bl_aes_128_extened_key w,unsigned char* a,unsigned char *b)
 {
 	unsigned char state[4][4],state2[4][4];
 	state[0][0]=a[0]^w[10][0][0],state[0][1]=a[4]^w[10][0][1],state[0][2]=a[ 8]^w[10][0][2],state[0][3]=a[12]^w[10][0][3];
 	state[1][0]=a[1]^w[10][1][0],state[1][1]=a[5]^w[10][1][1],state[1][2]=a[ 9]^w[10][1][2],state[1][3]=a[13]^w[10][1][3];
 	state[2][0]=a[2]^w[10][2][0],state[2][1]=a[6]^w[10][2][1],state[2][2]=a[10]^w[10][2][2],state[2][3]=a[14]^w[10][2][3];
 	state[3][0]=a[3]^w[10][3][0],state[3][1]=a[7]^w[10][3][1],state[3][2]=a[11]^w[10][3][2],state[3][3]=a[15]^w[10][3][3];
-	for(register char i=9;i>0;i--)
+	for(register char i=9;i>0;--i)
 	{
 		state2[0][0]=jry_bl_aes_invsbox[state[0][0]]^w[i][0][0],state2[0][1]=jry_bl_aes_invsbox[state[0][1]]^w[i][0][1],state2[0][2]=jry_bl_aes_invsbox[state[0][2]]^w[i][0][2],state2[0][3]=jry_bl_aes_invsbox[state[0][3]]^w[i][0][3];
 		state2[1][0]=jry_bl_aes_invsbox[state[1][3]]^w[i][1][0],state2[1][1]=jry_bl_aes_invsbox[state[1][0]]^w[i][1][1],state2[1][2]=jry_bl_aes_invsbox[state[1][1]]^w[i][1][2],state2[1][3]=jry_bl_aes_invsbox[state[1][2]]^w[i][1][3];

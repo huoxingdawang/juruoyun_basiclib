@@ -19,10 +19,10 @@
 #if JRY_BL_MALLOC_DEBUG_MODE==1
 void jry_bl_malloc_init();
 extern size_t __jry_bl_malloced_size;
-#define jry_bl_malloced_size ((long long)__jry_bl_malloced_size)
+#define jry_bl_malloced_size ((jry_bl_int64)__jry_bl_malloced_size)
 #else
 #define jry_bl_malloc_init()
-#define jry_bl_malloced_size ((long long)0)
+#define jry_bl_malloced_size ((jry_bl_int64)0)
 #endif
 void* jry_bl_malloc(size_t size);
 void* jry_bl_realloc(void* ptr,size_t size);
