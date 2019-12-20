@@ -3,7 +3,7 @@
 int main()
 {
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jry_bl_malloc_init();
+	jry_bl_start();
 	FILE * fp;
 	unsigned char key[]="0CoJUm6Qyw8W8jud";
 	jry_bl_string s1,s2,s3,s4,s5,s6,s7;jry_bl_string_inits(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);	

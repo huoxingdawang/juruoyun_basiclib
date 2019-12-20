@@ -234,7 +234,7 @@ void jry_bl_aes_128_ecb_encode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jr
 {
 	if(w==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	unsigned char s[16];
-	jry_bl_string_extend(out,jry_bl_string_get_length(out)+jry_bl_string_get_length(in)+16);
+	jry_bl_string_extend(out,jry_bl_string_get_length(in)+16);
 	register jry_bl_string_size_type i=0;
 	for(register jry_bl_string_size_type len=(jry_bl_string_get_length(in)>>4)<<4;i<len;i+=16)
 		jry_bl_aes_128_encode_16(w,jry_bl_string_get_char_pointer(in)+i,jry_bl_string_get_char_pointer(out)+jry_bl_string_get_length(out)),jry_bl_string_get_length(out)+=16;
@@ -244,8 +244,8 @@ void jry_bl_aes_128_ecb_encode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jr
 }
 void jry_bl_aes_128_ecb_decode(jry_bl_aes_128_extened_key w,jry_bl_string *in,jry_bl_string *out)
 {
-	if(w==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
-	jry_bl_string_extend(out,jry_bl_string_get_length(out)+jry_bl_string_get_length(in));
+	if(w==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	jry_bl_string_extend(out,jry_bl_string_get_length(in));
 	for(register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(in);i<len;i+=16)
 		jry_bl_aes_128_decode_16(w,jry_bl_string_get_char_pointer(in)+i,jry_bl_string_get_char_pointer(out)+jry_bl_string_get_length(out)),jry_bl_string_get_length(out)+=16;
 	jry_bl_string_get_length(out)-=jry_bl_string_get_char_pointer(out)[jry_bl_string_get_length(out)-1];
@@ -256,7 +256,7 @@ void jry_bl_aes_128_cbc_encode(jry_bl_aes_128_extened_key w,unsigned char * vi,j
 {
 	if(w==NULL||vi==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	unsigned char s[16],*vii=vi;
-	jry_bl_string_extend(out,jry_bl_string_get_length(out)+jry_bl_string_get_length(in)+16);
+	jry_bl_string_extend(out,jry_bl_string_get_length(in)+16);
 	for(register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(in);i<len;i+=16)
 	{
 		for(register char j=0;j<16;j++)
@@ -274,7 +274,7 @@ void jry_bl_aes_128_cbc_decode(jry_bl_aes_128_extened_key w,unsigned char * vi,j
 {
 	if(w==NULL||vi==NULL||in==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	unsigned char *vii=vi,buf[16],s[16];
-	jry_bl_string_extend(out,jry_bl_string_get_length(out)+jry_bl_string_get_length(in));
+	jry_bl_string_extend(out,jry_bl_string_get_length(in));
 	for(register jry_bl_string_size_type i=0,len=jry_bl_string_get_length(in);i<len;i+=16)
 	{
 		jry_bl_aes_128_decode_16(w,jry_bl_string_get_char_pointer(in)+i,buf);

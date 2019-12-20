@@ -13,7 +13,7 @@ inline void jry_bl_link_list_init(jry_bl_link_list *this)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	this->head=NULL,this->tail=NULL;
-	this->length=0;this->flags=0;
+	this->length=0;this->light_copy=false;
 }
 inline void jry_bl_link_list_node_init(jry_bl_link_list_node *this)
 {
@@ -23,7 +23,7 @@ inline void jry_bl_link_list_node_init(jry_bl_link_list_node *this)
 void jry_bl_link_list_free(jry_bl_link_list *this)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(!jry_bl_link_list_get_flag_light_copy(this))
+	if(!this->light_copy)
 		jry_bl_link_list_foreach_del(this,i,j)
 			jry_bl_link_list_delete_node(this,i);
 	this->head=NULL,this->tail=NULL;
@@ -127,32 +127,26 @@ char jry_bl_link_list_space_ship(jry_bl_link_list *this,jry_bl_link_list *that)
 	for(jry_bl_link_list_node *i=this->head,*j=that->head;i!=NULL&&a==0;a=jry_bl_var_space_ship(&i->v,&j->v),i=i->nxt,j=j->nxt);
 	return a;
 }
-void jry_bl_link_list_equal(jry_bl_link_list *this,jry_bl_link_list *that)
+void jry_bl_link_list_copy(jry_bl_link_list *this,jry_bl_link_list *that,jry_bl_uint8 copytype)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_link_list_free(this);
-	jry_bl_link_list_foreach(that,i)
-		jry_bl_link_list_add_var(this,jry_bl_link_list_data(i));
-}
-void jry_bl_link_list_equal_light(jry_bl_link_list *this,jry_bl_link_list *that)
-{
-	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_link_list_free(this);
-	this->head=that->head;this->tail=that->tail;this->length=that->length;
-	jry_bl_link_list_set_flag_light_copy(this,1);
-}
-void jry_bl_link_list_equal_light_move(jry_bl_link_list *this,jry_bl_link_list *that)
-{
-	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_link_list_free(this);
-	this->head=that->head;this->tail=that->tail;this->length=that->length;
-	jry_bl_link_list_set_flag_light_copy(this,jry_bl_link_list_get_flag_light_copy(that));
-	jry_bl_link_list_set_flag_light_copy(that,1);
+	if(copytype==JRY_BL_COPY)
+		jry_bl_link_list_foreach(that,i)
+			jry_bl_link_list_add_var(this,jry_bl_link_list_data(i));
+	else
+	{
+		this->head=that->head;this->tail=that->tail;this->length=that->length;
+		if(copytype==JRY_BL_COPY_LIGHT)
+			this->light_copy=true;
+		else	
+			this->light_copy,that->light_copy,that->light_copy=true;
+	}
 }
 void jry_bl_link_list_to_json(jry_bl_link_list *this,jry_bl_string *out)
 {
 	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string_extend(out,jry_bl_string_get_length(out)+2+this->length*64);
+	jry_bl_string_extend(out,2+this->length*64);
 	jry_bl_string_add_char(out,'[');
 	jry_bl_link_list_foreach(this,i)
 		jry_bl_var_to_json(jry_bl_link_list_data(i),out),jry_bl_string_add_char(out,',');
@@ -167,20 +161,23 @@ jry_bl_string_size_type jry_bl_link_list_from_json_start(jry_bl_link_list *this,
 	jry_bl_link_list that;
 	jry_bl_link_list_init(&that);
 	for(;(i<n)&&(!(in->s[i]=='['));++i);++i;
-	for(;(i<n)&&(!(in->s[i]==']'));)
+	while(i<n)
 	{
 		jry_bl_link_list_node *node=jry_bl_malloc(sizeof(jry_bl_link_list_node));
 		if(node==NULL)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
 		jry_bl_link_list_node_init(node);
 		i=jry_bl_var_from_json_start(&(node->v),in,i);		
 		jry_bl_link_list_add_node(&that,node);
-		for(;(i<n)&&(!(in->s[i]==',')||(in->s[i]==']'));++i);
+		if(in->s[i]==']')
+		{
+			jry_bl_link_list_merge_light(this,&that);
+			jry_bl_link_list_free(&that);
+			return i+1;
+		}
+		for(;(i<n)&&(!(in->s[i]==','));++i);
 	}
-	if(in->s[i-1]!=']')
-		return start;
-	jry_bl_link_list_merge_light(this,&that);
 	jry_bl_link_list_free(&that);
-	return i;
+	return start;
 }
 void jry_bl_link_list_merge(jry_bl_link_list *this,jry_bl_link_list *that)
 {
@@ -199,20 +196,21 @@ void jry_bl_link_list_merge_light(jry_bl_link_list *this,jry_bl_link_list *that)
 		that->head->pre=this->tail;
 	this->tail=that->tail;
 	this->length+=that->length;
-	jry_bl_link_list_set_flag_light_copy(that,1);
+	that->light_copy=true;
 }
 #if JRY_BL_USE_STDIO==1
-void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a)
+void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	for(register int i=0;i<tabs;++i,putc('\t',file));
 	if(a>=0)
 		fprintf(file,"jry_bl_link_list %s %d:%lld\n",str,a,(jry_bl_int64)this->length);
 	else
 		fprintf(file,"jry_bl_link_list:%lld\n",(jry_bl_int64)this->length);
 	jry_bl_link_list_size_type i=0;
 	jry_bl_link_list_foreach(this,j)
-		fprintf(file,"\t%lld:",(jry_bl_int64)(i++)),jry_bl_var_view_ex(jry_bl_link_list_data(j),file,"",0);	
-	fputc('\n',file);
+		jry_bl_var_view_ex(jry_bl_link_list_data(j),file,"",(jry_bl_int64)(i++),tabs+1);	
+	if(tabs==jry_bl_view_default_tabs_num)fputc('\n',file);
 }
 #endif
 

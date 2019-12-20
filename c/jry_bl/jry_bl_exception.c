@@ -28,10 +28,6 @@ void __jry_bl_exception(const char * file,int line,int x)
 		case JRY_BL_ERROR_TYPE_ERROR	:fprintf(stderr,":JRY_BL_ERROR_TYPE_ERROR")		;break;
 		
 	}
-	
-	
-	
-	putc('\n',stderr);
 	exit(0);
 }
 #endif

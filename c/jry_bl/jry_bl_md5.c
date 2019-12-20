@@ -24,11 +24,12 @@ void jry_bl_md5_encode(const unsigned int* input,unsigned char* output,jry_bl_st
 void jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsigned int state[4],unsigned int count[2],unsigned char buffer[64]);
 void jry_bl_md5(jry_bl_string* this,jry_bl_string* out)
 {
+	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	unsigned int state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
 	unsigned char padding[64]={0x80};
 	unsigned char buffer[64],digest[16];
 	register jry_bl_string_size_type len=jry_bl_string_get_length(this);
-	jry_bl_string_extend(out,jry_bl_string_get_length(out)+32);
+	jry_bl_string_extend(out,32);
 	jry_bl_md5_init(jry_bl_string_get_char_pointer(this),len,state,count,buffer);
 	unsigned char bits[8];
 	unsigned int  index,padlen;
@@ -81,7 +82,7 @@ void jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsi
 	partlen=64-index;
 	if (len>=partlen)
 	{
-		memcpy(&buffer[index],input,partlen);
+		jry_bl_memory_copy(&buffer[index],input,partlen);
 		jry_bl_md5_transform(state,buffer);
 		for(i=partlen;i+63<len;i+=64)
 			jry_bl_md5_transform(state,&input[i]);
@@ -89,6 +90,6 @@ void jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsi
 	}
 	else
 		i = 0;
-	memcpy(&buffer[index],&input[i],len-i);
+	jry_bl_memory_copy(&buffer[index],&input[i],len-i);
 }
 #endif

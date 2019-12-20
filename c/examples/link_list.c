@@ -3,14 +3,14 @@
 int main()
 {
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jry_bl_malloc_init();	
+	jry_bl_start();	
 	jry_bl_link_list l1,l2;jry_bl_link_list_inits(2,&l1,&l2);
 	jry_bl_var v1;jry_bl_var_init(&v1);
 	jry_bl_string s1,s2;jry_bl_string_inits(2,&s1,&s2);
 /*	
 	for(int i=0;i<5;i++)
 	{
-		jry_bl_string_equal_long_long(&s1,i);
+		jry_bl_string_equal_int64(&s1,i);
 		jry_bl_var_equal_string(&v1,&s1);	
 		jry_bl_link_list_add_var_light_move(&l1,&v1);
 		jry_bl_var_free(&v1);
