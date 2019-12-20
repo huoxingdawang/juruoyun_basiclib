@@ -4,22 +4,25 @@
 int main()
 {
 	printf("\n--------------------------------" __FILE__ "--------------------------------\n");
-	jry_bl_malloc_init();
+	printf("jry_bl_string size:%lld\n",(long long)(sizeof (jry_bl_string)));	
+	jry_bl_start();
 	jry_bl_string s1,s2,s3;jry_bl_string_inits(3,&s1,&s2,&s3);
 	clock_t __start;	
-	jry_bl_string_views(stderr,2,&s1,&s2);
-	jry_bl_string_equal_char_pointer(&s1,"juruoyun");		jry_bl_string_view(&s1,stderr);
-	jry_bl_string_equal_char_pointer(&s2,"12345678");		jry_bl_string_view(&s2,stderr);
-	jry_bl_string_equal_char_pointer_length(&s2,"12345",2);	jry_bl_string_view(&s2,stderr);
-	jry_bl_string_add_string(&s1,&s2);						jry_bl_string_view(&s1,stderr);jry_bl_string_clears(2,&s1,&s2);
-	jry_bl_string_add_char(&s1,'a');						jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
+	jry_bl_string_equal_char_pointer_light(&s1,"juruoyun");					jry_bl_string_view(&s1,stderr);
+	jry_bl_string_parse(&s1);										jry_bl_string_view(&s1,stderr);
+	jry_bl_string_add_string(&s1,&s1);								jry_bl_string_view(&s1,stderr);
+	
+	jry_bl_string_equal_char_pointer(&s2,"12345678");				jry_bl_string_view(&s2,stderr);
+	jry_bl_string_equal_char_pointer_length(&s2,"12345",2);			jry_bl_string_view(&s2,stderr);
+	jry_bl_string_add_string(&s1,&s2);								jry_bl_string_view(&s1,stderr);jry_bl_string_clears(2,&s1,&s2);
+	jry_bl_string_add_char(&s1,'a');								jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
 
-	jry_bl_string_add_unsigned_long_long(&s1,12356);		jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
-	jry_bl_string_add_long_long(&s1,-12356);				jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
-	jry_bl_string_add_double(&s1,1.123);				jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
+	jry_bl_string_add_uint64(&s1,12356);							jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
+	jry_bl_string_add_int64(&s1,-12356);							jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
+	jry_bl_string_add_double(&s1,1.123);							jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
 	jry_bl_string_equal_double_length(&s1,1.12346786789898,100);	jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
-	jry_bl_string_equal_double_length(&s1,1.123,3);	jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
-	jry_bl_string_equal_double_length(&s2,1.123,4);	jry_bl_string_view(&s2,stderr);jry_bl_string_clear(&s2);
+	jry_bl_string_equal_double_length(&s1,1.123,3);					jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
+	jry_bl_string_equal_double_length(&s2,1.123,4);					jry_bl_string_view(&s2,stderr);jry_bl_string_clear(&s2);
 
 
 	jry_bl_string_equal_char_pointer(&s1,"juruoyun");		jry_bl_string_view(&s1,stderr);
@@ -31,8 +34,8 @@ int main()
 	FILE * fp;
 	jry_bl_string_equal_char_pointer(&s1,"j");
 	jry_bl_string_frees(2,&s2,&s3);	
-	jry_bl_string_extend(&s1,1024*1024*1024);
-	for(int i=0;i<26;i++)
+	jry_bl_string_extend_to(&s1,1024*1024*1024);
+	for(int i=0;i<25;i++)
 		jry_bl_string_add_string(&s1,&s1);
 	printf("Copy finish\n");
 	__start=clock();	
@@ -49,10 +52,10 @@ int main()
 	jry_bl_string_free(&s1);	
 
 
-	jry_bl_string_equal_char_pointer(&s1,"12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_long_long(&s1));
-	jry_bl_string_equal_char_pointer(&s1,"-12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_long_long(&s1));
-	jry_bl_string_equal_char_pointer(&s1,"-12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_unsigned_long_long(&s1));
-	jry_bl_string_equal_char_pointer(&s1,"-123.4567");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_long_long(&s1));
+	jry_bl_string_equal_char_pointer(&s1,"12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_int64(&s1));
+	jry_bl_string_equal_char_pointer(&s1,"-12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_int64(&s1));
+	jry_bl_string_equal_char_pointer(&s1,"-12345678");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_uint64(&s1));
+	jry_bl_string_equal_char_pointer(&s1,"-123.4567");		jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_int64(&s1));
 	jry_bl_string_equal_char_pointer(&s1,"123.4567");		jry_bl_string_view(&s1,stderr);printf("%f\n",(double)jry_bl_string_get_double(&s1));
 	jry_bl_string_equal_char_pointer(&s1,"123");			jry_bl_string_view(&s1,stderr);printf("%f\n",(double)jry_bl_string_get_double(&s1));
 	jry_bl_string_equal_char_pointer(&s1,"1.1123");			jry_bl_string_equal_double(&s2,jry_bl_string_get_double(&s1));jry_bl_string_view(&s2,stderr);
