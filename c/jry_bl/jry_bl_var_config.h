@@ -10,9 +10,12 @@
 #ifndef __JRY_BL_VAR_CONFIG_H
 #define __JRY_BL_VAR_CONFIG_H
 #include "jry_bl_config.h"
-
 #if JRY_BL_VAR_ENABLE==1
-typedef unsigned char jry_bl_var_type_type;
+#include "jry_bl_ying.h"
+typedef jry_bl_uint16 jry_bl_var_type_type;
+#define jry_bl_var_type_bit 8
+#define jry_bl_var_tmp_size 0
+#define jry_bl_var_fs_size	2
 
 
 
