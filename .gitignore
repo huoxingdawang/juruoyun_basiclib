@@ -7,3 +7,5 @@
 */testfiles/**/*.jpg
 */testfiles/**/*.png
 *.log
+*.sh
+*.bat
