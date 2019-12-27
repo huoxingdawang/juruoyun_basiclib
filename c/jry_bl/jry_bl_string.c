@@ -15,7 +15,6 @@ inline void 	jry_bl_string_free	(jry_bl_string *this)			{if(this==NULL)jry_bl_ex
 jry_bl_uint64 jry_bl_string_hash(jry_bl_string *this)
 {
 	jry_bl_uint64 h=0;
-	return h;
 	for(jry_bl_string_size_type i=0;i<this->len;i++)
 		h=(h<<5)+h+this->s[i];
 	return h;
