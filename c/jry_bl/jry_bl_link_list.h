@@ -70,7 +70,7 @@ void					jry_bl_link_list_merge							(jry_bl_link_list *this,jry_bl_link_list *
 void					jry_bl_link_list_merge_light					(jry_bl_link_list *this,jry_bl_link_list *that);
 
 #if JRY_BL_USE_STDIO==1
-#define					jry_bl_link_list_view(x,y) 						jry_bl_link_list_view_ex(x,y,#x,__LINE__,jry_bl_view_default_tabs_num)
+#define					jry_bl_link_list_view(x,y) 						jry_bl_link_list_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void 					jry_bl_link_list_view_ex						(jry_bl_link_list *this,FILE * file,char*str,int a,int tabs);
 #endif
 

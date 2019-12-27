@@ -126,7 +126,7 @@ jry_bl_string_size_type	jry_bl_var_from_json_start					(jry_bl_var *this,jry_bl_
 #endif
 
 #if JRY_BL_USE_STDIO==1
-#define					jry_bl_var_view(x,y) 						jry_bl_var_view_ex(x,y,#x,__LINE__,jry_bl_view_default_tabs_num)
+#define					jry_bl_var_view(x,y) 						jry_bl_var_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void					jry_bl_var_view_ex							(jry_bl_var *this,FILE * file,char*str,int a,int tabs);
 #endif
 #if JRY_BL_USE_STDARG==1
