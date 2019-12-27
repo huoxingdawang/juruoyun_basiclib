@@ -30,6 +30,7 @@ typedef struct __jry_bl_string
 jry_bl_string_size_type	jry_bl_strlen										(char *a);
 void					jry_bl_string_init									(jry_bl_string *this);
 void					jry_bl_string_free									(jry_bl_string *this);
+jry_bl_uint64			jry_bl_string_hash									(jry_bl_string *this);
 #define					jry_bl_string_const(s,len)							{len,0,s}
 unsigned char			jry_bl_string_get									(jry_bl_string *this,jry_bl_string_size_type i);
 unsigned char			jry_bl_string_set									(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a);
@@ -67,7 +68,9 @@ char					jry_bl_string_space_ship							(jry_bl_string *this,jry_bl_string *that
 jry_bl_int64			jry_bl_string_get_int64_start						(jry_bl_string *this,jry_bl_string_size_type *start);
 jry_bl_uint64			jry_bl_string_get_uint64_start						(jry_bl_string *this,jry_bl_string_size_type *start);
 double					jry_bl_string_get_double_start						(jry_bl_string *this,jry_bl_string_size_type *start);
-void					jry_bl_string_to_json								(jry_bl_string *this,jry_bl_string *result);
+void					jry_bl_string_to_json_ex							(jry_bl_string *this,jry_bl_string *result,jry_bl_uint8 type);
+#define					jry_bl_string_to_json(x,y)							jry_bl_string_to_json_ex(x,y,0)
+
 jry_bl_string_size_type	jry_bl_string_from_json_start						(jry_bl_string *this,jry_bl_string *in,jry_bl_string_size_type start);
 jry_bl_string_size_type	jry_bl_string_find_char_start						(jry_bl_string *this,unsigned char in,jry_bl_string_size_type start);
 jry_bl_int64			jry_bl_string_get_int64_start_v						(jry_bl_string *this,jry_bl_string_size_type start);

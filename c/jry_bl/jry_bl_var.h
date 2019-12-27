@@ -19,22 +19,27 @@
 #endif
 #define					jry_bl_var_flag_pointer(this)					((this)->f.f.pointer)
 
-#define JRY_BL_VAR_TYPE_NULL				0
-#define JRY_BL_VAR_TYPE_LONG_LONG			1
-#define JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	2
-#define JRY_BL_VAR_TYPE_DOUBLE				3
-#define JRY_BL_VAR_TYPE_TRUE				4
-#define JRY_BL_VAR_TYPE_FALSE				5
-#define JRY_BL_VAR_TYPE_CHAR				6
-#define JRY_BL_VAR_TYPE_POINTER				7
-#define JRY_BL_VAR_TYPE_VAR					8
+#define JRY_BL_VAR_TYPE_UNUSE				0
+#define JRY_BL_VAR_TYPE_NULL				1
+#define JRY_BL_VAR_TYPE_LONG_LONG			2
+#define JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	3
+#define JRY_BL_VAR_TYPE_DOUBLE				4
+#define JRY_BL_VAR_TYPE_TRUE				5
+#define JRY_BL_VAR_TYPE_FALSE				6
+#define JRY_BL_VAR_TYPE_CHAR				7
+#define JRY_BL_VAR_TYPE_POINTER				8
+#define JRY_BL_VAR_TYPE_VAR					9
 #if JRY_BL_STRING_ENABLE==1
-#define JRY_BL_VAR_TYPE_STRING				9
+#define JRY_BL_VAR_TYPE_STRING				10
 #include "jry_bl_string.h"
 #endif
 #if JRY_BL_LINK_LIST_ENABLE==1
-#define JRY_BL_VAR_TYPE_LINK_LIST			10
+#define JRY_BL_VAR_TYPE_LINK_LIST			11
 typedef struct __jry_bl_link_list jry_bl_link_list;
+#endif
+#if JRY_BL_HASH_TABLE_ENABLE==1
+#define JRY_BL_VAR_TYPE_HASH_TABLE			12
+typedef struct __jry_bl_hash_table jry_bl_hash_table;
 #endif
 
 typedef struct __jry_bl_var
@@ -53,7 +58,7 @@ typedef struct __jry_bl_var
 		struct
 		{
 			jry_bl_var_type_type type;
-			jry_bl_uint8 pointer:1;			
+			jry_bl_uint8 pointer:1;
 		}f;
 	}f;
 }jry_bl_var;
@@ -65,11 +70,11 @@ typedef struct __jry_bl_var_functions_struct
 	void (*free)(jry_bl_string*);
 	void (*copy)(jry_bl_string*,jry_bl_string*,jry_bl_uint8);
 	char (*space_ship)(jry_bl_string*,jry_bl_string*);
-	void (*to_json)(jry_bl_string*,jry_bl_string*);
+	void (*to_json)(jry_bl_string*,jry_bl_string*,jry_bl_uint8);
 	void (*view_ex)(jry_bl_string*,FILE*,char*,int,int);
 }jry_bl_var_functions_struct;
 
-extern const jry_bl_var_functions_struct jry_bl_var_functions[3];
+extern const jry_bl_var_functions_struct jry_bl_var_functions[4];
 extern jry_bl_var_functions_struct* jry_bl_var_fs[jry_bl_var_fs_size];
 extern jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size];
 #if jry_bl_var_tmp_size!=0
@@ -87,6 +92,7 @@ void					jry_bl_var_init								(jry_bl_var *this);
 void					jry_bl_var_free								(jry_bl_var *this);
 void					jry_bl_var_init_as							(jry_bl_var *this,jry_bl_var_type_type type);
 void					jry_bl_var_copy								(jry_bl_var *this,jry_bl_var *that,jry_bl_uint8 copytype);
+#define					jry_bl_var_get_type(a)						((a)->f.f.type)
 #define					jry_bl_var_equal(a,b)						jry_bl_var_copy(a,b,JRY_BL_COPY)
 #define					jry_bl_var_equal_light(a,b)					jry_bl_var_copy(a,b,JRY_BL_COPY_LIGHT)
 #define					jry_bl_var_equal_light_move(a,b)			jry_bl_var_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
@@ -113,8 +119,9 @@ char					jry_bl_var_space_ship						(jry_bl_var *this,jry_bl_var *that);
 
 void					jry_bl_var_turn								(jry_bl_var *this,jry_bl_var_type_type type);
 #if JRY_BL_STRING_ENABLE==1
-void					jry_bl_var_to_json							(jry_bl_var *this,jry_bl_string *result);
-jry_bl_string_size_type	jry_bl_var_from_json_start					(jry_bl_var *this,jry_bl_string *in,jry_bl_string_size_type i);
+void					jry_bl_var_to_json_ex						(jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 type);
+#define					jry_bl_var_to_json(x,y)						jry_bl_var_to_json_ex(x,y,0)
+jry_bl_string_size_type	jry_bl_var_from_json_start					(jry_bl_var *this,jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_var_from_json(this,in)				jry_bl_var_from_json_start(this,in,0)
 #endif
 

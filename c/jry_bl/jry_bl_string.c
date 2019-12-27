@@ -12,6 +12,14 @@
 inline jry_bl_string_size_type jry_bl_strlen(char *a){jry_bl_string_size_type b=0;while(a[b++]);--b;return b;}
 inline void 	jry_bl_string_init	(jry_bl_string *this)			{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);this->len=this->size=0;this->s=NULL;}
 inline void 	jry_bl_string_free	(jry_bl_string *this)			{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(this->size!=0&&this->s!=NULL)jry_bl_free(this->s);this->len=this->size=0;this->s=NULL;}
+jry_bl_uint64 jry_bl_string_hash(jry_bl_string *this)
+{
+	jry_bl_uint64 h=0;
+	return h;
+	for(jry_bl_string_size_type i=0;i<this->len;i++)
+		h=(h<<5)+h+this->s[i];
+	return h;
+}
 inline unsigned char jry_bl_string_get(jry_bl_string *this,jry_bl_string_size_type i)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -149,7 +157,7 @@ inline void jry_bl_string_copy(jry_bl_string *this,jry_bl_string *in,jry_bl_uint
 char jry_bl_string_space_ship(jry_bl_string *this,jry_bl_string *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(this->s==that->s)
+	if(this==that||this->s==that->s)
 		return 0;
 	if(this->len!=that->len)
 		return (this->len<that->len)?-1:1;
@@ -204,10 +212,16 @@ double jry_bl_string_get_double_start(jry_bl_string *this,jry_bl_string_size_typ
 inline jry_bl_int64		jry_bl_string_get_int64_start_v		(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_int64_start(this,&start);};
 inline jry_bl_uint64	jry_bl_string_get_uint64_start_v	(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_uint64_start(this,&start);};
 inline double			jry_bl_string_get_double_start_v	(jry_bl_string *this,jry_bl_string_size_type start){return jry_bl_string_get_double_start(this,&start);};
-void jry_bl_string_to_json(jry_bl_string *this,jry_bl_string *result)
+void jry_bl_string_to_json_ex(jry_bl_string *this,jry_bl_string *result,jry_bl_uint8 type)
 {
 	if(this==NULL||result==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string_extend(result,this->len+2);
+	if(type==1)
+	{
+		(*((jry_bl_string_size_type*)result))+=2+this->len;
+		return;
+	}
+	if(type==0)
+		jry_bl_string_extend(result,this->len+2);
 	jry_bl_string_add_char(result,'"');
 	for(jry_bl_string_size_type i=0;i<this->len;i++)
 		(this->s[i]=='"'?jry_bl_string_add_char(result,'\\'):' '),jry_bl_string_add_char(result,this->s[i]);
@@ -216,14 +230,13 @@ void jry_bl_string_to_json(jry_bl_string *this,jry_bl_string *result)
 jry_bl_string_size_type jry_bl_string_from_json_start(jry_bl_string *this,jry_bl_string *in,jry_bl_string_size_type start)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	register jry_bl_string_size_type i=start,n=in->len;
-	for(;(i<n)&&(!(in->s[i]=='"'&&(i==0||in->s[i-1]!='\\')));++i);
-	for(++i;i<n&&!(in->s[i]=='"'&&in->s[i-1]!='\\');++i)
-		if(!(in->s[i]=='\\'&&(i+1)<n&&in->s[i+1]=='"'))
-			jry_bl_string_add_char(this,in->s[i]);
-	if(i==n)
-		jry_bl_string_clear(this);
-	return i+1;
+	register jry_bl_string_size_type i=start,n=in->len,no=this->len,st,en;
+	for(;(i<n)&&(!(in->s[i]=='"'&&(i==0||in->s[i-1]!='\\')));++i);++i;st=i;
+	for(;i<n&&!(in->s[i]=='"'&&in->s[i-1]!='\\');++i);en=i;++i;
+	if((i-1)>=n)
+		return start;
+	jry_bl_string_add_char_pointer_length(this,in->s+st,en-st);
+	return i;
 }
 jry_bl_string_size_type	jry_bl_string_find_char_start(jry_bl_string *this,unsigned char in,jry_bl_string_size_type start)
 {
@@ -245,12 +258,15 @@ inline void jry_bl_string_print(jry_bl_string *this,FILE * file)
 void jry_bl_string_view_ex(jry_bl_string *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	for(register int i=0;i<tabs;++i,putc('\t',file));
+	if(tabs>=0)
+		for(register int i=0;i<tabs;++i,putc('\t',file));
+	else
+		tabs=-tabs;
 	if(a>=0)
 		fprintf(file,"jry_bl_string    %s %d:",str,a);
 	else
-		fprintf(file,"jry_bl_string:");
-	fprintf(file,"\tsize:%lld\tlen:%lld\ts:",(jry_bl_int64)this->size,(jry_bl_int64)this->len);
+		fprintf(file,"jry_bl_string     \t:");
+	fprintf(file,"size:%lld\tlen:%lld\ts:",(jry_bl_int64)this->size,(jry_bl_int64)this->len);
 	jry_bl_string_print(this,file);
 	fputc('\n',file);
 }

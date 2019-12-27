@@ -10,7 +10,9 @@ int main()
 	clock_t __start;	
 	jry_bl_string_equal_char_pointer_light(&s1,"juruoyun");					jry_bl_string_view(&s1,stderr);
 	jry_bl_string_parse(&s1);										jry_bl_string_view(&s1,stderr);
+	printf("Hash:%lld\n",jry_bl_string_hash(&s1));
 	jry_bl_string_add_string(&s1,&s1);								jry_bl_string_view(&s1,stderr);
+	printf("Hash:%lld\n",jry_bl_string_hash(&s1));
 	
 	jry_bl_string_equal_char_pointer(&s2,"12345678");				jry_bl_string_view(&s2,stderr);
 	jry_bl_string_equal_char_pointer_length(&s2,"12345",2);			jry_bl_string_view(&s2,stderr);
@@ -35,7 +37,7 @@ int main()
 	jry_bl_string_equal_char_pointer(&s1,"j");
 	jry_bl_string_frees(2,&s2,&s3);	
 	jry_bl_string_extend_to(&s1,1024*1024*1024);
-	for(int i=0;i<25;i++)
+	for(int i=0;i<0;i++)
 		jry_bl_string_add_string(&s1,&s1);
 	printf("Copy finish\n");
 	__start=clock();	

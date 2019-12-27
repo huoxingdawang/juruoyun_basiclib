@@ -5,7 +5,11 @@ int main()
 	jry_bl_start();
 	jry_bl_string s1,s2;jry_bl_string_inits(2,&s1,&s2);
 	jry_bl_var v1,v2,v3;jry_bl_var_inits(3,&v1,&v2,&v3);	
-	jry_bl_string_equal_char_pointer(&s1,"[\"123123123\",\"123123123\",123,123,[123,123,\"123123123\",\"123123123\",123,123,[123,123,\"123123123\",\"123123123\",123,123,[123,123],123.456],123.456],123.456,\"123123123\",\"123123123\",123,123,[123,123],123.456,\"123123123\",\"123123123\",123,123,[123,123],123.456]");
+	FILE * fp;
+	fp=fopen ("testfiles/test.json","r");
+	jry_bl_string_equal_file(&s1,fp);
+	fclose(fp);
+	
 	jry_bl_string_view(&s1,stderr);
 	jry_bl_var_from_json(&v1,&s1);
 	jry_bl_var_view(&v1,stderr);

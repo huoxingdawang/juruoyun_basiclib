@@ -17,7 +17,7 @@ else
 	H = \\
 	rm = del
 endif
-all:jry_bl aes array base64 json md5 sha1 string test var link_list
+all:jry_bl aes array base64 json md5 sha1 string test var link_list hash_table
 clean:
 	$(rm) tmp$(H)*.o /s
 	$(rm) tmp$(H)*.a /s
@@ -34,6 +34,7 @@ run:
 	exes$(H)aes
 	exes$(H)array
 	exes$(H)base64
+	exes$(H)hash_table
 	exes$(H)link_list
 	exes$(H)md5
 	exes$(H)var
@@ -50,6 +51,9 @@ base64:jry_bl
 json:jry_bl
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)json.o examples$(H)json.c	$(EXLIB)
 	$(CC) -o exes$(H)json tmp$(H)json.o tmp$(H)jry_bl.a
+hash_table:jry_bl
+	$(CC) $(EX) -c -std=c99 -o tmp$(H)hash_table.o examples$(H)hash_table.c $(EXLIB)
+	$(CC) -o exes$(H)hash_table tmp$(H)hash_table.o tmp$(H)jry_bl.a	
 link_list:jry_bl
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)link_list.o examples$(H)link_list.c $(EXLIB)
 	$(CC) -o exes$(H)link_list tmp$(H)link_list.o tmp$(H)jry_bl.a
