@@ -61,6 +61,7 @@ int main()
 	jry_bl_string_equal_char_pointer(&s1,"123.4567");		jry_bl_string_view(&s1,stderr);printf("%f\n",(double)jry_bl_string_get_double(&s1));
 	jry_bl_string_equal_char_pointer(&s1,"123");			jry_bl_string_view(&s1,stderr);printf("%f\n",(double)jry_bl_string_get_double(&s1));
 	jry_bl_string_equal_char_pointer(&s1,"1.1123");			jry_bl_string_equal_double(&s2,jry_bl_string_get_double(&s1));jry_bl_string_view(&s2,stderr);
+	jry_bl_string_equal_char_pointer(&s1,"FF");				jry_bl_string_view(&s1,stderr);printf("%lld\n",jry_bl_string_get_hex(&s1));
 
 
 	jry_bl_string_equal_char_pointer(&s1,"juruoyun");		jry_bl_string_view(&s1,stderr);
