@@ -150,29 +150,26 @@ void jry_bl_var_to_json_ex(jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 t
 jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,jry_bl_string *in,jry_bl_string_size_type start)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string_size_type n=jry_bl_string_get_length(in),i=start;
-	while(i<n)
+	for(jry_bl_string_size_type n=jry_bl_string_get_length(in),i=start,ii;i<n;++i)
 	{
 		register unsigned char c=jry_bl_string_get1(in,i);
 		if(c=='"'&&(i==0||jry_bl_string_get1(in,i-1)!='\\'))
 		{
 			jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);
-			return jry_bl_string_from_json_start(this->data.p,in,i);
+			return ((ii=jry_bl_string_from_json_start(this->data.p,in,i))==i)?(jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),start):ii;
 		}
 		else if(c=='{')
 		{
 			jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_HASH_TABLE);
-			return jry_bl_hash_table_from_json_start(this->data.p,in,i);
+			return ((ii=jry_bl_hash_table_from_json_start(this->data.p,in,i))==i)?(jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),start):ii;
 		}
 		else if(c=='[')
 		{
 			jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LINK_LIST);
-			return jry_bl_link_list_from_json_start(this->data.p,in,i);
+			return ((ii=jry_bl_link_list_from_json_start(this->data.p,in,i))==i)?(jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),start):ii;
 		}
 		else if(c=='n'&&(i+3)<n&&jry_bl_string_get1(in,i+1)=='u'&&jry_bl_string_get1(in,i+2)=='l'&&jry_bl_string_get1(in,i+3)=='l')
-		{
 			return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),i+4;
-		}
 		else if(c=='-')
 		{
 			jry_bl_string_size_type i1=i,i2=i;
@@ -182,6 +179,7 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,jry_bl_strin
 				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LONG_LONG),this->data.ll=t1,i1;
 			else if(i1<i2)
 				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_DOUBLE),this->data.d=t2,i2;
+			return start;
 		}
 		else if(c>='0'&&c<='9')
 		{
@@ -192,8 +190,10 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,jry_bl_strin
 				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG),this->data.ull=t1,i1;
 			else if(i1<i2)
 				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_DOUBLE),this->data.d=t2,i2;
+			return start;
 		}
-		++i;
+		else if(c!=' '&&c!='\r'&&c!='\t'&&c!='\n')
+			return start;
 	}
 	return start;
 }

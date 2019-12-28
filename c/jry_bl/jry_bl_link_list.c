@@ -186,13 +186,15 @@ begin:
 		node=jry_bl_malloc(sizeof(jry_bl_link_list_node));
 		jry_bl_link_list_node_init(node);
 		ii=jry_bl_var_from_json_start(&(node->v),in,i);
-		if(ii==i){jry_bl_free(node);node=NULL;for(;i<n;++i)if(in->s[i]==']')goto success;goto fail;}i=ii;	
+		if(ii==i){jry_bl_free(node);node=NULL;for(;i<n;++i)if(in->s[i]==']')goto success;else if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')goto fail;goto fail;}i=ii;	
 		jry_bl_link_list_add_node(&that,node);
 		for(;i<n;++i)
 			if(in->s[i]==',')
 				{++i;goto begin;}
 			else if(in->s[i]==']')
 				goto success;
+			else if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')
+				goto fail;
 		goto fail;
 	}
 fail:

@@ -230,7 +230,7 @@ jry_bl_string_size_type jry_bl_string_from_json_start(jry_bl_string *this,jry_bl
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	register jry_bl_string_size_type i=start,n=in->len,no=this->len,st,en;
-	for(;(i<n)&&(!(in->s[i]=='"'&&(i==0||in->s[i-1]!='\\')));++i);++i;st=i;
+	for(;(i<n)&&(!(in->s[i]=='"'&&(i==0||in->s[i-1]!='\\')));++i)if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')return start;++i;st=i;
 	for(;i<n&&!(in->s[i]=='"'&&in->s[i-1]!='\\');++i);en=i;++i;
 	if((i-1)>=n)
 		return start;

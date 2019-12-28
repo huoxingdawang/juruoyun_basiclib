@@ -239,20 +239,36 @@ jry_bl_string_size_type jry_bl_hash_table_from_json_start(jry_bl_hash_table *thi
 	jry_bl_var 			v;jry_bl_var_init(&v);
 	jry_bl_hash_table	t;jry_bl_hash_table_init(&t);	
 	for(;(i<n)&&(!(in->s[i]=='{'));++i);++i;
+	jry_bl_uint64 cnt=0,deep=0;jry_bl_uint8 str=1;
+	for(register jry_bl_string_size_type j=i;(j<n)&&(!(in->s[j]=='}'&&deep==0));++j)
+	{
+		if((in->s[j]=='"'&&in->s[j-1]!='\\'))
+			str=!str;
+		else if(in->s[j]=='{'||in->s[j]=='[')
+			deep+=str;
+		else if(in->s[j]=='}'||in->s[j]==']')
+			deep-=str;
+		else if(in->s[j]==','&&deep==0)
+			++cnt;
+	}
+	if(cnt!=0)++cnt;
+	jry_bl_hash_table_extend(&t,cnt);
 	while(i<n)
 	{
 begin:
 		jry_bl_string_clear(&k);
 		ii=jry_bl_string_from_json_start(&k,in,i);
-		if(ii==i){for(;i<n;++i)if(in->s[i]=='}')goto success;goto fail;}i=ii;
-		for(;(i<n)&&(!(in->s[i]==':'));++i);if(i>=n)goto fail;
-		i=jry_bl_var_from_json_start(&v,in,i);if(ii==i)goto fail;i=ii;
+		if(ii==i){for(;i<n;++i)if(in->s[i]=='}')goto success;else if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')goto fail;goto fail;}i=ii;
+		for(;(i<n)&&(!(in->s[i]==':'));++i)if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')goto fail;if(i>=n)goto fail;++i;
+		ii=jry_bl_var_from_json_start(&v,in,i);if(ii==i)goto fail;i=ii;
 		jry_bl_hash_table_insert(&t,&k,&v,JRY_BL_COPY_LIGHT_MOVE,JRY_BL_COPY_LIGHT_MOVE);
 		for(;i<n;++i)
 			if(in->s[i]==',')
 				{++i;goto begin;}
 			else if(in->s[i]=='}')
 				goto success;
+			else if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')
+				goto fail;
 		goto fail;
 	}
 fail:	

@@ -12,6 +12,9 @@ int main()
 	
 	jry_bl_string_view(&s1,stderr);
 	jry_bl_var_from_json(&v1,&s1);
+	fp=fopen ("testfiles/json.out","w");
+	jry_bl_var_view(&v1,fp);
+	fclose(fp);
 	jry_bl_var_view(&v1,stderr);
 	
 	jry_bl_var_to_json(&v1,&s2);
