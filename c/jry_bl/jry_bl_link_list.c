@@ -165,12 +165,12 @@ void jry_bl_link_list_to_json_ex(jry_bl_link_list *this,jry_bl_string *out,jry_b
 		jry_bl_link_list_to_json_ex(this,(jry_bl_string*)(&tmp_len),1);
 		jry_bl_string_extend(out,tmp_len);
 	}
-	jry_bl_string_add_char(out,'[');
+	jry_bl_string_add_char1(out,'[');
 	jry_bl_link_list_foreach(this,i)
-		jry_bl_var_to_json_ex(jry_bl_link_list_data(i),out,2),jry_bl_string_add_char(out,',');
+		jry_bl_var_to_json_ex(jry_bl_link_list_data(i),out,2),jry_bl_string_add_char1(out,',');
 	if(this->length!=0)
 		jry_bl_string_delete_1(out);
-	jry_bl_string_add_char(out,']');
+	jry_bl_string_add_char1(out,']');
 }
 jry_bl_string_size_type jry_bl_link_list_from_json_start(jry_bl_link_list *this,jry_bl_string *in,jry_bl_string_size_type start)
 {

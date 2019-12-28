@@ -224,12 +224,12 @@ void jry_bl_hash_table_to_json_ex(jry_bl_hash_table *this,jry_bl_string *out,jry
 		jry_bl_hash_table_to_json_ex(this,(jry_bl_string*)(&tmp_len),1);
 		jry_bl_string_extend(out,tmp_len);
 	}
-	jry_bl_string_add_char(out,'{');
+	jry_bl_string_add_char1(out,'{');
 	jry_bl_hash_table_foreach(this,i)
-		jry_bl_string_to_json_ex(&i->k,out,2),jry_bl_string_add_char(out,':'),jry_bl_var_to_json_ex(&i->v,out,2),jry_bl_string_add_char(out,',');
+		jry_bl_string_to_json_ex(&i->k,out,2),jry_bl_string_add_char1(out,':'),jry_bl_var_to_json_ex(&i->v,out,2),jry_bl_string_add_char1(out,',');
 	if(this->len!=0)
 		jry_bl_string_delete_1(out);
-	jry_bl_string_add_char(out,'}');
+	jry_bl_string_add_char1(out,'}');
 }
 jry_bl_string_size_type jry_bl_hash_table_from_json_start(jry_bl_hash_table *this,jry_bl_string *in,jry_bl_string_size_type start)
 {
