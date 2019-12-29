@@ -94,8 +94,8 @@ char jry_bl_var_space_ship(jry_bl_var *this,jry_bl_var *that)
 			else		
 				switch(this->f.f.type)
 				{
-					case JRY_BL_VAR_TYPE_LONG_LONG			:return ((this->data.ll<that->data.ll)?(-1):((this->data.ll>that->data.ll)));break;
-					case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:return ((this->data.ll<that->data.ull)?(-1):((this->data.ll>that->data.ull)));break;
+					case JRY_BL_VAR_TYPE_INT64			:return ((this->data.ll<that->data.ll)?(-1):((this->data.ll>that->data.ll)));break;
+					case JRY_BL_VAR_TYPE_UINT64	:return ((this->data.ll<that->data.ull)?(-1):((this->data.ll>that->data.ull)));break;
 					case JRY_BL_VAR_TYPE_DOUBLE				:return ((this->data.d<that->data.d)?(-1):((this->data.d>that->data.d)));break;
 					case JRY_BL_VAR_TYPE_CHAR				:return ((this->data.c<that->data.c)?(-1):((this->data.c>that->data.c)));break;
 				}
@@ -123,13 +123,13 @@ void jry_bl_var_to_json_ex(jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 t
 					case JRY_BL_VAR_TYPE_TRUE				:					;(*((jry_bl_string_size_type*)result))+=1 ;break;
 					case JRY_BL_VAR_TYPE_FALSE				:					;(*((jry_bl_string_size_type*)result))+=1 ;break;			
 					case JRY_BL_VAR_TYPE_DOUBLE				:tmp=this->data.d	;(*((jry_bl_string_size_type*)result))+=40;break;
-					case JRY_BL_VAR_TYPE_LONG_LONG			:
+					case JRY_BL_VAR_TYPE_INT64			:
 						tmp=this->data.ll;
 						if(((jry_bl_int64)tmp)<0)
 							tmp=(-((jry_bl_int64)tmp)),++(*((jry_bl_string_size_type*)result));
 						do{++(*((jry_bl_string_size_type*)result));}while(tmp=(((jry_bl_int64)tmp)/10));
 						break;
-					case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:
+					case JRY_BL_VAR_TYPE_UINT64	:
 						tmp=this->data.ll;
 						do{++(*((jry_bl_string_size_type*)result));}while(tmp=(((jry_bl_uint64)tmp)/10));
 						break;
@@ -139,8 +139,8 @@ void jry_bl_var_to_json_ex(jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 t
 			switch(this->f.f.type)
 			{
 				case JRY_BL_VAR_TYPE_NULL				:					;jry_bl_string_add_char_pointer	(result,"null")			;break;
-				case JRY_BL_VAR_TYPE_LONG_LONG			:tmp=this->data.ll	;jry_bl_string_add_int64		(result,tmp)			;break;
-				case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:tmp=this->data.ull	;jry_bl_string_add_uint64		(result,tmp)			;break;
+				case JRY_BL_VAR_TYPE_INT64			:tmp=this->data.ll	;jry_bl_string_add_int64		(result,tmp)			;break;
+				case JRY_BL_VAR_TYPE_UINT64	:tmp=this->data.ull	;jry_bl_string_add_uint64		(result,tmp)			;break;
 				case JRY_BL_VAR_TYPE_DOUBLE				:tmp=this->data.d	;jry_bl_string_add_double		(result,tmp)			;break;
 				case JRY_BL_VAR_TYPE_TRUE				:					;jry_bl_string_add_uint64		(result,1)				;break;
 				case JRY_BL_VAR_TYPE_FALSE				:					;jry_bl_string_add_uint64		(result,0)				;break;
@@ -176,7 +176,7 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,jry_bl_strin
 			jry_bl_int64	t1=jry_bl_string_get_int64_start(in,&i1);
 			double			t2=jry_bl_string_get_double_start(in,&i2);
 			if(i1==i2)
-				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LONG_LONG),this->data.ll=t1,i1;
+				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_INT64),this->data.ll=t1,i1;
 			else if(i1<i2)
 				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_DOUBLE),this->data.d=t2,i2;
 			return start;
@@ -187,7 +187,7 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,jry_bl_strin
 			jry_bl_uint64	t1=jry_bl_string_get_uint64_start(in,&i1);
 			double			t2=jry_bl_string_get_double_start(in,&i2);
 			if(i1==i2)
-				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG),this->data.ull=t1,i1;
+				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_UINT64),this->data.ull=t1,i1;
 			else if(i1<i2)
 				return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_DOUBLE),this->data.d=t2,i2;
 			return start;
@@ -220,8 +220,8 @@ void jry_bl_var_view_ex(jry_bl_var *this,FILE * file,char*str,int a,int tabs)
 			{		
 				case JRY_BL_VAR_TYPE_UNUSE				:fprintf(file,"unuse             %s",ss)											;break;
 				case JRY_BL_VAR_TYPE_NULL				:fprintf(file,"null              %s",ss)											;break;
-				case JRY_BL_VAR_TYPE_LONG_LONG			:fprintf(file,"int64             %s:%lld",ss,this->data.ll)							;break;
-				case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:fprintf(file,"uint64            %s:%lld",ss,this->data.ull)						;break;
+				case JRY_BL_VAR_TYPE_INT64			:fprintf(file,"int64             %s:%lld",ss,this->data.ll)							;break;
+				case JRY_BL_VAR_TYPE_UINT64	:fprintf(file,"uint64            %s:%lld",ss,this->data.ull)						;break;
 				case JRY_BL_VAR_TYPE_DOUBLE				:fprintf(file,"double            %s:%lf",ss,this->data.d)							;break;
 				case JRY_BL_VAR_TYPE_TRUE				:fprintf(file,"true              %s",ss)											;break;
 				case JRY_BL_VAR_TYPE_FALSE				:fprintf(file,"false             %s",ss)											;break;
@@ -270,31 +270,31 @@ void jry_bl_var_turn(jry_bl_var *this,jry_bl_var_type_type type)
 			case JRY_BL_VAR_TYPE_NULL:
 				jry_bl_exception(JRY_BL_ERROR_TYPE_ERROR);
 				break;
-			case JRY_BL_VAR_TYPE_LONG_LONG:
+			case JRY_BL_VAR_TYPE_INT64:
 				switch(this->f.f.type)
 				{
-					case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:this->f.f.type=JRY_BL_VAR_TYPE_LONG_LONG;this->data.ll=this->data.ull	;break;
-					case JRY_BL_VAR_TYPE_DOUBLE				:this->f.f.type=JRY_BL_VAR_TYPE_LONG_LONG;this->data.ll=this->data.d	;break;
-					case JRY_BL_VAR_TYPE_TRUE				:this->f.f.type=JRY_BL_VAR_TYPE_LONG_LONG;this->data.ll=1				;break;
-					case JRY_BL_VAR_TYPE_FALSE				:this->f.f.type=JRY_BL_VAR_TYPE_LONG_LONG;this->data.ll=0				;break;
-					case JRY_BL_VAR_TYPE_CHAR				:this->f.f.type=JRY_BL_VAR_TYPE_LONG_LONG;this->data.ll=this->data.c	;break;
+					case JRY_BL_VAR_TYPE_UINT64	:this->f.f.type=JRY_BL_VAR_TYPE_INT64;this->data.ll=this->data.ull	;break;
+					case JRY_BL_VAR_TYPE_DOUBLE				:this->f.f.type=JRY_BL_VAR_TYPE_INT64;this->data.ll=this->data.d	;break;
+					case JRY_BL_VAR_TYPE_TRUE				:this->f.f.type=JRY_BL_VAR_TYPE_INT64;this->data.ll=1				;break;
+					case JRY_BL_VAR_TYPE_FALSE				:this->f.f.type=JRY_BL_VAR_TYPE_INT64;this->data.ll=0				;break;
+					case JRY_BL_VAR_TYPE_CHAR				:this->f.f.type=JRY_BL_VAR_TYPE_INT64;this->data.ll=this->data.c	;break;
 #if JRY_BL_STRING_ENABLE==1	
-					case JRY_BL_VAR_TYPE_STRING				:tmp=jry_bl_string_get_int64(this->data.p);jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LONG_LONG);this->data.ll=tmp;break;
+					case JRY_BL_VAR_TYPE_STRING				:tmp=jry_bl_string_get_int64(this->data.p);jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_INT64);this->data.ll=tmp;break;
 #endif
 					default:
 						jry_bl_exception(JRY_BL_ERROR_TYPE_ERROR);
 				}
 				break;
-			case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG:
+			case JRY_BL_VAR_TYPE_UINT64:
 				switch(this->f.f.type)
 				{
-					case JRY_BL_VAR_TYPE_LONG_LONG			:this->f.f.type=JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG;this->data.ull=this->data.ll	;break;
-					case JRY_BL_VAR_TYPE_DOUBLE				:this->f.f.type=JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG;this->data.ull=this->data.d	;break;
-					case JRY_BL_VAR_TYPE_TRUE				:this->f.f.type=JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG;this->data.ull=1				;break;
-					case JRY_BL_VAR_TYPE_FALSE				:this->f.f.type=JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG;this->data.ull=0				;break;
-					case JRY_BL_VAR_TYPE_CHAR				:this->f.f.type=JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG;this->data.ull=this->data.c	;break;
+					case JRY_BL_VAR_TYPE_INT64			:this->f.f.type=JRY_BL_VAR_TYPE_UINT64;this->data.ull=this->data.ll	;break;
+					case JRY_BL_VAR_TYPE_DOUBLE				:this->f.f.type=JRY_BL_VAR_TYPE_UINT64;this->data.ull=this->data.d	;break;
+					case JRY_BL_VAR_TYPE_TRUE				:this->f.f.type=JRY_BL_VAR_TYPE_UINT64;this->data.ull=1				;break;
+					case JRY_BL_VAR_TYPE_FALSE				:this->f.f.type=JRY_BL_VAR_TYPE_UINT64;this->data.ull=0				;break;
+					case JRY_BL_VAR_TYPE_CHAR				:this->f.f.type=JRY_BL_VAR_TYPE_UINT64;this->data.ull=this->data.c	;break;
 #if JRY_BL_STRING_ENABLE==1	
-					case JRY_BL_VAR_TYPE_STRING				:tmp=jry_bl_string_get_uint64(this->data.p);jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG);this->data.ull=tmp;break;
+					case JRY_BL_VAR_TYPE_STRING				:tmp=jry_bl_string_get_uint64(this->data.p);jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_UINT64);this->data.ull=tmp;break;
 #endif
 					default:
 						jry_bl_exception(JRY_BL_ERROR_TYPE_ERROR);
@@ -303,8 +303,8 @@ void jry_bl_var_turn(jry_bl_var *this,jry_bl_var_type_type type)
 			case JRY_BL_VAR_TYPE_DOUBLE:
 				switch(this->f.f.type)
 				{
-					case JRY_BL_VAR_TYPE_LONG_LONG			:this->f.f.type=JRY_BL_VAR_TYPE_DOUBLE;this->data.d=this->data.ll	;break;
-					case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:this->f.f.type=JRY_BL_VAR_TYPE_DOUBLE;this->data.d=this->data.ull	;break;
+					case JRY_BL_VAR_TYPE_INT64			:this->f.f.type=JRY_BL_VAR_TYPE_DOUBLE;this->data.d=this->data.ll	;break;
+					case JRY_BL_VAR_TYPE_UINT64	:this->f.f.type=JRY_BL_VAR_TYPE_DOUBLE;this->data.d=this->data.ull	;break;
 					case JRY_BL_VAR_TYPE_TRUE				:this->f.f.type=JRY_BL_VAR_TYPE_DOUBLE;this->data.d=1				;break;
 					case JRY_BL_VAR_TYPE_FALSE				:this->f.f.type=JRY_BL_VAR_TYPE_DOUBLE;this->data.d=0				;break;
 					case JRY_BL_VAR_TYPE_CHAR				:this->f.f.type=JRY_BL_VAR_TYPE_DOUBLE;this->data.d=this->data.c	;break;
@@ -319,8 +319,8 @@ void jry_bl_var_turn(jry_bl_var *this,jry_bl_var_type_type type)
 			case JRY_BL_VAR_TYPE_FALSE:
 				switch(this->f.f.type)
 				{
-					case JRY_BL_VAR_TYPE_LONG_LONG			:this->f.f.type=(this->data.ll==0?JRY_BL_VAR_TYPE_FALSE:JRY_BL_VAR_TYPE_TRUE)	;break;
-					case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:this->f.f.type=(this->data.ull==0?JRY_BL_VAR_TYPE_FALSE:JRY_BL_VAR_TYPE_TRUE)	;break;
+					case JRY_BL_VAR_TYPE_INT64			:this->f.f.type=(this->data.ll==0?JRY_BL_VAR_TYPE_FALSE:JRY_BL_VAR_TYPE_TRUE)	;break;
+					case JRY_BL_VAR_TYPE_UINT64	:this->f.f.type=(this->data.ull==0?JRY_BL_VAR_TYPE_FALSE:JRY_BL_VAR_TYPE_TRUE)	;break;
 					case JRY_BL_VAR_TYPE_TRUE				:;break;
 					case JRY_BL_VAR_TYPE_FALSE				:;break;
 					case JRY_BL_VAR_TYPE_CHAR				:this->f.f.type=(this->data.c==0?JRY_BL_VAR_TYPE_FALSE:JRY_BL_VAR_TYPE_TRUE)	;break;
@@ -334,8 +334,8 @@ void jry_bl_var_turn(jry_bl_var *this,jry_bl_var_type_type type)
 			case JRY_BL_VAR_TYPE_CHAR:
 				switch(this->f.f.type)
 				{
-					case JRY_BL_VAR_TYPE_LONG_LONG			:this->f.f.type=JRY_BL_VAR_TYPE_CHAR;this->data.c=this->data.ll	;break;
-					case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:this->f.f.type=JRY_BL_VAR_TYPE_CHAR;this->data.c=this->data.ull;break;
+					case JRY_BL_VAR_TYPE_INT64			:this->f.f.type=JRY_BL_VAR_TYPE_CHAR;this->data.c=this->data.ll	;break;
+					case JRY_BL_VAR_TYPE_UINT64	:this->f.f.type=JRY_BL_VAR_TYPE_CHAR;this->data.c=this->data.ull;break;
 					case JRY_BL_VAR_TYPE_DOUBLE				:this->f.f.type=JRY_BL_VAR_TYPE_CHAR;this->data.c=this->data.d	;break;
 					case JRY_BL_VAR_TYPE_TRUE				:this->f.f.type=JRY_BL_VAR_TYPE_CHAR;this->data.c=1				;break;
 					case JRY_BL_VAR_TYPE_FALSE				:this->f.f.type=JRY_BL_VAR_TYPE_CHAR;this->data.c=0				;break;
@@ -353,8 +353,8 @@ void jry_bl_var_turn(jry_bl_var *this,jry_bl_var_type_type type)
 			case JRY_BL_VAR_TYPE_STRING:
 				switch(this->f.f.type)
 				{
-					case JRY_BL_VAR_TYPE_LONG_LONG			:tmp=this->data.ll	;jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_int64			(this->data.p,tmp);break;
-					case JRY_BL_VAR_TYPE_UNSIGNED_LONG_LONG	:tmp=this->data.ull	;jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_uint64	(this->data.p,tmp);break;
+					case JRY_BL_VAR_TYPE_INT64			:tmp=this->data.ll	;jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_int64			(this->data.p,tmp);break;
+					case JRY_BL_VAR_TYPE_UINT64	:tmp=this->data.ull	;jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_uint64	(this->data.p,tmp);break;
 					case JRY_BL_VAR_TYPE_DOUBLE				:tmp=this->data.d	;jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_double				(this->data.p,tmp);break;
 					case JRY_BL_VAR_TYPE_TRUE				:					;jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_int64			(this->data.p,1)	;break;
 					case JRY_BL_VAR_TYPE_FALSE				:					;jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_int64			(this->data.p,0)	;break;

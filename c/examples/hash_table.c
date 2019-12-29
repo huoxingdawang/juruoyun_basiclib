@@ -12,6 +12,11 @@ int main()
 	jry_bl_hash_table_insert_str(&ht1,"ccc","123",&s1,&s2,&v1);
 	jry_bl_hash_table_insert_str(&ht1,"ffff","123123",&s1,&s2,&v1);
 	jry_bl_hash_table_insert_str(&ht1,"123123","ttt",&s1,&s2,&v1);
+	jry_bl_hash_table_insert_str_int64(&ht1,"tttt",-123,&s1,&v1);
+	jry_bl_hash_table_insert_str_uint64(&ht1,"ttt1",123,&s1,&v1);
+	jry_bl_hash_table_insert_str_double(&ht1,"tt2t",123.456,&s1,&v1);
+	jry_bl_hash_table_insert_str_true(&ht1,"tt3t",&s1,&v1);
+	jry_bl_hash_table_insert_str_false(&ht1,"tt4t",&s1,&v1);
 	jry_bl_hash_table_view(&ht1,stderr);
 	jry_bl_hash_table_insert_str(&ht1,"123123","ddd",&s1,&s2,&v1);
 	jry_bl_hash_table_view(&ht1,stderr);

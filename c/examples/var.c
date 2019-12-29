@@ -24,14 +24,14 @@ int main()
 	jry_bl_string_view(jry_bl_var_get_string(&vb),stderr);
 	jry_bl_string_view(jry_bl_var_get_string(&vc),stderr);
 	jry_bl_var_views(stderr,3,&va,&vb,&vc);
-	jry_bl_var_equal_long_long(&va,1234234);
+	jry_bl_var_equal_int64(&va,1234234);
 	jry_bl_var_equal_double(&vb,2.2222);
 	jry_bl_var_equal_pointer(&vc,&a);
 	jry_bl_var_views(stderr,3,&va,&vb,&vc);
 	jry_bl_var_turn(&va,JRY_BL_VAR_TYPE_STRING);jry_bl_var_view(&va,stderr);
 	jry_bl_var_turn(&vb,JRY_BL_VAR_TYPE_STRING);jry_bl_var_view(&vb,stderr);
 	
-	jry_bl_var_turn(&va,JRY_BL_VAR_TYPE_LONG_LONG);jry_bl_var_view(&va,stderr);
+	jry_bl_var_turn(&va,JRY_BL_VAR_TYPE_INT64);jry_bl_var_view(&va,stderr);
 	jry_bl_var_turn(&vb,JRY_BL_VAR_TYPE_DOUBLE);jry_bl_var_view(&vb,stderr);
 
 	jry_bl_var_equal_double(&va,1234234.123);
