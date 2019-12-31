@@ -28,11 +28,6 @@ int main()
 	jry_bl_var_equal_double(&vb,2.2222);
 	jry_bl_var_equal_pointer(&vc,&a);
 	jry_bl_var_views(stderr,3,&va,&vb,&vc);
-	jry_bl_var_turn(&va,JRY_BL_VAR_TYPE_STRING);jry_bl_var_view(&va,stderr);
-	jry_bl_var_turn(&vb,JRY_BL_VAR_TYPE_STRING);jry_bl_var_view(&vb,stderr);
-	
-	jry_bl_var_turn(&va,JRY_BL_VAR_TYPE_INT64);jry_bl_var_view(&va,stderr);
-	jry_bl_var_turn(&vb,JRY_BL_VAR_TYPE_DOUBLE);jry_bl_var_view(&vb,stderr);
 
 	jry_bl_var_equal_double(&va,1234234.123);
 	jry_bl_string_clear(&sa);

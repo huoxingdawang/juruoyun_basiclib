@@ -25,6 +25,7 @@ int main()
 	jry_bl_string_equal_double_length(&s1,1.12346786789898,100);	jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
 	jry_bl_string_equal_double_length(&s1,1.123,3);					jry_bl_string_view(&s1,stderr);jry_bl_string_clear(&s1);
 	jry_bl_string_equal_double_length(&s2,1.123,4);					jry_bl_string_view(&s2,stderr);jry_bl_string_clear(&s2);
+	jry_bl_string_equal_hex(&s2,(jry_bl_uint64)0XF);			jry_bl_string_view(&s2,stderr);jry_bl_string_clear(&s2);
 
 
 	jry_bl_string_equal_char_pointer(&s1,"juruoyun");		jry_bl_string_view(&s1,stderr);
