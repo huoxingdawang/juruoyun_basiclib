@@ -17,7 +17,7 @@ else
 	H = \\
 	rm = del
 endif
-all:jry_bl aes array base64 json md5 sha1 string test var link_list hash_table
+all:jry_bl aes array base64 json md5 sha1 string test var link_list hash_table file
 clean:
 	$(rm) tmp$(H)*.o /s
 	$(rm) tmp$(H)*.a /s
@@ -48,6 +48,9 @@ array:jry_bl
 base64:jry_bl
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)base64.o examples$(H)base64.c $(EXLIB)
 	$(CC) -o exes$(H)base64 tmp$(H)base64.o tmp$(H)jry_bl.a
+file:jry_bl
+	$(CC) $(EX) -c -std=c99 -o tmp$(H)file.o examples$(H)file.c $(EXLIB)
+	$(CC) -o exes$(H)file tmp$(H)file.o tmp$(H)jry_bl.a
 json:jry_bl
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)json.o examples$(H)json.c	$(EXLIB)
 	$(CC) -o exes$(H)json tmp$(H)json.o tmp$(H)jry_bl.a
@@ -87,7 +90,7 @@ JRY_BL_EXLIB =
 else
 JRY_BL_EXLIB = 
 endif
-jry_bl					:jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_base64 jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_string jry_bl/jry_bl_sha1 jry_bl/jry_bl_var jry_bl/jry_bl_ying
+jry_bl					:jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_base64 jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_string jry_bl/jry_bl_sha1 jry_bl/jry_bl_var jry_bl/jry_bl_ying jry_bl/jry_bl_file
 	ar rc tmp$(H)jry_bl.a tmp$(H)jry_bl_*.o
 jry_bl/jry_bl_aes			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_aes.o jry_bl$(H)jry_bl_aes.c $(JRY_BL_EXLIB)
@@ -97,7 +100,9 @@ jry_bl/jry_bl_base64		:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_base64.o jry_bl$(H)jry_bl_base64.c	$(JRY_BL_EXLIB)
 jry_bl/jry_bl_exception		:jry_bl/jry_bl_ying 
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_exception.o jry_bl$(H)jry_bl_exception.c $(JRY_BL_EXLIB)
-jry_bl/jry_bl_hash_table	:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_var
+jry_bl/jry_bl_file			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string jry_bl/jry_bl_var jry_bl/jry_bl_hash_table
+	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_file.o jry_bl$(H)jry_bl_file.c $(JRY_BL_EXLIB)
+jry_bl/jry_bl_hash_table	:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string jry_bl/jry_bl_var
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_hash_table.o jry_bl$(H)jry_bl_hash_table.c $(JRY_BL_EXLIB)
 jry_bl/jry_bl_link_list 	:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_var
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_link_list.o jry_bl$(H)jry_bl_link_list.c $(JRY_BL_EXLIB)
