@@ -22,12 +22,13 @@ void __jry_bl_exception(const char * file,int line,int x)
 	sprintf(ss,"%d",x);jry_bl_print_colorful(stderr,ss,JRY_BL_PRINT_COLORFUL_BLACK,JRY_BL_PRINT_COLORFUL_YELLOW);
 	switch(x)
 	{
-		case JRY_BL_ERROR_NO_ERROR		:fprintf(stderr,":JRY_BL_ERROR_NO_ERROR")		;break;
-		case JRY_BL_ERROR_NULL_POINTER	:fprintf(stderr,":JRY_BL_ERROR_NULL_POINTER")	;break;
-		case JRY_BL_ERROR_MEMORY_ERROR	:fprintf(stderr,":JRY_BL_ERROR_MEMORY_ERROR")	;break;
-		case JRY_BL_ERROR_TYPE_ERROR	:fprintf(stderr,":JRY_BL_ERROR_TYPE_ERROR")		;break;
+		case JRY_BL_ERROR_NO_ERROR			:fprintf(stderr,":JRY_BL_ERROR_NO_ERROR")		;break;
+		case JRY_BL_ERROR_NULL_POINTER		:fprintf(stderr,":JRY_BL_ERROR_NULL_POINTER")	;break;
+		case JRY_BL_ERROR_MEMORY_ERROR		:fprintf(stderr,":JRY_BL_ERROR_MEMORY_ERROR")	;break;
+		case JRY_BL_ERROR_FILE_NOT_EXIST	:fprintf(stderr,":JRY_BL_ERROR_FILE_NOT_EXIST")	;break;
 		
 	}
+	putc('\n',stderr);
 	exit(0);
 }
 #endif
