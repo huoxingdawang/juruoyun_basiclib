@@ -14,9 +14,7 @@
 #include "jry_bl_exception.h"
 #include "jry_bl_malloc.h"
 #include "jry_bl_ying.h"
-#if JRY_BL_USE_STDIO==1
 #include <stdio.h>
-#endif
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
@@ -97,7 +95,6 @@ void					jry_bl_string_to_json_ex							(const jry_bl_string *this,jry_bl_string
 jry_bl_string_size_type	jry_bl_string_from_json_start						(jry_bl_string *this,const jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_string_find_char(this,in)					jry_bl_string_find_char_start(this,in,0)
 jry_bl_string_size_type	jry_bl_string_find_char_start						(const jry_bl_string *this,unsigned char in,jry_bl_string_size_type start);
-#if JRY_BL_USE_STDIO==1
 void 					jry_bl_string_print									(const jry_bl_string *this,FILE * file);
 #define					jry_bl_string_view(x,y) 							jry_bl_string_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void 					jry_bl_string_view_ex								(const jry_bl_string *this,FILE * file,char*str,int a,int tabs);
@@ -105,14 +102,11 @@ void					jry_bl_string_add_file								(jry_bl_string *this,FILE * file);
 void					jry_bl_string_add_file_end_by						(jry_bl_string *this,FILE * file,unsigned char end);
 #define					jry_bl_string_equal_file(this,file)					jry_bl_string_clear(this),jry_bl_string_add_file(this,file)
 #define					jry_bl_string_equal_file_end_by(this,file,end)		jry_bl_string_clear(this),jry_bl_string_add_file_end_by(this,file,end)
-#endif
 #if JRY_BL_USE_STDARG==1
 void					jry_bl_string_inits									(int n,...);
 void					jry_bl_string_frees									(int n,...);
 void					jry_bl_string_clears								(int n,...);
-#if JRY_BL_USE_STDIO==1
 void					jry_bl_string_views									(FILE * file,int n,...);
-#endif
 #endif
 #if JRY_BL_VAR_ENABLE==1
 typedef struct __jry_bl_var jry_bl_var;

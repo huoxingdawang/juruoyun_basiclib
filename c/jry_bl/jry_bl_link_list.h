@@ -12,6 +12,7 @@
 #include "jry_bl_link_list_config.h"
 #if JRY_BL_LINK_LIST_ENABLE==1
 #include "jry_bl_var.h"
+#include <stdio.h>
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
@@ -68,11 +69,8 @@ void					jry_bl_link_list_to_json_ex						(const jry_bl_link_list *this,jry_bl_s
 jry_bl_string_size_type	jry_bl_link_list_from_json_start				(jry_bl_link_list *this,const jry_bl_string *in,jry_bl_string_size_type start);
 void					jry_bl_link_list_merge							(jry_bl_link_list *this,jry_bl_link_list *that);
 void					jry_bl_link_list_merge_light					(jry_bl_link_list *this,jry_bl_link_list *that);
-
-#if JRY_BL_USE_STDIO==1
 #define					jry_bl_link_list_view(x,y) 						jry_bl_link_list_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void 					jry_bl_link_list_view_ex						(jry_bl_link_list *this,FILE * file,char*str,int a,int tabs);
-#endif
 
 
 

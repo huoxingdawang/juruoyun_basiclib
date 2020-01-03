@@ -14,6 +14,8 @@
 #include "jry_bl_exception.h"
 #include "jry_bl_malloc.h"
 #include "jry_bl_ying.h"
+#include "jry_bl_string.h"
+#include <stdio.h>
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
@@ -31,17 +33,16 @@
 #define JRY_BL_VAR_TYPE_VAR			9	
 #if JRY_BL_STRING_ENABLE==1
 #define JRY_BL_VAR_TYPE_STRING		10
-#include "jry_bl_string.h"
 #endif
 #if JRY_BL_LINK_LIST_ENABLE==1
 #define JRY_BL_VAR_TYPE_LINK_LIST	11
-typedef struct __jry_bl_link_list jry_bl_link_list;
 #endif
 #if JRY_BL_HASH_TABLE_ENABLE==1
 #define JRY_BL_VAR_TYPE_HASH_TABLE	12
-typedef struct __jry_bl_hash_table jry_bl_hash_table;
 #endif
-
+#if JRY_BL_FILE_ENABLE==1
+#define JRY_BL_VAR_TYPE_FILE		13
+#endif
 typedef struct __jry_bl_var
 {
 	union
@@ -74,7 +75,7 @@ typedef struct __jry_bl_var_functions_struct
 	void (*view_ex)(const void*,FILE*,char*,int,int);
 }jry_bl_var_functions_struct;
 
-extern const jry_bl_var_functions_struct jry_bl_var_functions[4];
+extern const jry_bl_var_functions_struct jry_bl_var_functions[5];
 extern jry_bl_var_functions_struct* jry_bl_var_fs[jry_bl_var_fs_size];
 extern jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size];
 #if jry_bl_var_tmp_size!=0
@@ -120,17 +121,12 @@ void					jry_bl_var_to_json_ex				(const jry_bl_var *this,jry_bl_string *result,
 jry_bl_string_size_type	jry_bl_var_from_json_start			(jry_bl_var *this,const jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_var_from_json(this,in)		jry_bl_var_from_json_start(this,in,0)
 #endif
-
-#if JRY_BL_USE_STDIO==1
 #define					jry_bl_var_view(x,y) 				jry_bl_var_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void					jry_bl_var_view_ex					(const jry_bl_var *this,FILE * file,char*str,int a,int tabs);
-#endif
 #if JRY_BL_USE_STDARG==1
 void					jry_bl_var_inits					(int n,...);
 void					jry_bl_var_frees					(int n,...);
-#if JRY_BL_USE_STDIO==1
 void					jry_bl_var_views					(FILE * file,int n,...);
-#endif
 #endif
 #endif
 #endif

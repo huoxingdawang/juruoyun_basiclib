@@ -18,9 +18,12 @@
 #if JRY_BL_HASH_TABLE_ENABLE==1	
 #include "jry_bl_hash_table.h"
 #endif
+#if JRY_BL_FILE_ENABLE==1	
+#include "jry_bl_file.h"
+#endif
 #define jry_bl_var_get_type_low(x)	((x->f.f.type)&(1<<jry_bl_var_type_bit))
 #define jry_bl_var_get_type_high(x)	((x->f.f.type)>>jry_bl_var_type_bit)
-const jry_bl_var_functions_struct jry_bl_var_functions[4]=
+const jry_bl_var_functions_struct jry_bl_var_functions[5]=
 {
 	[JRY_BL_VAR_TYPE_VAR-9]			={(sizeof (jry_bl_var)),jry_bl_var_init,jry_bl_var_free,jry_bl_var_copy,jry_bl_var_space_ship,jry_bl_var_to_json_ex,jry_bl_var_view_ex},
 #if JRY_BL_STRING_ENABLE==1
@@ -31,6 +34,9 @@ const jry_bl_var_functions_struct jry_bl_var_functions[4]=
 #endif
 #if JRY_BL_HASH_TABLE_ENABLE==1
 	[JRY_BL_VAR_TYPE_HASH_TABLE-9]	={(sizeof (jry_bl_hash_table)),jry_bl_hash_table_init,jry_bl_hash_table_free,jry_bl_hash_table_copy,jry_bl_hash_table_space_ship,jry_bl_hash_table_to_json_ex,jry_bl_hash_table_view_ex},
+#endif
+#if JRY_BL_FILE_ENABLE==1
+	[JRY_BL_VAR_TYPE_FILE-9]		={(sizeof (jry_bl_file)),jry_bl_file_init,jry_bl_file_free,jry_bl_file_copy,jry_bl_file_space_ship,NULL,jry_bl_file_view_ex},
 #endif
 };
 jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size];
@@ -200,7 +206,6 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,const jry_bl
 	return start;
 }
 #endif
-#if JRY_BL_USE_STDIO==1
 void jry_bl_var_view_ex(const jry_bl_var *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -233,7 +238,6 @@ void jry_bl_var_view_ex(const jry_bl_var *this,FILE * file,char*str,int a,int ta
 			fputc('\n',file);		
 		}
 }
-#endif
 #if JRY_BL_USE_STDARG==1
 inline void	jry_bl_var_inits(int n,...)
 {
@@ -251,7 +255,6 @@ inline void	jry_bl_var_frees(int n,...)
 		jry_bl_var_free(va_arg(valist,jry_bl_var*));
 	va_end(valist);	
 }
-#if JRY_BL_USE_STDIO==1
 inline void	jry_bl_var_views(FILE * file,int n,...)
 {
 	va_list valist;
@@ -260,6 +263,5 @@ inline void	jry_bl_var_views(FILE * file,int n,...)
 		jry_bl_var_view_ex(va_arg(valist,jry_bl_var*),file,"views",i,jry_bl_view_default_tabs_num);
 	va_end(valist);	
 }
-#endif
 #endif
 #endif

@@ -234,7 +234,6 @@ jry_bl_string_size_type	jry_bl_string_find_char_start(const jry_bl_string *this,
 	for(;start<this->len&&this->s[start]!=in;++start);
 	return (start);
 }
-#if JRY_BL_USE_STDIO==1
 /*#include <time.h>*/
 inline void jry_bl_string_print(const jry_bl_string *this,FILE * file)
 {
@@ -285,7 +284,6 @@ void jry_bl_string_add_file_end_by(jry_bl_string *this,FILE * file,unsigned char
 	while(i<size&&((c=fgetc(file))!=end))
 		++i,jry_bl_string_add_char(this,c);
 }
-#endif
 #if JRY_BL_USE_STDARG==1
 inline void	jry_bl_string_inits(int n,...)
 {
@@ -311,7 +309,6 @@ inline void	jry_bl_string_clears(int n,...)
 		jry_bl_string_clear(va_arg(valist,jry_bl_string*));
 	va_end(valist);	
 }
-#if JRY_BL_USE_STDIO==1
 inline void	jry_bl_string_views(FILE * file,int n,...)
 {
 	va_list valist;
@@ -320,7 +317,6 @@ inline void	jry_bl_string_views(FILE * file,int n,...)
 		jry_bl_string_view_ex(va_arg(valist,jry_bl_string*),file,"views",i,jry_bl_view_default_tabs_num);
 	va_end(valist);	
 }
-#endif
 #endif
 #if JRY_BL_VAR_ENABLE==1
 #include "jry_bl_var.h"	

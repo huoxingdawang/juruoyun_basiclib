@@ -224,7 +224,6 @@ void jry_bl_link_list_merge_light(jry_bl_link_list *this,jry_bl_link_list *that)
 	this->length+=that->length;
 	that->light_copy=true;
 }
-#if JRY_BL_USE_STDIO==1
 void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -245,8 +244,6 @@ void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a,
 	}
 	if(tabs==jry_bl_view_default_tabs_num)fputc('\n',file);
 }
-#endif
-
 #if JRY_BL_USE_STDARG==1
 void jry_bl_link_list_inits(int n,...)
 {

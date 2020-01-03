@@ -299,7 +299,6 @@ void jry_bl_hash_table_rehash(jry_bl_hash_table *this)
 		}
 	this->nxt=j;
 }
-#if JRY_BL_USE_STDIO==1
 void jry_bl_hash_table_view_ex(const jry_bl_hash_table *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -318,7 +317,6 @@ void jry_bl_hash_table_view_ex(const jry_bl_hash_table *this,FILE * file,char*st
 		jry_bl_var_view_ex(&i->v,file,"",-1,-(tabs+1));
 	}
 }
-#endif
 #if JRY_BL_USE_STDARG==1
 void jry_bl_hash_table_inits(int n,...)
 {
