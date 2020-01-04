@@ -7,7 +7,7 @@ int main()
 	printf("jry_bl_string size:%lld\n",(long long)(sizeof (jry_bl_string)));	
 	jry_bl_start();
 	jry_bl_string s1,s2,s3;jry_bl_string_inits(3,&s1,&s2,&s3);
-	clock_t __start;	
+	jry_bl_time t1,t2;jry_bl_time_inits(2,&t1,&t2);	
 	jry_bl_string_equal_char_pointer_light(&s1,"juruoyun");					jry_bl_string_view(&s1,stderr);
 	jry_bl_string_parse(&s1);										jry_bl_string_view(&s1,stderr);
 	printf("Hash:%lld\n",jry_bl_string_hash(&s1));
@@ -38,20 +38,20 @@ int main()
 	jry_bl_string_equal_char_pointer(&s1,"j");
 	jry_bl_string_frees(2,&s2,&s3);	
 	jry_bl_string_extend_to(&s1,1024*1024*1024);
-	for(int i=0;i<0;i++)
+	for(int i=0;i<26;i++)
 		jry_bl_string_add_string(&s1,&s1);
 	printf("Copy finish\n");
-	__start=clock();	
+	jry_bl_time_now(&t1);	
 	fp=fopen ("testfiles/bigstring.out","w");
 	jry_bl_string_print(&s1,fp);
 	fclose(fp);
-	fprintf(stderr,"Write %lld Byte data used time:%fs\n",s1.len,((double)(clock()-__start)/CLOCKS_PER_SEC));	
+	fprintf(stderr,"Write %lld Byte data used time:%lldms\n",s1.len,jry_bl_time_minus((jry_bl_time_now(&t2),&t2),&t1));	
 
-	__start=clock();	
+	jry_bl_time_now(&t1);	
 	fp=fopen ("testfiles/bigstring.out","r");
 	jry_bl_string_equal_file(&s1,fp);
 	fclose(fp);
-	fprintf(stderr,"Read %lld Byte data used time:%fs\n",s1.len,((double)(clock()-__start)/CLOCKS_PER_SEC));	
+	fprintf(stderr,"Read %lld Byte data used time:%lldms\n",s1.len,jry_bl_time_minus((jry_bl_time_now(&t2),&t2),&t1));	
 	jry_bl_string_free(&s1);	
 
 
@@ -84,6 +84,7 @@ int main()
 
 	
 	jry_bl_string_frees(3,&s1,&s2,&s3);	
+	jry_bl_time_frees(2,&t1,&t2);	
 	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);
 	return 0;
 }

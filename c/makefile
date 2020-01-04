@@ -17,7 +17,7 @@ else
 	H = \\
 	rm = del
 endif
-all:jry_bl aes array base64 json md5 sha1 string test var link_list hash_table file
+all:jry_bl aes array base64 json md5 sha1 string test var link_list hash_table file time
 clean:
 	$(rm) tmp$(H)*.o /s
 	$(rm) tmp$(H)*.a /s
@@ -66,6 +66,9 @@ md5:jry_bl
 string:jry_bl
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)string.o examples$(H)string.c $(EXLIB)
 	$(CC) -o exes$(H)string tmp$(H)string.o tmp$(H)jry_bl.a
+time:jry_bl
+	$(CC) $(EX) -c -std=c99 -o tmp$(H)time.o examples$(H)time.c $(EXLIB)
+	$(CC) -o exes$(H)time tmp$(H)time.o tmp$(H)jry_bl.a
 sha1:jry_bl
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)sha1.o examples$(H)sha1.c $(EXLIB)
 	$(CC) -o exes$(H)sha1 tmp$(H)sha1.o tmp$(H)jry_bl.a
@@ -90,7 +93,7 @@ JRY_BL_EXLIB =
 else
 JRY_BL_EXLIB = 
 endif
-jry_bl					:jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_base64 jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_string jry_bl/jry_bl_sha1 jry_bl/jry_bl_var jry_bl/jry_bl_ying jry_bl/jry_bl_file
+jry_bl					:jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_base64 jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_string jry_bl/jry_bl_sha1 jry_bl/jry_bl_var jry_bl/jry_bl_ying jry_bl/jry_bl_file jry_bl/jry_bl_time
 	ar rc tmp$(H)jry_bl.a tmp$(H)jry_bl_*.o
 jry_bl/jry_bl_aes			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_aes.o jry_bl$(H)jry_bl_aes.c $(JRY_BL_EXLIB)
@@ -114,6 +117,8 @@ jry_bl/jry_bl_sha1			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_m
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_sha1.o jry_bl$(H)jry_bl_sha1.c $(JRY_BL_EXLIB)	
 jry_bl/jry_bl_string		:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_string.o jry_bl$(H)jry_bl_string.c $(JRY_BL_EXLIB)
+jry_bl/jry_bl_time		:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc
+	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_time.o jry_bl$(H)jry_bl_time.c $(JRY_BL_EXLIB)
 jry_bl/jry_bl_var			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) $(EX) -c -w -std=c99 -o tmp$(H)jry_bl_var.o jry_bl$(H)jry_bl_var.c $(JRY_BL_EXLIB)
 jry_bl/jry_bl_ying			:
