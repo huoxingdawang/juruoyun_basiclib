@@ -22,7 +22,6 @@
 typedef struct __jry_bl_file
 {
 	jry_bl_uint8 type:2;
-	jry_bl_uint8 lc:1;
 	jry_bl_string name;
 	struct __jry_bl_file *f;
 	union
