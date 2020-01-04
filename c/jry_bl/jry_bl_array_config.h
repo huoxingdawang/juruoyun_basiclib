@@ -9,6 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #ifndef __JRY_BL_ARRAY_CONFIG_H
 #define __JRY_BL_ARRAY_CONFIG_H
+#include "jry_bl_config.h"
 #if JRY_BL_ARRAY_ENABLE==1
 #include "jry_bl_ying.h"
 

@@ -245,38 +245,10 @@ void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a,
 	if(tabs==jry_bl_view_default_tabs_num)fputc('\n',file);
 }
 #if JRY_BL_USE_STDARG==1
-void jry_bl_link_list_inits(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_link_list_init(va_arg(valist,jry_bl_link_list*));
-	va_end(valist);	
-}
-void jry_bl_link_list_node_inits(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_link_list_node_init(va_arg(valist,jry_bl_link_list_node*));
-	va_end(valist);
-}
-void jry_bl_link_list_frees(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_link_list_free(va_arg(valist,jry_bl_link_list*));
-	va_end(valist);	
-}
-void jry_bl_link_list_node_frees(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_link_list_node_free(va_arg(valist,jry_bl_link_list_node*));
-	va_end(valist);
-}
+inline void jry_bl_link_list_inits		(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_init(va_arg(valist,jry_bl_link_list*));va_end(valist);}
+inline void jry_bl_link_list_node_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_node_init(va_arg(valist,jry_bl_link_list_node*));va_end(valist);}
+inline void jry_bl_link_list_frees		(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_free(va_arg(valist,jry_bl_link_list*));va_end(valist);}
+inline void jry_bl_link_list_node_frees	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_node_free(va_arg(valist,jry_bl_link_list_node*));va_end(valist);}
 #endif
 
 #endif

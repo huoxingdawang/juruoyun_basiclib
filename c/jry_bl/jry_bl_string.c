@@ -285,38 +285,10 @@ void jry_bl_string_add_file_end_by(jry_bl_string *this,FILE * file,unsigned char
 		++i,jry_bl_string_add_char(this,c);
 }
 #if JRY_BL_USE_STDARG==1
-inline void	jry_bl_string_inits(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_string_init(va_arg(valist,jry_bl_string*));
-	va_end(valist);	
-}
-inline void	jry_bl_string_frees(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_string_free(va_arg(valist,jry_bl_string*));
-	va_end(valist);	
-}
-inline void	jry_bl_string_clears(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_string_clear(va_arg(valist,jry_bl_string*));
-	va_end(valist);	
-}
-inline void	jry_bl_string_views(FILE * file,int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_string_view_ex(va_arg(valist,jry_bl_string*),file,"views",i,jry_bl_view_default_tabs_num);
-	va_end(valist);	
-}
+inline void jry_bl_string_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_string_init(va_arg(valist,jry_bl_string*));va_end(valist);}
+inline void jry_bl_string_frees	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_string_free(va_arg(valist,jry_bl_string*));va_end(valist);}
+inline void jry_bl_string_clears(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_string_clear(va_arg(valist,jry_bl_string*));va_end(valist);}
+inline void jry_bl_string_views	(FILE * file,int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_string_view_ex(va_arg(valist,jry_bl_string*),file,"views",i,jry_bl_view_default_tabs_num);va_end(valist);}
 #endif
 #if JRY_BL_VAR_ENABLE==1
 #include "jry_bl_var.h"	

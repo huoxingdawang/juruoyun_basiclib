@@ -318,29 +318,8 @@ void jry_bl_hash_table_view_ex(const jry_bl_hash_table *this,FILE * file,char*st
 	}
 }
 #if JRY_BL_USE_STDARG==1
-void jry_bl_hash_table_inits(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_hash_table_init(va_arg(valist,jry_bl_hash_table*));
-	va_end(valist);		
-}
-void jry_bl_hash_table_frees(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_hash_table_free(va_arg(valist,jry_bl_hash_table*));
-	va_end(valist);		
-}
-void jry_bl_hash_table_clears(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_hash_table_clear(va_arg(valist,jry_bl_hash_table*));
-	va_end(valist);		
-}
+inline void jry_bl_hash_table_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_hash_table_init(va_arg(valist,jry_bl_hash_table*));va_end(valist);}
+inline void jry_bl_hash_table_frees	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_hash_table_free(va_arg(valist,jry_bl_hash_table*));va_end(valist);}
+inline void jry_bl_hash_table_clears(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_hash_table_clear(va_arg(valist,jry_bl_hash_table*));va_end(valist);}
 #endif
 #endif

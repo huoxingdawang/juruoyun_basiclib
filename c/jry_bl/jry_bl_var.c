@@ -239,29 +239,8 @@ void jry_bl_var_view_ex(const jry_bl_var *this,FILE * file,char*str,int a,int ta
 		}
 }
 #if JRY_BL_USE_STDARG==1
-inline void	jry_bl_var_inits(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_var_init(va_arg(valist,jry_bl_var*));
-	va_end(valist);	
-}
-inline void	jry_bl_var_frees(int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_var_free(va_arg(valist,jry_bl_var*));
-	va_end(valist);	
-}
-inline void	jry_bl_var_views(FILE * file,int n,...)
-{
-	va_list valist;
-	va_start(valist,n);
-	for(int i=0;i<n;i++)
-		jry_bl_var_view_ex(va_arg(valist,jry_bl_var*),file,"views",i,jry_bl_view_default_tabs_num);
-	va_end(valist);	
-}
+inline void jry_bl_var_inits(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_var_init(va_arg(valist,jry_bl_var*));va_end(valist);}
+inline void jry_bl_var_frees(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_var_free(va_arg(valist,jry_bl_var*));va_end(valist);}
+inline void jry_bl_var_views(FILE * file,int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_var_view_ex(va_arg(valist,jry_bl_var*),file,"views",i,jry_bl_view_default_tabs_num);va_end(valist);}
 #endif
 #endif
