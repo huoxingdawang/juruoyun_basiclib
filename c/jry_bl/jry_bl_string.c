@@ -296,9 +296,7 @@ inline void jry_bl_string_views	(FILE * file,int n,...){va_list valist;va_start(
 #endif
 #if JRY_BL_VAR_ENABLE==1
 #include "jry_bl_var.h"	
-inline void				jry_bl_var_equal_string				(jry_bl_var *this,jry_bl_string *that){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string(this->data.p,that);}
-inline void				jry_bl_var_equal_string_light		(jry_bl_var *this,jry_bl_string *that){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string_light(this->data.p,that);}
-inline void				jry_bl_var_equal_string_light_move	(jry_bl_var *this,jry_bl_string *that){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_equal_string_light_move(this->data.p,that);}
+inline void				jry_bl_var_equal_string				(jry_bl_var *this,jry_bl_string *that,jry_bl_uint8 copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_copy(this->data.p,that,copytype);}
 inline void				jry_bl_var_equal_string_pointer		(jry_bl_var *this,jry_bl_string *that){jry_bl_var_free(this);jry_bl_var_flag_pointer(this)=true;this->f.f.type=JRY_BL_VAR_TYPE_STRING,this->data.p=that;}
 inline void	jry_bl_string_add_var(jry_bl_string *this,jry_bl_var *that)
 {

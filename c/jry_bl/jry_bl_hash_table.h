@@ -63,7 +63,7 @@ void					jry_bl_hash_table_rehash							(jry_bl_hash_table *this);
 #define					jry_bl_hash_table_get_var(x)						(&((x)->v))
 
 #define					jry_bl_hash_table_foreach(this,i)					for(jry_bl_hash_table_data *i=&(this)->data[0];i!=&(this)->data[(this)->nxt];i++)if(jry_bl_var_get_type(&i->v)!=JRY_BL_VAR_TYPE_UNUSE)
-#define 				jry_bl_hash_table_insert_str(x,k,v,s1,s2,v2)		jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_string_equal_char_pointer_light((s2),(v));jry_bl_var_equal_string_light_move((v2),(s2));jry_bl_hash_table_insert((x),(s1),(v2),(JRY_BL_COPY_LIGHT_MOVE),(JRY_BL_COPY_LIGHT_MOVE));	
+#define 				jry_bl_hash_table_insert_str(x,k,v,s1,s2,v2)		jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_string_equal_char_pointer_light((s2),(v));jry_bl_var_equal_string((v2),(s2),JRY_BL_COPY_LIGHT_MOVE);jry_bl_hash_table_insert((x),(s1),(v2),(JRY_BL_COPY_LIGHT_MOVE),(JRY_BL_COPY_LIGHT_MOVE));	
 #define 				jry_bl_hash_table_insert_str_int64(x,k,v,s1,v2)		jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_var_equal_int64((v2),(v));jry_bl_hash_table_insert((x),(s1),(v2),(JRY_BL_COPY_LIGHT_MOVE),(JRY_BL_COPY_LIGHT_MOVE));	
 #define 				jry_bl_hash_table_insert_str_uint64(x,k,v,s1,v2)	jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_var_equal_uint64((v2),(v));jry_bl_hash_table_insert((x),(s1),(v2),(JRY_BL_COPY_LIGHT_MOVE),(JRY_BL_COPY_LIGHT_MOVE));	
 #define 				jry_bl_hash_table_insert_str_double(x,k,v,s1,v2)	jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_var_equal_double((v2),(v));jry_bl_hash_table_insert((x),(s1),(v2),(JRY_BL_COPY_LIGHT_MOVE),(JRY_BL_COPY_LIGHT_MOVE));	

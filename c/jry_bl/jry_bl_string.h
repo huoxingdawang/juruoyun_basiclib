@@ -115,9 +115,7 @@ void					jry_bl_string_views									(FILE * file,int n,...);
 #if JRY_BL_VAR_ENABLE==1
 typedef struct __jry_bl_var jry_bl_var;
 #define 				jry_bl_var_get_string(this)					((jry_bl_string*)(this)->data.p)
-void					jry_bl_var_equal_string						(jry_bl_var *this,jry_bl_string *that);
-void					jry_bl_var_equal_string_light				(jry_bl_var *this,jry_bl_string *that);
-void					jry_bl_var_equal_string_light_move			(jry_bl_var *this,jry_bl_string *that);
+void					jry_bl_var_equal_string						(jry_bl_var *this,jry_bl_string *that,jry_bl_uint8 copytype);
 void					jry_bl_var_equal_string_pointer				(jry_bl_var *this,jry_bl_string *that);
 void					jry_bl_string_add_var						(jry_bl_string *this,jry_bl_var *that);
 void					jry_bl_string_equal_var						(jry_bl_string *this,jry_bl_var *that,jry_bl_uint8 cpt);

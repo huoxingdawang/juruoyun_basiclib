@@ -11,7 +11,7 @@ int main()
 	for(int i=0;i<5;i++)
 	{
 		jry_bl_string_equal_int64(&s1,i);
-		jry_bl_var_equal_string(&v1,&s1);	
+		jry_bl_var_equal_string(&v1,&s1,JRY_BL_COPY);	
 		jry_bl_link_list_add_var_light_move(&l1,&v1);
 		jry_bl_var_free(&v1);
 	}
