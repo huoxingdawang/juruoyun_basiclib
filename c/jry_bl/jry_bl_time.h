@@ -15,17 +15,17 @@
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
-typedef struct __jry_bl_time
-{
-	jry_bl_uint64 s;
-	jry_bl_uint16 ms;
-}jry_bl_time;
-void	jry_bl_time_init		(jry_bl_time *this);
-void	jry_bl_time_free		(jry_bl_time *this);
-void	jry_bl_time_clear		(jry_bl_time *this);
-void	jry_bl_time_now			(jry_bl_time *this);
-#define	jry_bl_time_minus(x,y)	(((x)->s-(y)->s)*1000+((x)->ms-(y)->ms))
-
+#include "jry_bl_string.h"
+extern jry_bl_int8 jry_bl_time_time_zone;
+typedef jry_bl_int64 jry_bl_time;
+void	jry_bl_time_init			(jry_bl_time *this);
+void	jry_bl_time_free			(jry_bl_time *this);
+void	jry_bl_time_clear			(jry_bl_time *this);
+void	jry_bl_time_now				(jry_bl_time *this);
+#define	jry_bl_time_to_unix(x)		(*(x))
+#define	jry_bl_time_from_unix(x,y)	((*(x))=(y))
+#define	jry_bl_time_minus(x,y)		((*(x))-(*(y)))
+void	jry_bl_time_to_string		(jry_bl_time *this,jry_bl_string *result);
 
 #if JRY_BL_USE_STDARG==1
 void	jry_bl_time_inits		(int n,...);
