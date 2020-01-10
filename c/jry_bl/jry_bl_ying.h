@@ -30,8 +30,10 @@ jry_bl_malloc_start()
 #define JRY_BL_PRINT_COLORFUL_PURPLE		4
 #define JRY_BL_PRINT_COLORFUL_GREEN			5
 #define JRY_BL_PRINT_COLORFUL_WHITE			6
+typedef char				jry_bl_int8;
 typedef unsigned char		jry_bl_uint8;
-typedef unsigned long		jry_bl_uint16;
+typedef short				jry_bl_int16;
+typedef unsigned short		jry_bl_uint16;
 typedef int					jry_bl_int32;
 typedef unsigned int		jry_bl_uint32;
 typedef long long			jry_bl_int64;
