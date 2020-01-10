@@ -40,24 +40,28 @@ inline void jry_bl_string_add_char(jry_bl_string *this,unsigned char in)
 	jry_bl_string_extend(this,1);
 	this->s[this->len++]=in;
 }
-inline void jry_bl_string_add_int64(jry_bl_string *this,jry_bl_int64 in)
+inline void jry_bl_string_add_int64_length(jry_bl_string *this,jry_bl_int64 in,jry_bl_uint8 len,char c)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_extend(this,22);
 	if(in<0)
 		jry_bl_string_add_char(this,'-'),in=-in;
-	jry_bl_string_add_uint64(this,in);
+	jry_bl_string_add_uint64_length(this,in,len,c);
 }
-void jry_bl_string_add_uint64(jry_bl_string *this,jry_bl_uint64 in)
+void jry_bl_string_add_uint64_length(jry_bl_string *this,jry_bl_uint64 in,jry_bl_uint8 len,char c)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	jry_bl_string_extend(this,(len>21?len:21));
 	if(in==0)
+	{
+		for(jry_bl_uint8 i=1;i<len;jry_bl_string_add_char1(this,c),++i);
 		return jry_bl_string_add_char(this,'0');
-	register int cnt=20;
+	}
+	int cnt=20;
 	unsigned char b[21];
 	b[cnt--]=0;
-	while(in)
-		b[cnt--]=in%10+'0',in/=10;
+	while(in)b[cnt--]=in%10+'0',in/=10;
+	for(jry_bl_uint8 i=19-cnt;i<len;jry_bl_string_add_char1(this,c),++i);
 	jry_bl_string_add_char_pointer(this,b+cnt+1);
 }
 void jry_bl_string_add_double_length(jry_bl_string *this,double in,unsigned char len)
@@ -66,14 +70,14 @@ void jry_bl_string_add_double_length(jry_bl_string *this,double in,unsigned char
 	if(len>15)
 		len=15;
 	jry_bl_string_extend(this,40);
-	register jry_bl_int64 inn=in;
+	jry_bl_int64 inn=in;
 	jry_bl_string_add_int64(this,inn);
 	jry_bl_string_add_char(this,'.');
 	if(in<0)
 		inn=-inn,in=-in;
 	in-=inn;
-	register jry_bl_uint64 ji=10;
-	register unsigned char i=0;
+	jry_bl_uint64 ji=10;
+	unsigned char i=0;
 	while(i<len&&(in*ji!=(jry_bl_uint64)(in*ji)))
 		ji=(ji<<3)+(ji<<1),i++;
 	jry_bl_string_add_uint64(this,((jry_bl_uint64)((in*ji+0.5)/10)));
@@ -144,7 +148,7 @@ jry_bl_int64 jry_bl_string_get_int64_start(const jry_bl_string *this,jry_bl_stri
 	jry_bl_string_size_type i=*start; 	
 	if(i>=this->len)
 		return 0;
-	register unsigned char c,f;register jry_bl_uint64 x=0;
+	unsigned char c,f;jry_bl_uint64 x=0;
 	for(f=0;(c=this->s[i])<'0'||c>'9'&&i<this->len;f=c=='-',++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	*start=i;
@@ -157,7 +161,7 @@ jry_bl_uint64 jry_bl_string_get_uint64_start(const jry_bl_string *this,jry_bl_st
 	jry_bl_string_size_type i=*start; 	
 	if(i>=this->len)
 		return 0;
-	register unsigned char c;register jry_bl_uint64 x=0;
+	unsigned char c;jry_bl_uint64 x=0;
 	for(;(c=this->s[i])<'0'||c>'9'&&i<this->len;++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	*start=i;
@@ -170,13 +174,13 @@ double jry_bl_string_get_double_start(const jry_bl_string *this,jry_bl_string_si
 	jry_bl_string_size_type i=*start;
 	if(i>=this->len)
 		return 0;
-	register unsigned char c,f;register jry_bl_uint64 x=0;
+	unsigned char c,f;jry_bl_uint64 x=0;
 	for(f=0;(c=this->s[i])<'0'||c>'9'&&i<this->len;f=c=='-',++i);
 	for(x=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	*start=i;
 	if(this->s[i]!='.'||i==this->len)
 		return (f?-x:x);
-	register jry_bl_uint64 ji=10,y;++i;
+	jry_bl_uint64 ji=10,y;++i;
 	for(c=this->s[i],y=c-'0',++i;(c=this->s[i])>='0'&&c<='9'&&i<this->len;y=(y<<3)+(y<<1)+c-'0',ji=(ji<<3)+(ji<<1),++i);
 	*start=i;
 	return f?-(x+((long double)y/ji)):(x+((long double)y/ji));
@@ -188,7 +192,7 @@ jry_bl_uint64 jry_bl_string_get_hex_start(const jry_bl_string *this,jry_bl_strin
 	jry_bl_string_size_type i=*start; 	
 	if(i>=this->len)
 		return 0;
-	register unsigned char c;register jry_bl_uint64 x=0;
+	unsigned char c;jry_bl_uint64 x=0;
 	for(;((c=this->s[i])<'0'||c>'9')&&(c<'a'||c>'f')&&(c<'A'||c>'F')&&i<this->len;++i);
 	for(x=((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0'))),++i;(((c=this->s[i])>='0'&&c<='9')||(c>='a'&&c<='f')||(c>='A'&&c<='F'))&&i<this->len;x=(x<<4)+((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0'))),++i);
 	*start=i;
@@ -238,7 +242,7 @@ jry_bl_string_size_type	jry_bl_string_find_char_start(const jry_bl_string *this,
 inline void jry_bl_string_print(const jry_bl_string *this,FILE * file)
 {
 	if(this==NULL||file==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	register jry_bl_string_size_type i=0;
+	jry_bl_string_size_type i=0;
 	/*clock_t __start=clock();*/
 	i+=fwrite(this->s+i,1<<10,(this->len-i)>>10,file)<<10;
 	for(;i<this->len;fputc(this->s[i++],file));
@@ -248,7 +252,7 @@ void jry_bl_string_view_ex(const jry_bl_string *this,FILE * file,char*str,int a,
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(tabs>=0)
-		for(register int i=0;i<tabs;++i,putc('\t',file));
+		for(int i=0;i<tabs;++i,putc('\t',file));
 	else
 		tabs=-tabs;
 	if(a>=0)
@@ -264,8 +268,8 @@ void jry_bl_string_add_file(jry_bl_string *this,FILE * file)
 	if(this==NULL||file==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	/*clock_t __start=clock();*/
 	fseek(file,0L,SEEK_END);
-	register unsigned char c;
-	register jry_bl_string_size_type size=ftell(file),i=0;
+	unsigned char c;
+	jry_bl_string_size_type size=ftell(file),i=0;
 	jry_bl_string_extend(this,size);
 	fseek(file,0L,SEEK_SET);
 	i+=fread(this->s+this->len+i,1<<10,(size-i)>>10,file)<<10;this->len+=i;
@@ -277,8 +281,8 @@ void jry_bl_string_add_file_end_by(jry_bl_string *this,FILE * file,unsigned char
 {
 	if(this==NULL||file==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	fseek(file,0L,SEEK_END);
-	register unsigned char c;
-	register jry_bl_string_size_type size=ftell(file),i=0;
+	unsigned char c;
+	jry_bl_string_size_type size=ftell(file),i=0;
 	jry_bl_string_extend(this,size);
 	fseek(file,0L,SEEK_SET);
 	while(i<size&&((c=fgetc(file))!=end))

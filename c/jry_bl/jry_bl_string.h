@@ -30,6 +30,7 @@ void					jry_bl_string_init									(jry_bl_string *this);
 void					jry_bl_string_free									(jry_bl_string *this);
 void					jry_bl_string_clear									(jry_bl_string *this);
 void					jry_bl_string_parse									(jry_bl_string *this);
+#define					jry_bl_string_set0(this)							jry_bl_string_set(this,jry_bl_string_get_length(this),0);
 #define					jry_bl_string_extend(a,b)							jry_bl_string_extend_to((a),(jry_bl_string_get_length((a))+(b)))
 void					jry_bl_string_extend_to								(jry_bl_string *this,jry_bl_string_size_type size);
 jry_bl_uint64			jry_bl_string_hash									(const jry_bl_string *this);
@@ -47,7 +48,10 @@ void					jry_bl_string_add_char_pointer_length				(jry_bl_string *this,unsigned 
 void					jry_bl_string_add_char								(jry_bl_string *this,unsigned char in);
 #define					jry_bl_string_add_char1(this,in)					(this)->s[(this)->len]=(in),++(this)->len
 void					jry_bl_string_add_int64								(jry_bl_string *this,jry_bl_int64 in);
-void					jry_bl_string_add_uint64							(jry_bl_string *this,jry_bl_uint64 in);
+#define					jry_bl_string_add_int64(this,in)					jry_bl_string_add_int64_length(this,in,0,0)
+void					jry_bl_string_add_int64_length						(jry_bl_string *this,jry_bl_int64 in,jry_bl_uint8 len,char c);
+#define					jry_bl_string_add_uint64(this,in)					jry_bl_string_add_uint64_length(this,in,0,0)
+void					jry_bl_string_add_uint64_length						(jry_bl_string *this,jry_bl_uint64 in,jry_bl_uint8 len,char c);
 #define					jry_bl_string_add_double(this,in)					jry_bl_string_add_double_length(this,in,10)
 void					jry_bl_string_add_double_length						(jry_bl_string *this,double in,unsigned char len);
 void					jry_bl_string_add_unicode_as_utf8					(jry_bl_string *this,unsigned long unicode);
