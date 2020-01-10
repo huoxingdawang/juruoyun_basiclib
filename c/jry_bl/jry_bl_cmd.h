@@ -7,26 +7,16 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JRY_BL_INCLUE_H
-#define __JRY_BL_INCLUE_H
-
-#include "jry_bl_config.h"
-#include "jry_bl_aes.h"
-#include "jry_bl_array.h"
-#include "jry_bl_base64.h"
-#include "jry_bl_cmd.h"
-#include "jry_bl_exception.h"
-#include "jry_bl_file.h"
-#include "jry_bl_hash_table.h"
-#include "jry_bl_link_list.h"
-#include "jry_bl_malloc.h"
-#include "jry_bl_md5.h"
-#include "jry_bl_sha1.h"
+#ifndef __JRY_BL_CMD_H
+#define __JRY_BL_CMD_H
+#include "jry_bl_cmd_config.h"
+#if JRY_BL_CMD_ENABLE==1
 #include "jry_bl_string.h"
-#include "jry_bl_time.h"
-#include "jry_bl_var.h"
-#include "jry_bl_ying.h"
+void	jry_bl_execute_cmd		(const jry_bl_string *cmd,jry_bl_string *result);
 
 
 
+
+
+#endif
 #endif

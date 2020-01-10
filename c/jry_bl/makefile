@@ -13,7 +13,7 @@ JRY_BL_EXLIB =
 else
 JRY_BL_EXLIB = 
 endif
-jry_bl					:jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_base64 jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_string jry_bl/jry_bl_sha1 jry_bl/jry_bl_var jry_bl/jry_bl_ying jry_bl/jry_bl_file jry_bl/jry_bl_time
+jry_bl					:jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_base64 jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_string jry_bl/jry_bl_sha1 jry_bl/jry_bl_var jry_bl/jry_bl_ying jry_bl/jry_bl_file jry_bl/jry_bl_time jry_bl/jry_bl_cmd
 	ar rc tmp$(H)jry_bl.a tmp$(H)jry_bl_*.o
 jry_bl/jry_bl_aes			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_aes.o jry_bl$(H)jry_bl_aes.c $(JRY_BL_EXLIB)
@@ -21,6 +21,8 @@ jry_bl/jry_bl_array			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_array.o jry_bl$(H)jry_bl_array.c $(JRY_BL_EXLIB)
 jry_bl/jry_bl_base64		:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_base64.o jry_bl$(H)jry_bl_base64.c	$(JRY_BL_EXLIB)
+jry_bl/jry_bl_cmd			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string
+	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_cmd.o jry_bl$(H)jry_bl_cmd.c	$(JRY_BL_EXLIB)
 jry_bl/jry_bl_exception		:jry_bl/jry_bl_ying 
 	$(CC) $(EX) -c -std=c99 -o tmp$(H)jry_bl_exception.o jry_bl$(H)jry_bl_exception.c $(JRY_BL_EXLIB)
 jry_bl/jry_bl_file			:jry_bl/jry_bl_ying jry_bl/jry_bl_exception jry_bl/jry_bl_malloc jry_bl/jry_bl_string jry_bl/jry_bl_var jry_bl/jry_bl_hash_table

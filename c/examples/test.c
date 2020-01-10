@@ -4,12 +4,10 @@ int main()
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jry_bl_start();
 	jry_bl_string s1;jry_bl_string_inits(1,&s1);
-//	unsigned char s[]={0X5f,0X90,0};
-//	unsigned char s[100]="徐";
-	jry_bl_string_add_unicode_as_utf8(&s1,0X5F90);
-	jry_bl_string_add_unicode_as_utf8(&s1,0X548C);
+	static const jry_bl_string ping=jry_bl_string_const("ping 127.0.0.1",14);
 
 
+	jry_bl_execute_cmd(&ping,&s1);
 
 
 	jry_bl_string_view(&s1,stderr);

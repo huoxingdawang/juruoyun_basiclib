@@ -3,8 +3,8 @@
 #include "include.h"
 #include <stdlib.h>
 #ifdef __linux__
-#define filename "testfiles/bigstring.out"
+#define filename "testfiles/test.txt"
 #else
-#define filename "testfiles\\bigstring.out"
+#define filename "testfiles\\test.txt"
 #endif
 #endif
