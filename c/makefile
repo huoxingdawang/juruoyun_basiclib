@@ -17,7 +17,7 @@ else
 	H = \\
 	rm = del
 endif
-all:jry_blaes array base64 file json hash_table link_list md5 stream string time sha1 test var
+all:jry_bl aes array base64 file json hash_table link_list md5 stream string time sha1 test var
 clean:
 	$(rm) tmp$(H)*.o /s
 	$(rm) tmp$(H)*.a /s
