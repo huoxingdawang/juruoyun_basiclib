@@ -244,6 +244,7 @@ void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a,
 	}
 	if(tabs==jry_bl_view_default_tabs_num)fputc('\n',file);
 }
+inline void	jry_bl_var_equal_link_list(jry_bl_var *this,jry_bl_link_list *that,jry_bl_uint8 copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LINK_LIST);jry_bl_link_list_copy(this->data.p,that,copytype);}
 #if JRY_BL_USE_STDARG==1
 inline void jry_bl_link_list_inits		(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_init(va_arg(valist,jry_bl_link_list*));va_end(valist);}
 inline void jry_bl_link_list_node_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_node_init(va_arg(valist,jry_bl_link_list_node*));va_end(valist);}

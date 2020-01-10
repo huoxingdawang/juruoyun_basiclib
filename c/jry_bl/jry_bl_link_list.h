@@ -30,6 +30,7 @@ typedef struct __jry_bl_link_list
 #define 				jry_bl_var_get_link_list(this)					((this)->data.lst)
 
 #define					jry_bl_link_list_flag_light_copy(this)			((this)->light_copy)
+#define					jry_bl_link_list_get_length(this)				((this)->length)
 
 void					jry_bl_link_list_init							(jry_bl_link_list *this);
 void					jry_bl_link_list_node_init						(jry_bl_link_list_node *this);
@@ -71,7 +72,7 @@ void					jry_bl_link_list_merge							(jry_bl_link_list *this,jry_bl_link_list *
 void					jry_bl_link_list_merge_light					(jry_bl_link_list *this,jry_bl_link_list *that);
 #define					jry_bl_link_list_view(x,y) 						jry_bl_link_list_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void 					jry_bl_link_list_view_ex						(jry_bl_link_list *this,FILE * file,char*str,int a,int tabs);
-
+void					jry_bl_var_equal_link_list						(jry_bl_var *this,jry_bl_link_list *that,jry_bl_uint8 copytype);
 
 
 #if JRY_BL_USE_STDARG==1
