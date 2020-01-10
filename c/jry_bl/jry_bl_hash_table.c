@@ -168,6 +168,11 @@ void jry_bl_hash_table_clear(jry_bl_hash_table *this)
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(this->len==0||this->data==NULL)
 		return;
+	if(this->size==0)
+	{
+		this->len=0,this->nxt=0,this->data=NULL;
+		return;
+	}	
 	for(register st i=0;i<this->size;jry_bl_hash_table_data_free(&this->data[i]),((st*)this->data)[-i-1]=((jry_bl_int64)-1),++i);
 	this->len=0;
 	this->nxt=0;
@@ -317,6 +322,7 @@ void jry_bl_hash_table_view_ex(const jry_bl_hash_table *this,FILE * file,char*st
 		jry_bl_var_view_ex(&i->v,file,"",-1,-(tabs+1));
 	}
 }
+inline void	jry_bl_var_equal_hash_table(jry_bl_var *this,jry_bl_hash_table *that,jry_bl_uint8 copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_HASH_TABLE);jry_bl_hash_table_copy(this->data.p,that,copytype);}
 #if JRY_BL_USE_STDARG==1
 inline void jry_bl_hash_table_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_hash_table_init(va_arg(valist,jry_bl_hash_table*));va_end(valist);}
 inline void jry_bl_hash_table_frees	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_hash_table_free(va_arg(valist,jry_bl_hash_table*));va_end(valist);}

@@ -71,6 +71,7 @@ void					jry_bl_hash_table_rehash							(jry_bl_hash_table *this);
 #define 				jry_bl_hash_table_insert_str_false(x,k,s1,v2)		jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_var_equal_false((v2));jry_bl_hash_table_insert((x),(s1),(v2),(JRY_BL_COPY_LIGHT_MOVE),(JRY_BL_COPY_LIGHT_MOVE));	
 #define					jry_bl_hash_table_view(x,y) 						jry_bl_hash_table_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void 					jry_bl_hash_table_view_ex							(const jry_bl_hash_table *this,FILE * file,char*str,int a,int tabs);
+void					jry_bl_var_equal_hash_table							(jry_bl_var *this,jry_bl_hash_table *that,jry_bl_uint8 copytype);
 #if JRY_BL_USE_STDARG==1
 void					jry_bl_hash_table_inits								(int n,...);
 void					jry_bl_hash_table_frees								(int n,...);
