@@ -9,7 +9,7 @@
 	 See the Mulan PSL v1 for more details.*/
 #include "jry_bl_sha1.h"
 #if JRY_BL_SHA1_ENABLE==1
-void jry_bl_sha1_process(unsigned int hb[5],unsigned int *mbc,unsigned char mb[64])
+void __jry_bl_sha1_process(unsigned int hb[5],unsigned int *mbc,unsigned char mb[64])
 {
 	const unsigned int K[]={0x5A827999,0x6ED9EBA1,0x8F1BBCDC,0xCA62C1D6};
 	unsigned int W[80],A,B,C,D,E,tmp;
@@ -37,7 +37,7 @@ void jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 		if(ll==0)
 			lh++;
 		if(mbc==64)
-			jry_bl_sha1_process(hb,&mbc,mb);
+			__jry_bl_sha1_process(hb,&mbc,mb);
 		input++;
 	}
 	if(mbc>55)
@@ -45,7 +45,7 @@ void jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 		mb[mbc++]=0x80;
 		while(mbc<64)
 			mb[mbc++]=0;
-		jry_bl_sha1_process(hb,&mbc,mb);
+		__jry_bl_sha1_process(hb,&mbc,mb);
 		while(mbc<56)
 			mb[mbc++]=0;
 	}
@@ -57,7 +57,7 @@ void jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 	}
 	mb[56]=lh>>24,mb[57]=lh>>16,mb[58]=lh>>8,mb[59]=lh;
 	mb[60]=ll>>24,mb[61]=ll>>16,mb[62]=ll>>8,mb[63]=ll;
-	jry_bl_sha1_process(hb,&mbc,mb);
+	__jry_bl_sha1_process(hb,&mbc,mb);
 	for(register char i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),jry_bl_string_add_hex8(out,mbc),++i);
 }
 
