@@ -13,6 +13,7 @@
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_ying.h"
 
+#define JRY_BL_STREAM_EXCEED_LENGTH 64
 
 
 #endif
