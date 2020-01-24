@@ -29,5 +29,5 @@ int main()
 	
 	jry_bl_time_frees(2,&t1,&t2);
 	jry_bl_string_frees(3,&s1,&s2,&cmd);
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size); 	
+	jry_bl_stop(); 	
 }
