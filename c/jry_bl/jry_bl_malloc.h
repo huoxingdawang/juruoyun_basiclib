@@ -17,9 +17,12 @@
 #include <malloc.h>
 #include <string.h>
 void jry_bl_malloc_start();
+void jry_bl_malloc_stop();
 #if JRY_BL_MALLOC_DEBUG_MODE==1
 extern size_t __jry_bl_malloced_size;
-#define jry_bl_malloced_size ((jry_bl_int64)__jry_bl_malloced_size)
+extern size_t __jry_bl_malloced_max_size;
+#define jry_bl_malloced_size		((jry_bl_int64)__jry_bl_malloced_size)
+#define jry_bl_malloced_max_size	((jry_bl_int64)__jry_bl_malloced_max_size)
 #else
 #define jry_bl_malloced_size ((jry_bl_int64)0)
 #endif

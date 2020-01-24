@@ -10,12 +10,21 @@
 #include "jry_bl_malloc.h"
 #if JRY_BL_MALLOC_ENABLE==1
 #if JRY_BL_MALLOC_DEBUG_MODE==1
+#include <stdio.h>
 size_t __jry_bl_malloced_size=0;
+size_t __jry_bl_malloced_max_size=0;
 #endif
 void jry_bl_malloc_start()
 {
 #if JRY_BL_MALLOC_DEBUG_MODE==1
 	__jry_bl_malloced_size=0;
+	__jry_bl_malloced_max_size=0;
+#endif	
+}
+void jry_bl_malloc_stop()
+{
+#if JRY_BL_MALLOC_DEBUG_MODE==1
+	printf("\nMEMEORY:%lld\nMAX MEMEORY:%lld\n",jry_bl_malloced_size,jry_bl_malloced_max_size); 
 #endif	
 }
 void* jry_bl_malloc(size_t size)
@@ -25,6 +34,7 @@ void* jry_bl_malloc(size_t size)
 		jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);	
 #if JRY_BL_MALLOC_DEBUG_MODE==1
 	__jry_bl_malloced_size+=jry_bl_malloc_size(ptr);
+	__jry_bl_malloced_max_size=__jry_bl_malloced_max_size>__jry_bl_malloced_size?__jry_bl_malloced_max_size:__jry_bl_malloced_size;
 #endif
 	return ptr;
 }
@@ -47,6 +57,7 @@ void* jry_bl_realloc(void* ptr,size_t size)
 #if JRY_BL_MALLOC_DEBUG_MODE==1
 	__jry_bl_malloced_size-=jry_bl_malloc_size(ptr);
 	__jry_bl_malloced_size+=jry_bl_malloc_size(ptr2);
+	__jry_bl_malloced_max_size=__jry_bl_malloced_max_size>__jry_bl_malloced_size?__jry_bl_malloced_max_size:__jry_bl_malloced_size;
 #endif		
 	return ptr2;
 #else
