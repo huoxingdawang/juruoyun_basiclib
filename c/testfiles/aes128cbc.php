@@ -10,7 +10,7 @@
 		$fp=fopen("testfiles/aes_128_cbc_encode.ans","w");
 		fwrite($fp,base64_encode(openssl_encrypt($str,"AES-128-CBC","0CoJUm6Qyw8W8jud",OPENSSL_RAW_DATA,"0CoJUm6Qyw8W8jud")));
 		fclose($fp);
-		echo 'PHP AES 128 CBC encode used time:'.((msectime()-$start)/1000)."s\n";
+		echo 'PHP AES 128 CBC encode used time:'.((msectime()-$start))."ms\n";
 	}	
 	if(file_exists("testfiles/aes_128_cbc_encode.out"))
 	{
@@ -21,5 +21,5 @@
 		$fp=fopen("testfiles/aes_128_cbc_decode.ans","w");
 		fwrite($fp,openssl_decrypt(base64_decode($str),"AES-128-CBC","0CoJUm6Qyw8W8jud",OPENSSL_RAW_DATA,"0CoJUm6Qyw8W8jud"));
 		fclose($fp);		
-		echo 'PHP AES 128 CBC decode used time:'.((msectime()-$start)/1000)."s\n";
+		echo 'PHP AES 128 CBC decode used time:'.((msectime()-$start))."ms\n";
 	}	

@@ -9,5 +9,5 @@
 		$fp=fopen("testfiles/sha1_encode.ans","w");
 		fwrite($fp,sha1($str));
 		fclose($fp);
-		echo 'PHP SHA1 used time:'.((msectime()-$start)/1000)."s\n";		
+		echo 'PHP SHA1 used time:'.((msectime()-$start))."ms\n";		
 	}

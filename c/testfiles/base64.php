@@ -9,7 +9,7 @@
 		$fp=fopen("testfiles/base64_encode.ans","w");
 		fwrite($fp,base64_encode($str));
 		fclose($fp);
-		echo 'BASE64 encode used time:'.((msectime()-$start)/1000)."s\n";		
+		echo 'BASE64 encode used time:'.((msectime()-$start))."ms\n";		
 	}
 	if(file_exists("testfiles/base64_encode.out"))
 	{
@@ -20,5 +20,5 @@
 		$fp=fopen("testfiles/base64_decode.ans","w");
 		fwrite($fp,base64_decode($str));
 		fclose($fp);		
-		echo 'BASE64 decode used time:'.((msectime()-$start)/1000)."s\n";		
+		echo 'BASE64 decode used time:'.((msectime()-$start))."ms\n";		
 	}
