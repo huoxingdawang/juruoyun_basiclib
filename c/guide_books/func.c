@@ -23,7 +23,7 @@ jry_bl_link_list_node_delink
 jry_bl_link_list_insert_node
 jry_bl_link_list_insert_var
 jry_bl_link_list_insert_var_light
-jry_bl_link_list_insert_var_light_move
+jry_bl_link_list_insert_var_move
 jry_bl_link_list_delete_node
 jry_bl_link_list_swap_node
 jry_bl_link_list_delete_head
@@ -31,7 +31,7 @@ jry_bl_link_list_delete_tail
 jry_bl_link_list_add_node
 jry_bl_link_list_add_var
 jry_bl_link_list_add_var_light
-jry_bl_link_list_add_var_light_move
+jry_bl_link_list_add_var_move
 jry_bl_link_list_data
 jry_bl_link_list_foreach
 jry_bl_link_list_foreach_del
@@ -44,7 +44,7 @@ jry_bl_link_list_if_equal_big
 jry_bl_link_list_copy
 jry_bl_link_list_equal
 jry_bl_link_list_equal_light
-jry_bl_link_list_equal_light_move
+jry_bl_link_list_equal_move
 jry_bl_link_list_to_json
 jry_bl_link_list_from_json
 jry_bl_link_list_from_json_start
@@ -105,10 +105,10 @@ jry_bl_string_copy
 jry_bl_string_equal_char_pointer_light
 jry_bl_string_equal_string
 jry_bl_string_equal_string_light
-jry_bl_string_equal_string_light_move
+jry_bl_string_equal_string_light_copy
 jry_bl_string_equal
 jry_bl_string_equal_light
-jry_bl_string_equal_light_move
+jry_bl_string_equal_move
 jry_bl_string_equal_char_pointer
 jry_bl_string_equal_char
 jry_bl_string_equal_int64
@@ -141,7 +141,7 @@ jry_bl_var_init_as
 jry_bl_var_copy
 jry_bl_var_equal
 jry_bl_var_equal_light
-jry_bl_var_equal_light_move
+jry_bl_var_equal_light_copy
 jry_bl_var_space_ship
 jry_bl_var_if_big
 jry_bl_var_if_equal
@@ -162,12 +162,12 @@ jry_bl_var_equal_true
 jry_bl_var_equal_false
 jry_bl_var_equal_string
 jry_bl_var_equal_string_light
-jry_bl_var_equal_string_light_move
+jry_bl_var_equal_string_light_copy
 jry_bl_var_equal_string_pointer
 jry_bl_var_get_string
 jry_bl_string_equal_var
 jry_bl_string_equal_var_light
-jry_bl_string_equal_var_light_move
+jry_bl_string_equal_var_light_copy
 jry_bl_var_turn
 jry_bl_var_to_json
 jry_bl_var_from_json_start
