@@ -18,6 +18,6 @@ int main()
 	
 	jry_bl_string_frees(5,&s1,&s2,&s3,&s4,&s5);
 	jry_bl_time_frees(2,&t1,&t2);	
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size); 
+	jry_bl_stop(); 
 	return 0;
 }

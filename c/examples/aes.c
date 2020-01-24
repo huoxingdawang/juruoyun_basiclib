@@ -47,5 +47,5 @@ int main()
 	printf("AES 128 CBC with php decode:%s\n",((jry_bl_string_space_ship(&s3,&s5)==0)?"YES":"NO"));
 	jry_bl_string_frees(7,&s1,&s2,&s3,&s4,&s5,&s6,&s7);
 	jry_bl_time_frees(2,&t1,&t2);	
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);	
+	jry_bl_stop();	
 }

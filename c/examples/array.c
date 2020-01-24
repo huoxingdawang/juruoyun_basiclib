@@ -6,5 +6,5 @@ int main()
 	jry_bl_start();
 	
 	
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size); 	
+	jry_bl_stop(); 	
 }
