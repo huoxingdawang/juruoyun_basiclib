@@ -21,8 +21,9 @@
 #if JRY_BL_FILE_ENABLE==1	
 #include "jry_bl_file.h"
 #endif
-#define jry_bl_var_get_type_low(x)	((x->f.f.type)&(1<<jry_bl_var_type_bit))
-#define jry_bl_var_get_type_high(x)	((x->f.f.type)>>jry_bl_var_type_bit)
+#define ghl(x)		((x->type)&(1<<jry_bl_var_type_bit))
+#define gth(x)		((x->type)>>jry_bl_var_type_bit)
+#define gop(x,y)	jry_bl_var_functions_struct *x=((gth((y))!=0)?&jry_bl_var_fs[gth((y))][ghl((y))]:((((y)->type>=9)?(&jry_bl_var_functions[(y)->type-9]):NULL)))
 const jry_bl_var_functions_struct jry_bl_var_functions[5]=
 {
 	[JRY_BL_VAR_TYPE_VAR-9]			={(sizeof (jry_bl_var)),jry_bl_var_init,jry_bl_var_free,jry_bl_var_copy,jry_bl_var_space_ship,jry_bl_var_to_json_ex,jry_bl_var_view_ex},
@@ -44,116 +45,106 @@ jry_bl_var_functions_struct* jry_bl_var_fs[jry_bl_var_fs_size]={jry_bl_var_funct
 inline void jry_bl_var_init(jry_bl_var *this)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	this->f.ff=(int)0;
-	this->f.f.type=JRY_BL_VAR_TYPE_NULL;
+	this->flags=(int)0;
+	this->type=JRY_BL_VAR_TYPE_NULL;
 }
 inline void jry_bl_var_init_as(jry_bl_var *this,jry_bl_var_type_type type)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_var_free(this);
-	this->f.f.type=type;
-	if(jry_bl_var_get_type_high(this)!=0)
-		this->data.p=jry_bl_malloc(jry_bl_var_fs[jry_bl_var_get_type_high(this)][jry_bl_var_get_type_low(this)].size),jry_bl_var_fs[jry_bl_var_get_type_high(this)][jry_bl_var_get_type_low(this)].init(this->data.p);
-	else
-		if(this->f.f.type>=9)
-			this->data.p=jry_bl_malloc(jry_bl_var_functions[this->f.f.type-9].size),jry_bl_var_functions[this->f.f.type-9].init(this->data.p);
+	this->type=type;
+	gop(op,this);
+	if(op==NULL||op->init==NULL)return;
+	this->data.p=jry_bl_malloc(op->size);
+	this->pointer=0;
+	op->init(this->data.p);
 }
 void jry_bl_var_free(jry_bl_var *this)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(jry_bl_var_get_type_high(this)!=0)
-		jry_bl_var_fs[jry_bl_var_get_type_high(this)][jry_bl_var_get_type_low(this)].free(this->data.p);
-	else
-		if(this->f.f.type>=9)
-			jry_bl_var_functions[this->f.f.type-9].free(this->data.p);
-	if((!this->f.f.pointer)&&this->f.f.type>=9)
+	gop(op,this);
+	if(op==NULL||op->free==NULL)return;
+	op->free(this->data.p);
+	if((!this->pointer)&&this->type>=9)
 		jry_bl_free(this->data.p);
-	this->f.f.type=JRY_BL_VAR_TYPE_NULL;
-	this->f.f.pointer=0;
+	this->type=JRY_BL_VAR_TYPE_NULL;
+	this->pointer=0;
 }
-void jry_bl_var_copy(jry_bl_var *this,jry_bl_var *that,jry_bl_uint8 copytype)
+void jry_bl_var_copy(jry_bl_var *this,jry_bl_var *that,jry_bl_copy_type copytype)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_var_init_as(this,that->f.f.type);
-	if(jry_bl_var_get_type_high(this)!=0)
-		jry_bl_var_fs[jry_bl_var_get_type_high(this)][jry_bl_var_get_type_low(this)].copy(this->data.p,that->data.p,copytype);
-	else
-		if(this->f.f.type>=9)
-			jry_bl_var_functions[this->f.f.type-9].copy(this->data.p,that->data.p,copytype);
-		else
-			jry_bl_memory_copy(&this->data,&that->data,sizeof that->data);
-	this->f.ff=that->f.ff;	
-	
+	jry_bl_var_init_as(this,that->type);
+	this->flags=that->flags;
+	gop(op,this);
+	if(op==NULL||op->move==NULL||this->pointer)
+		return jry_bl_memory_copy(&this->data,&that->data,sizeof that->data);
+	op->move(this->data.p,that->data.p,copytype);
 }
 char jry_bl_var_space_ship(const jry_bl_var *this,const jry_bl_var *that)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(this==that)
-		return 0;	
-	if(this->f.f.type==that->f.f.type)
+		return 0;
+	if(this->type==that->type)
 	{
-		if(jry_bl_var_get_type_high(this)!=0)
-			jry_bl_var_fs[jry_bl_var_get_type_high(this)][jry_bl_var_get_type_low(this)].space_ship(this->data.p,that->data.p);
-		else
-			if(this->f.f.type>=9)
-				jry_bl_var_functions[this->f.f.type-9].space_ship(this->data.p,that->data.p);
-			else		
-				switch(this->f.f.type)
-				{
-					case JRY_BL_VAR_TYPE_INT64			:return ((this->data.ll<that->data.ll)?(-1):((this->data.ll>that->data.ll)));break;
-					case JRY_BL_VAR_TYPE_UINT64	:return ((this->data.ll<that->data.ull)?(-1):((this->data.ll>that->data.ull)));break;
-					case JRY_BL_VAR_TYPE_DOUBLE				:return ((this->data.d<that->data.d)?(-1):((this->data.d>that->data.d)));break;
-					case JRY_BL_VAR_TYPE_CHAR				:return ((this->data.c<that->data.c)?(-1):((this->data.c>that->data.c)));break;
-				}
+		gop(op,this);
+		if(op==NULL||op->space_ship==NULL)
+			switch(this->type)
+			{
+				case JRY_BL_VAR_TYPE_INT64	:return ((this->data.ll<that->data.ll)?(-1):((this->data.ll>that->data.ll)));break;
+				case JRY_BL_VAR_TYPE_UINT64	:return ((this->data.ll<that->data.ull)?(-1):((this->data.ll>that->data.ull)));break;
+				case JRY_BL_VAR_TYPE_DOUBLE	:return ((this->data.d<that->data.d)?(-1):((this->data.d>that->data.d)));break;
+				case JRY_BL_VAR_TYPE_CHAR	:return ((this->data.c<that->data.c)?(-1):((this->data.c>that->data.c)));break;
+				default						:return 1;break;
+			}
+		op->space_ship(this->data.p,that->data.p);	
 	}
 	else
-		return (this->f.f.type>that->f.f.type)?1:-1;
+		return (this->type>that->type)?1:-1;
 }
 #if JRY_BL_STRING_ENABLE==1
 void jry_bl_var_to_json_ex(const jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 type)
 {
 	if(this==NULL||result==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(jry_bl_var_get_type_high(this)!=0)
-		jry_bl_var_fs[jry_bl_var_get_type_high(this)][jry_bl_var_get_type_low(this)].to_json(this->data.p,result,type);
-	else
-		if(this->f.f.type>=9)
-			jry_bl_var_functions[this->f.f.type-9].to_json(this->data.p,result,type);
-		else
+	gop(op,this);
+	if(op==NULL||op->to_json==NULL)
+	{
+		long double tmp;
+		if(type==1)
 		{
-			long double tmp;
-			if(type==1)
+			switch(this->type)
 			{
-				switch(this->f.f.type)
-				{
-					case JRY_BL_VAR_TYPE_NULL	:(*((jry_bl_string_size_type*)result))+=4 ;break;
-					case JRY_BL_VAR_TYPE_TRUE	:(*((jry_bl_string_size_type*)result))+=1 ;break;
-					case JRY_BL_VAR_TYPE_FALSE	:(*((jry_bl_string_size_type*)result))+=1 ;break;			
-					case JRY_BL_VAR_TYPE_DOUBLE	:(*((jry_bl_string_size_type*)result))+=40;break;
-					case JRY_BL_VAR_TYPE_CHAR	:(*((jry_bl_string_size_type*)result))+=3 ;break;
-					case JRY_BL_VAR_TYPE_INT64	:
-						tmp=this->data.ll;
-						if(((jry_bl_int64)tmp)<0)
-							tmp=(-((jry_bl_int64)tmp)),++(*((jry_bl_string_size_type*)result));
-						do{++(*((jry_bl_string_size_type*)result));}while(tmp=(((jry_bl_int64)tmp)/10));
-						break;
-					case JRY_BL_VAR_TYPE_UINT64	:
-						tmp=this->data.ll;
-						do{++(*((jry_bl_string_size_type*)result));}while(tmp=(((jry_bl_uint64)tmp)/10));
-						break;
-				}
-				return;
+				case JRY_BL_VAR_TYPE_NULL	:(*((jry_bl_string_size_type*)result))+=4 ;break;
+				case JRY_BL_VAR_TYPE_TRUE	:(*((jry_bl_string_size_type*)result))+=1 ;break;
+				case JRY_BL_VAR_TYPE_FALSE	:(*((jry_bl_string_size_type*)result))+=1 ;break;			
+				case JRY_BL_VAR_TYPE_DOUBLE	:(*((jry_bl_string_size_type*)result))+=40;break;
+				case JRY_BL_VAR_TYPE_CHAR	:(*((jry_bl_string_size_type*)result))+=3 ;break;
+				case JRY_BL_VAR_TYPE_INT64	:
+					tmp=this->data.ll;
+					if(((jry_bl_int64)tmp)<0)
+						tmp=(-((jry_bl_int64)tmp)),++(*((jry_bl_string_size_type*)result));
+					do{++(*((jry_bl_string_size_type*)result));}while(tmp=(((jry_bl_int64)tmp)/10));
+					break;
+				case JRY_BL_VAR_TYPE_UINT64	:
+					tmp=this->data.ll;
+					do{++(*((jry_bl_string_size_type*)result));}while(tmp=(((jry_bl_uint64)tmp)/10));
+					break;
 			}
-			switch(this->f.f.type)
-			{
-				case JRY_BL_VAR_TYPE_NULL	:					;jry_bl_string_add_char_pointer	(result,"null")			;break;
-				case JRY_BL_VAR_TYPE_INT64	:tmp=this->data.ll	;jry_bl_string_add_int64		(result,tmp)			;break;
-				case JRY_BL_VAR_TYPE_UINT64	:tmp=this->data.ull	;jry_bl_string_add_uint64		(result,tmp)			;break;
-				case JRY_BL_VAR_TYPE_DOUBLE	:tmp=this->data.d	;jry_bl_string_add_double		(result,tmp)			;break;
-				case JRY_BL_VAR_TYPE_TRUE	:					;jry_bl_string_add_uint64		(result,1)				;break;
-				case JRY_BL_VAR_TYPE_FALSE	:					;jry_bl_string_add_uint64		(result,0)				;break;
-				case JRY_BL_VAR_TYPE_CHAR	:					;jry_bl_string_add_char1(result,'"');jry_bl_string_add_char1(result,this->data.c);jry_bl_string_add_char1(result,'"');break;
-			}
+			return;
 		}
+		switch(this->type)
+		{
+			case JRY_BL_VAR_TYPE_NULL	:					;jry_bl_string_add_char_pointer	(result,"null")			;break;
+			case JRY_BL_VAR_TYPE_INT64	:tmp=this->data.ll	;jry_bl_string_add_int64		(result,tmp)			;break;
+			case JRY_BL_VAR_TYPE_UINT64	:tmp=this->data.ull	;jry_bl_string_add_uint64		(result,tmp)			;break;
+			case JRY_BL_VAR_TYPE_DOUBLE	:tmp=this->data.d	;jry_bl_string_add_double		(result,tmp)			;break;
+			case JRY_BL_VAR_TYPE_TRUE	:					;jry_bl_string_add_uint64		(result,1)				;break;
+			case JRY_BL_VAR_TYPE_FALSE	:					;jry_bl_string_add_uint64		(result,0)				;break;
+			case JRY_BL_VAR_TYPE_CHAR	:					;jry_bl_string_add_char1(result,'"');jry_bl_string_add_char1(result,this->data.c);jry_bl_string_add_char1(result,'"');break;
+		}
+	}
+	else
+		op->to_json(this->data.p,result,type);
 }
 jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,const jry_bl_string *in,jry_bl_string_size_type start)
 {
@@ -209,34 +200,32 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,const jry_bl
 void jry_bl_var_view_ex(const jry_bl_var *this,FILE * file,char*str,int a,int tabs)
 {
 	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(jry_bl_var_get_type_high(this)!=0)
-		jry_bl_var_fs[jry_bl_var_get_type_high(this)][jry_bl_var_get_type_low(this)].view_ex(this->data.p,file,str,a,tabs);
-	else
-		if(this->f.f.type>=9)
-			jry_bl_var_functions[this->f.f.type-9].view_ex(this->data.p,file,str,a,tabs);
+	gop(op,this);
+	if(op==NULL||op->view_ex==NULL)
+	{
+		char ss[20]={0};
+		if(tabs>=0)
+			for(register int i=0;i<tabs;++i,putc('\t',file));
 		else
-		{
-			char ss[20]={0};
-			if(tabs>=0)
-				for(register int i=0;i<tabs;++i,putc('\t',file));
-			else
-				tabs=-tabs;
-			if(a>=0)
-				sprintf(ss,"%s %d",str,a);
-			switch(this->f.f.type)
-			{		
-				case JRY_BL_VAR_TYPE_UNUSE	:fprintf(file,"unuse             %s",ss)											;break;
-				case JRY_BL_VAR_TYPE_NULL	:fprintf(file,"null              %s",ss)											;break;
-				case JRY_BL_VAR_TYPE_INT64	:fprintf(file,"int64             %s:%lld",ss,this->data.ll)							;break;
-				case JRY_BL_VAR_TYPE_UINT64	:fprintf(file,"uint64            %s:%lld",ss,this->data.ull)						;break;
-				case JRY_BL_VAR_TYPE_DOUBLE	:fprintf(file,"double            %s:%lf",ss,this->data.d)							;break;
-				case JRY_BL_VAR_TYPE_TRUE	:fprintf(file,"true              %s",ss)											;break;
-				case JRY_BL_VAR_TYPE_FALSE	:fprintf(file,"false             %s",ss)											;break;
-				case JRY_BL_VAR_TYPE_CHAR	:fprintf(file,"char              %s:%c",ss,this->data.c)							;break;
-				case JRY_BL_VAR_TYPE_POINTER:fprintf(file,"pointer           %s:0X%llX",ss,((jry_bl_pointer_int)this->data.p))	;break;
-			}
-			fputc('\n',file);		
+			tabs=-tabs;
+		if(a>=0)
+			sprintf(ss,"%s %d",str,a);
+		switch(this->type)
+		{		
+			case JRY_BL_VAR_TYPE_UNUSE	:fprintf(file,"unuse             %s",ss)											;break;
+			case JRY_BL_VAR_TYPE_NULL	:fprintf(file,"null              %s",ss)											;break;
+			case JRY_BL_VAR_TYPE_INT64	:fprintf(file,"int64             %s:%lld",ss,this->data.ll)							;break;
+			case JRY_BL_VAR_TYPE_UINT64	:fprintf(file,"uint64            %s:%lld",ss,this->data.ull)						;break;
+			case JRY_BL_VAR_TYPE_DOUBLE	:fprintf(file,"double            %s:%lf",ss,this->data.d)							;break;
+			case JRY_BL_VAR_TYPE_TRUE	:fprintf(file,"true              %s",ss)											;break;
+			case JRY_BL_VAR_TYPE_FALSE	:fprintf(file,"false             %s",ss)											;break;
+			case JRY_BL_VAR_TYPE_CHAR	:fprintf(file,"char              %s:%c",ss,this->data.c)							;break;
+			case JRY_BL_VAR_TYPE_POINTER:fprintf(file,"pointer           %s:0X%llX",ss,((jry_bl_pointer_int)this->data.p))	;break;
 		}
+		fputc('\n',file);		
+	}
+	else
+		op->view_ex(this->data.p,file,str,a,tabs);
 }
 #if JRY_BL_USE_STDARG==1
 inline void jry_bl_var_inits(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_var_init(va_arg(valist,jry_bl_var*));va_end(valist);}

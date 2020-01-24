@@ -19,7 +19,7 @@
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
-#define					jry_bl_var_flag_pointer(this)					((this)->f.f.pointer)
+#define					jry_bl_var_flag_pointer(this)					((this)->pointer)
 
 #define JRY_BL_VAR_TYPE_UNUSE		0
 #define JRY_BL_VAR_TYPE_NULL		1
@@ -55,13 +55,13 @@ typedef struct __jry_bl_var
 	}data;
 	union
 	{
-		int ff;
+		int flags;
 		struct
 		{
 			jry_bl_var_type_type type;
 			jry_bl_uint8 pointer:1;
-		}f;
-	}f;
+		};
+	};
 }jry_bl_var;
 
 typedef struct __jry_bl_var_functions_struct
@@ -69,7 +69,7 @@ typedef struct __jry_bl_var_functions_struct
 	size_t size;
 	void (*init)(void*);
 	void (*free)(void*);
-	void (*copy)(void*,void*,jry_bl_uint8);
+	void (*move)(void*,void*,jry_bl_copy_type);
 	char (*space_ship)(const void*,const void*);
 	void (*to_json)(void*,jry_bl_string*,jry_bl_uint8);
 	void (*view_ex)(const void*,FILE*,char*,int,int);
@@ -84,7 +84,7 @@ extern jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size]
 														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].free=c,	\
 														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].equal=d,	\
 														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].equal_light=e,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].equal_light_move=f,	\
+														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].equal_light_copy=f,	\
 														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].space_ship=g,	\
 														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].to_json=h,	\
 														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].view_ex=i
@@ -92,11 +92,11 @@ extern jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size]
 void					jry_bl_var_init						(jry_bl_var *this);
 void					jry_bl_var_free						(jry_bl_var *this);
 void					jry_bl_var_init_as					(jry_bl_var *this,jry_bl_var_type_type type);
-void					jry_bl_var_copy						(jry_bl_var *this,jry_bl_var *that,jry_bl_uint8 copytype);
-#define					jry_bl_var_get_type(a)				((a)->f.f.type)
-#define					jry_bl_var_equal(a,b)				jry_bl_var_copy(a,b,JRY_BL_COPY)
-#define					jry_bl_var_equal_light(a,b)			jry_bl_var_copy(a,b,JRY_BL_COPY_LIGHT)
-#define					jry_bl_var_equal_light_move(a,b)	jry_bl_var_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
+void					jry_bl_var_copy						(jry_bl_var *this,jry_bl_var *that,jry_bl_copy_type copytype);
+#define					jry_bl_var_get_type(a)				((a)->type)
+#define					jry_bl_var_equal(a,b)				jry_bl_var_copy(a,b,copy)
+#define					jry_bl_var_equal_light(a,b)			jry_bl_var_copy(a,b,light)
+#define					jry_bl_var_equal_light_copy(a,b)	jry_bl_var_copy(a,b,move)
 char					jry_bl_var_space_ship				(const jry_bl_var *this,const jry_bl_var *that);
 #define					jry_bl_var_if_big(x,y)				(jry_bl_var_space_ship(x,y)>0)
 #define					jry_bl_var_if_equal(x,y)			(jry_bl_var_space_ship(x,y)==0)

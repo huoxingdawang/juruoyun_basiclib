@@ -8,6 +8,7 @@ int main()
 	printf("jry_bl_var_fs size:%lld\n",(long long)(sizeof (jry_bl_var_fs)));
 	printf("jry_bl_var_functions size:%lld\n",(long long)(sizeof (jry_bl_var_functions)));
 	printf("jry_bl_var_tmp_functions size:%lld\n",(long long)(sizeof (jry_bl_var_tmp_functions)));
+	printf("jry_bl_var_functions_struct size:%lld\n",(long long)(sizeof (jry_bl_var_functions_struct)));
 //	jry_bl_var_tmp_register(0,10,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 		
 	jry_bl_var va,vb,vc;jry_bl_var_inits(3,&va,&vb,&vc);
@@ -15,9 +16,9 @@ int main()
 	int a=0;
 
 	jry_bl_string_equal_char_pointer(&sa,"juruoyun");
-	jry_bl_var_equal_string(&va,&sa,JRY_BL_COPY);
-	jry_bl_var_equal_string(&vb,&sa,JRY_BL_COPY_LIGHT);
-	jry_bl_var_equal_string(&vc,&sa,JRY_BL_COPY_LIGHT_MOVE);
+	jry_bl_var_equal_string(&va,&sa,copy);
+	jry_bl_var_equal_string(&vb,&sa,light);
+	jry_bl_var_equal_string(&vc,&sa,move);
 	
 
 	jry_bl_string_view(jry_bl_var_get_string(&va),stderr);
@@ -48,6 +49,6 @@ int main()
 */	
 	jry_bl_string_frees(4,&sa,&sb,&sc,&sd);
 	jry_bl_var_frees(3,&va,&vb,&vc);
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);
+	jry_bl_stop();
 	return 0;
 }
