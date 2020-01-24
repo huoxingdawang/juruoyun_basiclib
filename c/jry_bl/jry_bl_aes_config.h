@@ -14,7 +14,6 @@
 #include "jry_bl_ying.h"
 #define JRY_BL_AES_128_CBC_ENABLE 1
 #define JRY_BL_AES_128_ECB_ENABLE 1
-#define JRY_BL_AES_128_FFMUL_CACHE_ENABLE 0
 #define JRY_BL_AES_128_FFMUL_TABLE_ENABLE 1
 #endif
 
