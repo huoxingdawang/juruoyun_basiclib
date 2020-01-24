@@ -91,13 +91,13 @@ void jry_bl_link_list_insert_var_light(jry_bl_link_list *this,jry_bl_var *var,jr
 	jry_bl_var_equal_light(&(node->v),var);
 	jry_bl_link_list_insert_node(this,node,after);
 }
-void jry_bl_link_list_insert_var_light_move(jry_bl_link_list *this,jry_bl_var *var,jry_bl_link_list_node *after)
+void jry_bl_link_list_insert_var_move(jry_bl_link_list *this,jry_bl_var *var,jry_bl_link_list_node *after)
 {
 	if(this==NULL||var==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	jry_bl_link_list_node *node=jry_bl_malloc(sizeof(jry_bl_link_list_node));
 	if(node==NULL)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
 	jry_bl_link_list_node_init(node);
-	jry_bl_var_equal_light_move(&(node->v),var);
+	jry_bl_var_equal_light_copy(&(node->v),var);
 	jry_bl_link_list_insert_node(this,node,after);
 }
 inline void jry_bl_link_list_delete_node(jry_bl_link_list *this,jry_bl_link_list_node *node)
@@ -129,17 +129,17 @@ char jry_bl_link_list_space_ship(const jry_bl_link_list *this,const jry_bl_link_
 	for(jry_bl_link_list_node *i=this->head,*j=that->head;i!=NULL&&a==0;a=jry_bl_var_space_ship(&i->v,&j->v),i=i->nxt,j=j->nxt);
 	return a;
 }
-void jry_bl_link_list_copy(jry_bl_link_list *this,jry_bl_link_list *that,jry_bl_uint8 copytype)
+void jry_bl_link_list_copy(jry_bl_link_list *this,jry_bl_link_list *that,jry_bl_copy_type copytype)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_link_list_free(this);
-	if(copytype==JRY_BL_COPY)
+	if(copytype==copy)
 		jry_bl_link_list_foreach(that,i)
 			jry_bl_link_list_add_var(this,jry_bl_link_list_data(i));
 	else
 	{
 		this->head=that->head;this->tail=that->tail;this->length=that->length;
-		if(copytype==JRY_BL_COPY_LIGHT)
+		if(copytype==light)
 			this->light_copy=true;
 		else	
 			this->light_copy,that->light_copy,that->light_copy=true;
@@ -244,7 +244,7 @@ void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a,
 	}
 	if(tabs==jry_bl_view_default_tabs_num)fputc('\n',file);
 }
-inline void	jry_bl_var_equal_link_list(jry_bl_var *this,jry_bl_link_list *that,jry_bl_uint8 copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LINK_LIST);jry_bl_link_list_copy(this->data.p,that,copytype);}
+inline void	jry_bl_var_equal_link_list(jry_bl_var *this,jry_bl_link_list *that,jry_bl_copy_type copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LINK_LIST);jry_bl_link_list_copy(this->data.p,that,copytype);}
 #if JRY_BL_USE_STDARG==1
 inline void jry_bl_link_list_inits		(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_init(va_arg(valist,jry_bl_link_list*));va_end(valist);}
 inline void jry_bl_link_list_node_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_node_init(va_arg(valist,jry_bl_link_list_node*));va_end(valist);}

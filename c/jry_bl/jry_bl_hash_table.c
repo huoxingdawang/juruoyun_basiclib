@@ -75,8 +75,8 @@ void jry_bl_hash_table_extend_to(jry_bl_hash_table *this,st size)
 			if(jry_bl_var_get_type(&this->data[j].v)!=JRY_BL_VAR_TYPE_UNUSE)
 			{
 				jry_bl_int64 h2=gh2(this,tmp[this->nxt].h=this->data[j].h);
-				jry_bl_string_copy(&tmp[this->nxt].k,&this->data[j].k,JRY_BL_COPY_LIGHT_MOVE);
-				jry_bl_var_copy(&tmp[this->nxt].v,&this->data[j].v,JRY_BL_COPY_LIGHT_MOVE);
+				jry_bl_string_copy(&tmp[this->nxt].k,&this->data[j].k,move);
+				jry_bl_var_copy(&tmp[this->nxt].v,&this->data[j].v,move);
 				tmp[this->nxt].nxt=((st*)tmp)[h2];
 				((st*)tmp)[h2]=this->nxt;
 				++this->nxt;
@@ -156,7 +156,7 @@ char jry_bl_hash_table_space_ship(const jry_bl_hash_table *this,const jry_bl_has
 	jry_bl_var tv;jry_bl_var_init(&tv);
 	jry_bl_hash_table_foreach(this,i)
 	{
-		jry_bl_hash_table_get(that,&i->k,&tv,JRY_BL_COPY_LIGHT);
+		jry_bl_hash_table_get(that,&i->k,&tv,light);
 		char tmp=jry_bl_var_space_ship(&i->v,&tv);
 		if(!tmp)
 			return jry_bl_var_free(&tv),tmp;
@@ -177,15 +177,15 @@ void jry_bl_hash_table_clear(jry_bl_hash_table *this)
 	this->len=0;
 	this->nxt=0;
 }
-void jry_bl_hash_table_copy(jry_bl_hash_table *this,jry_bl_hash_table *that,jry_bl_uint8 copytype)
+void jry_bl_hash_table_copy(jry_bl_hash_table *this,jry_bl_hash_table *that,jry_bl_copy_type copytype)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(copytype==JRY_BL_COPY)
+	if(copytype==copy)
 	{
 		jry_bl_hash_table_clear(this);
 		jry_bl_hash_table_extend(this,that->len);
 		jry_bl_hash_table_foreach(that,i)
-			jry_bl_hash_table_insert(this,&i->k,&i->v,JRY_BL_COPY,JRY_BL_COPY);
+			jry_bl_hash_table_insert(this,&i->k,&i->v,copy,copy);
 	}
 	else
 	{		
@@ -194,7 +194,7 @@ void jry_bl_hash_table_copy(jry_bl_hash_table *this,jry_bl_hash_table *that,jry_
 		this->nxt=that->nxt;
 		this->data=that->data;
 		this->size=that->size;
-		if(copytype==JRY_BL_COPY_LIGHT)
+		if(copytype==light)
 			this->size=0;
 		else
 			that->size=0;
@@ -266,7 +266,7 @@ begin:
 		if(ii==i){for(;i<n;++i)if(in->s[i]=='}')goto success;else if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')goto fail;goto fail;}i=ii;
 		for(;(i<n)&&(!(in->s[i]==':'));++i)if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')goto fail;if(i>=n)goto fail;++i;
 		ii=jry_bl_var_from_json_start(&v,in,i);if(ii==i)goto fail;i=ii;
-		jry_bl_hash_table_insert(&t,&k,&v,JRY_BL_COPY_LIGHT_MOVE,JRY_BL_COPY_LIGHT_MOVE);
+		jry_bl_hash_table_insert(&t,&k,&v,move,move);
 		for(;i<n;++i)
 			if(in->s[i]==',')
 				{++i;goto begin;}
@@ -280,7 +280,7 @@ fail:
 	jry_bl_hash_table_free(&t);jry_bl_string_free(&k);jry_bl_var_free(&v);
 	return start;
 success:
-	jry_bl_hash_table_merge(this,&t,JRY_BL_COPY_LIGHT_MOVE);
+	jry_bl_hash_table_merge(this,&t,move);
 	jry_bl_hash_table_free(&t);jry_bl_string_free(&k);jry_bl_var_free(&v);
 	return i+1;
 }
@@ -295,8 +295,8 @@ void jry_bl_hash_table_rehash(jry_bl_hash_table *this)
 		if(jry_bl_var_get_type(&this->data[i].v)!=JRY_BL_VAR_TYPE_UNUSE&&j<i)
 		{
 			jry_bl_int64 h2=gh2(this,this->data[j].h=this->data[i].h);
-			jry_bl_string_copy(&this->data[j].k,&this->data[i].k,JRY_BL_COPY_LIGHT_MOVE);
-			jry_bl_var_copy(&this->data[j].v,&this->data[i].v,JRY_BL_COPY_LIGHT_MOVE);
+			jry_bl_string_copy(&this->data[j].k,&this->data[i].k,move);
+			jry_bl_var_copy(&this->data[j].v,&this->data[i].v,move);
 			this->data[j].nxt=(((st*)this->data)[h2]>=i)?(this->data[i].nxt):(((st*)this->data)[h2]);
 			((st*)this->data)[h2]=j;		
 			++j;

@@ -41,7 +41,7 @@ int main()
 	
 	jry_bl_hash_table_insert_str(&ht2,"kkkk","ddd",&s1,&s2,&v1);
 	jry_bl_hash_table_insert_str(&ht2,"k123","d2d",&s1,&s2,&v1);
-	jry_bl_hash_table_copy(&ht1,&ht2,JRY_BL_COPY_LIGHT_MOVE);
+	jry_bl_hash_table_copy(&ht1,&ht2,move);
 	jry_bl_hash_table_view(&ht1,stderr);
 	jry_bl_hash_table_insert_str(&ht2,"kkk","ddd",&s1,&s2,&v1);
 	jry_bl_hash_table_view(&ht2,stderr);
@@ -64,5 +64,5 @@ exit:
 	jry_bl_hash_table_frees(2,&ht1,&ht2);
 	jry_bl_string_frees(2,&s1,&s2);
 	jry_bl_var_frees(2,&v1,&v2);
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);	
+	jry_bl_stop();	
 }

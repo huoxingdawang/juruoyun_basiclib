@@ -37,8 +37,8 @@ int main()
 	FILE * fp;
 	jry_bl_string_equal_char_pointer(&s1,"j");
 	jry_bl_string_frees(2,&s2,&s3);	
-	jry_bl_string_extend_to(&s1,1024*1024*1024);
-	for(int i=0;i<26;i++)
+	jry_bl_string_extend_to(&s1,2LL*1024*1024*1024);
+	for(int i=0;i<28;i++)
 		jry_bl_string_add_string(&s1,&s1);
 	printf("Copy finish\n");
 	jry_bl_time_now(&t1);	
@@ -67,7 +67,7 @@ int main()
 
 	jry_bl_string_equal_char_pointer(&s1,"juruoyun");		jry_bl_string_view(&s1,stderr);
 	jry_bl_string_equal_string_light(&s2,&s1);				jry_bl_string_views(stderr,2,&s1,&s2);
-	jry_bl_string_equal_string_light_move(&s2,&s1);			jry_bl_string_views(stderr,2,&s1,&s2);
+	jry_bl_string_equal_string_light_copy(&s2,&s1);			jry_bl_string_views(stderr,2,&s1,&s2);
 
 
 	jry_bl_string_equal_char_pointer(&s1,"ju\"ruoyun");
@@ -85,6 +85,6 @@ int main()
 	
 	jry_bl_string_frees(3,&s1,&s2,&s3);	
 	jry_bl_time_frees(2,&t1,&t2);	
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);
+	jry_bl_stop();
 	return 0;
 }

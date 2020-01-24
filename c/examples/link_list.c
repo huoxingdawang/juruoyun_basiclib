@@ -11,8 +11,8 @@ int main()
 	for(int i=0;i<5;i++)
 	{
 		jry_bl_string_equal_int64(&s1,i);
-		jry_bl_var_equal_string(&v1,&s1,JRY_BL_COPY);	
-		jry_bl_link_list_add_var_light_move(&l1,&v1);
+		jry_bl_var_equal_string(&v1,&s1,move);	
+		jry_bl_link_list_add_var_move(&l1,&v1);
 		jry_bl_var_free(&v1);
 	}
 	jry_bl_string_clear(&s1);
@@ -37,8 +37,8 @@ int main()
 /*
 	jry_bl_string_equal_char_pointer(&s1,"12312312\n1231231");
 	jry_bl_string_cut(&s1,&l1,'\n');
-	jry_bl_link_list_equal_light_move(&l2,&l1);
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);	
+	jry_bl_link_list_equal_move(&l2,&l1);
+	jry_bl_stop();	
 	jry_bl_link_list_frees(1,&l1);
 	jry_bl_link_list_view(&l2,stderr);
 */
@@ -52,5 +52,5 @@ int main()
 	
 	jry_bl_string_frees(2,&s1,&s2);
 	jry_bl_link_list_frees(2,&l1,&l2);
-	printf("\nMEMEORY:%lld\n",jry_bl_malloced_size);	
+	jry_bl_stop();	
 }
