@@ -58,12 +58,12 @@ void					jry_bl_string_add_unicode_as_utf8					(jry_bl_string *this,unsigned lon
 void					jry_bl_string_add_hex								(jry_bl_string *this,jry_bl_uint64 in);
 void					jry_bl_string_add_hex8								(jry_bl_string *this,jry_bl_uint8 in);
 #define					jry_bl_string_delete_1(this)						((this->len)>0?(--(this)->len):(0))
-#define					jry_bl_string_equal(a,b)							jry_bl_string_copy(a,b,JRY_BL_COPY)
-#define					jry_bl_string_equal_light(a,b)						jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT)
-#define					jry_bl_string_equal_light_move(a,b)					jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
-#define					jry_bl_string_equal_string(a,b)						jry_bl_string_copy(a,b,JRY_BL_COPY)
-#define					jry_bl_string_equal_string_light(a,b)				jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT)
-#define					jry_bl_string_equal_string_light_move(a,b)			jry_bl_string_copy(a,b,JRY_BL_COPY_LIGHT_MOVE)
+#define					jry_bl_string_equal(a,b)							jry_bl_string_copy(a,b,copy)
+#define					jry_bl_string_equal_light(a,b)						jry_bl_string_copy(a,b,light)
+#define					jry_bl_string_equal_move(a,b)					jry_bl_string_copy(a,b,move)
+#define					jry_bl_string_equal_string(a,b)						jry_bl_string_copy(a,b,copy)
+#define					jry_bl_string_equal_string_light(a,b)				jry_bl_string_copy(a,b,light)
+#define					jry_bl_string_equal_string_light_copy(a,b)			jry_bl_string_copy(a,b,move)
 #define					jry_bl_string_equal_char_pointer(this,in)			jry_bl_string_clear(this),jry_bl_string_add_char_pointer(this,in)
 #define					jry_bl_string_equal_char_pointer_length(this,in,len)jry_bl_string_clear(this),jry_bl_string_add_char_pointer_length(this,in,len)
 #define					jry_bl_string_equal_char_pointer_light(a,b)			jry_bl_string_equal_char_pointer_light_length(a,b,jry_bl_strlen(b))
@@ -74,7 +74,7 @@ void					jry_bl_string_add_hex8								(jry_bl_string *this,jry_bl_uint8 in);
 #define					jry_bl_string_equal_double(this,in)					jry_bl_string_clear(this),jry_bl_string_add_double(this,in)
 #define					jry_bl_string_equal_double_length(this,in,l)		jry_bl_string_clear(this),jry_bl_string_add_double_length(this,in,l)
 #define					jry_bl_string_equal_hex(this,in)					jry_bl_string_clear(this),jry_bl_string_add_hex(this,in)
-void					jry_bl_string_copy									(jry_bl_string *this,jry_bl_string *in,jry_bl_uint8 copytype);
+void					jry_bl_string_copy									(jry_bl_string *this,jry_bl_string *in,jry_bl_copy_type copytype);
 char					jry_bl_string_space_ship							(const jry_bl_string *this,const jry_bl_string *that);
 #define					jry_bl_string_if_big(x,y)							(jry_bl_string_space_ship(x,y)>0)
 #define					jry_bl_string_if_equal(x,y)							(jry_bl_string_space_ship(x,y)==0)
@@ -114,11 +114,18 @@ void					jry_bl_string_views									(FILE * file,int n,...);
 #endif
 #if JRY_BL_VAR_ENABLE==1
 typedef struct __jry_bl_var jry_bl_var;
-#define 				jry_bl_var_get_string(this)					((jry_bl_string*)(this)->data.p)
-void					jry_bl_var_equal_string						(jry_bl_var *this,jry_bl_string *that,jry_bl_uint8 copytype);
-void					jry_bl_var_equal_string_pointer				(jry_bl_var *this,jry_bl_string *that);
-void					jry_bl_string_add_var						(jry_bl_string *this,jry_bl_var *that);
-void					jry_bl_string_equal_var						(jry_bl_string *this,jry_bl_var *that,jry_bl_uint8 cpt);
+#define 				jry_bl_var_get_string(this)							((jry_bl_string*)(this)->data.p)
+void					jry_bl_var_equal_string								(jry_bl_var *this,jry_bl_string *that,jry_bl_uint8 copytype);
+void					jry_bl_var_equal_string_pointer						(jry_bl_var *this,jry_bl_string *that);
+void					jry_bl_string_add_var								(jry_bl_string *this,jry_bl_var *that);
+void					jry_bl_string_equal_var								(jry_bl_string *this,jry_bl_var *that,jry_bl_uint8 cpt);
+#endif
+#if JRY_BL_STREAM_ENABLE==1
+#include "jry_bl_stream.h"
+void					jry_bl_string_stream_operater						(jry_bl_stream* this,jry_bl_uint8 flags);
+#define					jry_bl_string_stream_init(a,str)					jry_bl_string_extend(str,128),jry_bl_stream_init(a,jry_bl_string_stream_operater,str,(str)->s+(str)->len,(str)->size-(str)->len)
+#define					jry_bl_string_stream_reset(a)						jry_bl_stream_reset(a),(a)->buf=((jry_bl_string *)(a)->data)->s+((jry_bl_string *)(a)->data)->len,(a)->size=((jry_bl_string *)(a)->data)->size-((jry_bl_string *)(a)->data)->len;
+#define					jry_bl_string_stream_free(a)						jry_bl_stream_free(a)
 #endif
 #if JRY_BL_LINK_LIST_ENABLE==1
 typedef struct __jry_bl_link_list jry_bl_link_list;

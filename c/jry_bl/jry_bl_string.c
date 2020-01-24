@@ -30,7 +30,7 @@ void jry_bl_string_add_char_pointer_length(jry_bl_string *this,unsigned char *in
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_extend(this,len);
-	for(jry_bl_string_size_type i=0;i<len;i++)
+	for(jry_bl_string_size_type i=0;i<len;++i)
 		this->s[this->len+i]=in[i];
 	this->len=(this->len+len);	
 }
@@ -113,16 +113,16 @@ inline void jry_bl_string_add_hex8(jry_bl_string *this,jry_bl_uint8 in)
 	jry_bl_string_extend(this,2);
 	jry_bl_string_add_char1(this,hex[in>>4]),jry_bl_string_add_char1(this,hex[in&15]);	
 }
-inline void jry_bl_string_copy(jry_bl_string *this,jry_bl_string *in,jry_bl_uint8 copytype)
+inline void jry_bl_string_copy(jry_bl_string *this,jry_bl_string *in,jry_bl_copy_type copytype)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(copytype==JRY_BL_COPY)
+	if(copytype==copy)
 		jry_bl_string_clear(this),jry_bl_string_add_string(this,in);
 	else
 	{
 		jry_bl_string_free(this);
 		this->len=in->len;this->size=in->size;this->s=in->s;
-		if(copytype==JRY_BL_COPY_LIGHT)
+		if(copytype==light)
 			this->size=0;
 		else
 			in->size=0;
@@ -238,15 +238,12 @@ jry_bl_string_size_type	jry_bl_string_find_char_start(const jry_bl_string *this,
 	for(;start<this->len&&this->s[start]!=in;++start);
 	return (start);
 }
-/*#include <time.h>*/
 inline void jry_bl_string_print(const jry_bl_string *this,FILE * file)
 {
 	if(this==NULL||file==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_size_type i=0;
-	/*clock_t __start=clock();*/
 	i+=fwrite(this->s+i,1<<10,(this->len-i)>>10,file)<<10;
 	for(;i<this->len;fputc(this->s[i++],file));
-	/*fprintf(stderr,"\n\nUse Time:%fs\n",((double)(clock()-__start)/CLOCKS_PER_SEC));*/
 }
 void jry_bl_string_view_ex(const jry_bl_string *this,FILE * file,char*str,int a,int tabs)
 {
@@ -297,7 +294,7 @@ inline void jry_bl_string_views	(FILE * file,int n,...){va_list valist;va_start(
 #if JRY_BL_VAR_ENABLE==1
 #include "jry_bl_var.h"	
 inline void				jry_bl_var_equal_string				(jry_bl_var *this,jry_bl_string *that,jry_bl_uint8 copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);jry_bl_string_copy(this->data.p,that,copytype);}
-inline void				jry_bl_var_equal_string_pointer		(jry_bl_var *this,jry_bl_string *that){jry_bl_var_free(this);jry_bl_var_flag_pointer(this)=true;this->f.f.type=JRY_BL_VAR_TYPE_STRING,this->data.p=that;}
+inline void				jry_bl_var_equal_string_pointer		(jry_bl_var *this,jry_bl_string *that){jry_bl_var_free(this);jry_bl_var_flag_pointer(this)=true;this->type=JRY_BL_VAR_TYPE_STRING,this->data.p=that;}
 inline void	jry_bl_string_add_var(jry_bl_string *this,jry_bl_var *that)
 {
 	long double tmp;	
@@ -332,13 +329,36 @@ inline void	jry_bl_string_equal_var(jry_bl_string *this,jry_bl_var *that,jry_bl_
 	}	
 }
 #endif
+#if JRY_BL_STREAM_ENABLE==1
+void jry_bl_string_stream_operater(jry_bl_stream* this,jry_bl_uint8 flags)
+{
+	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+	((jry_bl_string*)this->data)->len+=this->en;
+	jry_bl_string_extend(((jry_bl_string*)this->data),128);
+	this->buf=((jry_bl_string*)this->data)->s+((jry_bl_string*)this->data)->len;
+	this->size=((jry_bl_string*)this->data)->size-((jry_bl_string*)this->data)->len;
+	this->en=0;
+	if(this->nxt!=NULL)
+	{
+		while(this->tmp<((jry_bl_string*)this->data)->len)
+		{
+			jry_bl_uint16 len=((((jry_bl_string*)this->data)->len-this->tmp)>(this->nxt->size-this->nxt->en))?(this->nxt->size-this->nxt->en):(((jry_bl_string*)this->data)->len-this->tmp);
+			jry_bl_memory_copy(this->nxt->buf+this->nxt->en,((jry_bl_string*)this->data)->s+this->tmp,len);
+			this->tmp+=len;
+			this->nxt->en+=len;
+			jry_bl_stream_do(this->nxt,0);
+		}
+		jry_bl_stream_do(this->nxt,flags);
+	}
+}
+#endif
 #if JRY_BL_LINK_LIST_ENABLE==1
 #include "jry_bl_link_list.h"
 jry_bl_string_size_type jry_bl_string_cut_start(jry_bl_string *this,jry_bl_link_list *list,char cut,jry_bl_string_size_type start)
 {
 	if(this==NULL||list==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_var var;jry_bl_var_init(&var);jry_bl_var_init_as(&var,JRY_BL_VAR_TYPE_STRING);
-	for(;start<this->len;++start,jry_bl_link_list_add_var_light_move(list,&var),jry_bl_string_clear(jry_bl_var_get_string(&var)))
+	for(;start<this->len;++start,jry_bl_link_list_add_var_move(list,&var),jry_bl_string_clear(jry_bl_var_get_string(&var)))
 		for(;start<this->len&&this->s[start]!=cut;jry_bl_string_add_char(jry_bl_var_get_string(&var),this->s[start]),++start);
 	jry_bl_var_free(&var);
 	return (start);	
