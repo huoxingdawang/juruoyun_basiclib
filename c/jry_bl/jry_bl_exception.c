@@ -26,6 +26,7 @@ void __jry_bl_exception(const char * file,int line,int x)
 		case JRY_BL_ERROR_NULL_POINTER		:fprintf(stderr,":JRY_BL_ERROR_NULL_POINTER")	;break;
 		case JRY_BL_ERROR_MEMORY_ERROR		:fprintf(stderr,":JRY_BL_ERROR_MEMORY_ERROR")	;break;
 		case JRY_BL_ERROR_FILE_NOT_EXIST	:fprintf(stderr,":JRY_BL_ERROR_FILE_NOT_EXIST")	;break;
+		case JRY_BL_ERROR_STREAM_ERROR		:fprintf(stderr,":JRY_BL_ERROR_STREAM_ERROR")	;break;
 		
 	}
 	putc('\n',stderr);
