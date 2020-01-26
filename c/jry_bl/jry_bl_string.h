@@ -93,15 +93,12 @@ double					jry_bl_string_get_double_start_v					(const jry_bl_string *this,jry_b
 #define					jry_bl_string_get_hex(this)							jry_bl_string_get_hex_start_v(this,0)
 jry_bl_uint64			jry_bl_string_get_hex_start							(const jry_bl_string *this,jry_bl_string_size_type *start);
 jry_bl_uint64			jry_bl_string_get_hex_start_v						(const jry_bl_string *this,jry_bl_string_size_type start);
-#define					jry_bl_string_to_json(x,y)							jry_bl_string_to_json_ex(x,y,0)
-void					jry_bl_string_to_json_ex							(const jry_bl_string *this,jry_bl_string *result,jry_bl_uint8 type);
 #define					jry_bl_string_from_json(this,in)					jry_bl_string_from_json_start(this,in,0)
 jry_bl_string_size_type	jry_bl_string_from_json_start						(jry_bl_string *this,const jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_string_find_char(this,in)					jry_bl_string_find_char_start(this,in,0)
 jry_bl_string_size_type	jry_bl_string_find_char_start						(const jry_bl_string *this,unsigned char in,jry_bl_string_size_type start);
 void 					jry_bl_string_print									(const jry_bl_string *this,FILE * file);
-#define					jry_bl_string_view(x,y) 							jry_bl_string_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
-void 					jry_bl_string_view_ex								(const jry_bl_string *this,FILE * file,char*str,int a,int tabs);
+
 void					jry_bl_string_add_file								(jry_bl_string *this,FILE * file);
 void					jry_bl_string_add_file_end_by						(jry_bl_string *this,FILE * file,unsigned char end);
 #define					jry_bl_string_equal_file(this,file)					jry_bl_string_clear(this),jry_bl_string_add_file(this,file)
@@ -110,7 +107,7 @@ void					jry_bl_string_add_file_end_by						(jry_bl_string *this,FILE * file,uns
 void					jry_bl_string_inits									(int n,...);
 void					jry_bl_string_frees									(int n,...);
 void					jry_bl_string_clears								(int n,...);
-void					jry_bl_string_views									(FILE * file,int n,...);
+void					jry_bl_string_views									(int n,...);
 #endif
 #if JRY_BL_VAR_ENABLE==1
 typedef struct __jry_bl_var jry_bl_var;
@@ -122,6 +119,10 @@ void					jry_bl_string_equal_var								(jry_bl_string *this,jry_bl_var *that,jr
 #endif
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_stream.h"
+void					jry_bl_string_put									(const jry_bl_string* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str);//format bit0 表示是否格式化 [1,16]位表示另一个整数 [17,31]位表示格式化tab个数
+#define					jry_bl_string_view(x) 								jry_bl_string_put(x,&jry_bl_stream_stdout,view,(jry_bl_view_default_tabs_num<<16)|(__LINE__<<1)|1,#x " @ "__FILE__),jry_bl_stream_push_char(&jry_bl_stream_stdout,'\n'),jry_bl_stream_do(&jry_bl_stream_stdout,1);
+void					jry_bl_string_to_json								(const jry_bl_string *this,jry_bl_string *result);
+
 void					jry_bl_string_stream_operater						(jry_bl_stream* this,jry_bl_uint8 flags);
 #define					jry_bl_string_stream_init(a,str)					jry_bl_string_extend(str,128),jry_bl_stream_init(a,jry_bl_string_stream_operater,str,(str)->s+(str)->len,(str)->size-(str)->len)
 #define					jry_bl_string_stream_reset(a)						jry_bl_stream_reset(a),(a)->buf=((jry_bl_string *)(a)->data)->s+((jry_bl_string *)(a)->data)->len,(a)->size=((jry_bl_string *)(a)->data)->size-((jry_bl_string *)(a)->data)->len;

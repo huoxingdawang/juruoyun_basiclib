@@ -14,6 +14,7 @@ void jry_bl_file_init(jry_bl_file *this)
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	this->type=JRY_BL_FILE_TYPE_UNKNOW;
 	this->f=NULL;
+	this->light_copy=0;
 	jry_bl_string_init(&this->name);
 }
 void jry_bl_file_init_as(jry_bl_file *this,jry_bl_uint8 type)
@@ -21,33 +22,30 @@ void jry_bl_file_init_as(jry_bl_file *this,jry_bl_uint8 type)
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_clear(&this->name);
 	this->f=NULL;
+	this->light_copy=0;
 	if(this->type==type)
 	{
 		if(type==JRY_BL_FILE_TYPE_FILE)
-		{
-			if(this->d.file.handle!=NULL)
-				fclose(this->d.file.handle),this->d.file.handle=NULL;		
-		}
+			if(this->file.handle!=NULL)
+				fclose(this->file.handle),this->file.handle=NULL;		
 		else if(type==JRY_BL_FILE_TYPE_DIR)
-			jry_bl_hash_table_clear(&this->d.dir.child);
+			jry_bl_hash_table_clear(&this->dir.child);
 	}
 	else if(this->type==JRY_BL_FILE_TYPE_UNKNOW)
 	{
 		if(type==JRY_BL_FILE_TYPE_FILE)
-			this->d.file.handle=NULL;
+			this->file.handle=NULL;
 		else if(type==JRY_BL_FILE_TYPE_DIR)
-			jry_bl_hash_table_init(&this->d.dir.child);
+			jry_bl_hash_table_init(&this->dir.child);
 		this->type=type;		
 	}
 	else
 	{
-		if(type==JRY_BL_FILE_TYPE_FILE)
-		{
-			if(this->d.file.handle!=NULL)
-				fclose(this->d.file.handle),this->d.file.handle=NULL;
-		}
-		else if(type==JRY_BL_FILE_TYPE_DIR)
-			jry_bl_hash_table_free(&this->d.dir.child);			
+		if(this->type==JRY_BL_FILE_TYPE_FILE)
+			if(this->file.handle!=NULL)
+				fclose(this->file.handle),this->file.handle=NULL;
+		else if(this->type==JRY_BL_FILE_TYPE_DIR)
+			jry_bl_hash_table_free(&this->dir.child);			
 		this->type=type;		
 	}
 }
@@ -58,11 +56,12 @@ void jry_bl_file_clear(jry_bl_file *this)
 		return;
 	if(this->type==JRY_BL_FILE_TYPE_FILE)
 	{
-		if(this->d.file.handle!=NULL)
-			fclose(this->d.file.handle),this->d.file.handle=NULL;
+		if(this->file.handle!=NULL)
+			fclose(this->file.handle),this->file.handle=NULL;
 	}
 	else if(this->type==JRY_BL_FILE_TYPE_DIR)
-		jry_bl_hash_table_free(&this->d.dir.child);
+		jry_bl_hash_table_free(&this->dir.child);
+	this->light_copy=0;
 	this->type=JRY_BL_FILE_TYPE_UNKNOW;
 	jry_bl_string_clear(&this->name);	
 }
@@ -71,16 +70,16 @@ void jry_bl_file_free(jry_bl_file *this)
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	if(this->type==JRY_BL_FILE_TYPE_FILE)
 	{
-		if(this->d.file.handle!=NULL)
-			fclose(this->d.file.handle),this->d.file.handle=NULL;
+		if(this->file.handle!=NULL&&this->light_copy==0)
+			fclose(this->file.handle),this->file.handle=NULL;
 	}
 	else if(this->type==JRY_BL_FILE_TYPE_DIR)
-		jry_bl_hash_table_free(&this->d.dir.child);	
+		jry_bl_hash_table_free(&this->dir.child);	
 	this->type=JRY_BL_FILE_TYPE_UNKNOW;
 	jry_bl_string_free(&this->name);
 	this->f=NULL;
 }
-void jry_bl_file_copy(jry_bl_file *this,jry_bl_file *that,jry_bl_uint8 cpt)
+void jry_bl_file_copy(jry_bl_file *this,jry_bl_file *that,jry_bl_copy_type cpt)
 {
 	if(this==NULL||that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_file_clear(this);
@@ -89,10 +88,13 @@ void jry_bl_file_copy(jry_bl_file *this,jry_bl_file *that,jry_bl_uint8 cpt)
 	jry_bl_string_copy(&this->name,&that->name,cpt);
 	if(that->type==JRY_BL_FILE_TYPE_FILE)
 	{
-//		this->d.file.handle=fopen(jry_bl_string_get_char_pointer(&that->name),"wb+");
+		if(cpt==copy)
+			this->file.handle=fopen(jry_bl_string_get_char_pointer(&that->name),"rb+"),this->light_copy=0;
+		else
+			this->light_copy=that->light_copy,this->file.handle=that->file.handle,((cpt==move)?that:this)->light_copy=1;
 	}
 	else if(that->type==JRY_BL_FILE_TYPE_DIR)
-		jry_bl_hash_table_copy(&this->d.dir.child,&that->d.dir.child,cpt);
+		jry_bl_hash_table_copy(&this->dir.child,&that->dir.child,cpt);
 }
 inline char jry_bl_file_space_ship(const jry_bl_file *this,const jry_bl_file *that)
 {
@@ -120,22 +122,23 @@ void jry_bl_file_view_ex(const jry_bl_file *this,FILE * file,char*str,int a,int 
 	else if(this->type==JRY_BL_FILE_TYPE_DIR)
 	{
 		fputc('\n',file);
-		jry_bl_hash_table_foreach(&this->d.dir.child,i)
+		jry_bl_hash_table_foreach(&this->dir.child,i)
 			jry_bl_file_view_ex(jry_bl_var_get_file(jry_bl_hash_table_get_var(i)),file,"",-1,tabs+1);
 	}
 }
-void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *name,jry_bl_uint8 ncpt,jry_bl_uint32 recursive_time)
+void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *name,jry_bl_copy_type ncpt,jry_bl_uint32 recursive_time)
 {
 	if(this==NULL||name==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_file_clear(this);
 	jry_bl_string_set(name,jry_bl_string_get_length(name),'\0');
-	FILE	*file	=fopen(jry_bl_string_get_char_pointer(name),"rb+");
+	FILE	*file	=fopen(jry_bl_string_get_char_pointer(name),"wb+");
 	DIR		*dir	=opendir(jry_bl_string_get_char_pointer(name));
 	if(file!=NULL)
 	{
 		if(dir!=NULL)closedir(dir);	
 		jry_bl_file_init_as(this,JRY_BL_FILE_TYPE_FILE);
 		jry_bl_string_copy(&this->name,name,ncpt);this->f=f;
+		this->file.handle=file;
 	}
 	else if(dir!=NULL)
 	{
@@ -154,7 +157,7 @@ void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *na
 			jry_bl_hash_table_size_type cnt=0;
 			jry_bl_var tv;jry_bl_var_init(&tv);
 			while((dirp=readdir(dir)))++cnt;
-			jry_bl_hash_table_extend(&this->d.dir.child,cnt);
+			jry_bl_hash_table_extend(&this->dir.child,cnt);
 			rewinddir(dir);
 			while((dirp=readdir(dir)))
 			{
@@ -163,8 +166,8 @@ void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *na
 					continue;
 				jry_bl_var_init_as(&tv,JRY_BL_VAR_TYPE_FILE);
 				jry_bl_string_add_char_pointer(&tmp1,dirp->d_name);
-				jry_bl_file_file_open_ex(jry_bl_var_get_file(&tv),this,&tmp1,JRY_BL_COPY,recursive_time-1);
-				jry_bl_hash_table_insert(&this->d.dir.child,&tmp2,&tv,JRY_BL_COPY_LIGHT_MOVE,JRY_BL_COPY_LIGHT_MOVE);
+				jry_bl_file_file_open_ex(jry_bl_var_get_file(&tv),this,&tmp1,move,recursive_time-1);
+				jry_bl_hash_table_insert(&this->dir.child,&tmp2,&tv,move,move);
 				jry_bl_string_get_length(&tmp1)=nn;
 			}
 			jry_bl_var_free(&tv);
@@ -175,6 +178,11 @@ void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *na
 	}
 	else
 		jry_bl_string_print(name,stderr),jry_bl_file_clear(this),jry_bl_exception(JRY_BL_ERROR_FILE_NOT_EXIST);
+}
+void jry_bl_file_file_cd(jry_bl_file *this,jry_bl_file *that,jry_bl_string *name,jry_bl_copy_type ncpt)
+{
+	
+	
 }
 
 #endif

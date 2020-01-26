@@ -10,18 +10,21 @@ int main()
 	jry_bl_string_equal_file(&s1,fp);
 	fclose(fp);
 	
-	jry_bl_string_view(&s1,stderr);
+	jry_bl_string_view(&s1);
 	jry_bl_var_from_json(&v1,&s1);
-	fp=fopen ("testfiles/json.out","w");
+	jry_bl_var_put(&v1,&jry_bl_stream_stdout,json,(jry_bl_view_default_tabs_num<<16)|(__LINE__<<1)|1,__FILE__);jry_bl_stream_do(&jry_bl_stream_stdout,1);
+
+/*	
+	fp=fopen("testfiles/json.out","w");
 	jry_bl_var_view(&v1,fp);
 	fclose(fp);
-	jry_bl_var_view(&v1,stderr);
+	jry_bl_var_view(&v1;
 	
 	jry_bl_var_to_json(&v1,&s2);
-	jry_bl_string_view(&s2,stderr);
+	jry_bl_string_view(&s2);
 	jry_bl_var_from_json(&v2,&s2);
 	printf("\nspace ship:%d\n",jry_bl_var_space_ship(&v1,&v2));
-	
+*/	
 	
 	
 	jry_bl_string_frees(2,&s1,&s2);

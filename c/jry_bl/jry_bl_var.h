@@ -69,10 +69,9 @@ typedef struct __jry_bl_var_functions_struct
 	size_t size;
 	void (*init)(void*);
 	void (*free)(void*);
-	void (*move)(void*,void*,jry_bl_copy_type);
+	void (*copy)(void*,void*,jry_bl_copy_type);
 	char (*space_ship)(const void*,const void*);
-	void (*to_json)(void*,jry_bl_string*,jry_bl_uint8);
-	void (*view_ex)(const void*,FILE*,char*,int,int);
+	void (*put)(const void*,jry_bl_stream*,jry_bl_put_type,jry_bl_uint32,char*);
 }jry_bl_var_functions_struct;
 
 extern const jry_bl_var_functions_struct jry_bl_var_functions[5];
@@ -115,18 +114,25 @@ char					jry_bl_var_space_ship				(const jry_bl_var *this,const jry_bl_var *that
 #define 				jry_bl_var_equal_pointer(this,a)	jry_bl_var_init_as((this),JRY_BL_VAR_TYPE_POINTER)	,((this)->data.p=(a))
 #define 				jry_bl_var_equal_true(this)			jry_bl_var_init_as((this),JRY_BL_VAR_TYPE_TRUE)
 #define 				jry_bl_var_equal_false(this)		jry_bl_var_init_as((this),JRY_BL_VAR_TYPE_FALSE)
+#if JRY_BL_STREAM_ENABLE==1
+#include "jry_bl_stream.h"
+void					jry_bl_var_put(jry_bl_var* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str);
+#define					jry_bl_var_view(x) 					jry_bl_var_put(x,&jry_bl_stream_stdout,view,(jry_bl_view_default_tabs_num<<16)|(__LINE__<<1)|1,#x " @ "__FILE__),jry_bl_stream_push_char(&jry_bl_stream_stdout,'\n'),jry_bl_stream_do(&jry_bl_stream_stdout,1);
 #if JRY_BL_STRING_ENABLE==1
-void					jry_bl_var_to_json_ex				(const jry_bl_var *this,jry_bl_string *result,jry_bl_uint8 type);
-#define					jry_bl_var_to_json(x,y)				jry_bl_var_to_json_ex(x,y,0)
+void					jry_bl_var_to_json					(const jry_bl_var *this,jry_bl_string *result);
+#endif
+#endif
+#if JRY_BL_STRING_ENABLE==1
 jry_bl_string_size_type	jry_bl_var_from_json_start			(jry_bl_var *this,const jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_var_from_json(this,in)		jry_bl_var_from_json_start(this,in,0)
 #endif
-#define					jry_bl_var_view(x,y) 				jry_bl_var_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
-void					jry_bl_var_view_ex					(const jry_bl_var *this,FILE * file,char*str,int a,int tabs);
 #if JRY_BL_USE_STDARG==1
 void					jry_bl_var_inits					(int n,...);
 void					jry_bl_var_frees					(int n,...);
-void					jry_bl_var_views					(FILE * file,int n,...);
+#if JRY_BL_STREAM_ENABLE==1
+void					jry_bl_var_views					(int n,...);
+#endif
+
 #endif
 #endif
 #endif

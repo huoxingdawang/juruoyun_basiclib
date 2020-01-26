@@ -145,33 +145,6 @@ void jry_bl_link_list_copy(jry_bl_link_list *this,jry_bl_link_list *that,jry_bl_
 			this->light_copy,that->light_copy,that->light_copy=true;
 	}
 }
-void jry_bl_link_list_to_json_ex(const jry_bl_link_list *this,jry_bl_string *out,jry_bl_uint8 type)
-{
-	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(type==1)
-	{		
-		(*((jry_bl_string_size_type*)out))+=2;
-		if(this->length==0)
-			return;
-		jry_bl_string_size_type tmp_len=0;
-		jry_bl_link_list_foreach(this,i)
-			tmp_len+=1,jry_bl_var_to_json_ex(jry_bl_link_list_data(i),(jry_bl_string*)(&tmp_len),1);
-		(*((jry_bl_string_size_type*)out))+=tmp_len-1;
-		return;
-	}
-	if(type==0)
-	{
-		jry_bl_string_size_type tmp_len=0;
-		jry_bl_link_list_to_json_ex(this,(jry_bl_string*)(&tmp_len),1);
-		jry_bl_string_extend(out,tmp_len);
-	}
-	jry_bl_string_add_char1(out,'[');
-	jry_bl_link_list_foreach(this,i)
-		jry_bl_var_to_json_ex(jry_bl_link_list_data(i),out,2),jry_bl_string_add_char1(out,',');
-	if(this->length!=0)
-		jry_bl_string_delete_1(out);
-	jry_bl_string_add_char1(out,']');
-}
 jry_bl_string_size_type jry_bl_link_list_from_json_start(jry_bl_link_list *this,const jry_bl_string *in,jry_bl_string_size_type start)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -224,27 +197,53 @@ void jry_bl_link_list_merge_light(jry_bl_link_list *this,jry_bl_link_list *that)
 	this->length+=that->length;
 	that->light_copy=true;
 }
-void jry_bl_link_list_view_ex(jry_bl_link_list *this,FILE * file,char*str,int a,int tabs)
-{
-	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(tabs>=0)
-		for(register int i=0;i<tabs;++i,putc('\t',file));
-	else
-		tabs=-tabs;
-	if(a>=0)
-		fprintf(file,"jry_bl_link_list %s %d\t:len:%lld\n",str,a,(jry_bl_int64)this->length);
-	else
-		fprintf(file,"jry_bl_link_list  \t:len:%lld\n",(jry_bl_int64)this->length);
-	jry_bl_link_list_size_type i=0;
-	jry_bl_link_list_foreach(this,j)
-	{
-		for(register int i=0;i<tabs+1;++i,putc('\t',file));		
-		fprintf(file,"%lld:",(jry_bl_uint64)i++);
-		jry_bl_var_view_ex(jry_bl_link_list_data(j),file,"",-1,-(tabs+1));	
-	}
-	if(tabs==jry_bl_view_default_tabs_num)fputc('\n',file);
-}
 inline void	jry_bl_var_equal_link_list(jry_bl_var *this,jry_bl_link_list *that,jry_bl_copy_type copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LINK_LIST);jry_bl_link_list_copy(this->data.p,that,copytype);}
+#if JRY_BL_STREAM_ENABLE==1
+#include "jry_bl_stream.h"
+void jry_bl_link_list_put(const jry_bl_link_list* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str)
+{
+	if(this==NULL||output_stream==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+	jry_bl_int16 tabs=(format>>16);
+	
+	if(format&1)if(tabs>=0)for(jry_bl_int16 i=0;i<tabs;jry_bl_stream_push_char(output_stream,'\t'),++i);else tabs=-tabs;
+	if(type==json)
+		jry_bl_stream_push_char(output_stream,'[');
+	else if(type==view)
+	{
+		jry_bl_stream_push_char_pointer(output_stream,"jry_bl_link_list ");
+		if(((jry_bl_uint16)format>>1)!=0)
+			jry_bl_stream_push_char_pointer(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
+		jry_bl_stream_push_char_pointer(output_stream,"\tlen:");
+		jry_bl_stream_push_uint64(output_stream,this->length);
+	}
+	jry_bl_uint32 format_nxt=(format&1)|((-(tabs+1))<<16);
+	jry_bl_link_list_size_type j=0;
+	jry_bl_uint8 flag=0;
+	jry_bl_link_list_foreach(this,i)
+	{
+		if(type==json&&flag)jry_bl_stream_push_char(output_stream,',');flag=1;//JSON的逗号
+		if(format&1){jry_bl_stream_push_char(output_stream,'\n');for(jry_bl_int16 i=0;i<tabs+1;jry_bl_stream_push_char(output_stream,'\t'),++i);}//格式化的\t和\n
+		if(type==view){jry_bl_stream_push_uint64(output_stream,j);jry_bl_stream_push_char(output_stream,':');++j;}//view的序号
+		jry_bl_var_put(jry_bl_link_list_data(i),output_stream,type,format_nxt,NULL);
+	}		
+	if(type==json)
+	{
+		if(format&1){jry_bl_stream_push_char(output_stream,'\n');for(jry_bl_int16 i=0;i<tabs;jry_bl_stream_push_char(output_stream,'\t'),++i);}
+		jry_bl_stream_push_char(output_stream,']');
+	}
+}
+#if JRY_BL_STRING_ENABLE==1
+void jry_bl_link_list_to_json(const jry_bl_link_list *this,jry_bl_string *result)
+{
+	if(this==NULL||result==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	jry_bl_stream output_stream;
+	jry_bl_string_stream_init(&output_stream,result);
+	jry_bl_link_list_put(this,&output_stream,json,0,NULL);
+	jry_bl_stream_do(&output_stream,jry_bl_stream_force);
+	jry_bl_string_stream_free(&output_stream);
+}
+#endif
+#endif
 #if JRY_BL_USE_STDARG==1
 inline void jry_bl_link_list_inits		(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_init(va_arg(valist,jry_bl_link_list*));va_end(valist);}
 inline void jry_bl_link_list_node_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_link_list_node_init(va_arg(valist,jry_bl_link_list_node*));va_end(valist);}

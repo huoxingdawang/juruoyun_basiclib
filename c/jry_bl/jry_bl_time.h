@@ -16,6 +16,8 @@
 #include <stdarg.h>
 #endif
 #include "jry_bl_string.h"
+#define JRY_BL_TIME_ZONE_ASIA_SHANGHAI 1
+
 extern jry_bl_int8 jry_bl_time_time_zone;
 typedef jry_bl_int64 jry_bl_time;
 void	jry_bl_time_init			(jry_bl_time *this);

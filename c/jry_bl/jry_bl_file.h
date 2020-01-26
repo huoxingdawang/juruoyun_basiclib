@@ -14,6 +14,7 @@
 #include "jry_bl_string.h"
 #include "jry_bl_var.h"
 #include "jry_bl_ying.h"
+#include "jry_bl_time.h"
 #include "jry_bl_hash_table.h"
 #include <dirent.h>
 #define JRY_BL_FILE_TYPE_UNKNOW	0
@@ -22,36 +23,36 @@
 typedef struct __jry_bl_file
 {
 	jry_bl_uint8 type:2;
+	jry_bl_uint8 light_copy:1;
 	jry_bl_string name;
 	struct __jry_bl_file *f;
 	union
 	{
 		struct
 		{
-			FILE *handle; 
-			
-			
+			FILE *handle;
+			jry_bl_uint64 size;
+			jry_bl_time last_modify;
 		}file;
 		struct
 		{
 			jry_bl_hash_table child;
 			
 		}dir;
-	}d;
+	};
 }jry_bl_file;
-
 void	jry_bl_file_init					(jry_bl_file *this);
 void	jry_bl_file_clear					(jry_bl_file *this);
 void	jry_bl_file_free					(jry_bl_file *this);
-void	jry_bl_file_copy					(jry_bl_file *this,jry_bl_file *that,jry_bl_uint8 cpt);
-#define	jry_bl_file_equal(x,y)				jry_bl_file_copy(x,y,JRY_BL_COPY)
-#define	jry_bl_file_equal_light(x,y)		jry_bl_file_copy(x,y,JRY_BL_COPY_LIGHT)
-#define	jry_bl_file_equal_light_move(x,y)	jry_bl_file_copy(x,y,JRY_BL_COPY_LIGHT_MOVE)
+void	jry_bl_file_copy					(jry_bl_file *this,jry_bl_file *that,jry_bl_copy_type cpt);
+#define	jry_bl_file_equal(x,y)				jry_bl_file_copy(x,y,copy)
+#define	jry_bl_file_equal_light(x,y)		jry_bl_file_copy(x,y,light)
+#define	jry_bl_file_equal_light_copy(x,y)	jry_bl_file_copy(x,y,move)
 char	jry_bl_file_space_ship				(const jry_bl_file *this,const jry_bl_file *that);
 #define	jry_bl_file_view(x,y)			 	jry_bl_file_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
 void 	jry_bl_file_view_ex					(const jry_bl_file *this,FILE * file,char*str,int a,int tabs);
 #define	jry_bl_file_open(x,y,z)				jry_bl_file_file_open_ex(x,NULL,y,z,-1)
-void	jry_bl_file_file_open_ex			(jry_bl_file *this,jry_bl_file *f,jry_bl_string *name,jry_bl_uint8 ncpt,jry_bl_uint32 recursive_time);
+void	jry_bl_file_file_open_ex			(jry_bl_file *this,jry_bl_file *f,jry_bl_string *name,jry_bl_copy_type ncpt,jry_bl_uint32 recursive_time);
 
 
 

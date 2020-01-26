@@ -209,33 +209,6 @@ void jry_bl_hash_table_merge(jry_bl_hash_table *this,jry_bl_hash_table *that,jry
 	jry_bl_hash_table_foreach(that,i)
 		jry_bl_hash_table_insert(this,&i->k,&i->v,copytype,copytype);
 }
-void jry_bl_hash_table_to_json_ex(const jry_bl_hash_table *this,jry_bl_string *out,jry_bl_uint8 type)
-{
-	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(type==1)
-	{
-		(*((jry_bl_string_size_type*)out))+=2;
-		if(this->len==0)
-			return;
-		jry_bl_string_size_type tmp_len=0;
-		jry_bl_hash_table_foreach(this,i)
-			tmp_len+=4+jry_bl_string_get_length(&i->k),jry_bl_var_to_json_ex(&i->v,(jry_bl_string*)(&tmp_len),1);
-		(*((jry_bl_string_size_type*)out))+=tmp_len-1;
-		return;
-	}
-	if(type==0)
-	{
-		jry_bl_string_size_type tmp_len=0;
-		jry_bl_hash_table_to_json_ex(this,(jry_bl_string*)(&tmp_len),1);
-		jry_bl_string_extend(out,tmp_len);
-	}
-	jry_bl_string_add_char1(out,'{');
-	jry_bl_hash_table_foreach(this,i)
-		jry_bl_string_to_json_ex(&i->k,out,2),jry_bl_string_add_char1(out,':'),jry_bl_var_to_json_ex(&i->v,out,2),jry_bl_string_add_char1(out,',');
-	if(this->len!=0)
-		jry_bl_string_delete_1(out);
-	jry_bl_string_add_char1(out,'}');
-}
 jry_bl_string_size_type jry_bl_hash_table_from_json_start(jry_bl_hash_table *this,const jry_bl_string *in,jry_bl_string_size_type start)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
@@ -304,25 +277,57 @@ void jry_bl_hash_table_rehash(jry_bl_hash_table *this)
 		}
 	this->nxt=j;
 }
-void jry_bl_hash_table_view_ex(const jry_bl_hash_table *this,FILE * file,char*str,int a,int tabs)
+inline void	jry_bl_var_equal_hash_table(jry_bl_var *this,jry_bl_hash_table *that,jry_bl_uint8 copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_HASH_TABLE);jry_bl_hash_table_copy(this->data.p,that,copytype);}
+#if JRY_BL_STREAM_ENABLE==1
+void jry_bl_hash_table_put(const jry_bl_hash_table* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str)
 {
-	if(this==NULL||file==NULL||str==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	if(tabs>=0)
-		for(register int i=0;i<tabs;++i,putc('\t',file));
-	else
-		tabs=-tabs;
-	if(a>=0)
-		fprintf(file,"jry_bl_hash_table %s %d\tlen:%lld\tnxt:%lld\tsize:%lld\n",str,a,(jry_bl_int64)this->len,(jry_bl_int64)this->nxt,(jry_bl_int64)this->size);
-	else
-		fprintf(file,"jry_bl_hash_table\tlen:%lld\tnxt:%lld\tsize:%lld\n",(jry_bl_int64)this->len,(jry_bl_int64)this->nxt,(jry_bl_int64)this->size);	
+	if(this==NULL||output_stream==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+	jry_bl_int16 tabs=(format>>16);
+	
+	if(format&1)if(tabs>=0)for(jry_bl_int16 i=0;i<tabs;jry_bl_stream_push_char(output_stream,'\t'),++i);else tabs=-tabs;
+	if(type==json)
+		jry_bl_stream_push_char(output_stream,'{');
+	else if(type==view)
+	{
+		jry_bl_stream_push_char_pointer(output_stream,"jry_bl_hash_table ");
+		if(((jry_bl_uint16)format>>1)!=0)
+			jry_bl_stream_push_char_pointer(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
+		jry_bl_stream_push_char_pointer(output_stream,"\tlen:");
+		jry_bl_stream_push_uint64(output_stream,this->len);
+		jry_bl_stream_push_char_pointer(output_stream,"\tnxt:");
+		jry_bl_stream_push_uint64(output_stream,this->nxt);
+		jry_bl_stream_push_char_pointer(output_stream,"\tsize:");
+		jry_bl_stream_push_uint64(output_stream,this->size);
+	}
+	jry_bl_uint32 format_nxt=(format&1)|((-(tabs+1))<<16);
+	jry_bl_uint8 flag=0;
 	jry_bl_hash_table_foreach(this,i)
 	{
-		for(register int i=0;i<tabs+1;++i,putc('\t',file));		
-		putc('"',file);jry_bl_string_print(&i->k,file);putc('"',file);putc(':',file);
-		jry_bl_var_view_ex(&i->v,file,"",-1,-(tabs+1));
-	}
+		if(type==json&&flag)jry_bl_stream_push_char(output_stream,',');flag=1;//JSON的逗号
+		if(format&1){jry_bl_stream_push_char(output_stream,'\n');for(jry_bl_int16 i=0;i<tabs+1;jry_bl_stream_push_char(output_stream,'\t'),++i);}//格式化的\t和\n
+		jry_bl_string_put(&i->k,output_stream,json,0,NULL);
+		jry_bl_stream_push_char(output_stream,':');
+		jry_bl_var_put(&i->v,output_stream,type,format_nxt,NULL);
+	}		
+	if(type==json)
+	{
+		if(format&1){jry_bl_stream_push_char(output_stream,'\n');for(jry_bl_int16 i=0;i<tabs;jry_bl_stream_push_char(output_stream,'\t'),++i);}
+		jry_bl_stream_push_char(output_stream,'}');
+	}	
+	
 }
-inline void	jry_bl_var_equal_hash_table(jry_bl_var *this,jry_bl_hash_table *that,jry_bl_uint8 copytype){jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_HASH_TABLE);jry_bl_hash_table_copy(this->data.p,that,copytype);}
+#if JRY_BL_STRING_ENABLE==1
+void jry_bl_hash_table_to_json(const jry_bl_hash_table *this,jry_bl_string *result)
+{
+	if(this==NULL||result==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	jry_bl_stream output_stream;
+	jry_bl_string_stream_init(&output_stream,result);
+	jry_bl_hash_table_put(this,&output_stream,json,0,NULL);
+	jry_bl_stream_do(&output_stream,jry_bl_stream_force);
+	jry_bl_string_stream_free(&output_stream);
+}
+#endif
+#endif
 #if JRY_BL_USE_STDARG==1
 inline void jry_bl_hash_table_inits	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_hash_table_init(va_arg(valist,jry_bl_hash_table*));va_end(valist);}
 inline void jry_bl_hash_table_frees	(int n,...){va_list valist;va_start(valist,n);for(int i=0;i<n;i++)jry_bl_hash_table_free(va_arg(valist,jry_bl_hash_table*));va_end(valist);}

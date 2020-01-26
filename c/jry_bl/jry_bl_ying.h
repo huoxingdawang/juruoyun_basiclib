@@ -57,7 +57,11 @@ typedef enum
 	typedef jry_bl_uint32 jry_bl_pointer_int;
 #endif
 jry_bl_int64 jry_bl_ceil(long double i);
-
+jry_bl_uint8 jry_bl_get_uint64_length(jry_bl_uint64 tmp);
+jry_bl_uint8 jry_bl_get_int64_length(jry_bl_int64 tmp);
+jry_bl_uint8 jry_bl_get_double_length(double tmp);
+jry_bl_uint8 jry_bl_lowbit(jry_bl_uint64 a);
+jry_bl_uint8 jry_bl_highbit(jry_bl_uint64 a);
 #define B0000_0000 0x00
 #define B0000_0001 0x01
 #define B0000_0010 0x02

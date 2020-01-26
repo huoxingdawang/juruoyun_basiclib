@@ -23,7 +23,7 @@ int main()
 	
 //字符串输出	
 /*	
-	jry_bl_string_view(&s1,stderr);
+	jry_bl_string_view(&s1;
 	jry_bl_stream_connect(&ss1,&jry_bl_stream_stdout);
 	jry_bl_stream_do(&ss1,jry_bl_stream_force);
 	putchar('\n');
@@ -38,9 +38,9 @@ int main()
 	jry_bl_stream_connect(&b64de,&ss4);
 	jry_bl_stream_connect(&ss4,&jry_bl_stream_stdout);
 	jry_bl_stream_do(&jry_bl_stream_stdin,jry_bl_stream_force);
-	jry_bl_string_view(&s2,stderr);
-	jry_bl_string_view(&s3,stderr);
-	jry_bl_string_view(&s4,stderr);
+	jry_bl_string_view(&s2;
+	jry_bl_string_view(&s3;
+	jry_bl_string_view(&s4;
 */
 //输入直接输出	
 /*
@@ -55,7 +55,7 @@ int main()
 	jry_bl_stream_do(&ss1,jry_bl_stream_force);
 	jry_bl_string_stream_reset(&ss1);
 	jry_bl_stream_do(&ss1,jry_bl_stream_force);
-	jry_bl_string_view(&s2,stderr);
+	jry_bl_string_view(&s2;
 */
 //base64 encode
 /*
@@ -65,8 +65,8 @@ int main()
 	jry_bl_stream_connect(&ss1,&b64en);
 	jry_bl_stream_connect(&b64en,&ss3);
 	jry_bl_stream_do(&ss1,jry_bl_stream_force);
-	jry_bl_string_view(&s2,stderr);
-	jry_bl_string_view(&s3,stderr);
+	jry_bl_string_view(&s2;
+	jry_bl_string_view(&s3;
 */
 //base64 decode
 /*
@@ -80,9 +80,9 @@ int main()
 	jry_bl_stream_connect(&ss2,&b64de);
 	jry_bl_stream_do(&ss2,jry_bl_stream_force);
 	
-	jry_bl_string_view(&s1,stderr);
-	jry_bl_string_view(&s2,stderr);
-	jry_bl_string_view(&s3,stderr);
+	jry_bl_string_view(&s1;
+	jry_bl_string_view(&s2;
+	jry_bl_string_view(&s3;
 */
 //aes128ecb
 /*
@@ -96,14 +96,14 @@ int main()
 	jry_bl_stream_connect(&b64de,&aes128ecbde);
 	jry_bl_stream_connect(&aes128ecbde,&ss4);
 	jry_bl_stream_do(&ss1,jry_bl_stream_force);
-	jry_bl_string_view(&s2,stderr);
-	jry_bl_string_view(&s3,stderr);	
-	jry_bl_string_view(&s4,stderr);	
+	jry_bl_string_view(&s2;
+	jry_bl_string_view(&s3;	
+	jry_bl_string_view(&s4;	
 	printf("AES 128 ECB encode %s\n",((jry_bl_string_space_ship(&s2,&s3)==0)?"YES":"NO"));
 	printf("AES 128 ECB decode %s\n",((jry_bl_string_space_ship(&s4,&s1)==0)?"YES":"NO"));
 */
 //aes128cbc
-
+/*
 	jry_bl_string_clear(&s2);jry_bl_string_clear(&s3);jry_bl_string_clear(&s4);
 	jry_bl_aes_128_cbc_encode(keyy,"0CoJUm6Qyw8W8jud",&s1,&s3);jry_bl_base64_encode(&s3,&s2);jry_bl_string_clear(&s3);
 	jry_bl_string_stream_reset(&ss1);jry_bl_string_stream_reset(&ss3);jry_bl_string_stream_reset(&ss4);jry_bl_stream_reset(&b64en);jry_bl_stream_reset(&b64de);
@@ -114,13 +114,12 @@ int main()
 	jry_bl_stream_connect(&b64de,&aes128cbcde);
 	jry_bl_stream_connect(&aes128cbcde,&ss4);
 	jry_bl_stream_do(&ss1,jry_bl_stream_force);
-	jry_bl_string_view(&s2,stderr);
-	jry_bl_string_view(&s3,stderr);	
-	jry_bl_string_view(&s4,stderr);	
+	jry_bl_string_view(&s2;
+	jry_bl_string_view(&s3;	
+	jry_bl_string_view(&s4;	
 	printf("AES 128 CBC encode %s\n",((jry_bl_string_space_ship(&s2,&s3)==0)?"YES":"NO"));
 	printf("AES 128 CBC decode %s\n",((jry_bl_string_space_ship(&s4,&s1)==0)?"YES":"NO"));
-
-
+*/
 
 
 

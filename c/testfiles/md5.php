@@ -9,5 +9,5 @@
 		$fp=fopen("testfiles/md5_encode.ans","w");
 		fwrite($fp,md5($str));
 		fclose($fp);
-		echo 'PHP MD5 used time:'.((msectime()-$start))."ms\n";		
+		echo 'PHP MD5 used time:'.((msectime()-$start))."ms\n";
 	}

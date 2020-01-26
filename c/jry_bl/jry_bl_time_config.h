@@ -13,7 +13,7 @@
 #if JRY_BL_TIME_ENABLE==1
 #include "jry_bl_ying.h"
 
-#define JRY_BL_TIME_DEFAULT_TIME_ZONE (8)
+#define JRY_BL_TIME_DEFAULT_TIME_ZONE JRY_BL_TIME_ZONE_ASIA_SHANGHAI
 
 #endif
 #endif

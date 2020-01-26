@@ -51,8 +51,6 @@ char					jry_bl_hash_table_space_ship						(const jry_bl_hash_table *this,const 
 #define					jry_bl_hash_table_if_equal_big(x,y) 				(jry_bl_hash_table_space_ship(x,y)>=0)
 void					jry_bl_hash_table_clear								(jry_bl_hash_table *this);
 void					jry_bl_hash_table_copy								(jry_bl_hash_table *this,jry_bl_hash_table *that,jry_bl_copy_type copytype);
-#define					jry_bl_hash_table_to_json(x,y)						jry_bl_hash_table_to_json_ex(x,y,0)
-void					jry_bl_hash_table_to_json_ex						(const jry_bl_hash_table *this,jry_bl_string *out,jry_bl_uint8 type);
 void					jry_bl_hash_table_merge								(jry_bl_hash_table *this,jry_bl_hash_table *that,jry_bl_uint8 copytype);
 jry_bl_string_size_type jry_bl_hash_table_from_json_start					(jry_bl_hash_table *this,const jry_bl_string *in,jry_bl_string_size_type start);
 #define					jry_bl_hash_table_from_json(this,in)				jry_bl_hash_table_from_json_start(this,in,0)
@@ -70,11 +68,16 @@ void					jry_bl_hash_table_rehash							(jry_bl_hash_table *this);
 #define 				jry_bl_hash_table_insert_str_double(x,k,v,s1,v2)	jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_var_equal_double((v2),(v));jry_bl_hash_table_insert((x),(s1),(v2),(move),(move));	
 #define 				jry_bl_hash_table_insert_str_true(x,k,s1,v2)		jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_var_equal_true((v2));jry_bl_hash_table_insert((x),(s1),(v2),(move),(move));	
 #define 				jry_bl_hash_table_insert_str_false(x,k,s1,v2)		jry_bl_string_equal_char_pointer_light((s1),(k));jry_bl_var_equal_false((v2));jry_bl_hash_table_insert((x),(s1),(v2),(move),(move));	
-#define					jry_bl_hash_table_view(x,y) 						jry_bl_hash_table_view_ex(x,y,#x " @ "__FILE__,__LINE__,jry_bl_view_default_tabs_num)
-void 					jry_bl_hash_table_view_ex							(const jry_bl_hash_table *this,FILE * file,char*str,int a,int tabs);
 void					jry_bl_var_equal_hash_table							(jry_bl_var *this,jry_bl_hash_table *that,jry_bl_uint8 copytype);
 #define 				jry_bl_var_get_hash_table(this)						((jry_bl_hash_table*)(this)->data.p)
-
+#if JRY_BL_STREAM_ENABLE==1
+#include "jry_bl_stream.h"
+void					jry_bl_hash_table_put								(const jry_bl_hash_table* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str);
+#define					jry_bl_hash_table_view(x) 							jry_bl_hash_table_put(x,&jry_bl_stream_stdout,view,(jry_bl_view_default_tabs_num<<16)|(__LINE__<<1)|1,#x " @ "__FILE__),jry_bl_stream_push_char(&jry_bl_stream_stdout,'\n'),jry_bl_stream_do(&jry_bl_stream_stdout,1);
+#if JRY_BL_STRING_ENABLE==1
+void					jry_bl_hash_table_to_json							(const jry_bl_hash_table *this,jry_bl_string *result);
+#endif
+#endif
 #if JRY_BL_USE_STDARG==1
 void					jry_bl_hash_table_inits								(int n,...);
 void					jry_bl_hash_table_frees								(int n,...);
