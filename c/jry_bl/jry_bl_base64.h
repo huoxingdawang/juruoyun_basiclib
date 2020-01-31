@@ -15,8 +15,8 @@
 #include "jry_bl_malloc.h"
 #include "jry_bl_string.h"
 #include "jry_bl_ying.h"
-void jry_bl_base64_encode(const jry_bl_string *this,jry_bl_string *result);
-void jry_bl_base64_decode(const jry_bl_string *this,jry_bl_string *result);
+void	jry_bl_base64_encode					(const jry_bl_string *this,jry_bl_string *result);
+void	jry_bl_base64_decode					(const jry_bl_string *this,jry_bl_string *result);
 
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_stream.h"

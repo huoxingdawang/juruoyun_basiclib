@@ -7,7 +7,7 @@ int main()
 	printf("jry_bl_file size:%lld\n",(long long)(sizeof (jry_bl_file)));	
 	jry_bl_string	dir;jry_bl_string_init(&dir);
 	jry_bl_file		test;jry_bl_file_init(&test);
-	jry_bl_string_equal_char_pointer(&dir,"testfiles");
+	jry_bl_string_equal_chars(&dir,"testfiles");
 	
 	
 	jry_bl_file_open(&test,&dir,move);

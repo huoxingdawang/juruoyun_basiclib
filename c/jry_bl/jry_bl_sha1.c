@@ -27,7 +27,7 @@ void jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 {
 	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_size_type	size=jry_bl_string_get_length(this);
-	unsigned char 			*input=jry_bl_string_get_char_pointer(this),mb[64];
+	unsigned char 			*input=jry_bl_string_get_chars(this),mb[64];
 	unsigned int			hb[5]={0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0},mbc=0,ll=0,lh=0;
 	jry_bl_string_extend(out,40);
 	while(size--)

@@ -9,7 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_stream.h"
 #if JRY_BL_STREAM_ENABLE==1
-void jry_bl_stream_push_char_pointer(jry_bl_stream* this,jry_bl_uint8 *str)
+void jry_bl_stream_push_chars(jry_bl_stream* this,jry_bl_uint8 *str)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);		
 	for(;*str;jry_bl_stream_push_char(this,*str),++str);
@@ -25,7 +25,7 @@ void jry_bl_stream_push_uint64(jry_bl_stream* this,jry_bl_uint64 in)
 	unsigned char b[21];
 	b[cnt--]=0;
 	while(in)b[cnt--]=in%10+'0',in/=10;
-	jry_bl_stream_push_char_pointer(this,b+cnt+1);	
+	jry_bl_stream_push_chars(this,b+cnt+1);	
 }
 inline void jry_bl_stream_push_int64(jry_bl_stream* this,jry_bl_int64 in)
 {
@@ -40,7 +40,7 @@ inline void jry_bl_stream_push_double(jry_bl_stream* this,double in)
 		in=-in;
 	in-=(jry_bl_uint64)in;
 	jry_bl_uint64 ji=10;
-	for(double t=in*ji;(t-(jry_bl_uint64)t<(-0.0000001)||t-(jry_bl_uint64)t>(0.0000001));ji=(ji<<3)+(ji<<1),t=in*ji);
+	for(double t=in*ji;(t-(jry_bl_uint64)t<(-JRY_BL_DOUBLE_PRECISION)||t-(jry_bl_uint64)t>(JRY_BL_DOUBLE_PRECISION));ji=(ji<<3)+(ji<<1),t=in*ji);
 	jry_bl_stream_push_char(this,'.');
 	ji=(ji<<3)+(ji<<1);
 	jry_bl_stream_push_uint64(this,((jry_bl_uint64)((in*ji+0.5)/10)));	

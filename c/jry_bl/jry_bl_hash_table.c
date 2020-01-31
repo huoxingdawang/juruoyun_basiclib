@@ -289,14 +289,14 @@ void jry_bl_hash_table_put(const jry_bl_hash_table* this,jry_bl_stream *output_s
 		jry_bl_stream_push_char(output_stream,'{');
 	else if(type==view)
 	{
-		jry_bl_stream_push_char_pointer(output_stream,"jry_bl_hash_table ");
+		jry_bl_stream_push_chars(output_stream,"jry_bl_hash_table ");
 		if(((jry_bl_uint16)format>>1)!=0)
-			jry_bl_stream_push_char_pointer(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
-		jry_bl_stream_push_char_pointer(output_stream,"\tlen:");
+			jry_bl_stream_push_chars(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
+		jry_bl_stream_push_chars(output_stream,"\tlen:");
 		jry_bl_stream_push_uint64(output_stream,this->len);
-		jry_bl_stream_push_char_pointer(output_stream,"\tnxt:");
+		jry_bl_stream_push_chars(output_stream,"\tnxt:");
 		jry_bl_stream_push_uint64(output_stream,this->nxt);
-		jry_bl_stream_push_char_pointer(output_stream,"\tsize:");
+		jry_bl_stream_push_chars(output_stream,"\tsize:");
 		jry_bl_stream_push_uint64(output_stream,this->size);
 	}
 	jry_bl_uint32 format_nxt=(format&1)|((-(tabs+1))<<16);

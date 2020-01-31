@@ -109,7 +109,7 @@ void jry_bl_var_put(jry_bl_var* this,jry_bl_stream *output_stream,jry_bl_put_typ
 			if(format&1)if(tabs>=0)for(jry_bl_int16 i=0;i<tabs;jry_bl_stream_push_char(output_stream,'\t'),++i);else tabs=-tabs;
 			switch(this->type)
 			{
-				case JRY_BL_VAR_TYPE_NULL	:jry_bl_stream_push_char_pointer(output_stream,"null")		;break;
+				case JRY_BL_VAR_TYPE_NULL	:jry_bl_stream_push_chars(output_stream,"null")		;break;
 				case JRY_BL_VAR_TYPE_TRUE	:jry_bl_stream_push_uint64	(output_stream,1)				;break;
 				case JRY_BL_VAR_TYPE_FALSE	:jry_bl_stream_push_uint64	(output_stream,0)				;break;
 				case JRY_BL_VAR_TYPE_INT64	:jry_bl_stream_push_int64	(output_stream,this->data.ll)	;break;
@@ -126,18 +126,18 @@ void jry_bl_var_put(jry_bl_var* this,jry_bl_stream *output_stream,jry_bl_put_typ
 			if(format&1)if(tabs>=0)for(jry_bl_int16 i=0;i<tabs;jry_bl_stream_push_char(output_stream,'\t'),++i);else tabs=-tabs;
 			switch(this->type)
 			{		
-				case JRY_BL_VAR_TYPE_UNUSE	:jry_bl_stream_push_char_pointer(output_stream,"unuse             ");break;
-				case JRY_BL_VAR_TYPE_NULL	:jry_bl_stream_push_char_pointer(output_stream,"null              ");break;
-				case JRY_BL_VAR_TYPE_TRUE	:jry_bl_stream_push_char_pointer(output_stream,"true              ");break;
-				case JRY_BL_VAR_TYPE_FALSE	:jry_bl_stream_push_char_pointer(output_stream,"false             ");break;
-				case JRY_BL_VAR_TYPE_INT64	:jry_bl_stream_push_char_pointer(output_stream,"int64             ");break;
-				case JRY_BL_VAR_TYPE_UINT64	:jry_bl_stream_push_char_pointer(output_stream,"uint64            ");break;
-				case JRY_BL_VAR_TYPE_DOUBLE	:jry_bl_stream_push_char_pointer(output_stream,"double            ");break;
-				case JRY_BL_VAR_TYPE_CHAR	:jry_bl_stream_push_char_pointer(output_stream,"char              ");break;
-				case JRY_BL_VAR_TYPE_POINTER:jry_bl_stream_push_char_pointer(output_stream,"pointer           ");break;
+				case JRY_BL_VAR_TYPE_UNUSE	:jry_bl_stream_push_chars(output_stream,"unuse             ");break;
+				case JRY_BL_VAR_TYPE_NULL	:jry_bl_stream_push_chars(output_stream,"null              ");break;
+				case JRY_BL_VAR_TYPE_TRUE	:jry_bl_stream_push_chars(output_stream,"true              ");break;
+				case JRY_BL_VAR_TYPE_FALSE	:jry_bl_stream_push_chars(output_stream,"false             ");break;
+				case JRY_BL_VAR_TYPE_INT64	:jry_bl_stream_push_chars(output_stream,"int64             ");break;
+				case JRY_BL_VAR_TYPE_UINT64	:jry_bl_stream_push_chars(output_stream,"uint64            ");break;
+				case JRY_BL_VAR_TYPE_DOUBLE	:jry_bl_stream_push_chars(output_stream,"double            ");break;
+				case JRY_BL_VAR_TYPE_CHAR	:jry_bl_stream_push_chars(output_stream,"char              ");break;
+				case JRY_BL_VAR_TYPE_POINTER:jry_bl_stream_push_chars(output_stream,"pointer           ");break;
 			}
 			if(((jry_bl_uint16)format>>1)!=0)
-				jry_bl_stream_push_char_pointer(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
+				jry_bl_stream_push_chars(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
 			switch(this->type)
 			{		
 				case JRY_BL_VAR_TYPE_INT64	:jry_bl_stream_push_int64	(output_stream,this->data.ll)	;break;

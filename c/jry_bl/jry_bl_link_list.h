@@ -71,7 +71,7 @@ void					jry_bl_var_equal_link_list						(jry_bl_var *this,jry_bl_link_list *tha
 
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_stream.h"
-void					jry_bl_link_list_put(const jry_bl_link_list* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str);
+void					jry_bl_link_list_put							(const jry_bl_link_list* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str);
 #define					jry_bl_link_list_view(x) 						jry_bl_link_list_put(x,&jry_bl_stream_stdout,view,(jry_bl_view_default_tabs_num<<16)|(__LINE__<<1)|1,#x " @ "__FILE__),jry_bl_stream_push_char(&jry_bl_stream_stdout,'\n'),jry_bl_stream_do(&jry_bl_stream_stdout,1);
 #if JRY_BL_STRING_ENABLE==1
 void					jry_bl_link_list_to_json						(const jry_bl_link_list *this,jry_bl_string *result);

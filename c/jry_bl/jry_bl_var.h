@@ -78,15 +78,13 @@ extern const jry_bl_var_functions_struct jry_bl_var_functions[5];
 extern jry_bl_var_functions_struct* jry_bl_var_fs[jry_bl_var_fs_size];
 extern jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size];
 #if jry_bl_var_tmp_size!=0
-#define jry_bl_var_tmp_register(type,a,b,c,d,e,f,g,h,i)	jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].size=a, \
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].init=b,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].free=c,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].equal=d,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].equal_light=e,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].equal_light_copy=f,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].space_ship=g,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].to_json=h,	\
-														jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].view_ex=i
+#define jry_bl_var_tmp_register(type,size,init,free,copy,space_ship,f,g,h,i)											\
+									jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].size=size,				\
+									jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].init=init,				\
+									jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].free=free,				\
+									jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].copy=copy,				\
+									jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].space_ship=space_ship,	\
+									jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].put=put	
 #endif
 void					jry_bl_var_init						(jry_bl_var *this);
 void					jry_bl_var_free						(jry_bl_var *this);

@@ -210,10 +210,10 @@ void jry_bl_link_list_put(const jry_bl_link_list* this,jry_bl_stream *output_str
 		jry_bl_stream_push_char(output_stream,'[');
 	else if(type==view)
 	{
-		jry_bl_stream_push_char_pointer(output_stream,"jry_bl_link_list ");
+		jry_bl_stream_push_chars(output_stream,"jry_bl_link_list ");
 		if(((jry_bl_uint16)format>>1)!=0)
-			jry_bl_stream_push_char_pointer(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
-		jry_bl_stream_push_char_pointer(output_stream,"\tlen:");
+			jry_bl_stream_push_chars(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
+		jry_bl_stream_push_chars(output_stream,"\tlen:");
 		jry_bl_stream_push_uint64(output_stream,this->length);
 	}
 	jry_bl_uint32 format_nxt=(format&1)|((-(tabs+1))<<16);

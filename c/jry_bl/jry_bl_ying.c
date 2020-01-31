@@ -35,7 +35,7 @@ jry_bl_uint8 jry_bl_get_double_length(double tmp)
 		tmp=-tmp;
 	tmp-=(jry_bl_uint64)tmp;
 	jry_bl_uint64 ji=10;
-	for(double t=tmp*ji;t-(jry_bl_uint64)t<(-0.0000001)||t-(jry_bl_uint64)t>(0.0000001);ji=(ji<<3)+(ji<<1),t=tmp*ji);
+	for(double t=tmp*ji;t-(jry_bl_uint64)t<(-JRY_BL_DOUBLE_PRECISION)||t-(jry_bl_uint64)t>(JRY_BL_DOUBLE_PRECISION);ji=(ji<<3)+(ji<<1),t=tmp*ji);
 	len+=jry_bl_get_uint64_length(tmp*ji);
 	return len;
 }

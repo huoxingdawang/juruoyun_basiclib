@@ -38,6 +38,7 @@ run:
 	exes$(H)json
 	exes$(H)hash_table
 	exes$(H)link_list
+	exes$(H)malloc
 	exes$(H)md5
 	exes$(H)stream
 	exes$(H)sha1
@@ -69,6 +70,9 @@ hash_table:jry_bl
 link_list:jry_bl
 	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)link_list.o examples$(H)link_list.c $(EXLIB)
 	$(CC) -o exes$(H)link_list tmp$(H)link_list.o tmp$(H)jry_bl.a
+malloc:jry_bl
+	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)malloc.o examples$(H)malloc.c $(EXLIB)
+	$(CC) -o exes$(H)malloc tmp$(H)malloc.o tmp$(H)jry_bl.a
 md5:jry_bl
 	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)md5.o examples$(H)md5.c $(EXLIB)
 	$(CC) -o exes$(H)md5 tmp$(H)md5.o tmp$(H)jry_bl.a

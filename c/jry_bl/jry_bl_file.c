@@ -89,7 +89,7 @@ void jry_bl_file_copy(jry_bl_file *this,jry_bl_file *that,jry_bl_copy_type cpt)
 	if(that->type==JRY_BL_FILE_TYPE_FILE)
 	{
 		if(cpt==copy)
-			this->file.handle=fopen(jry_bl_string_get_char_pointer(&that->name),"rb+"),this->light_copy=0;
+			this->file.handle=fopen(jry_bl_string_get_chars(&that->name),"rb+"),this->light_copy=0;
 		else
 			this->light_copy=that->light_copy,this->file.handle=that->file.handle,((cpt==move)?that:this)->light_copy=1;
 	}
@@ -131,8 +131,8 @@ void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *na
 	if(this==NULL||name==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_file_clear(this);
 	jry_bl_string_set(name,jry_bl_string_get_length(name),'\0');
-	FILE	*file	=fopen(jry_bl_string_get_char_pointer(name),"wb+");
-	DIR		*dir	=opendir(jry_bl_string_get_char_pointer(name));
+	FILE	*file	=fopen(jry_bl_string_get_chars(name),"wb+");
+	DIR		*dir	=opendir(jry_bl_string_get_chars(name));
 	if(file!=NULL)
 	{
 		if(dir!=NULL)closedir(dir);	
@@ -161,11 +161,11 @@ void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *na
 			rewinddir(dir);
 			while((dirp=readdir(dir)))
 			{
-				jry_bl_string_equal_char_pointer(&tmp2,dirp->d_name);
+				jry_bl_string_equal_chars(&tmp2,dirp->d_name);
 				if(jry_bl_string_get1(&tmp2,0)=='.'||(2<jry_bl_string_get_length(&tmp2)&&jry_bl_string_get1(&tmp2,0)=='.'&&jry_bl_string_get1(&tmp2,1)=='.'))
 					continue;
 				jry_bl_var_init_as(&tv,JRY_BL_VAR_TYPE_FILE);
-				jry_bl_string_add_char_pointer(&tmp1,dirp->d_name);
+				jry_bl_string_add_chars(&tmp1,dirp->d_name);
 				jry_bl_file_file_open_ex(jry_bl_var_get_file(&tv),this,&tmp1,move,recursive_time-1);
 				jry_bl_hash_table_insert(&this->dir.child,&tmp2,&tv,move,move);
 				jry_bl_string_get_length(&tmp1)=nn;

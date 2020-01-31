@@ -15,7 +15,7 @@ int main()
 	jry_bl_string sa,sb,sc,sd;jry_bl_string_inits(4,&sa,&sb,&sc,&sd);
 	int a=0;
 
-	jry_bl_string_equal_char_pointer(&sa,"juruoyun");
+	jry_bl_string_equal_chars(&sa,"juruoyun");
 	jry_bl_var_equal_string(&va,&sa,copy);
 	jry_bl_var_equal_string(&vb,&sa,light);
 	jry_bl_var_equal_string(&vc,&sa,move);

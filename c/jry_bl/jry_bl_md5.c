@@ -75,7 +75,7 @@ void jry_bl_md5(const jry_bl_string* this,jry_bl_string* out)
 	unsigned char buffer[64],digest[16];
 	register jry_bl_string_size_type len=jry_bl_string_get_length(this);
 	jry_bl_string_extend(out,32);
-	__jry_bl_md5_init(jry_bl_string_get_char_pointer(this),len,state,count,buffer);
+	__jry_bl_md5_init(jry_bl_string_get_chars(this),len,state,count,buffer);
 	unsigned char bits[8];
 	unsigned int  index,padlen;
 	__jry_bl_md5_encode(count,bits,8);

@@ -21,12 +21,12 @@
 	#define true 1
 #endif
 #define jry_bl_view_default_tabs_num		1
-#define jry_bl_start()	\
-jry_bl_malloc_start();	\
-jry_bl_stream_start()	
-#define jry_bl_stop()	\
-jry_bl_stream_stop();	\
-jry_bl_malloc_stop()	
+#define jry_bl_start()		\
+	jry_bl_malloc_start();	\
+	jry_bl_stream_start()	
+#define jry_bl_stop()		\
+	jry_bl_stream_stop();	\
+	jry_bl_malloc_stop()	
 #define JRY_BL_PRINT_COLORFUL_BLACK			0
 #define JRY_BL_PRINT_COLORFUL_RED			1
 #define JRY_BL_PRINT_COLORFUL_LIGHT_GREEN	2
@@ -56,12 +56,12 @@ typedef enum
 	#define jry_bl_print_colorful(f,s,bc,fc) fprintf(f,s)
 	typedef jry_bl_uint32 jry_bl_pointer_int;
 #endif
-jry_bl_int64 jry_bl_ceil(long double i);
-jry_bl_uint8 jry_bl_get_uint64_length(jry_bl_uint64 tmp);
-jry_bl_uint8 jry_bl_get_int64_length(jry_bl_int64 tmp);
-jry_bl_uint8 jry_bl_get_double_length(double tmp);
-jry_bl_uint8 jry_bl_lowbit(jry_bl_uint64 a);
-jry_bl_uint8 jry_bl_highbit(jry_bl_uint64 a);
+jry_bl_int64	jry_bl_ceil					(long double i);
+jry_bl_uint8	jry_bl_get_uint64_length	(jry_bl_uint64 tmp);
+jry_bl_uint8	jry_bl_get_int64_length		(jry_bl_int64 tmp);
+jry_bl_uint8	jry_bl_get_double_length	(double tmp);
+jry_bl_uint8	jry_bl_lowbit				(jry_bl_uint64 a);
+jry_bl_uint8	jry_bl_highbit				(jry_bl_uint64 a);
 #define B0000_0000 0x00
 #define B0000_0001 0x01
 #define B0000_0010 0x02

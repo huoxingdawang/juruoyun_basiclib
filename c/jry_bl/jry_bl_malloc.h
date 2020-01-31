@@ -16,23 +16,24 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
-void jry_bl_malloc_start();
-void jry_bl_malloc_stop();
+void	jry_bl_malloc_start			();
+void	jry_bl_malloc_stop			();
+void*	jry_bl_malloc				(size_t size);
+void*	jry_bl_realloc				(void* ptr,size_t size);
+void	jry_bl_free					(void * p);
+size_t	jry_bl_malloc_size			(void* ptr);
+void	jry_bl_memory_copy			(void *to,const void * from,size_t len);
+void	jry_bl_memory_copy_reverse	(void *to,const void * from,size_t len,size_t size);
 #if JRY_BL_MALLOC_DEBUG_MODE==1
 extern size_t __jry_bl_malloced_size;
 extern size_t __jry_bl_malloced_max_size;
 #define jry_bl_malloced_size		((jry_bl_int64)__jry_bl_malloced_size)
 #define jry_bl_malloced_max_size	((jry_bl_int64)__jry_bl_malloced_max_size)
 #else
-#define jry_bl_malloced_size ((jry_bl_int64)0)
+#define jry_bl_malloced_size		((jry_bl_int64)0)
 #endif
-void* jry_bl_malloc(size_t size);
-void* jry_bl_realloc(void* ptr,size_t size);
-void jry_bl_free(void * p);
-size_t jry_bl_malloc_size(void* ptr);
-void jry_bl_memory_copy(void *to,const void * from,size_t len);
-void jry_bl_memory_copy_reverse(void *to,const void * from,size_t len,size_t size);
 #else
-#define jry_bl_malloc_init()
+#define jry_bl_malloc_start			()
+#define jry_bl_malloc_stop			()
 #endif
 #endif

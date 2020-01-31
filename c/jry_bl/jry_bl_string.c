@@ -26,7 +26,7 @@ void jry_bl_string_add_string(jry_bl_string *this,jry_bl_string *in)
 		this->s[this->len+i]=in->s[i];
 	this->len=(this->len+in->len);
 }
-void jry_bl_string_add_char_pointer_length(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len)
+void jry_bl_string_add_chars_length(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len)
 {
 	if(this==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_extend(this,len);
@@ -62,7 +62,7 @@ void jry_bl_string_add_uint64_length(jry_bl_string *this,jry_bl_uint64 in,jry_bl
 	b[cnt--]=0;
 	while(in)b[cnt--]=in%10+'0',in/=10;
 	for(jry_bl_uint8 i=19-cnt;i<len;jry_bl_string_add_char1(this,c),++i);
-	jry_bl_string_add_char_pointer(this,b+cnt+1);
+	jry_bl_string_add_chars(this,b+cnt+1);
 }
 void jry_bl_string_add_double_length(jry_bl_string *this,double in,unsigned char len)
 {
@@ -78,7 +78,7 @@ void jry_bl_string_add_double_length(jry_bl_string *this,double in,unsigned char
 	in-=inn;
 	jry_bl_uint64 ji=10;
 	unsigned char i=0;
-	for(double t=in*ji;i<len&&(t-(jry_bl_uint64)t<(-0.0000001)||t-(jry_bl_uint64)t>(0.0000001));ji=(ji<<3)+(ji<<1),t=in*ji,++i);
+	for(double t=in*ji;i<len&&(t-(jry_bl_uint64)t<(-JRY_BL_DOUBLE_PRECISION)||t-(jry_bl_uint64)t>(JRY_BL_DOUBLE_PRECISION));ji=(ji<<3)+(ji<<1),t=in*ji,++i);
 	jry_bl_string_add_uint64(this,((jry_bl_uint64)((in*ji+0.5)/10)));
 }
 void jry_bl_string_add_unicode_as_utf8(jry_bl_string *this,unsigned long unicode)
@@ -318,14 +318,14 @@ void jry_bl_string_put(const jry_bl_string* this,jry_bl_stream *output_stream,jr
 	}
 	else if(type==view)
 	{
-		jry_bl_stream_push_char_pointer(output_stream,"jry_bl_string    ");
+		jry_bl_stream_push_chars(output_stream,"jry_bl_string    ");
 		if(((jry_bl_uint16)format>>1)!=0)
-			jry_bl_stream_push_char_pointer(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
-		jry_bl_stream_push_char_pointer(output_stream,":size:");
+			jry_bl_stream_push_chars(output_stream,str),jry_bl_stream_push_char(output_stream,' '),jry_bl_stream_push_uint64(output_stream,((jry_bl_uint16)format>>1));
+		jry_bl_stream_push_chars(output_stream,":size:");
 		jry_bl_stream_push_uint64(output_stream,this->size);
-		jry_bl_stream_push_char_pointer(output_stream,"\tlen:");
+		jry_bl_stream_push_chars(output_stream,"\tlen:");
 		jry_bl_stream_push_uint64(output_stream,this->len);
-		jry_bl_stream_push_char_pointer(output_stream,"\ts:");
+		jry_bl_stream_push_chars(output_stream,"\ts:");
 		for(jry_bl_string_size_type i=0;i<this->len;jry_bl_stream_push_char(output_stream,this->s[i]),++i);
 	} 
 }

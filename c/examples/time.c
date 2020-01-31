@@ -19,7 +19,7 @@ int main()
 	{
 		jry_bl_int64 t=((jry_bl_uint64)rand()*(jry_bl_uint64)rand()*/*(jry_bl_uint64)rand()*(rand()%2==0?1:-1)**/1000);
 		jry_bl_string_clears(2,&s1,&s2);jry_bl_time_to_string((jry_bl_time_from_unix(&t2,t),&t2),&s1);
-		jry_bl_string_equal_char_pointer(&cmd,"php testfiles/time.php ");jry_bl_string_add_int64(&cmd,t);jry_bl_string_set0(&cmd);
+		jry_bl_string_equal_chars(&cmd,"php testfiles/time.php ");jry_bl_string_add_int64(&cmd,t);jry_bl_string_set0(&cmd);
 		jry_bl_execute_cmd(&cmd,&s2);
 		printf("%lld:\n",t);putchar('\t');jry_bl_string_print(&s1,stderr);putchar('\n');putchar('\t');jry_bl_string_print(&s2,stderr);putchar('\n');
 		if(!jry_bl_string_if_equal(&s1,&s2)){printf("Fail!\n");jry_bl_string_print(&cmd,stderr);putchar('\n');break;}

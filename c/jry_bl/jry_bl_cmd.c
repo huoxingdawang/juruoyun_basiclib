@@ -13,10 +13,10 @@ void jry_bl_execute_cmd(const jry_bl_string *cmd,jry_bl_string *result)
 {
 	char buf_ps[1024];
 	FILE *ptr;
-	if((ptr=popen(jry_bl_string_get_char_pointer(cmd),"r"))!=NULL)
+	if((ptr=popen(jry_bl_string_get_chars(cmd),"r"))!=NULL)
 	{
 		while(fgets(buf_ps,1024,ptr)!=NULL)
-			jry_bl_string_add_char_pointer(result,buf_ps);
+			jry_bl_string_add_chars(result,buf_ps);
 		pclose(ptr);
 	}
 }

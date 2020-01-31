@@ -25,24 +25,24 @@ int main()
 	jry_bl_link_list_frees(2,&l1,&l2);
 */	
 /*	
-	jry_bl_string_equal_char_pointer(&s1,"12312312\n1231231");
+	jry_bl_string_equal_chars(&s1,"12312312\n1231231");
 	jry_bl_string_cut(&s1,&l1,'\n');
 	jry_bl_link_list_view(&l1);
-	jry_bl_string_equal_char_pointer(&s1,"125675675675763\n1231231");
+	jry_bl_string_equal_chars(&s1,"125675675675763\n1231231");
 	jry_bl_string_cut(&s1,&l2,'\n');
 	jry_bl_link_list_view(&l2);
 	printf("space ship:%d",jry_bl_link_list_space_ship(&l1,&l2));
 	jry_bl_link_list_frees(2,&l1,&l2);
 */	
 /*
-	jry_bl_string_equal_char_pointer(&s1,"12312312\n1231231");
+	jry_bl_string_equal_chars(&s1,"12312312\n1231231");
 	jry_bl_string_cut(&s1,&l1,'\n');
 	jry_bl_link_list_equal_move(&l2,&l1);
 	jry_bl_stop();	
 	jry_bl_link_list_frees(1,&l1);
 	jry_bl_link_list_view(&l2);
 */
-	jry_bl_string_equal_char_pointer(&s1,"12312312\n1231231");
+	jry_bl_string_equal_chars(&s1,"12312312\n1231231");
 	jry_bl_string_cut(&s1,&l1,'\n');
 	jry_bl_link_list_put(&l1,&jry_bl_stream_stdout,view,(jry_bl_view_default_tabs_num<<16)|(__LINE__<<1)|1,__FILE__);jry_bl_stream_do(&jry_bl_stream_stdout,1);
 	

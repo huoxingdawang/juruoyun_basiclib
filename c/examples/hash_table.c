@@ -22,15 +22,15 @@ int main()
 	
 	jry_bl_hash_table_insert_str(&ht1,"123123","ddd",&s1,&s2,&v1);
 	jry_bl_hash_table_view(&ht1);
-	jry_bl_string_equal_char_pointer_light(&s1,"ffff");jry_bl_hash_table_unset(&ht1,&s1);
+	jry_bl_string_equal_chars_light(&s1,"ffff");jry_bl_hash_table_unset(&ht1,&s1);
 	jry_bl_hash_table_view(&ht1);	
 	jry_bl_hash_table_rehash(&ht1);
 	jry_bl_hash_table_view(&ht1);	
-	jry_bl_string_equal_char_pointer_light(&s1,"test");jry_bl_hash_table_unset(&ht1,&s1);
+	jry_bl_string_equal_chars_light(&s1,"test");jry_bl_hash_table_unset(&ht1,&s1);
 	jry_bl_hash_table_view(&ht1);	
-	jry_bl_string_equal_char_pointer_light(&s1,"123123");jry_bl_hash_table_unset(&ht1,&s1);
-	jry_bl_string_equal_char_pointer_light(&s1,"ccc");jry_bl_hash_table_unset(&ht1,&s1);
-	jry_bl_string_equal_char_pointer_light(&s1,"aaa");jry_bl_hash_table_unset(&ht1,&s1);
+	jry_bl_string_equal_chars_light(&s1,"123123");jry_bl_hash_table_unset(&ht1,&s1);
+	jry_bl_string_equal_chars_light(&s1,"ccc");jry_bl_hash_table_unset(&ht1,&s1);
+	jry_bl_string_equal_chars_light(&s1,"aaa");jry_bl_hash_table_unset(&ht1,&s1);
 	jry_bl_hash_table_view(&ht1);
 
 	

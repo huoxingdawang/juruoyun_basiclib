@@ -11,6 +11,7 @@
 #define __JRY_BL_YING_CONFIG_H
 #include "jry_bl_config.h"
 #if JRY_BL_YING_ENABLE==1
+#define JRY_BL_DOUBLE_PRECISION 0.00001
 
 
 

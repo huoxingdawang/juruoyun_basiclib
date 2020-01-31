@@ -38,13 +38,13 @@ unsigned char			jry_bl_string_get									(const jry_bl_string *this,jry_bl_stri
 #define					jry_bl_string_get1(this,i)							(((i)<0||(i)>=(this)->len)?0:(this)->s[(i)])
 #define					jry_bl_string_get2(this,i)							((this)->s[(i)])
 unsigned char			jry_bl_string_set									(jry_bl_string *this,jry_bl_string_size_type i,unsigned char a);
-#define					jry_bl_string_get_char_pointer(this)				((this)->s)
+#define					jry_bl_string_get_chars(this)						((this)->s)
 #define					jry_bl_string_get_length(this) 						((this)->len)
 #define					jry_bl_string_get_size(this) 						((this)->size)
 #define					jry_bl_string_const(s,len)							{len,0,s}
 void					jry_bl_string_add_string							(jry_bl_string *this,jry_bl_string *in);
-#define					jry_bl_string_add_char_pointer(x,y)					jry_bl_string_add_char_pointer_length(x,y,jry_bl_strlen(y))
-void					jry_bl_string_add_char_pointer_length				(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len);
+#define					jry_bl_string_add_chars(x,y)						jry_bl_string_add_chars_length(x,y,jry_bl_strlen(y))
+void					jry_bl_string_add_chars_length						(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len);
 void					jry_bl_string_add_char								(jry_bl_string *this,unsigned char in);
 #define					jry_bl_string_add_char1(this,in)					(this)->s[(this)->len]=(in),++(this)->len
 void					jry_bl_string_add_int64								(jry_bl_string *this,jry_bl_int64 in);
@@ -60,14 +60,14 @@ void					jry_bl_string_add_hex8								(jry_bl_string *this,jry_bl_uint8 in);
 #define					jry_bl_string_delete_1(this)						((this->len)>0?(--(this)->len):(0))
 #define					jry_bl_string_equal(a,b)							jry_bl_string_copy(a,b,copy)
 #define					jry_bl_string_equal_light(a,b)						jry_bl_string_copy(a,b,light)
-#define					jry_bl_string_equal_move(a,b)					jry_bl_string_copy(a,b,move)
+#define					jry_bl_string_equal_move(a,b)						jry_bl_string_copy(a,b,move)
 #define					jry_bl_string_equal_string(a,b)						jry_bl_string_copy(a,b,copy)
 #define					jry_bl_string_equal_string_light(a,b)				jry_bl_string_copy(a,b,light)
 #define					jry_bl_string_equal_string_light_copy(a,b)			jry_bl_string_copy(a,b,move)
-#define					jry_bl_string_equal_char_pointer(this,in)			jry_bl_string_clear(this),jry_bl_string_add_char_pointer(this,in)
-#define					jry_bl_string_equal_char_pointer_length(this,in,len)jry_bl_string_clear(this),jry_bl_string_add_char_pointer_length(this,in,len)
-#define					jry_bl_string_equal_char_pointer_light(a,b)			jry_bl_string_equal_char_pointer_light_length(a,b,jry_bl_strlen(b))
-#define					jry_bl_string_equal_char_pointer_light_length(a,b,c)jry_bl_string_free(a),(a)->len=c,(a)->s=b
+#define					jry_bl_string_equal_chars(this,in)					jry_bl_string_clear(this),jry_bl_string_add_chars(this,in)
+#define					jry_bl_string_equal_chars_length(this,in,len)		jry_bl_string_clear(this),jry_bl_string_add_chars_length(this,in,len)
+#define					jry_bl_string_equal_chars_light(a,b)				jry_bl_string_equal_chars_light_length(a,b,jry_bl_strlen(b))
+#define					jry_bl_string_equal_chars_light_length(a,b,c)		jry_bl_string_free(a),(a)->len=c,(a)->s=b
 #define					jry_bl_string_equal_char(this,in)					jry_bl_string_clear(this),jry_bl_string_add_char(this,in)
 #define					jry_bl_string_equal_int64(this,in)					jry_bl_string_clear(this),jry_bl_string_add_int64(this,in)
 #define					jry_bl_string_equal_uint64(this,in)					jry_bl_string_clear(this),jry_bl_string_add_uint64(this,in)
