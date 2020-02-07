@@ -51,115 +51,115 @@
 		"name":"jry_bl_aes_128_ecb_decode",
 		"file":"jry_bl/jry_bl_aes.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数负责进行AES 128 ECB解码"
 	},
 	"jry_bl_aes_128_ecb_decode_stream_free":{
 		"name":"jry_bl_aes_128_ecb_decode_stream_free",
 		"file":"jry_bl/jry_bl_aes.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数负责释放一个AES 128 ECB 解密流"
 	},
 	"jry_bl_aes_128_ecb_decode_stream_init":{
 		"name":"jry_bl_aes_128_ecb_decode_stream_init",
 		"file":"jry_bl/jry_bl_aes.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数负责初始化一个AES 128 ECB 解密流"
 	},
 	"jry_bl_aes_128_ecb_decode_stream_operator":{
 		"name":"jry_bl_aes_128_ecb_decode_stream_operator",
 		"file":"jry_bl/jry_bl_aes.c",
 		"type":"f",
-		"comment":""
+		"comment":"这是AES 128 CBC 解密流处理器"
 	},
 	"jry_bl_aes_128_ecb_encode":{
 		"name":"jry_bl_aes_128_ecb_encode",
 		"file":"jry_bl/jry_bl_aes.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数负责AES 128 ECB 编码"
 	},
 	"jry_bl_aes_128_ecb_encode_stream_free":{
 		"name":"jry_bl_aes_128_ecb_encode_stream_free",
 		"file":"jry_bl/jry_bl_aes.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数负责释放AES 128 ECB 编码流"
 	},
 	"jry_bl_aes_128_ecb_encode_stream_init":{
 		"name":"jry_bl_aes_128_ecb_encode_stream_init",
 		"file":"jry_bl/jry_bl_aes.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数负责初始化AES 128 ECB编码流"
 	},
 	"jry_bl_aes_128_ecb_encode_stream_operator":{
 		"name":"jry_bl_aes_128_ecb_encode_stream_operator",
 		"file":"jry_bl/jry_bl_aes.c",
 		"type":"f",
-		"comment":""
+		"comment":"这是AES 128 ECB 编码流处理器"
 	},
 	"jry_bl_aes_128_extend_key":{
 		"name":"jry_bl_aes_128_extend_key",
 		"file":"jry_bl/jry_bl_aes.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数负责AES 128 密钥扩展"
 	},
 	"jry_bl_aes_128_extened_key":{
 		"name":"jry_bl_aes_128_extened_key",
 		"file":"jry_bl/jry_bl_aes.h",
 		"type":"t",
-		"comment":""
+		"comment":"这是AES 128扩展后的密钥"
 	},
 	"jry_bl_base64_decode":{
 		"name":"jry_bl_base64_decode",
 		"file":"jry_bl/jry_bl_base64.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数负责base64解码"
 	},
 	"jry_bl_base64_decode_stream_free":{
 		"name":"jry_bl_base64_decode_stream_free",
 		"file":"jry_bl/jry_bl_base64.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数释放base64解码流"
 	},
 	"jry_bl_base64_decode_stream_init":{
 		"name":"jry_bl_base64_decode_stream_init",
 		"file":"jry_bl/jry_bl_base64.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数初始化base64解码流"
 	},
 	"jry_bl_base64_decode_stream_operator":{
 		"name":"jry_bl_base64_decode_stream_operator",
 		"file":"jry_bl/jry_bl_base64.c",
 		"type":"f",
-		"comment":""
+		"comment":"这是base64解码流操作器"
 	},
 	"jry_bl_base64_encode":{
 		"name":"jry_bl_base64_encode",
 		"file":"jry_bl/jry_bl_base64.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数负责base64加密"
 	},
 	"jry_bl_base64_encode_stream_free":{
 		"name":"jry_bl_base64_encode_stream_free",
 		"file":"jry_bl/jry_bl_base64.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数释放一个base64加密流"
 	},
 	"jry_bl_base64_encode_stream_init":{
 		"name":"jry_bl_base64_encode_stream_init",
 		"file":"jry_bl/jry_bl_base64.h",
 		"type":"d",
-		"comment":""
+		"comment":"这个函数初始化一个base64加密流"
 	},
 	"jry_bl_base64_encode_stream_operator":{
 		"name":"jry_bl_base64_encode_stream_operator",
 		"file":"jry_bl/jry_bl_base64.c",
 		"type":"f",
-		"comment":""
+		"comment":"这是base64加密流操作器"
 	},
 	"jry_bl_ceil":{
 		"name":"jry_bl_ceil",
 		"file":"jry_bl/jry_bl_ying.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数负责上取整"
 	},
 	"jry_bl_copy_type":{
 		"name":"jry_bl_copy_type",
@@ -177,7 +177,7 @@
 		"name":"jry_bl_execute_cmd",
 		"file":"jry_bl/jry_bl_cmd.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数请求一段cmd"
 	},
 	"jry_bl_file":{
 		"name":"jry_bl_file",
@@ -273,115 +273,115 @@
 		"name":"jry_bl_free",
 		"file":"jry_bl/jry_bl_malloc.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数负责释放一段内存"
 	},
 	"jry_bl_get_double_length":{
 		"name":"jry_bl_get_double_length",
 		"file":"jry_bl/jry_bl_ying.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数获得一个小数字符串化后的长度"
 	},
 	"jry_bl_get_int64_length":{
 		"name":"jry_bl_get_int64_length",
 		"file":"jry_bl/jry_bl_ying.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数获得一个整数字符串化后的长度"
 	},
 	"jry_bl_get_uint64_length":{
 		"name":"jry_bl_get_uint64_length",
 		"file":"jry_bl/jry_bl_ying.c",
 		"type":"f",
-		"comment":""
+		"comment":"这个函数获得一个无符号整数字符串化后的长度"
 	},
 	"jry_bl_hash_table":{
 		"name":"jry_bl_hash_table",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"t",
-		"comment":""
+		"comment":"哈希表类型"
 	},
 	"jry_bl_hash_table_clear":{
 		"name":"jry_bl_hash_table_clear",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"清空哈希表"
 	},
 	"jry_bl_hash_table_clears":{
 		"name":"jry_bl_hash_table_clears",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"清空多个哈希表"
 	},
 	"jry_bl_hash_table_copy":{
 		"name":"jry_bl_hash_table_copy",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"复制哈希表"
 	},
 	"jry_bl_hash_table_data":{
 		"name":"jry_bl_hash_table_data",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"t",
-		"comment":""
+		"comment":"哈希表数据类型"
 	},
 	"jry_bl_hash_table_data_free":{
 		"name":"jry_bl_hash_table_data_free",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"释放一个哈希表"
 	},
 	"jry_bl_hash_table_data_init":{
 		"name":"jry_bl_hash_table_data_init",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"初始化一个哈希表"
 	},
 	"jry_bl_hash_table_extend":{
 		"name":"jry_bl_hash_table_extend",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"扩展一个哈希表"
 	},
 	"jry_bl_hash_table_extend_to":{
 		"name":"jry_bl_hash_table_extend_to",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"把哈希表扩展到指定尺寸"
 	},
 	"jry_bl_hash_table_foreach":{
 		"name":"jry_bl_hash_table_foreach",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"按插入顺序枚举哈希表的元素"
 	},
 	"jry_bl_hash_table_free":{
 		"name":"jry_bl_hash_table_free",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"释放一个哈希表"
 	},
 	"jry_bl_hash_table_frees":{
 		"name":"jry_bl_hash_table_frees",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"释放多个哈希表"
 	},
 	"jry_bl_hash_table_from_json":{
 		"name":"jry_bl_hash_table_from_json",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"从json中解析一个哈希表"
 	},
 	"jry_bl_hash_table_from_json_start":{
 		"name":"jry_bl_hash_table_from_json_start",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"从json的指定位置解析一个哈希表"
 	},
 	"jry_bl_hash_table_get":{
 		"name":"jry_bl_hash_table_get",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"获取指定字段的哈希表的var"
 	},
 	"jry_bl_hash_table_get_data":{
 		"name":"jry_bl_hash_table_get_data",
@@ -393,151 +393,151 @@
 		"name":"jry_bl_hash_table_get_key",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"获取哈希表中的key字段"
 	},
 	"jry_bl_hash_table_get_var":{
 		"name":"jry_bl_hash_table_get_var",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"获取哈希表中的var字段"
 	},
 	"jry_bl_hash_table_if_big":{
 		"name":"jry_bl_hash_table_if_big",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":">"
 	},
 	"jry_bl_hash_table_if_equal":{
 		"name":"jry_bl_hash_table_if_equal",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"=="
 	},
 	"jry_bl_hash_table_if_equal_big":{
 		"name":"jry_bl_hash_table_if_equal_big",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":">="
 	},
 	"jry_bl_hash_table_if_equal_small":{
 		"name":"jry_bl_hash_table_if_equal_small",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"<="
 	},
 	"jry_bl_hash_table_if_small":{
 		"name":"jry_bl_hash_table_if_small",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"<"
 	},
 	"jry_bl_hash_table_init":{
 		"name":"jry_bl_hash_table_init",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"初始化一个哈希表"
 	},
 	"jry_bl_hash_table_inits":{
 		"name":"jry_bl_hash_table_inits",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"初始化多个哈希表"
 	},
 	"jry_bl_hash_table_insert":{
 		"name":"jry_bl_hash_table_insert",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"插入一个字段"
 	},
 	"jry_bl_hash_table_insert_str":{
 		"name":"jry_bl_hash_table_insert_str",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"插入一个以传统字符串为key的字符串"
 	},
 	"jry_bl_hash_table_insert_str_double":{
 		"name":"jry_bl_hash_table_insert_str_double",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"插入一个以传统字符串为key的double"
 	},
 	"jry_bl_hash_table_insert_str_false":{
 		"name":"jry_bl_hash_table_insert_str_false",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"插入一个以传统字符串为key的false"
 	},
 	"jry_bl_hash_table_insert_str_int64":{
 		"name":"jry_bl_hash_table_insert_str_int64",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"插入一个以传统字符串为key的int64"
 	},
 	"jry_bl_hash_table_insert_str_true":{
 		"name":"jry_bl_hash_table_insert_str_true",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"插入一个以传统字符串为key的true"
 	},
 	"jry_bl_hash_table_insert_str_uint64":{
 		"name":"jry_bl_hash_table_insert_str_uint64",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"插入一个以传统字符串为key的uint64"
 	},
 	"jry_bl_hash_table_merge":{
 		"name":"jry_bl_hash_table_merge",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"合并两个哈希表"
 	},
 	"jry_bl_hash_table_put":{
 		"name":"jry_bl_hash_table_put",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"像stream输出一个哈希表"
 	},
 	"jry_bl_hash_table_rehash":{
 		"name":"jry_bl_hash_table_rehash",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"重哈希"
 	},
 	"jry_bl_hash_table_size_type":{
 		"name":"jry_bl_hash_table_size_type",
 		"file":"jry_bl/jry_bl_hash_table_config.h",
 		"type":"t",
-		"comment":""
+		"comment":"哈希表尺寸变量类型"
 	},
 	"jry_bl_hash_table_space_ship":{
 		"name":"jry_bl_hash_table_space_ship",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"哈希表太空船操作符"
 	},
 	"jry_bl_hash_table_to_json":{
 		"name":"jry_bl_hash_table_to_json",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"格式化一个哈希表"
 	},
 	"jry_bl_hash_table_unset":{
 		"name":"jry_bl_hash_table_unset",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":""
+		"comment":"删除哈希表一个元素"
 	},
 	"jry_bl_hash_table_view":{
 		"name":"jry_bl_hash_table_view",
 		"file":"jry_bl/jry_bl_hash_table.h",
 		"type":"d",
-		"comment":""
+		"comment":"浏览哈希表"
 	},
 	"jry_bl_highbit":{
 		"name":"jry_bl_highbit",
 		"file":"jry_bl/jry_bl_ying.c",
 		"type":"f",
-		"comment":""
+		"comment":"获取一个整数二进制意义下最高位所在的位置"
 	},
 	"jry_bl_int16":{
 		"name":"jry_bl_int16",
@@ -1971,31 +1971,31 @@
 		"name":"jry_bl_var_init",
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
-		"comment":""
+		"comment":"初始化一个var"
 	},
 	"jry_bl_var_init_as":{
 		"name":"jry_bl_var_init_as",
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
-		"comment":""
+		"comment":"把var初始化成某一类型"
 	},
 	"jry_bl_var_inits":{
 		"name":"jry_bl_var_inits",
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
-		"comment":""
+		"comment":"初始化多个var"
 	},
 	"jry_bl_var_put":{
 		"name":"jry_bl_var_put",
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
-		"comment":""
+		"comment":"像stream输出一个var"
 	},
 	"jry_bl_var_space_ship":{
 		"name":"jry_bl_var_space_ship",
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
-		"comment":""
+		"comment":"var的太空船操作符"
 	},
 	"jry_bl_var_tmp_functions":{
 		"name":"jry_bl_var_tmp_functions",
@@ -2019,7 +2019,7 @@
 		"name":"jry_bl_var_to_json",
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
-		"comment":""
+		"comment":"json格式化输出一个var"
 	},
 	"jry_bl_var_type_bit":{
 		"name":"jry_bl_var_type_bit",
@@ -2037,18 +2037,18 @@
 		"name":"jry_bl_var_view",
 		"file":"jry_bl/jry_bl_var.h",
 		"type":"d",
-		"comment":""
+		"comment":"输出一个var"
 	},
 	"jry_bl_var_views":{
 		"name":"jry_bl_var_views",
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
-		"comment":""
+		"comment":"同时输出多个var"
 	},
 	"jry_bl_view_default_tabs_num":{
 		"name":"jry_bl_view_default_tabs_num",
 		"file":"jry_bl/jry_bl_ying.h",
 		"type":"d",
-		"comment":""
+		"comment":"view时默认输出的tab个数"
 	}
 }
