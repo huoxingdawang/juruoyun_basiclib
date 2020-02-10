@@ -327,6 +327,18 @@ small:
 void* jry_bl_realloc(void* ptr,jry_bl_malloc_size_type size)
 {
 	if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+#if JRY_BL_MALLOC_FAST==1
+	jry_bl_malloc_size_type size_now=jry_bl_malloc_size(ptr);
+	if(size_now>size)
+		return ptr;
+	void * ptr2=jry_bl_malloc(size);
+	if(ptr2==NULL)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);	
+	jry_bl_malloc_size_type size_new=jry_bl_malloc_size(ptr2);
+	jry_bl_min_update(size_new,size_now);
+	jry_bl_memory_copy(ptr2,ptr,size_new);
+	jry_bl_free(ptr);
+	return ptr2;	
+#else
 #ifdef __linux__	
 	jry_bl_malloc_heap.size-=jry_bl_malloc_size(ptr);
 	void *ptr2=realloc(ptr,size);
@@ -340,13 +352,13 @@ void* jry_bl_realloc(void* ptr,jry_bl_malloc_size_type size)
 	void * ptr2=jry_bl_malloc(size);
 	if(ptr2==NULL)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
 	jry_bl_malloc_heap.size+=jry_bl_malloc_size(ptr2),jry_bl_max_update(jry_bl_malloc_heap.peak,jry_bl_malloc_heap.size);
-	if(ptr2==NULL)
-		jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);	
+	if(ptr2==NULL)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);	
 	jry_bl_malloc_size_type size_new=_msize(ptr);
 	jry_bl_min_update(size_new,size);
 	jry_bl_memory_copy(ptr2,ptr,size_new);
 	jry_bl_free(ptr);
 	return ptr2;
+#endif
 #endif
 }
 void jry_bl_free(void * p)
