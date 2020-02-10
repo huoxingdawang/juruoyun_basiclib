@@ -54,7 +54,7 @@ extern	jry_bl_stream jry_bl_stream_stdin;
 								jry_bl_stream_free(&jry_bl_stream_stdin )
 
 #else
-#define	jry_bl_stream_start
-#define	jry_bl_stream_stop
+#define	jry_bl_stream_start()	1
+#define	jry_bl_stream_stop()	1
 #endif
 #endif

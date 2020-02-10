@@ -12,7 +12,9 @@
 #include "jry_bl_config.h"
 #if JRY_BL_MALLOC_ENABLE==1
 #include "jry_bl_ying.h"
-#define JRY_BL_MALLOC_DEBUG_MODE 1
+#define JRY_BL_MALLOC_FAST			1
+
+#define	jry_bl_malloc_size_type		jry_bl_uint64
 
 #endif
 #endif

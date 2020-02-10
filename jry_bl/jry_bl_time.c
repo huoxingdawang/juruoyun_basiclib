@@ -30,6 +30,7 @@ jry_bl_uint8 		jry_bl_time_if_dst			(jry_bl_uint8 day,jry_bl_uint8 month,jry_bl_
 	}
 	
 }
+#if JRY_BL_STRING_ENABLE==1
 void jry_bl_time_to_string(jry_bl_time *this,jry_bl_string *result)
 {
 	jry_bl_int64 ts=jry_bl_time_to_unix(this);
@@ -89,6 +90,7 @@ void jry_bl_time_to_string(jry_bl_time *this,jry_bl_string *result)
 	
 	jry_bl_string_add_uint64_length(result,jry_bl_time_get_weekday(day,month,year),1,'0');
 }
+#endif
 
 
 

@@ -13,27 +13,85 @@
 #if JRY_BL_MALLOC_ENABLE==1
 #include "jry_bl_exception.h"
 #include "jry_bl_ying.h"
-#include <stdlib.h>
-#include <malloc.h>
-#include <string.h>
-void	jry_bl_malloc_start			();
-void	jry_bl_malloc_stop			();
-void*	jry_bl_malloc				(size_t size);
-void*	jry_bl_realloc				(void* ptr,size_t size);
-void	jry_bl_free					(void * p);
-size_t	jry_bl_malloc_size			(void* ptr);
-void	jry_bl_memory_copy			(void *to,const void * from,size_t len);
-void	jry_bl_memory_copy_reverse	(void *to,const void * from,size_t len,size_t size);
-#if JRY_BL_MALLOC_DEBUG_MODE==1
-extern size_t __jry_bl_malloced_size;
-extern size_t __jry_bl_malloced_max_size;
-#define jry_bl_malloced_size		((jry_bl_int64)__jry_bl_malloced_size)
-#define jry_bl_malloced_max_size	((jry_bl_int64)__jry_bl_malloced_max_size)
-#else
-#define jry_bl_malloced_size		((jry_bl_int64)0)
+#if JRY_BL_MALLOC_FAST==0
+	#include <malloc.h>
 #endif
+void					jry_bl_malloc_start			();
+void					jry_bl_malloc_stop			();
+void*					jry_bl_malloc				(jry_bl_malloc_size_type size);
+void*					jry_bl_realloc				(void* ptr,jry_bl_malloc_size_type size);
+void					jry_bl_free					(void* p);
+jry_bl_malloc_size_type	jry_bl_malloc_size			(void* ptr);
+void					jry_bl_memory_copy			(void *to,const void * from,jry_bl_malloc_size_type len);
+void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_size_type len,jry_bl_malloc_size_type size);
+#if JRY_BL_MALLOC_FAST==1
+	#include <malloc.h>
+	#ifdef __linux__	
+		#include <unistd.h>
+		#include <sys/mman.h>
+	#else	
+		#include <windows.h>		
+		#include <wincrypt.h>
+	#endif	
+	typedef struct __jry_bl_malloc_free_slot	jry_bl_malloc_free_slot;
+	typedef struct __jry_bl_malloc_heap_struct	jry_bl_malloc_heap_struct;
+	typedef struct __jry_bl_malloc_huge_struct	jry_bl_malloc_huge_struct;
+	typedef struct __jry_bl_malloc_chunk_struct	jry_bl_malloc_chunk_struct;
+	
+	typedef struct __jry_bl_malloc_free_slot
+	{
+		struct __jry_bl_malloc_free_slot	*next;
+	}jry_bl_malloc_free_slot;
+	typedef struct __jry_bl_malloc_heap_struct
+	{
+		jry_bl_malloc_size_type size;//实际使用
+		jry_bl_malloc_size_type peak;//峰值
+		
+		jry_bl_malloc_size_type applied_size;//申请
+		jry_bl_malloc_size_type applied_peak;//申请峰值
+		
+		struct __jry_bl_malloc_huge_struct *huge_list;
+		
+		jry_bl_malloc_chunk_struct	*main_chunk;
+		jry_bl_malloc_chunk_struct	*cached_chunk;
+		
+		jry_bl_malloc_free_slot		slot[30];
+		
+		double			average_chunk_count;
+		jry_bl_uint32	cached_chunk_count;
+	}jry_bl_malloc_heap_struct;
+	typedef struct __jry_bl_malloc_huge_struct
+	{
+		void *ptr;
+		jry_bl_malloc_size_type size;
+		struct __jry_bl_malloc_huge_struct *next;
+	}jry_bl_malloc_huge_struct;
+	typedef struct __jry_bl_malloc_chunk_struct
+	{
+		struct __jry_bl_malloc_chunk_struct	*next;
+		struct __jry_bl_malloc_chunk_struct	*pre;
+		jry_bl_uint16						free_pages;		
+		jry_bl_uint32						map[512];		//2KB=512*4
+//		jry_bl_uint32						free_map[16];	//512bits
+//		uint32_t           free_tail;               /* number of free pages at the end of chunk */
+//		uint32_t           num;
+	}jry_bl_malloc_chunk_struct;
+	
+
+#else	//不开fast
+	typedef struct __jry_bl_malloc_heap_struct
+	{
+		jry_bl_malloc_size_type size;
+		jry_bl_malloc_size_type peak;
+	}jry_bl_malloc_heap_struct;	
+	extern jry_bl_malloc_heap_struct jry_bl_malloc_heap;
+#endif
+
+#define jry_bl_malloced_size		((jry_bl_int64)jry_bl_malloc_heap.size)
+#define jry_bl_malloced_peak		((jry_bl_int64)jry_bl_malloc_heap.peak)
+
 #else
-#define jry_bl_malloc_start			()
-#define jry_bl_malloc_stop			()
+#define jry_bl_malloc_start()	1
+#define jry_bl_malloc_stop()	1
 #endif
 #endif

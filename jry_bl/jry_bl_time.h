@@ -15,7 +15,6 @@
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
-#include "jry_bl_string.h"
 #define JRY_BL_TIME_ZONE_ASIA_SHANGHAI 1
 
 extern jry_bl_int8 jry_bl_time_time_zone;
@@ -27,7 +26,12 @@ void	jry_bl_time_now				(jry_bl_time *this);
 #define	jry_bl_time_to_unix(x)		(*(x))
 #define	jry_bl_time_from_unix(x,y)	((*(x))=(y))
 #define	jry_bl_time_minus(x,y)		((*(x))-(*(y)))
+
+
+#if JRY_BL_STRING_ENABLE==1
+#include "jry_bl_string.h"
 void	jry_bl_time_to_string		(jry_bl_time *this,jry_bl_string *result);
+#endif
 
 #if JRY_BL_USE_STDARG==1
 void	jry_bl_time_inits		(int n,...);
