@@ -9,6 +9,8 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_cmd.h"
 #if JRY_BL_CMD_ENABLE==1
+#include <stdio.h>
+#include "jry_bl_string.h"
 void jry_bl_execute_cmd(const jry_bl_string *cmd,jry_bl_string *result)
 {
 	char buf_ps[1024];

@@ -9,27 +9,40 @@
    See the Mulan PSL v1 for more details.*/   
 #include "jry_bl_var.h"
 #if JRY_BL_VAR_ENABLE==1
+#if JRY_BL_USE_STDARG==1
+#include <stdarg.h>
+#endif
+#include "jry_bl_exception.h"
 #include "jry_bl_link_list.h"
 #include "jry_bl_hash_table.h"
 #include "jry_bl_file.h"
+#include "jry_bl_malloc.h"
 #include "jry_bl_string.h"
 #define ghl(x)		((x->type)&(1<<jry_bl_var_type_bit))
 #define gth(x)		((x->type)>>jry_bl_var_type_bit)
 #define gop(x,y)	jry_bl_var_functions_struct *x=((gth((y))!=0)?&jry_bl_var_fs[gth((y))][ghl((y))]:((((y)->type>=9)?(&jry_bl_var_functions[(y)->type-9]):NULL)))
+
+
+#if JRY_BL_STREAM_ENABLE==1	
+	#define __r(a,b,c,d,e,f)	a,b,c,d,e,f
+#else
+	#define __r(a,b,c,d,e,f)	a,b,c,d,e
+#endif
+
 const jry_bl_var_functions_struct jry_bl_var_functions[5]=
 {
-	[JRY_BL_VAR_TYPE_VAR-9]			={(sizeof (jry_bl_var))			,jry_bl_var_init		,jry_bl_var_free		,jry_bl_var_copy		,jry_bl_var_space_ship			,jry_bl_var_put},
+	[JRY_BL_VAR_TYPE_VAR-9]			={__r((sizeof (jry_bl_var))			,jry_bl_var_init		,jry_bl_var_free		,jry_bl_var_copy		,jry_bl_var_space_ship			,jry_bl_var_put)},
 #if JRY_BL_STRING_ENABLE==1
-	[JRY_BL_VAR_TYPE_STRING-9]		={(sizeof (jry_bl_string))		,jry_bl_string_init		,jry_bl_string_free		,jry_bl_string_copy		,jry_bl_string_space_ship		,jry_bl_string_put},
+	[JRY_BL_VAR_TYPE_STRING-9]		={__r((sizeof (jry_bl_string))		,jry_bl_string_init		,jry_bl_string_free		,jry_bl_string_copy		,jry_bl_string_space_ship		,jry_bl_string_put)},
 #endif
 #if JRY_BL_LINK_LIST_ENABLE==1	
-	[JRY_BL_VAR_TYPE_LINK_LIST-9]	={(sizeof (jry_bl_link_list))	,jry_bl_link_list_init	,jry_bl_link_list_free	,jry_bl_link_list_copy	,jry_bl_link_list_space_ship	,jry_bl_link_list_put},
+	[JRY_BL_VAR_TYPE_LINK_LIST-9]	={__r((sizeof (jry_bl_link_list))	,jry_bl_link_list_init	,jry_bl_link_list_free	,jry_bl_link_list_copy	,jry_bl_link_list_space_ship	,jry_bl_link_list_put)},
 #endif
 #if JRY_BL_HASH_TABLE_ENABLE==1
-	[JRY_BL_VAR_TYPE_HASH_TABLE-9]	={(sizeof (jry_bl_hash_table))	,jry_bl_hash_table_init	,jry_bl_hash_table_free	,jry_bl_hash_table_copy	,jry_bl_hash_table_space_ship	,jry_bl_hash_table_put},
+	[JRY_BL_VAR_TYPE_HASH_TABLE-9]	={__r((sizeof (jry_bl_hash_table))	,jry_bl_hash_table_init	,jry_bl_hash_table_free	,jry_bl_hash_table_copy	,jry_bl_hash_table_space_ship	,jry_bl_hash_table_put)},
 #endif
 #if JRY_BL_FILE_ENABLE==1
-	[JRY_BL_VAR_TYPE_FILE-9]		={(sizeof (jry_bl_file))		,jry_bl_file_init		,jry_bl_file_free		,jry_bl_file_copy		,jry_bl_file_space_ship			,NULL},
+	[JRY_BL_VAR_TYPE_FILE-9]		={__r((sizeof (jry_bl_file))		,jry_bl_file_init		,jry_bl_file_free		,jry_bl_file_copy		,jry_bl_file_space_ship			,NULL)},
 #endif
 };
 jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size];
@@ -169,23 +182,30 @@ jry_bl_string_size_type jry_bl_var_from_json_start(jry_bl_var *this,const jry_bl
 	for(jry_bl_string_size_type n=jry_bl_string_get_length(in),i=start,ii;i<n;++i)
 	{
 		register unsigned char c=jry_bl_string_get1(in,i);
-		if(c=='"'&&(i==0||jry_bl_string_get1(in,i-1)!='\\'))
+		if(c=='n'&&(i+3)<n&&jry_bl_string_get1(in,i+1)=='u'&&jry_bl_string_get1(in,i+2)=='l'&&jry_bl_string_get1(in,i+3)=='l')
+			return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),i+4;
+#if JRY_BL_STRING_ENABLE==1		
+		else if(c=='"'&&(i==0||jry_bl_string_get1(in,i-1)!='\\'))
 		{
 			jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_STRING);
 			return ((ii=jry_bl_string_from_json_start(this->data.p,in,i))==i)?(jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),start):ii;
 		}
+#endif
+#if JRY_BL_HASH_TABLE_ENABLE==1		
 		else if(c=='{')
 		{
 			jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_HASH_TABLE);
 			return ((ii=jry_bl_hash_table_from_json_start(this->data.p,in,i))==i)?(jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),start):ii;
 		}
+#endif
+#if JRY_BL_LINK_LIST_ENABLE==1
+		
 		else if(c=='[')
 		{
 			jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_LINK_LIST);
 			return ((ii=jry_bl_link_list_from_json_start(this->data.p,in,i))==i)?(jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),start):ii;
 		}
-		else if(c=='n'&&(i+3)<n&&jry_bl_string_get1(in,i+1)=='u'&&jry_bl_string_get1(in,i+2)=='l'&&jry_bl_string_get1(in,i+3)=='l')
-			return jry_bl_var_init_as(this,JRY_BL_VAR_TYPE_NULL),i+4;
+#endif
 		else if(c=='-')
 		{
 			jry_bl_string_size_type i1=i,i2=i;

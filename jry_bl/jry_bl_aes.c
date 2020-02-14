@@ -9,6 +9,10 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_aes.h"
 #if JRY_BL_AES_128_ENABLE==1
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
+#include "jry_bl_string.h"
+#include "jry_bl_ying.h"
 static const unsigned char __jry_bl_aes_sbox[] =
 {
 	0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,  

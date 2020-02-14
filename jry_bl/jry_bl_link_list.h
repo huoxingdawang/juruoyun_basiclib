@@ -12,10 +12,8 @@
 #include "jry_bl_link_list_config.h"
 #if JRY_BL_LINK_LIST_ENABLE==1
 #include "jry_bl_var.h"
-#include <stdio.h>
-#if JRY_BL_USE_STDARG==1
-#include <stdarg.h>
-#endif
+#include "jry_bl_ying.h"
+
 typedef struct __jry_bl_link_list_node
 {
 	struct __jry_bl_link_list_node *pre,*nxt;

@@ -11,13 +11,11 @@
 #define __JRY_BL_STRING_H
 #include "jry_bl_string_config.h"
 #if JRY_BL_STRING_ENABLE==1
-#include "jry_bl_exception.h"
-#include "jry_bl_malloc.h"
-#include "jry_bl_ying.h"
-#include <stdio.h>
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
+#include <stdio.h> ///////////////////////////////////////
 #endif
+#include "jry_bl_ying.h"
 
 typedef struct __jry_bl_string
 {

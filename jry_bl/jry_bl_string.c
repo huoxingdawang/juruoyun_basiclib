@@ -9,6 +9,12 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_string.h"
 #if JRY_BL_STRING_ENABLE==1
+#if JRY_BL_USE_STDARG==1
+#include <stdarg.h>
+#endif
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
+#include "jry_bl_ying.h"
 inline jry_bl_string_size_type	jry_bl_strlen			(char *a)												{jry_bl_string_size_type b=0;while(a[b++]);return b-1;}
 inline void 					jry_bl_string_init		(jry_bl_string *this)									{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);this->len=this->size=0;this->s=NULL;}
 inline void 					jry_bl_string_free		(jry_bl_string *this)									{if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);if(this->size!=0&&this->s!=NULL)jry_bl_free(this->s);this->len=this->size=0;this->s=NULL;}
@@ -278,8 +284,10 @@ inline void	jry_bl_string_add_var(jry_bl_string *this,jry_bl_var *that)
 		case JRY_BL_VAR_TYPE_FALSE	:					;jry_bl_string_add_int64	(this,0)	;break;
 		case JRY_BL_VAR_TYPE_CHAR	:tmp=that->data.c	;jry_bl_string_add_char		(this,tmp)	;break;
 		case JRY_BL_VAR_TYPE_STRING	:jry_bl_string_add_string(this,jry_bl_var_get_string(that))	;break;
+#if JRY_BL_STREAM_ENABLE==1		
 		default:
 			jry_bl_var_to_json(that,this);
+#endif			
 	}	
 }
 inline void	jry_bl_string_equal_var(jry_bl_string *this,jry_bl_var *that,jry_bl_uint8 cpt)
@@ -294,9 +302,11 @@ inline void	jry_bl_string_equal_var(jry_bl_string *this,jry_bl_var *that,jry_bl_
 		case JRY_BL_VAR_TYPE_FALSE	:					;jry_bl_string_equal_int64	(this,0)	;break;
 		case JRY_BL_VAR_TYPE_CHAR	:tmp=that->data.c	;jry_bl_string_equal_char	(this,tmp)	;break;
 		case JRY_BL_VAR_TYPE_STRING	:jry_bl_string_copy(this,jry_bl_var_get_string(that),cpt)	;break;
+#if JRY_BL_STREAM_ENABLE==1		
 		default:
 			jry_bl_string_clear(this);
 			jry_bl_var_to_json(that,this);
+#endif			
 	}	
 }
 #endif

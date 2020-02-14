@@ -12,7 +12,6 @@
 #include "jry_bl_cmd_config.h"
 #if JRY_BL_CMD_ENABLE==1
 #include "jry_bl_string.h"
-#include <stdio.h>
 void	jry_bl_execute_cmd		(const jry_bl_string *cmd,jry_bl_string *result);
 
 

@@ -11,11 +11,7 @@
 #define __JRY_BL_MALLOC_H
 #include "jry_bl_malloc_config.h"
 #if JRY_BL_MALLOC_ENABLE==1
-#include "jry_bl_exception.h"
 #include "jry_bl_ying.h"
-#if JRY_BL_MALLOC_FAST==0
-	#include <malloc.h>
-#endif
 void					jry_bl_malloc_start			();
 void					jry_bl_malloc_stop			();
 void*					jry_bl_malloc				(jry_bl_malloc_size_type size);
@@ -25,14 +21,7 @@ jry_bl_malloc_size_type	jry_bl_malloc_size			(void* ptr);
 void					jry_bl_memory_copy			(void *to,const void * from,jry_bl_malloc_size_type len);
 void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_size_type len,jry_bl_malloc_size_type size);
 #if JRY_BL_MALLOC_FAST==1
-	#include <malloc.h>
-	#ifdef __linux__	
-		#include <unistd.h>
-		#include <sys/mman.h>
-	#else	
-		#include <windows.h>		
-		#include <wincrypt.h>
-	#endif	
+
 	typedef struct __jry_bl_malloc_free_slot	jry_bl_malloc_free_slot;
 	typedef struct __jry_bl_malloc_heap_struct	jry_bl_malloc_heap_struct;
 	typedef struct __jry_bl_malloc_huge_struct	jry_bl_malloc_huge_struct;
@@ -57,7 +46,6 @@ void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_si
 		
 		jry_bl_malloc_free_slot		slot[30];
 		
-		double			average_chunk_count;
 		jry_bl_uint32	cached_chunk_count;
 	}jry_bl_malloc_heap_struct;
 	typedef struct __jry_bl_malloc_huge_struct
@@ -72,9 +60,7 @@ void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_si
 		struct __jry_bl_malloc_chunk_struct	*pre;
 		jry_bl_uint16						free_pages;		
 		jry_bl_uint32						map[512];		//2KB=512*4
-//		jry_bl_uint32						free_map[16];	//512bits
-//		uint32_t           free_tail;               /* number of free pages at the end of chunk */
-//		uint32_t           num;
+		jry_bl_malloc_fmap_type				fmap[jry_bl_malloc_fmap_len];		//16*32bit
 	}jry_bl_malloc_chunk_struct;
 	
 
@@ -86,9 +72,6 @@ void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_si
 	}jry_bl_malloc_heap_struct;	
 	extern jry_bl_malloc_heap_struct jry_bl_malloc_heap;
 #endif
-
-#define jry_bl_malloced_size		((jry_bl_int64)jry_bl_malloc_heap.size)
-#define jry_bl_malloced_peak		((jry_bl_int64)jry_bl_malloc_heap.peak)
 
 #else
 #define jry_bl_malloc_start()	1

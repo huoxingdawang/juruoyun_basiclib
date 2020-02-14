@@ -11,14 +11,8 @@
 #define __JRY_BL_VAR_H
 #include "jry_bl_var_config.h"
 #if JRY_BL_VAR_ENABLE==1
-#include "jry_bl_exception.h"
-#include "jry_bl_malloc.h"
 #include "jry_bl_ying.h"
 #include "jry_bl_string.h"
-#include <stdio.h>
-#if JRY_BL_USE_STDARG==1
-#include <stdarg.h>
-#endif
 #define					jry_bl_var_flag_pointer(this)					((this)->pointer)
 
 #define JRY_BL_VAR_TYPE_UNUSE		0
@@ -66,17 +60,20 @@ typedef struct __jry_bl_var
 
 typedef struct __jry_bl_var_functions_struct
 {
-	size_t size;
+	jry_bl_uint32 size;
 	void (*init)(void*);
 	void (*free)(void*);
 	void (*copy)(void*,void*,jry_bl_copy_type);
 	char (*space_ship)(const void*,const void*);
+#if JRY_BL_STREAM_ENABLE==1	
 	void (*put)(const void*,jry_bl_stream*,jry_bl_put_type,jry_bl_uint32,char*);
+#endif
 }jry_bl_var_functions_struct;
 
 extern const jry_bl_var_functions_struct jry_bl_var_functions[5];
 extern jry_bl_var_functions_struct* jry_bl_var_fs[jry_bl_var_fs_size];
 extern jry_bl_var_functions_struct jry_bl_var_tmp_functions[jry_bl_var_tmp_size];
+
 #if jry_bl_var_tmp_size!=0
 #define jry_bl_var_tmp_register(type,size,init,free,copy,space_ship,f,g,h,i)											\
 									jry_bl_var_tmp_functions[((type)&(1<<jry_bl_var_type_bit))].size=size,				\

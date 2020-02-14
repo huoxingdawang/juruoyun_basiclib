@@ -7,20 +7,16 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JRY_BL_EXCEPTION_H
-#define __JRY_BL_EXCEPTION_H
-#include "jry_bl_exception_config.h"
-#if JRY_BL_EXCEPTION_ENABLE==1
-#include "jry_bl_ying.h"
-#define JRY_BL_ERROR_NO_ERROR		1000000
-#define JRY_BL_ERROR_NULL_POINTER	1000001
-#define JRY_BL_ERROR_MEMORY_ERROR	1000002
-#define JRY_BL_ERROR_FILE_NOT_EXIST	1000003
-#define JRY_BL_ERROR_STREAM_ERROR	1000004
+#ifndef __JRY_BL_RAND_H
+#define __JRY_BL_RAND_H
+#include "jry_bl_rand_config.h"
+#if JRY_BL_RAND_ENABLE==1
+void			jry_bl_rand_srand(jry_bl_uint32 seed);
+jry_bl_uint32	jry_bl_rand();
 
 
 
-#define jry_bl_exception(x) __jry_bl_exception(__FILE__,__LINE__,x)
-void __jry_bl_exception(const char * file,int line,int x);
+
+
 #endif
 #endif

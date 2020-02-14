@@ -9,6 +9,14 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_link_list.h"
 #if JRY_BL_LINK_LIST_ENABLE==1
+#if JRY_BL_USE_STDARG==1
+#include <stdarg.h>
+#endif
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
+#include "jry_bl_var.h"
+#include "jry_bl_ying.h"
+
 inline void jry_bl_link_list_init(jry_bl_link_list *this)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);

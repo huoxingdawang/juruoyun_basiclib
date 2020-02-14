@@ -31,7 +31,7 @@ init:
 run:
 	exes$(H)string
 	exes$(H)aes
-	exes$(H)array
+#	exes$(H)array
 	exes$(H)base64
 	exes$(H)cmd
 	exes$(H)file
@@ -50,8 +50,8 @@ aes:jry_bl
 	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)aes.o examples$(H)aes.c $(EXLIB)
 	$(CC) -o exes$(H)aes tmp$(H)aes.o tmp$(H)jry_bl.a
 array:jry_bl
-	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)array.o examples$(H)array.c $(EXLIB)
-	$(CC) -o exes$(H)array tmp$(H)array.o tmp$(H)jry_bl.a
+#	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)array.o examples$(H)array.c $(EXLIB)
+#	$(CC) -o exes$(H)array tmp$(H)array.o tmp$(H)jry_bl.a
 base64:jry_bl
 	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)base64.o examples$(H)base64.c $(EXLIB)
 	$(CC) -o exes$(H)base64 tmp$(H)base64.o tmp$(H)jry_bl.a

@@ -42,7 +42,28 @@ jry_bl_uint8 jry_bl_get_double_length(double tmp)
 jry_bl_uint8 jry_bl_highbit(jry_bl_uint64 a)
 {
 	jry_bl_uint8 b=-1;
-	while(a)++b,a>>=1;
+	if(a>=0X80000000)	b+=32	,a>>=32;
+	if(a>=0X8000)		b+=16	,a>>=16;
+	if(a>=0X80)			b+=8	,a>>=8;
+	if(a>=0X8)			b+=4	,a>>=4;
+	if(a>=0X4)			b+=2	,a>>=2;
+	if(a>=0X2)			b+=1	,a>>=1;
+	if(a>=0X1)			b+=1;
+//	while(a)++b,a>>=1;
+	return b;
+}
+jry_bl_uint8 jry_bl_highbit0(jry_bl_uint64 a)
+{
+	a=~a;
+	jry_bl_uint8 b=-1;
+	if(a>=0X80000000)	b+=32	,a>>=32;
+	if(a>=0X8000)		b+=16	,a>>=16;
+	if(a>=0X80)			b+=8	,a>>=8;
+	if(a>=0X8)			b+=4	,a>>=4;
+	if(a>=0X4)			b+=2	,a>>=2;
+	if(a>=0X2)			b+=1	,a>>=1;
+	if(a>=0X1)			b+=1;
+//	while(a)++b,a>>=1;
 	return b;
 }
 #endif

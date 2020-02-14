@@ -12,15 +12,12 @@
 #define __JRY_BL_HASH_TABLE_H
 #include "jry_bl_hash_table_config.h"
 #if JRY_BL_HASH_TABLE_ENABLE==1
-#include "jry_bl_exception.h"
-#include "jry_bl_malloc.h"
-#include "jry_bl_string.h"
-#include "jry_bl_ying.h"
-#include "jry_bl_var.h"
-#include <stdio.h>
 #if JRY_BL_USE_STDARG==1
 #include <stdarg.h>
 #endif
+#include "jry_bl_string.h"
+#include "jry_bl_ying.h"
+#include "jry_bl_var.h"
 typedef struct __jry_bl_hash_table_data
 {
 	jry_bl_uint64				h;

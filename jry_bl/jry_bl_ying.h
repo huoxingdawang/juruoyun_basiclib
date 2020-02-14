@@ -60,8 +60,8 @@ jry_bl_int64	jry_bl_ceil					(long double i);
 jry_bl_uint8	jry_bl_get_uint64_length	(jry_bl_uint64 tmp);
 jry_bl_uint8	jry_bl_get_int64_length		(jry_bl_int64 tmp);
 jry_bl_uint8	jry_bl_get_double_length	(double tmp);
-jry_bl_uint8	jry_bl_lowbit				(jry_bl_uint64 a);
 jry_bl_uint8	jry_bl_highbit				(jry_bl_uint64 a);
+jry_bl_uint8	jry_bl_highbit0				(jry_bl_uint64 a);
 
 #define	jry_bl_max(a,b)		(((a)>(b))?(a):(b))
 #define	jry_bl_max_update(a,b)	(a)=(((a)>(b))?(a):(b))

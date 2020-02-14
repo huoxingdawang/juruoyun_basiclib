@@ -21,6 +21,7 @@
 #include "jry_bl_link_list.h"
 #include "jry_bl_malloc.h"
 #include "jry_bl_md5.h"
+#include "jry_bl_rand.h"
 #include "jry_bl_sha1.h"
 #include "jry_bl_stream.h"
 #include "jry_bl_string.h"

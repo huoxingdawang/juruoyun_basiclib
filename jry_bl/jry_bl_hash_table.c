@@ -9,6 +9,15 @@
 	 See the Mulan PSL v1 for more details.*/
 #include "jry_bl_hash_table.h"
 #if JRY_BL_HASH_TABLE_ENABLE==1
+#if JRY_BL_USE_STDARG==1
+#include <stdarg.h>
+#endif
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
+#include "jry_bl_string.h"
+#include "jry_bl_ying.h"
+#include "jry_bl_var.h"
+
 #define st jry_bl_hash_table_size_type
 #define dt jry_bl_hash_table_data
 #define gh2(x,y) ((jry_bl_int64)(((jry_bl_uint64)(y))|(-(jry_bl_uint64)(x)->size)))

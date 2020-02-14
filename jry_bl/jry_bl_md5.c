@@ -9,6 +9,10 @@
 	 See the Mulan PSL v1 for more details.*/
 #include "jry_bl_md5.h"
 #if JRY_BL_MD5_ENABLE==1
+#include "jry_bl_exception.h"
+#include "jry_bl_malloc.h"
+#include "jry_bl_string.h"
+#include "jry_bl_ying.h"
 #define F(x,y,z) (((x)&(y))|((~x)&(z)))
 #define G(x,y,z) (((x)&(z))|((y)&(~z)))
 #define H(x,y,z) ((x)^(y)^(z))
@@ -18,12 +22,12 @@
 #define GG(a,b,c,d,x,s,ac) {(a)+=G((b),(c),(d))+(x)+ac;(a)=RL((a),(s));(a)+=(b);}
 #define HH(a,b,c,d,x,s,ac) {(a)+=H((b),(c),(d))+(x)+ac;(a)=RL((a),(s));(a)+=(b);}
 #define II(a,b,c,d,x,s,ac) {(a)+=I((b),(c),(d))+(x)+ac;(a)=RL((a),(s));(a)+=(b);}
-void __jry_bl_md5_transform(unsigned int state[4],const unsigned char block[64])
+void __jry_bl_md5_transform(jry_bl_uint32 state[4],const jry_bl_uint8 block[64])
 {
-	register unsigned int a=state[0],b=state[1],c=state[2],d=state[3];
-	unsigned int x[16];
-	for(register unsigned char i=0,j=0;j<64;++i,j+=4)
-		x[i]=((unsigned int)block[j])|(((unsigned int)block[j+1])<<8)|(((unsigned int)block[j+2])<<16)|(((unsigned int)block[j+3])<<24);
+	jry_bl_uint32 a=state[0],b=state[1],c=state[2],d=state[3];
+	jry_bl_uint32 x[16];
+	for(jry_bl_uint8 i=0,j=0;j<64;++i,j+=4)
+		x[i]=((jry_bl_uint32)block[j])|(((jry_bl_uint32)block[j+1])<<8)|(((jry_bl_uint32)block[j+2])<<16)|(((jry_bl_uint32)block[j+3])<<24);
 	FF(a,b,c,d,x[ 0], 7,0xd76aa478);FF(d,a,b,c,x[ 1],12,0xe8c7b756);FF(c,d,a,b,x[ 2],17,0x242070db);FF(b,c,d,a,x[ 3],22,0xc1bdceee);
 	FF(a,b,c,d,x[ 4], 7,0xf57c0faf);FF(d,a,b,c,x[ 5],12,0x4787c62a);FF(c,d,a,b,x[ 6],17,0xa8304613);FF(b,c,d,a,x[ 7],22,0xfd469501);
 	FF(a,b,c,d,x[ 8], 7,0x698098d8);FF(d,a,b,c,x[ 9],12,0x8b44f7af);FF(c,d,a,b,x[10],17,0xffff5bb1);FF(b,c,d,a,x[11],22,0x895cd7be);
@@ -42,18 +46,18 @@ void __jry_bl_md5_transform(unsigned int state[4],const unsigned char block[64])
 	II(a,b,c,d,x[ 4], 6,0xf7537e82);II(d,a,b,c,x[11],10,0xbd3af235);II(c,d,a,b,x[ 2],15,0x2ad7d2bb);II(b,c,d,a,x[ 9],21,0xeb86d391);
 	state[0]+=a;state[1]+=b;state[2]+=c;state[3]+=d;
 }
-void __jry_bl_md5_encode(const unsigned int* input,unsigned char* output,jry_bl_string_size_type length)
+void __jry_bl_md5_encode(const jry_bl_uint32* input,jry_bl_uint8* output,jry_bl_string_size_type length)
 {
 	for(jry_bl_string_size_type i=0,j=0;j<length;++i,j+=4)
-		output[j]=(unsigned char)(input[i]&0xff),output[j+1]=(unsigned char)((input[i]>>8)&0xff),output[j+2]=(unsigned char)((input[i]>>16)&0xff),output[j+3]=(unsigned char)((input[i]>>24)&0xff);
+		output[j]=(jry_bl_uint8)(input[i]&0xff),output[j+1]=(jry_bl_uint8)((input[i]>>8)&0xff),output[j+2]=(jry_bl_uint8)((input[i]>>16)&0xff),output[j+3]=(jry_bl_uint8)((input[i]>>24)&0xff);
 }
-void __jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,unsigned int state[4],unsigned int count[2],unsigned char buffer[64])
+void __jry_bl_md5_init(const jry_bl_uint8* input,jry_bl_string_size_type len,jry_bl_uint32 state[4],jry_bl_uint32 count[2],jry_bl_uint8 buffer[64])
 {
-	register unsigned int i,index,partlen;
-	index=(unsigned int)((count[0]>>3)&0x3f);
-	if((count[0]+=((unsigned int)len<<3))<((unsigned int)len<<3))
+	jry_bl_uint32 i,index,partlen;
+	index=(jry_bl_uint32)((count[0]>>3)&0x3f);
+	if((count[0]+=((jry_bl_uint32)len<<3))<((jry_bl_uint32)len<<3))
 		++count[1];
-	count[1]+=((unsigned int)len>>29);
+	count[1]+=((jry_bl_uint32)len>>29);
 	partlen=64-index;
 	if (len>=partlen)
 	{
@@ -70,16 +74,16 @@ void __jry_bl_md5_init(const unsigned char* input,jry_bl_string_size_type len,un
 void jry_bl_md5(const jry_bl_string* this,jry_bl_string* out)
 {
 	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	unsigned int state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
-	unsigned char padding[64]={0x80};
-	unsigned char buffer[64],digest[16];
-	register jry_bl_string_size_type len=jry_bl_string_get_length(this);
+	jry_bl_uint32 state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
+	jry_bl_uint8  padding[64]={0x80};
+	jry_bl_uint8  buffer[64],digest[16];
+	jry_bl_string_size_type len=jry_bl_string_get_length(this);
 	jry_bl_string_extend(out,32);
 	__jry_bl_md5_init(jry_bl_string_get_chars(this),len,state,count,buffer);
-	unsigned char bits[8];
-	unsigned int  index,padlen;
+	jry_bl_uint8 bits[8];
+	jry_bl_uint32  index,padlen;
 	__jry_bl_md5_encode(count,bits,8);
-	index=(unsigned int)((count[0]>>3)&0x3f);
+	index=(jry_bl_uint32)((count[0]>>3)&0x3f);
 	padlen=(index<56)?(56-index):(120-index);
 	__jry_bl_md5_init(padding,padlen,state,count,buffer);
 	__jry_bl_md5_init(bits,8,state,count,buffer);

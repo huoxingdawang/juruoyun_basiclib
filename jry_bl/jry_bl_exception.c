@@ -9,6 +9,9 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_exception.h"
 #if JRY_BL_EXCEPTION_ENABLE==1
+#include <stdio.h>
+#include <stdlib.h>
+#include "jry_bl_ying.h"
 void __jry_bl_exception(const char * file,int line,int x)
 {
 	fprintf(stderr,"-------------------------------------------------------\n");
