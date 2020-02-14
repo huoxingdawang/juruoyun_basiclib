@@ -18,11 +18,18 @@ int main()
 		register jry_bl_uint32 pos=jry_bl_rand()%slot;
 		if(a[pos]==NULL)
 		{
-			switch(jry_bl_rand()%3){case 0:size=(jry_bl_rand()%3072)+1;break;case 1:size=((jry_bl_rand())%2093056)+1;break;case 2:size=2093056+((jry_bl_rand())%2093056);break;}
+			switch(jry_bl_rand()%7)
+			{
+				case 0:case 1:case 2:case 3:case 4:
+					size=(jry_bl_rand()%3072)+1;break;
+				case 5:case 6:case 7:
+					size=((jry_bl_rand())%2093056)+1;break;
+				case 8:case 9:
+					size=2093056+((jry_bl_rand())%2093056);break;
+			}
 			//printf("M %d\t%s %d\n",pos,(size)<=3072?"small":(size<=2093056?"large":"huge "),size);
 			a[pos]=jry_bl_malloc(size);
-			while(size--)
-				a[pos][size]='c';
+			while(size--)a[pos][size]='c';
 		}
 		else
 		{

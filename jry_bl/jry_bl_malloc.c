@@ -42,7 +42,19 @@ void __jry_bl_malloc_set_fmap(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_le
 void __jry_bl_malloc_reset_fmap(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt);
 jry_bl_uint16 __jry_bl_malloc_fmap_find0(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i);
 jry_bl_uint16 __jry_bl_malloc_fmap_find1(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i);
-
+#define __jry_bl_malloc_view_fmap(fmap)	for(int i=0;i<jry_bl_malloc_fmap_len;printf("%0 16llX ",fmap[i]),++i);putchar('\n')
+static const struct
+{
+	jry_bl_uint8 num;
+	jry_bl_uint8 pages;
+	jry_bl_uint16 size;
+	jry_bl_uint16 count;
+} jry_bl_malloc_small_bins[30]={{ 0,1,   8,512},{ 1,1,  16,256},{ 2,1,  24,170},{ 3,1,  32,128},{ 4,1,  40,102}, 
+								{ 5,1,  48, 85},{ 6,1,  56, 73},{ 7,1,  64, 64},{ 8,1,  80, 51},{ 9,1,  96, 42},
+								{10,1, 112, 36},{11,1, 128, 32},{12,1, 160, 25},{13,1, 192, 21},{14,1, 224, 18}, 
+								{15,1, 256, 16},{16,5, 320, 64},{17,3, 384, 32},{18,1, 448,  9},{19,1, 512,  8}, 
+								{20,5, 640, 32},{21,3, 768, 16},{22,2, 896,  9},{23,2,1024,  8},{24,5,1280, 16}, 
+								{25,3,1536,  8},{26,7,1792, 16},{27,4,2048,  8},{28,5,2560,  8},{29,3,3072,  4}};
 #else
 #include <malloc.h>	
 #endif	
@@ -94,21 +106,7 @@ void jry_bl_malloc_stop()
 #endif
 #endif
 }
-#if JRY_BL_MALLOC_FAST==1
-#define __jry_bl_malloc_view_fmap(fmap)	for(int i=0;i<jry_bl_malloc_fmap_len;printf("%0 16llX ",fmap[i]),++i);putchar('\n')
-static const struct
-{
-	jry_bl_uint8 num;
-	jry_bl_uint8 pages;
-	jry_bl_uint16 size;
-	jry_bl_uint16 count;
-} jry_bl_malloc_small_bins[30]={{ 0,1,   8,512},{ 1,1,  16,256},{ 2,1,  24,170},{ 3,1,  32,128},{ 4,1,  40,102}, 
-								{ 5,1,  48, 85},{ 6,1,  56, 73},{ 7,1,  64, 64},{ 8,1,  80, 51},{ 9,1,  96, 42},
-								{10,1, 112, 36},{11,1, 128, 32},{12,1, 160, 25},{13,1, 192, 21},{14,1, 224, 18}, 
-								{15,1, 256, 16},{16,5, 320, 64},{17,3, 384, 32},{18,1, 448,  9},{19,1, 512,  8}, 
-								{20,5, 640, 32},{21,3, 768, 16},{22,2, 896,  9},{23,2,1024,  8},{24,5,1280, 16}, 
-								{25,3,1536,  8},{26,7,1792, 16},{27,4,2048,  8},{28,5,2560,  8},{29,3,3072,  4}};
-								
+#if JRY_BL_MALLOC_FAST==1		
 void* __jry_bl_malloc_mmap(jry_bl_malloc_size_type size)
 {
 	#ifdef __linux__
@@ -148,7 +146,6 @@ void *__jry_bl_malloc_aligned(jry_bl_malloc_size_type size,jry_bl_malloc_size_ty
 		__jry_bl_malloc_munmap(ptr+size,alignment-1);
 #else
 	void *ptr=__jry_bl_malloc_mmap(size+alignment-1);
-	if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);	
 	jry_bl_malloc_size_type offset=(((jry_bl_malloc_size_type)(ptr))&((alignment)-1));
 	VirtualFree(ptr,0,MEM_RELEASE);		
 	if(offset!=0)
@@ -190,7 +187,6 @@ void *__jry_bl_malloc_chunk()
 		ptr=__jry_bl_malloc_aligned(0X200000,0X200000);//2M
 		jry_bl_malloc_heap.applied_size+=0X200000;jry_bl_max_update(jry_bl_malloc_heap.applied_peak,jry_bl_malloc_heap.applied_size);		
 		chunk=ptr;
-		if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);	
 	}
 	for(register jry_bl_uint16 i=0;i<512;chunk->map[i]=0,++i);
 	for(register jry_bl_uint8 i=0;i<jry_bl_malloc_fmap_len;chunk->fmap[i]=0,++i);
@@ -210,16 +206,16 @@ void __jry_bl_free_chunk(void *ptr)
 	jry_bl_malloc_chunk_struct *chunk=ptr;
 	if(chunk->next!=NULL)
 		chunk->next->pre=chunk->pre;
-	if(chunk->pre==NULL)
-		jry_bl_malloc_heap.main_chunk=chunk->next;
-	else
+	if(chunk->pre)
 		chunk->pre->next=chunk->next;
-	if(false)//不用缓存
-	{
+	else
+		jry_bl_malloc_heap.main_chunk=chunk->next;
+//	if(false)//不用缓存
+//	{
 		__jry_bl_free_aligned(ptr,0X200000);
 		jry_bl_malloc_heap.applied_size-=0X200000;
-	}
-	else
+//	}
+/*	else
 	{
 		++jry_bl_malloc_heap.cached_chunk_count;
 		if(jry_bl_malloc_heap.cached_chunk!=NULL)
@@ -228,6 +224,7 @@ void __jry_bl_free_chunk(void *ptr)
 		chunk->pre=NULL;
 		jry_bl_malloc_heap.cached_chunk=ptr;
 	}
+*/
 }
 void __jry_bl_free_chunks()
 {
@@ -251,7 +248,7 @@ void __jry_bl_free_cached_chunks()
 	for(void*ptr;jry_bl_malloc_heap.cached_chunk;ptr=jry_bl_malloc_heap.cached_chunk->next,__jry_bl_free_aligned(jry_bl_malloc_heap.cached_chunk,0X200000),jry_bl_malloc_heap.cached_chunk=ptr,jry_bl_malloc_heap.applied_size-=0X200000);
 	jry_bl_malloc_heap.cached_chunk_count=0;
 }
-#define	slm(a,b)	(((b)==64)?0:((a)<<(b)))
+#define	slm(a,b)	(((b)>=64)?0:((a)<<(b)))
 void __jry_bl_malloc_set_fmap(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt)
 {
 	jry_bl_uint8 start_page=(i>>jry_bl_malloc_fmap_2bits);
@@ -312,7 +309,6 @@ jry_bl_uint16 __jry_bl_malloc_fmap_find1(jry_bl_malloc_fmap_type fmap[jry_bl_mal
 #undef slm
 void *__jry_bl_malloc_page(jry_bl_uint16 nums,jry_bl_uint8 type)//type为0用于large，type为1用于small
 {
-	if(nums>511||nums==0)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
 	void * ptr=NULL;
 	jry_bl_uint16 cnt0=-1,i0=0;
 	jry_bl_malloc_chunk_struct *chunk0=NULL;
@@ -359,12 +355,9 @@ void __jry_bl_free_page(void *ptr)
 	if((chunk->map[i]>>29)&1)//small
 		n=jry_bl_malloc_small_bins[n].pages;	
 	__jry_bl_malloc_reset_fmap(chunk->fmap,i,n);
-	for(n+=i;i<n;++i)
-		chunk->map[i]=0;
 }
 void* __jry_bl_malloc_large(jry_bl_malloc_size_type size)
 {
-	if(size==0)jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);	
 	jry_bl_uint16 page=((size&(0XFFF))!=0)+(size>>12);//4K对齐
 	jry_bl_malloc_heap.size+=(page<<12);jry_bl_max_update(jry_bl_malloc_heap.peak,jry_bl_malloc_heap.size);
 	return __jry_bl_malloc_page(page,0);
@@ -377,13 +370,9 @@ void __jry_bl_free_large(void *ptr)
 	chunk->free_pages+=n;
 	jry_bl_malloc_heap.size-=(n<<12);
 	__jry_bl_malloc_reset_fmap(chunk->fmap,i,n);
-	for(n+=i;i<n;++i)
-		chunk->map[i]=0;
 }
 void* __jry_bl_malloc_small(jry_bl_uint16 size)
 {	
-	if(size==0||size>3072)
-		jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
 	jry_bl_uint8 type=0;
 	for(jry_bl_uint8 i=0;i<30;i++)
 		if(jry_bl_malloc_small_bins[i].size>=size)
@@ -490,10 +479,10 @@ void __jry_bl_free_huge(void* ptr)
 		if(ptr==huge->ptr)
 		{
 //			printf("F %0 16llX\n",huge->ptr);
-			if(pre==NULL)
-				jry_bl_malloc_heap.huge_list=huge->next;
-			else
+			if(pre)
 				pre->next=huge->next;
+			else
+				jry_bl_malloc_heap.huge_list=huge->next;
 			__jry_bl_malloc_munmap(huge->ptr,huge->size);
 			jry_bl_malloc_heap.applied_size-=huge->size;
 			jry_bl_malloc_heap.size-=huge->size;
@@ -529,14 +518,11 @@ jry_bl_malloc_size_type jry_bl_malloc_size(void* ptr)
 	jry_bl_uint16 i=((jry_bl_uint64)(page-(void*)chunk))>>12;
 //	printf("%d 0X%X 0X%X 0X%X %d %X\n",__LINE__,ptr,page,chunk,i,chunk->map[i]);
 	if(((jry_bl_uint64)ptr)&(0XFFF))//没有4k，small
-		goto small_large;
+		return jry_bl_malloc_small_bins[chunk->map[i]&0X1F].size;
 	for(jry_bl_malloc_huge_struct *huge=jry_bl_malloc_heap.huge_list;huge!=NULL;huge=huge->next)
 		if(ptr==huge->ptr)
 			return huge->size;
-	
-small_large:
-	
-	if((chunk->map[i]>>29)&1)//small
+	if(chunk->map[i]&0X20000000)//small
 		return jry_bl_malloc_small_bins[chunk->map[i]&0X1F].size;
 	return (chunk->map[i]&0X1ff)<<12;//large
 #else
