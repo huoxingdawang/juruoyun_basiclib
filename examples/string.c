@@ -38,7 +38,7 @@ int main()
 	jry_bl_string_equal_chars(&s1,"j");
 	jry_bl_string_frees(2,&s2,&s3);	
 //	jry_bl_string_extend_to(&s1,2LL*1024*1024*1024);
-	for(int i=0;i<30;i++)
+	for(int i=0;i<0;i++)
 		jry_bl_string_add_string(&s1,&s1);
 	printf("Copy finish\n");
 	jry_bl_time_now(&t1);	

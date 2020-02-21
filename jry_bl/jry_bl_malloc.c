@@ -20,7 +20,7 @@
 #else	
 	#include <windows.h>		
 	#include <wincrypt.h>
-#endif	
+#endif
 void*	__jry_bl_malloc_mmap(jry_bl_malloc_size_type size);
 void	__jry_bl_malloc_munmap(void *ptr, jry_bl_malloc_size_type size);
 void*	__jry_bl_malloc_aligned(jry_bl_malloc_size_type size,jry_bl_malloc_size_type alignment);
@@ -38,11 +38,15 @@ void	__jry_bl_free_small(void* ptr);								//该函数  会操作size          
 void	__jry_bl_free_smalls();										//该函数不会操作size和applied_size
 void*	__jry_bl_malloc_huge(jry_bl_malloc_size_type size);			//该函数  会操作size和applied_size
 void	__jry_bl_free_huge(void* ptr);								//该函数  会操作size和applied_size
-void __jry_bl_malloc_set_fmap(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt);
-void __jry_bl_malloc_reset_fmap(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt);
-jry_bl_uint16 __jry_bl_malloc_fmap_find0(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i);
-jry_bl_uint16 __jry_bl_malloc_fmap_find1(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i);
+
+/*
+
+void jry_bl_bitset_set(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt);
+void jry_bl_bitset_reset(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt);
+jry_bl_uint16 jry_bl_bitset_find0(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i);
+jry_bl_uint16 jry_bl_bitset_find1(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i);
 #define __jry_bl_malloc_view_fmap(fmap)	for(int i=0;i<jry_bl_malloc_fmap_len;printf("%0 16llX ",fmap[i]),++i);putchar('\n')
+*/
 static const struct
 {
 	jry_bl_uint8 num;
@@ -189,10 +193,10 @@ void *__jry_bl_malloc_chunk()
 		chunk=ptr;
 	}
 	for(register jry_bl_uint16 i=0;i<512;chunk->map[i]=0,++i);
-	for(register jry_bl_uint8 i=0;i<jry_bl_malloc_fmap_len;chunk->fmap[i]=0,++i);
+	jry_bl_bitset_init(chunk->fmap,jry_bl_malloc_fmap_len);
 	chunk->free_pages=511;//第一个page保存chunk_struct
 	chunk->map[0]=0X40000000|0X01;//(1<<31)
-	__jry_bl_malloc_set_fmap(chunk->fmap,0,1);	
+	jry_bl_bitset_set(chunk->fmap,0,1);	
 	if(jry_bl_malloc_heap.main_chunk!=NULL)
 		jry_bl_malloc_heap.main_chunk->pre=ptr;
 	chunk->next=jry_bl_malloc_heap.main_chunk;
@@ -230,7 +234,7 @@ void __jry_bl_free_chunks()
 {
 	for(jry_bl_malloc_chunk_struct *chunk=jry_bl_malloc_heap.main_chunk,*chunk2;chunk;)//遍历表
 	{
-		if(chunk->fmap[0]!=(1LL<<(jry_bl_malloc_fmap_bits-1)))
+		if(chunk->fmap[0]!=(1LL<<(jry_bl_bitset_bits-1)))
 			goto not_free;
 		for(jry_bl_uint8 i=1;i<jry_bl_malloc_fmap_len;++i)
 			if(chunk->fmap[i]!=0)
@@ -248,65 +252,67 @@ void __jry_bl_free_cached_chunks()
 	for(void*ptr;jry_bl_malloc_heap.cached_chunk;ptr=jry_bl_malloc_heap.cached_chunk->next,__jry_bl_free_aligned(jry_bl_malloc_heap.cached_chunk,0X200000),jry_bl_malloc_heap.cached_chunk=ptr,jry_bl_malloc_heap.applied_size-=0X200000);
 	jry_bl_malloc_heap.cached_chunk_count=0;
 }
+/*
 #define	slm(a,b)	(((b)>=64)?0:((a)<<(b)))
-void __jry_bl_malloc_set_fmap(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt)
+void jry_bl_bitset_set(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt)
 {
 	jry_bl_uint8 start_page=(i>>jry_bl_malloc_fmap_2bits);
 	jry_bl_uint8 end_page=((cnt+i-1)>>jry_bl_malloc_fmap_2bits);
 	cnt=cnt+i-1-(end_page<<jry_bl_malloc_fmap_2bits);
 	i-=(start_page<<jry_bl_malloc_fmap_2bits);
 	if(start_page==end_page)
-		{fmap[start_page]|=slm(slm(1LL,(cnt+1-i))-1,(jry_bl_malloc_fmap_bits-cnt-1));return;}
-	fmap[start_page]|=(slm(1LL,(jry_bl_malloc_fmap_bits-i))-1);
+		{fmap[start_page]|=slm(slm(1LL,(cnt+1-i))-1,(jry_bl_bitset_bits-cnt-1));return;}
+	fmap[start_page]|=(slm(1LL,(jry_bl_bitset_bits-i))-1);
 	++start_page;
 	while(start_page<end_page)fmap[start_page]=-1,++start_page;
-	fmap[end_page]|=slm((slm(1LL,(cnt+1))-1),(jry_bl_malloc_fmap_bits-cnt-1));	
+	fmap[end_page]|=slm((slm(1LL,(cnt+1))-1),(jry_bl_bitset_bits-cnt-1));	
 }
-void __jry_bl_malloc_reset_fmap(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt)
+void jry_bl_bitset_reset(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt)
 {
 	jry_bl_uint8 start_page=(i>>jry_bl_malloc_fmap_2bits);
 	jry_bl_uint8 end_page=((cnt+i-1)>>jry_bl_malloc_fmap_2bits);
 	cnt=cnt+i-1-(end_page<<jry_bl_malloc_fmap_2bits);
 	i-=(start_page<<jry_bl_malloc_fmap_2bits);
 	if(start_page==end_page)
-		{fmap[start_page]&=~slm(slm(1LL,(cnt+1-i))-1,(jry_bl_malloc_fmap_bits-cnt-1));return;}
-	fmap[start_page]&=~(slm(1LL,(jry_bl_malloc_fmap_bits-i))-1);
+		{fmap[start_page]&=~slm(slm(1LL,(cnt+1-i))-1,(jry_bl_bitset_bits-cnt-1));return;}
+	fmap[start_page]&=~(slm(1LL,(jry_bl_bitset_bits-i))-1);
 	++start_page;
 	while(start_page<end_page)fmap[start_page]=0,++start_page;
-	fmap[end_page]&=~slm((slm(1LL,(cnt+1))-1),(jry_bl_malloc_fmap_bits-cnt-1));	
+	fmap[end_page]&=~slm((slm(1LL,(cnt+1))-1),(jry_bl_bitset_bits-cnt-1));	
 }
-jry_bl_uint16 __jry_bl_malloc_fmap_find0(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i)
+jry_bl_uint16 jry_bl_bitset_find0(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i)
 {
 	jry_bl_uint8 p=(i>>jry_bl_malloc_fmap_2bits);
 	i-=(p<<jry_bl_malloc_fmap_2bits);	
 	jry_bl_malloc_fmap_type tmp;
 	tmp=fmap[p];
-	tmp|=slm((slm(1LL,(i))-1),(jry_bl_malloc_fmap_bits-i));
+	tmp|=slm((slm(1LL,(i))-1),(jry_bl_bitset_bits-i));
 	if(tmp!=-1)
-		return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_malloc_fmap_bits-jry_bl_highbit0(tmp)-1;
+		return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit0(tmp)-1;
 	++p;
 	while(fmap[p]==-1&&p<=jry_bl_malloc_fmap_len)++p;
 	if(p==(jry_bl_malloc_fmap_len+1))
 		return 512;
-	return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_malloc_fmap_bits-jry_bl_highbit0(fmap[p])-1;
+	return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit0(fmap[p])-1;
 }
-jry_bl_uint16 __jry_bl_malloc_fmap_find1(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i)
+jry_bl_uint16 jry_bl_bitset_find1(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i)
 {
 	jry_bl_uint8 p=(i>>jry_bl_malloc_fmap_2bits);
 	i-=(p<<jry_bl_malloc_fmap_2bits);	
 	jry_bl_malloc_fmap_type tmp;
 	tmp=fmap[p];
-	tmp&=(slm(1LL,(jry_bl_malloc_fmap_bits-i))-1);
+	tmp&=(slm(1LL,(jry_bl_bitset_bits-i))-1);
 	
 	if(tmp!=0)
-		return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_malloc_fmap_bits-jry_bl_highbit(tmp)-1;
+		return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit(tmp)-1;
 	++p;
 	while(fmap[p]==0&&p<=jry_bl_malloc_fmap_len)++p;	
 	if(p==(jry_bl_malloc_fmap_len+1))
 		return 512;
-	return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_malloc_fmap_bits-jry_bl_highbit(fmap[p])-1;
+	return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit(fmap[p])-1;
 }
 #undef slm
+*/
 void *__jry_bl_malloc_page(jry_bl_uint16 nums,jry_bl_uint8 type)//type为0用于large，type为1用于small
 {
 	void * ptr=NULL;
@@ -316,12 +322,11 @@ void *__jry_bl_malloc_page(jry_bl_uint16 nums,jry_bl_uint8 type)//type为0用于
 	{
 		if(chunk->free_pages>=nums)
 		{
-			for(jry_bl_uint16 i=0,cnt1=0,j=0;i<512;++i)
+ 			for(jry_bl_uint16 i=0,cnt1=0,j=0;i<512;++i)
 			{
-				j=__jry_bl_malloc_fmap_find0(chunk->fmap,i);
-				i=__jry_bl_malloc_fmap_find1(chunk->fmap,j);
+				j=jry_bl_bitset_find0(chunk->fmap,i,jry_bl_malloc_fmap_len);
+				i=jry_bl_bitset_find1(chunk->fmap,j,jry_bl_malloc_fmap_len);
 				cnt1=i-j;
-				//printf("%d %d %d\n",j,i,cnt1);
 				if(cnt1>=nums&&cnt1<cnt0)
 					cnt0=cnt1,i0=j,chunk0=chunk;
 			}
@@ -331,7 +336,7 @@ void *__jry_bl_malloc_page(jry_bl_uint16 nums,jry_bl_uint8 type)//type为0用于
 		chunk0=__jry_bl_malloc_chunk(),i0=1;
 	chunk0->free_pages-=nums;	
 	//在chunk0第i0个位置标记nums个type类型的内存块
-	__jry_bl_malloc_set_fmap(chunk0->fmap,i0,nums);
+	jry_bl_bitset_set(chunk0->fmap,i0,nums);
 	jry_bl_uint32 tmp;
 	if(type==0)
 		chunk0->map[i0]=(0X40000000)|nums,	//[31,30]U[9,0] 10b<<29
@@ -354,7 +359,7 @@ void __jry_bl_free_page(void *ptr)
 	chunk->free_pages+=n;
 	if((chunk->map[i]>>29)&1)//small
 		n=jry_bl_malloc_small_bins[n].pages;	
-	__jry_bl_malloc_reset_fmap(chunk->fmap,i,n);
+	jry_bl_bitset_reset(chunk->fmap,i,n);
 }
 void* __jry_bl_malloc_large(jry_bl_malloc_size_type size)
 {
@@ -369,7 +374,7 @@ void __jry_bl_free_large(void *ptr)
 	jry_bl_uint16 n=chunk->map[i]&(0X1FF);	
 	chunk->free_pages+=n;
 	jry_bl_malloc_heap.size-=(n<<12);
-	__jry_bl_malloc_reset_fmap(chunk->fmap,i,n);
+	jry_bl_bitset_reset(chunk->fmap,i,n);
 }
 void* __jry_bl_malloc_small(jry_bl_uint16 size)
 {	
@@ -548,12 +553,12 @@ void* jry_bl_realloc(void* ptr,jry_bl_malloc_size_type size)
 		jry_bl_uint16 i=((jry_bl_uint64)(ptr-(void*)chunk))>>12;
 		jry_bl_uint16 n=chunk->map[i]&(0X1FF);				//有的
 		jry_bl_uint16 page=((size&(0X1FF))!=0)+(size>>12);	//现在需要page个page
-		if(__jry_bl_malloc_fmap_find1(chunk->fmap,i+n)>=i+page)
+		if(jry_bl_bitset_find1(chunk->fmap,i+n,jry_bl_malloc_fmap_len)>=i+page)
 		{
 			jry_bl_malloc_heap.size+=((page-n)<<12);/*新增page-n个page*/jry_bl_max_update(jry_bl_malloc_heap.peak,jry_bl_malloc_heap.size);
 			//在chunk第i个位置标记page个large类型的内存块
 			jry_bl_uint32 tmp=(0X40000000)|page;
-			__jry_bl_malloc_set_fmap(chunk->fmap,i+n,page-n);
+			jry_bl_bitset_set(chunk->fmap,i+n,page-n);
 			for(jry_bl_uint16 j=0;j<page;++j)
 				chunk->map[i+j]=tmp|(j<<10);//[30,29]U[19,10]U[9,0]
 			return ptr;

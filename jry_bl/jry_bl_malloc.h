@@ -12,6 +12,7 @@
 #include "jry_bl_malloc_config.h"
 #if JRY_BL_MALLOC_ENABLE==1
 #include "jry_bl_ying.h"
+#include "jry_bl_bitset.h"
 void					jry_bl_malloc_start			();
 void					jry_bl_malloc_stop			();
 void*					jry_bl_malloc				(jry_bl_malloc_size_type size);
@@ -21,7 +22,11 @@ jry_bl_malloc_size_type	jry_bl_malloc_size			(void* ptr);
 void					jry_bl_memory_copy			(void *to,const void * from,jry_bl_malloc_size_type len);
 void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_size_type len,jry_bl_malloc_size_type size);
 #if JRY_BL_MALLOC_FAST==1
-
+	#if  jry_bl_bitset_bits==32
+		#define jry_bl_malloc_fmap_len		16	//(512/jry_bl_bitset_bits)
+	#else
+		#define jry_bl_malloc_fmap_len		8	//(512/jry_bl_bitset_bits)
+	#endif
 	typedef struct __jry_bl_malloc_free_slot	jry_bl_malloc_free_slot;
 	typedef struct __jry_bl_malloc_heap_struct	jry_bl_malloc_heap_struct;
 	typedef struct __jry_bl_malloc_huge_struct	jry_bl_malloc_huge_struct;
@@ -60,7 +65,7 @@ void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_si
 		struct __jry_bl_malloc_chunk_struct	*pre;
 		jry_bl_uint16						free_pages;		
 		jry_bl_uint32						map[512];		//2KB=512*4
-		jry_bl_malloc_fmap_type				fmap[jry_bl_malloc_fmap_len];		//16*32bit
+		jry_bl_bitset_type					fmap[jry_bl_malloc_fmap_len];		//16*32bit
 	}jry_bl_malloc_chunk_struct;
 	
 
@@ -71,8 +76,8 @@ void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_si
 		jry_bl_malloc_size_type peak;
 	}jry_bl_malloc_heap_struct;	
 	extern jry_bl_malloc_heap_struct jry_bl_malloc_heap;
-#endif
 
+#endif
 #else
 #define jry_bl_malloc_start()	1
 #define jry_bl_malloc_stop()	1

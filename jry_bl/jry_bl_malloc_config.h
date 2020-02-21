@@ -16,11 +16,6 @@
 
 typedef jry_bl_uint64 jry_bl_malloc_size_type;
 
-#define jry_bl_malloc_fmap_2bits	6
-#define jry_bl_malloc_fmap_bits		64	//(1<<jry_bl_malloc_fmap_2bits)
-#define jry_bl_malloc_fmap_len		8	//(512/jry_bl_malloc_fmap_bits)
-typedef jry_bl_uint64 jry_bl_malloc_fmap_type;
-
 
 #endif
 #endif

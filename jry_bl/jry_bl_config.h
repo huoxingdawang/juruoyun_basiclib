@@ -14,22 +14,23 @@
 
 
 
-#define JRY_BL_AES_128_ENABLE		1	//need ying exception malloc string
+#define JRY_BL_AES_128_ENABLE		1	//need ying exception bitset malloc string
 #define JRY_BL_ARRAY_ENABLE			1	//not using
-#define JRY_BL_BASE64_ENABLE		1	//need ying exception malloc string
-#define JRY_BL_CMD_ENABLE			1	//need ying exception malloc string
+#define JRY_BL_BASE64_ENABLE		1	//need ying exception bitset malloc string
+#define JRY_BL_BITSET_ENABLE		1	//need ying exception
+#define JRY_BL_CMD_ENABLE			1	//need ying exception bitset malloc string
 #define JRY_BL_EXCEPTION_ENABLE		1	//need ying 
 #define JRY_BL_FILE_ENABLE			1	//developing N/A
-#define JRY_BL_HASH_TABLE_ENABLE	1	//need ying exception malloc string var
-#define JRY_BL_LINK_LIST_ENABLE		1	//need ying exception malloc        var					/////////////
-#define JRY_BL_MALLOC_ENABLE		1	//need ying exception 
-#define JRY_BL_MD5_ENABLE			1	//need ying exception malloc string
+#define JRY_BL_HASH_TABLE_ENABLE	1	//need ying exception bitset malloc string var
+#define JRY_BL_LINK_LIST_ENABLE		1	//need ying exception bitset malloc        var					/////////////
+#define JRY_BL_MALLOC_ENABLE		1	//need ying exception bitset
+#define JRY_BL_MD5_ENABLE			1	//need ying exception bitset malloc string
 #define JRY_BL_RAND_ENABLE			1	//need 
-#define JRY_BL_SHA1_ENABLE			1	//need ying exception malloc string
-#define JRY_BL_STREAM_ENABLE		1	//need ying exception malloc
-#define JRY_BL_STRING_ENABLE		1	//need ying exception malloc
+#define JRY_BL_SHA1_ENABLE			1	//need ying exception bitset malloc string
+#define JRY_BL_STREAM_ENABLE		1	//need ying exception bitset malloc
+#define JRY_BL_STRING_ENABLE		1	//need ying exception bitset malloc
 #define JRY_BL_TIME_ENABLE			1	//developing N/A
-#define JRY_BL_VAR_ENABLE			1	//need ying exception malloc	
+#define JRY_BL_VAR_ENABLE			1	//need ying exception bitset malloc	
 #define JRY_BL_YING_ENABLE			1	//need 
 
 #endif

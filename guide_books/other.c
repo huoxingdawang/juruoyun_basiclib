@@ -1,1 +1,1 @@
-jry_bl_stream_stdin jry_bl_stream_stdout jry_bl_time_time_zone jry_bl_var_fs jry_bl_var_functions jry_bl_var_tmp_functions 
+jry_bl_malloc_heap jry_bl_stream_stdin jry_bl_stream_stdout jry_bl_time_time_zone jry_bl_var_fs jry_bl_var_functions jry_bl_var_tmp_functions 
