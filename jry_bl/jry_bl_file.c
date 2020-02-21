@@ -131,7 +131,7 @@ void jry_bl_file_file_open_ex(jry_bl_file *this,jry_bl_file *f,jry_bl_string *na
 	if(this==NULL||name==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_file_clear(this);
 	jry_bl_string_set(name,jry_bl_string_get_length(name),'\0');
-	FILE	*file	=fopen(jry_bl_string_get_chars(name),"wb+");
+	FILE	*file	=fopen(jry_bl_string_get_chars(name),"rb+");
 	DIR		*dir	=opendir(jry_bl_string_get_chars(name));
 	if(file!=NULL)
 	{
