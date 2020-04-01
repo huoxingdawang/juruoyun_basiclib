@@ -12,6 +12,6 @@
 #include "jry_bl_md5_config.h"
 #if JRY_BL_MD5_ENABLE==1
 #include "jry_bl_string.h"
-void	jry_bl_md5	(const jry_bl_string* this,jry_bl_string* out);
+jry_bl_string*	jry_bl_md5	(const jry_bl_string* this,jry_bl_string* out);
 #endif
 #endif
