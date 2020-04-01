@@ -11,15 +11,18 @@
 #if JRY_BL_CMD_ENABLE==1
 #include <stdio.h>
 #include "jry_bl_string.h"
-void jry_bl_execute_cmd(const jry_bl_string *cmd,jry_bl_string *result)
+jry_bl_string * jry_bl_execute_cmd(const jry_bl_string *cmd,jry_bl_string *result)
 {
-	char buf_ps[1024];
+	if(cmd==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	char *buf=jry_bl_malloc(1024);
 	FILE *ptr;
-	if((ptr=popen(jry_bl_string_get_chars(cmd),"r"))!=NULL)
+	if((ptr=popen((char*)jry_bl_string_get_chars(cmd),"r"))!=NULL)
 	{
-		while(fgets(buf_ps,1024,ptr)!=NULL)
-			jry_bl_string_add_chars(result,buf_ps);
+		while(fgets(buf,1024,ptr)!=NULL)
+			result=jry_bl_string_add_chars_length(result,(jry_bl_uint8*)buf,jry_bl_strlen(buf));
 		pclose(ptr);
 	}
+	jry_bl_free(buf);
+	return result;
 }
 #endif
