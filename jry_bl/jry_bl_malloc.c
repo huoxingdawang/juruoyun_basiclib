@@ -74,24 +74,21 @@ void jry_bl_malloc_start()
 	jry_bl_malloc_heap.huge_list=NULL;
 	jry_bl_malloc_heap.main_chunk=NULL;
 	jry_bl_malloc_heap.cached_chunk=NULL;
-	//缓存几个常用的
-	__jry_bl_free_small(__jry_bl_malloc_small(8));
-	__jry_bl_free_small(__jry_bl_malloc_small(16));
-	__jry_bl_free_small(__jry_bl_malloc_small(24));	
 #endif	
 }
 void jry_bl_malloc_stop()
 {	
 #if JRY_BL_STREAM_ENABLE==1
-	jry_bl_stream_init(&jry_bl_stream_stdout,jry_bl_stream_file_operator,stdout,jry_bl_malloc(24),24);//重新初始化stdout，因为它已经关了
-	jry_bl_stream_push_chars(&jry_bl_stream_stdout,"\n\n");
+	jry_bl_stream_stdout=jry_bl_stream_new(jry_bl_stream_file_operator,stdout,JRY_BL_STREAM_EXCEED_LENGTH,NULL),//重新初始化stdout，因为它已经关了
+	jry_bl_stream_push_chars(jry_bl_stream_stdout,"\n\n");
 #endif
 #if JRY_BL_MALLOC_FAST==1
 #if JRY_BL_STREAM_ENABLE==1
-	jry_bl_stream_push_chars(&jry_bl_stream_stdout,"Memory            :");jry_bl_stream_push_uint64(&jry_bl_stream_stdout,jry_bl_malloc_heap.size-24);jry_bl_stream_push_chars(&jry_bl_stream_stdout,"B\n");	
-	jry_bl_stream_push_chars(&jry_bl_stream_stdout,"Max memory        :");jry_bl_stream_push_uint64(&jry_bl_stream_stdout,jry_bl_malloc_heap.peak);jry_bl_stream_push_chars(&jry_bl_stream_stdout,"B(");jry_bl_stream_push_double(&jry_bl_stream_stdout,(double)jry_bl_malloc_heap.peak/1048576);jry_bl_stream_push_chars(&jry_bl_stream_stdout,"M)\n");	
-	jry_bl_stream_push_chars(&jry_bl_stream_stdout,"Applied max memory:");jry_bl_stream_push_uint64(&jry_bl_stream_stdout,jry_bl_malloc_heap.applied_peak>>20);jry_bl_stream_push_chars(&jry_bl_stream_stdout,"M\n");	
-	jry_bl_stream_do(&jry_bl_stream_stdout,1),jry_bl_free(jry_bl_stream_stdout.buf),jry_bl_stream_free(&jry_bl_stream_stdout);//强推，关闭
+	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Memory            :");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.size-JRY_BL_STREAM_EXCEED_LENGTH-(sizeof(jry_bl_stream)));jry_bl_stream_push_chars(jry_bl_stream_stdout,"B\n");	
+	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Max memory        :");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.peak);jry_bl_stream_push_chars(jry_bl_stream_stdout,"B(");jry_bl_stream_push_double(jry_bl_stream_stdout,(double)jry_bl_malloc_heap.peak/1048576);jry_bl_stream_push_chars(jry_bl_stream_stdout,"M)\n");	
+	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Applied max memory:");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.applied_peak>>20);jry_bl_stream_push_chars(jry_bl_stream_stdout,"M\n");	
+	jry_bl_stream_do(jry_bl_stream_stdout,1);
+	jry_bl_stream_stdout=jry_bl_stream_free(jry_bl_stream_stdout);//强推，关闭
 #endif
 	
 	for(;jry_bl_malloc_heap.huge_list;__jry_bl_free_huge(jry_bl_malloc_heap.huge_list->ptr));
@@ -104,9 +101,9 @@ void jry_bl_malloc_stop()
 	if(jry_bl_malloc_heap.applied_size)			jry_bl_exception(JRY_BL_ERROR_MEMORY_ERROR);
 #else
 #if JRY_BL_STREAM_ENABLE==1
-	jry_bl_stream_push_chars(&jry_bl_stream_stdout,"Memory    :");jry_bl_stream_push_uint64(&jry_bl_stream_stdout,jry_bl_malloc_heap.size-24);jry_bl_stream_push_chars(&jry_bl_stream_stdout,"B\n");	
-	jry_bl_stream_push_chars(&jry_bl_stream_stdout,"Max memory:");jry_bl_stream_push_uint64(&jry_bl_stream_stdout,jry_bl_malloc_heap.peak);jry_bl_stream_push_chars(&jry_bl_stream_stdout,"B(");jry_bl_stream_push_double(&jry_bl_stream_stdout,(double)jry_bl_malloc_heap.peak/1048576);jry_bl_stream_push_chars(&jry_bl_stream_stdout,"M)\n");	
-	jry_bl_stream_do(&jry_bl_stream_stdout,1),jry_bl_free(jry_bl_stream_stdout.buf),jry_bl_stream_free(&jry_bl_stream_stdout);//强推，关闭
+	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Memory    :");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.size-24);jry_bl_stream_push_chars(jry_bl_stream_stdout,"B\n");	
+	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Max memory:");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.peak);jry_bl_stream_push_chars(jry_bl_stream_stdout,"B(");jry_bl_stream_push_double(jry_bl_stream_stdout,(double)jry_bl_malloc_heap.peak/1048576);jry_bl_stream_push_chars(jry_bl_stream_stdout,"M)\n");	
+	jry_bl_stream_do(jry_bl_stream_stdout,1);jry_bl_stream_stdout=jry_bl_stream_free(jry_bl_stream_stdout);//强推，关闭
 #endif
 #endif
 }
@@ -214,21 +211,21 @@ void __jry_bl_free_chunk(void *ptr)
 		chunk->pre->next=chunk->next;
 	else
 		jry_bl_malloc_heap.main_chunk=chunk->next;
-//	if(false)//不用缓存
-//	{
-		__jry_bl_free_aligned(ptr,0X200000);
-		jry_bl_malloc_heap.applied_size-=0X200000;
+/*TODO:自动决策是否放进缓存 */
+//	if(false)
+//	{//不用缓存,直接释放
+//		__jry_bl_free_aligned(ptr,0X200000);
+//	jry_bl_malloc_heap.applied_size-=0X200000;
 //	}
-/*	else
-	{
+//	else
+//	{
 		++jry_bl_malloc_heap.cached_chunk_count;
 		if(jry_bl_malloc_heap.cached_chunk!=NULL)
 			jry_bl_malloc_heap.cached_chunk->pre=ptr;
 		chunk->next=jry_bl_malloc_heap.cached_chunk;
 		chunk->pre=NULL;
 		jry_bl_malloc_heap.cached_chunk=ptr;
-	}
-*/
+//	}
 }
 void __jry_bl_free_chunks()
 {
