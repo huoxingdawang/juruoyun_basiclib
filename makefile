@@ -17,7 +17,7 @@ else
 	H = \\
 	rm = del
 endif
-all:jry_bl aes array base64 bitset cmd file json hash_table link_list malloc md5 stream string time sha1 test var
+all:jry_bl aes array base64 bitset cmd file json hash_table link_list malloc md5 rand stream string time sha1 test var
 clean:
 	$(rm) tmp$(H)*.o /s
 	$(rm) tmp$(H)*.a /s
@@ -40,6 +40,7 @@ run:
 	exes$(H)hash_table
 	exes$(H)link_list
 	exes$(H)malloc
+	exes$(H)rand
 	exes$(H)md5
 	exes$(H)stream
 	exes$(H)sha1
@@ -80,6 +81,9 @@ malloc:jry_bl
 md5:jry_bl
 	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)md5.o examples$(H)md5.c $(EXLIB)
 	$(CC) -o exes$(H)md5 tmp$(H)md5.o tmp$(H)jry_bl.a
+rand:jry_bl
+	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)rand.o examples$(H)rand.c $(EXLIB)
+	$(CC) -o exes$(H)rand tmp$(H)rand.o tmp$(H)jry_bl.a	
 stream:jry_bl
 	$(CC) $(EX) -c -std=gnu99 -o tmp$(H)stream.o examples$(H)stream.c $(EXLIB)
 	$(CC) -o exes$(H)stream tmp$(H)stream.o tmp$(H)jry_bl.a
@@ -113,41 +117,43 @@ JRY_BL_EXLIB =
 else
 JRY_BL_EXLIB = 
 endif
-jry_bl                       :jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_bitset jry_bl/jry_bl_cmd jry_bl/jry_bl_exception jry_bl/jry_bl_file jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_rand jry_bl/jry_bl_sha1 jry_bl/jry_bl_stream jry_bl/jry_bl_string jry_bl/jry_bl_time jry_bl/jry_bl_var jry_bl/jry_bl_ying 
+jry_bl                       :jry_bl/jry_bl_aes jry_bl/jry_bl_array jry_bl/jry_bl_base64 jry_bl/jry_bl_bitset jry_bl/jry_bl_cmd jry_bl/jry_bl_exception jry_bl/jry_bl_file jry_bl/jry_bl_gc jry_bl/jry_bl_hash_table jry_bl/jry_bl_link_list jry_bl/jry_bl_malloc jry_bl/jry_bl_md5 jry_bl/jry_bl_rand jry_bl/jry_bl_sha1 jry_bl/jry_bl_stream jry_bl/jry_bl_string jry_bl/jry_bl_time jry_bl/jry_bl_var jry_bl/jry_bl_ying 
 	ar rc tmp$(H)jry_bl.a tmp$(H)jry_bl_*.o
 jry_bl/jry_bl_aes            :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_aes.o        jry_bl$(H)jry_bl_aes.c        $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_aes.o        jry_bl$(H)jry_bl_aes.c        $(JRY_BL_EXLIB)
 jry_bl/jry_bl_array          :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_array.o      jry_bl$(H)jry_bl_array.c      $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c       -std=gnu99 -o tmp$(H)jry_bl_array.o      jry_bl$(H)jry_bl_array.c      $(JRY_BL_EXLIB)
 jry_bl/jry_bl_base64         :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_base64.o     jry_bl$(H)jry_bl_base64.c     $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_base64.o     jry_bl$(H)jry_bl_base64.c     $(JRY_BL_EXLIB)
 jry_bl/jry_bl_bitset         :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_bitset.o     jry_bl$(H)jry_bl_bitset.c     $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_bitset.o     jry_bl$(H)jry_bl_bitset.c     $(JRY_BL_EXLIB)
 jry_bl/jry_bl_cmd            :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_cmd.o        jry_bl$(H)jry_bl_cmd.c        $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_cmd.o        jry_bl$(H)jry_bl_cmd.c        $(JRY_BL_EXLIB)
 jry_bl/jry_bl_exception      :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_exception.o  jry_bl$(H)jry_bl_exception.c  $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_exception.o  jry_bl$(H)jry_bl_exception.c  $(JRY_BL_EXLIB)
 jry_bl/jry_bl_file           :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_file.o       jry_bl$(H)jry_bl_file.c       $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c       -std=gnu99 -o tmp$(H)jry_bl_file.o       jry_bl$(H)jry_bl_file.c       $(JRY_BL_EXLIB)
+jry_bl/jry_bl_gc             :
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_gc.o         jry_bl$(H)jry_bl_gc.c         $(JRY_BL_EXLIB)
 jry_bl/jry_bl_hash_table     :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_hash_table.o jry_bl$(H)jry_bl_hash_table.c $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c       -std=gnu99 -o tmp$(H)jry_bl_hash_table.o jry_bl$(H)jry_bl_hash_table.c $(JRY_BL_EXLIB)
 jry_bl/jry_bl_link_list      :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_link_list.o  jry_bl$(H)jry_bl_link_list.c  $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c       -std=gnu99 -o tmp$(H)jry_bl_link_list.o  jry_bl$(H)jry_bl_link_list.c  $(JRY_BL_EXLIB)
 jry_bl/jry_bl_malloc         :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_malloc.o     jry_bl$(H)jry_bl_malloc.c     $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_malloc.o     jry_bl$(H)jry_bl_malloc.c     $(JRY_BL_EXLIB)
 jry_bl/jry_bl_md5            :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_md5.o        jry_bl$(H)jry_bl_md5.c        $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_md5.o        jry_bl$(H)jry_bl_md5.c        $(JRY_BL_EXLIB)
 jry_bl/jry_bl_rand           :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_rand.o       jry_bl$(H)jry_bl_rand.c       $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_rand.o       jry_bl$(H)jry_bl_rand.c       $(JRY_BL_EXLIB)
 jry_bl/jry_bl_sha1           :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_sha1.o       jry_bl$(H)jry_bl_sha1.c       $(JRY_BL_EXLIB)    
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_sha1.o       jry_bl$(H)jry_bl_sha1.c       $(JRY_BL_EXLIB)    
 jry_bl/jry_bl_stream         :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_stream.o     jry_bl$(H)jry_bl_stream.c     $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_stream.o     jry_bl$(H)jry_bl_stream.c     $(JRY_BL_EXLIB)
 jry_bl/jry_bl_string         :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_string.o     jry_bl$(H)jry_bl_string.c     $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_string.o     jry_bl$(H)jry_bl_string.c     $(JRY_BL_EXLIB)
 jry_bl/jry_bl_time           :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_time.o       jry_bl$(H)jry_bl_time.c       $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c       -std=gnu99 -o tmp$(H)jry_bl_time.o       jry_bl$(H)jry_bl_time.c       $(JRY_BL_EXLIB)
 jry_bl/jry_bl_var            :
-	$(CC) $(EX) -c -w -std=gnu99 -o tmp$(H)jry_bl_var.o        jry_bl$(H)jry_bl_var.c        $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -w    -std=gnu99 -o tmp$(H)jry_bl_var.o        jry_bl$(H)jry_bl_var.c        $(JRY_BL_EXLIB)
 jry_bl/jry_bl_ying           :
-	$(CC) $(EX) -c    -std=gnu99 -o tmp$(H)jry_bl_ying.o       jry_bl$(H)jry_bl_ying.c       $(JRY_BL_EXLIB)
+	$(CC) $(EX) -c -Wall -std=gnu99 -o tmp$(H)jry_bl_ying.o       jry_bl$(H)jry_bl_ying.c       $(JRY_BL_EXLIB)

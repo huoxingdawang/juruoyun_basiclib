@@ -12,6 +12,6 @@
 #include "jry_bl_sha1_config.h"
 #if JRY_BL_SHA1_ENABLE==1
 #include "jry_bl_string.h"
-void	jry_bl_sha1	(const jry_bl_string* this,jry_bl_string* out);
+jry_bl_string*	jry_bl_sha1	(const jry_bl_string* this,jry_bl_string* out);
 #endif
 #endif

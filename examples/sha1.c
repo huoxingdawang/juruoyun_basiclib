@@ -3,21 +3,15 @@ int main()
 {
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jry_bl_start();	
+	jry_bl_string *s1=jry_bl_string_add_chars(NULL,"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
+	jry_bl_string *s2=jry_bl_sha1(s1,NULL);
 	
-	jry_bl_string s1,s2,s3,s4,s5;jry_bl_string_inits(5,&s1,&s2,&s3,&s4,&s5);	
-	FILE * fp;
-	fp=fopen(filename,"rb");jry_bl_string_equal_file(&s1,fp);fclose(fp);
-	jry_bl_time t1,t2;jry_bl_time_inits(2,&t1,&t2);
-	jry_bl_time_now(&t1);
-	jry_bl_sha1(&s1,&s2);
-	fprintf(stderr,"SHA1 used time:%lldms\n",jry_bl_time_minus((jry_bl_time_now(&t2),&t2),&t1));	
-	system("php testfiles/sha1.php "filename);
-	fp=fopen("testfiles/sha1_encode.out","wb");jry_bl_string_print(&s2,fp);fclose(fp);
-	fp=fopen("testfiles/sha1_encode.ans","rb");jry_bl_string_equal_file(&s4,fp);fclose(fp);
-	printf("With php encode:%s\n",((jry_bl_string_space_ship(&s2,&s4)==0)?"YES":"NO"));
 	
-	jry_bl_string_frees(5,&s1,&s2,&s3,&s4,&s5);
-	jry_bl_time_frees(2,&t1,&t2);	
+	jry_bl_string_view(s1);
+	jry_bl_string_view(s2);
+	
+	s1=jry_bl_string_free(s1);s2=jry_bl_string_free(s2);
+	
 	jry_bl_stop(); 
 	return 0;
 }

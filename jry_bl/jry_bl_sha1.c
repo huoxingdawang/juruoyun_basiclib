@@ -27,13 +27,13 @@ void __jry_bl_sha1_process(jry_bl_uint32 hb[5],jry_bl_uint32 *mbc,jry_bl_uint8 m
 	hb[0]+=A,hb[1]+=B,hb[2]+=C,hb[3]+=D,hb[4]+=E;
 	(*mbc)=0;
 }
-void jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
+jry_bl_string* jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 {
-	if(this==NULL||out==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	jry_bl_string_size_type	size=jry_bl_string_get_length(this);
 	jry_bl_uint8 			*input=jry_bl_string_get_chars(this),mb[64];
 	jry_bl_uint32			hb[5]={0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0},mbc=0,ll=0,lh=0;
-	jry_bl_string_extend(out,40);
+	out=jry_bl_string_extend(out,40);
 	while(size--)
 	{
 		mb[mbc++]=(*input&0xFF);
@@ -62,7 +62,8 @@ void jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 	mb[56]=lh>>24,mb[57]=lh>>16,mb[58]=lh>>8,mb[59]=lh;
 	mb[60]=ll>>24,mb[61]=ll>>16,mb[62]=ll>>8,mb[63]=ll;
 	__jry_bl_sha1_process(hb,&mbc,mb);
-	for(register jry_bl_uint8 i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),jry_bl_string_add_hex8(out,mbc),++i);
+	for(register jry_bl_uint8 i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),out=jry_bl_string_add_hex_8bits(out,mbc),++i);
+	return out;
 }
 
 #endif
