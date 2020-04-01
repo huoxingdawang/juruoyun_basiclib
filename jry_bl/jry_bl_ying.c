@@ -16,7 +16,7 @@ inline jry_bl_int64 jry_bl_ceil(long double i)
 jry_bl_uint8 jry_bl_get_uint64_length(jry_bl_uint64 tmp)
 {
 	jry_bl_uint8 len=0;
-	do{++len;}while(tmp=(((jry_bl_uint64)tmp)/10));	
+	do{++len;}while((tmp=(((jry_bl_uint64)tmp)/10)));	
 	return len;
 }
 jry_bl_uint8 jry_bl_get_int64_length(jry_bl_int64 tmp)
@@ -24,7 +24,7 @@ jry_bl_uint8 jry_bl_get_int64_length(jry_bl_int64 tmp)
 	jry_bl_uint8 len=0;
 	if(tmp<0)
 		tmp=-tmp,++len;
-	do{++len;}while(tmp=(((jry_bl_uint64)tmp)/10));	
+	do{++len;}while((tmp=(((jry_bl_uint64)tmp)/10)));	
 	return len;
 }
 jry_bl_uint8 jry_bl_get_double_length(double tmp)

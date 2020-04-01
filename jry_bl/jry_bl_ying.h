@@ -12,7 +12,7 @@
 #include "jry_bl_ying_config.h"
 #if JRY_BL_YING_ENABLE==1
 #ifndef NULL
-	#define NULL 0
+	#define NULL ((void*)0)
 #endif
 #ifndef false
 	#define false 0

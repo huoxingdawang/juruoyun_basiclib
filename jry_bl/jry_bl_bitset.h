@@ -25,7 +25,7 @@ typedef jry_bl_uint64 jry_bl_bitset_type;
  
 
 
-#define			jry_bl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0 *llX ",jry_bl_bitset_bits/4,bitset[i]),++i);putchar('\n')
+#define			jry_bl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0 *llX ",jry_bl_bitset_bits/4,(jry_bl_uint64)bitset[i]),++i);putchar('\n')
 jry_bl_uint8	jry_bl_highbit				(jry_bl_uint64 a);
 jry_bl_uint8	jry_bl_highbit0				(jry_bl_uint64 a);
 jry_bl_uint8	jry_bl_highbit32			(jry_bl_uint32 a);
