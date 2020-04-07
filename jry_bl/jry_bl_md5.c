@@ -77,9 +77,10 @@ jry_bl_string* jry_bl_md5(const jry_bl_string* this,jry_bl_string* out)
 	jry_bl_uint32 state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
 	jry_bl_uint8  padding[64]={0x80};
 	jry_bl_uint8  buffer[64],digest[16];
-	jry_bl_string_size_type len=jry_bl_string_get_length(this);
+	const jry_bl_string *this_=jry_bl_refer_pull(this);
+	jry_bl_string_size_type len=jry_bl_string_get_length_force(this_);
 	out=jry_bl_string_extend(out,32);
-	__jry_bl_md5_init(jry_bl_string_get_chars(this),len,state,count,buffer);
+	__jry_bl_md5_init(jry_bl_string_get_chars_force(this_),len,state,count,buffer);
 	jry_bl_uint8 bits[8];
 	jry_bl_uint32  index,padlen;
 	__jry_bl_md5_encode(count,bits,8);
