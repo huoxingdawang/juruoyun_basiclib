@@ -193,23 +193,29 @@ inline void __jry_bl_aes_128_decode_16(jry_bl_aes_128_key *w,jry_bl_uint8* a,jry
 jry_bl_string * jry_bl_aes_128_ecb_encode(jry_bl_aes_128_key *w,const jry_bl_string *in,jry_bl_string *out)
 {
 	if(w==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);			
-	jry_bl_uint8 s[16];
-	out=jry_bl_string_extend(out,jry_bl_string_get_length(in)+16);
-	jry_bl_string_size_type i=0;
-	for(jry_bl_string_size_type len=(jry_bl_string_get_length(in)>>4)<<4;i<len;i+=16)
-		__jry_bl_aes_128_encode_16(w,jry_bl_string_get_chars(in)+i,jry_bl_string_get_chars(out)+jry_bl_string_get_length(out)),jry_bl_string_set_length(out,jry_bl_string_get_length(out)+16);
-	for(jry_bl_uint8 j=0,x=((jry_bl_string_get_length(in)-i)==0?16:(16-(jry_bl_string_get_length(in)&15)));j<16;s[j]=x,++j);
-	for(jry_bl_uint8 j=0;i<jry_bl_string_get_length(in);s[j]=jry_bl_string_get_force(in,i),++i,++j);
-	__jry_bl_aes_128_encode_16(w,s,jry_bl_string_get_chars(out)+jry_bl_string_get_length(out)),jry_bl_string_set_length(out,jry_bl_string_get_length(out)+16);
+	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	jry_bl_string_size_type i=0,len=jry_bl_string_get_length_force(in_);
+	out=jry_bl_string_extend(out,len+16);
+	jry_bl_string *out_=jry_bl_refer_pull(out);	
+	jry_bl_uint8 tmp[16],*sin=jry_bl_string_get_chars_force(in_),*sout=jry_bl_string_get_chars_force(out_);
+	for(jry_bl_string_size_type n=(len>>4)<<4;i<n;i+=16)
+		__jry_bl_aes_128_encode_16(w,sin+i,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
+	for(jry_bl_uint8 j=0,x=((len-i)==0?16:(16-(len&15)));j<16;tmp[j]=x,++j);
+	for(jry_bl_uint8 j=0;i<len;tmp[j]=jry_bl_string_get_force(in_,i),++i,++j);
+	__jry_bl_aes_128_encode_16(w,tmp,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	return out;
 }
 jry_bl_string * jry_bl_aes_128_ecb_decode(jry_bl_aes_128_key *w,const jry_bl_string *in,jry_bl_string *out)
 {
-	if((*w)==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);			
-	out=jry_bl_string_extend(out,jry_bl_string_get_length(in));
-	for(jry_bl_string_size_type i=0,len=jry_bl_string_get_length(in);i<len;i+=16)
-		__jry_bl_aes_128_decode_16(w,jry_bl_string_get_chars(in)+i,jry_bl_string_get_chars(out)+jry_bl_string_get_length(out)),jry_bl_string_set_length(out,jry_bl_string_get_length(out)+16);
-	jry_bl_string_set_length(out,jry_bl_string_get_length(out)-jry_bl_string_get_chars(out)[jry_bl_string_get_length(out)-1]);
+	if((*w)==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	jry_bl_string_size_type len=jry_bl_string_get_length_force(in_);
+	out=jry_bl_string_extend(out,len);
+	jry_bl_string *out_=jry_bl_refer_pull(out);	
+	jry_bl_uint8 *sin=jry_bl_string_get_chars_force(in_),*sout=jry_bl_string_get_chars_force(out_);
+	for(jry_bl_string_size_type i=0;i<len;i+=16)
+		__jry_bl_aes_128_decode_16(w,sin+i,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
+	jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)-sout[jry_bl_string_get_length_force(out_)-1]);
 	return out;
 }
 #if JRY_BL_STREAM_ENABLE==1
@@ -264,36 +270,42 @@ void jry_bl_aes_128_ecb_decode_stream_operator(jry_bl_stream* this,jry_bl_uint8 
 #if JRY_BL_AES_128_CBC_ENABLE==1
 jry_bl_string * jry_bl_aes_128_cbc_encode(jry_bl_aes_128_key *w,jry_bl_uint8 * vi,const jry_bl_string *in,jry_bl_string *out)
 {
-	if(w==NULL||vi==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);		
-	jry_bl_uint8 s[16],*vii=vi;
-	out=jry_bl_string_extend(out,jry_bl_string_get_length(in)+16);
-	for(jry_bl_string_size_type i=0,len=jry_bl_string_get_length(in);i<len;i+=16)
+	if(w==NULL||vi==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	jry_bl_string_size_type len=jry_bl_string_get_length_force(in_);
+	out=jry_bl_string_extend(out,len+16);
+	jry_bl_string *out_=jry_bl_refer_pull(out);	
+	jry_bl_uint8 s[16],*vii=vi,*sout=jry_bl_string_get_chars_force(out_);
+	for(jry_bl_string_size_type i=0;i<len;i+=16)
 	{
 		for(jry_bl_uint8 j=0;j<16;j++)
-			s[j]=((i+j>=len)?(16-(len&15)):(jry_bl_string_get_force(in,i+j)))^vii[j];
-		vii=jry_bl_string_get_chars(out)+jry_bl_string_get_length(out);
-		__jry_bl_aes_128_encode_16(w,s,jry_bl_string_get_chars(out)+jry_bl_string_get_length(out)),jry_bl_string_set_length(out,jry_bl_string_get_length(out)+16);
+			s[j]=((i+j>=len)?(16-(len&15)):(jry_bl_string_get_force(in_,i+j)))^vii[j];
+		vii=sout+jry_bl_string_get_length_force(out_);
+		__jry_bl_aes_128_encode_16(w,s,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	}
-	if(jry_bl_string_get_length(in)%16==0)
+	if(len%16==0)
 	{
 		for(jry_bl_uint8 j=0;j<16;s[j]=16^vii[j],j++);
-		__jry_bl_aes_128_encode_16(w,s,jry_bl_string_get_chars(out)+jry_bl_string_get_length(out)),jry_bl_string_set_length(out,jry_bl_string_get_length(out)+16);
+		__jry_bl_aes_128_encode_16(w,s,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	}
 	return out;	
 }
 jry_bl_string * jry_bl_aes_128_cbc_decode(jry_bl_aes_128_key *w,jry_bl_uint8 * vi,const jry_bl_string *in,jry_bl_string *out)
 {
 	if(w==NULL||vi==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);		
-	jry_bl_uint8 *vii=vi;
-	out=jry_bl_string_extend(out,jry_bl_string_get_length(in));
-	for(jry_bl_string_size_type i=0,len=jry_bl_string_get_length(in);i<len;i+=16)
+	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	jry_bl_string_size_type len=jry_bl_string_get_length_force(in_);
+	out=jry_bl_string_extend(out,len);
+	jry_bl_string *out_=jry_bl_refer_pull(out);	
+	jry_bl_uint8 *vii=vi,*sin=jry_bl_string_get_chars_force(in_),*sout=jry_bl_string_get_chars_force(out_);
+	for(jry_bl_string_size_type i=0;i<len;i+=16)
 	{
-		__jry_bl_aes_128_decode_16(w,jry_bl_string_get_chars(in)+i,jry_bl_string_get_chars(out)+jry_bl_string_get_length(out));
-		for(jry_bl_uint8 j=0;j<16;jry_bl_string_get_chars(out)[j+jry_bl_string_get_length(out)]^=vii[j],++j);
-		vii=jry_bl_string_get_chars(in)+i;
-		jry_bl_string_set_length(out,jry_bl_string_get_length(out)+16);
+		__jry_bl_aes_128_decode_16(w,sin+i,sout+jry_bl_string_get_length_force(out_));
+		for(jry_bl_uint8 j=0;j<16;sout[j+jry_bl_string_get_length_force(out_)]^=vii[j],++j);
+		vii=sin+i;
+		jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	}
-	jry_bl_string_set_length(out,jry_bl_string_get_length(out)-jry_bl_string_get_chars(out)[jry_bl_string_get_length(out)-1]);
+	jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)-sout[jry_bl_string_get_length_force(out_)-1]);
 	return out;	
 }
 #if JRY_BL_STREAM_ENABLE==1

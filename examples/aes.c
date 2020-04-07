@@ -8,7 +8,6 @@ int main()
 
 	jry_bl_string *s1=jry_bl_string_new(),*s2=NULL,*s3=NULL,*s4=NULL,*s5=NULL;
 	s1=jry_bl_string_add_chars(s1,"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
-
 	s2=jry_bl_aes_128_ecb_encode(key,s1,NULL);
 	s4=jry_bl_base64_encode(s2,NULL);	
 	s3=jry_bl_aes_128_ecb_decode(key,s2,NULL);
