@@ -30,8 +30,9 @@ void __jry_bl_sha1_process(jry_bl_uint32 hb[5],jry_bl_uint32 *mbc,jry_bl_uint8 m
 jry_bl_string* jry_bl_sha1(const jry_bl_string* this,jry_bl_string* out)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string_size_type	size=jry_bl_string_get_length(this);
-	jry_bl_uint8 			*input=jry_bl_string_get_chars(this),mb[64];
+	const jry_bl_string *this_=jry_bl_refer_pull(this);	
+	jry_bl_string_size_type	size=jry_bl_string_get_length(this_);
+	jry_bl_uint8 			*input=jry_bl_string_get_chars(this_),mb[64];
 	jry_bl_uint32			hb[5]={0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0},mbc=0,ll=0,lh=0;
 	out=jry_bl_string_extend(out,40);
 	while(size--)
