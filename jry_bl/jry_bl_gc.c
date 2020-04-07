@@ -9,5 +9,21 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_gc.h"
 #if JRY_BL_GC_ENABLE==1
-
+void * jry_bl_refer(void *ptr)
+{
+	if(ptr==NULL||*((jry_bl_reference**)(ptr))==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	if(jry_bl_gc_is_ref(*((jry_bl_reference**)(ptr))))
+	{
+		jry_bl_gc_plus(*((jry_bl_reference**)(ptr)));		
+		return *((jry_bl_reference**)(ptr));
+	}
+	jry_bl_reference *this=jry_bl_malloc((sizeof(jry_bl_reference)));
+	jry_bl_gc_init(this);
+	jry_bl_gc_plus(this);//增加引用计数
+	jry_bl_gc_plus(this);//增加引用计数
+	jry_bl_gc_set_ref(this);
+	this->ptr=*((jry_bl_reference**)(ptr));
+	(*((jry_bl_reference**)(ptr)))=this;
+	return this;
+}
 #endif

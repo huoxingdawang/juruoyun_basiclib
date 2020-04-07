@@ -13,19 +13,30 @@
 #if JRY_BL_GC_ENABLE==1
 #include "jry_bl_ying.h"
 typedef jry_bl_uint32 jry_bl_gc;
+typedef struct
+{
+	jry_bl_gc gc;
+	void * ptr;
+}jry_bl_reference;
+void * jry_bl_refer(void *ptr);
 #define	jry_bl_gc_init(x)				((x)->gc=0)
-#define	jry_bl_gc_plus(x)				((x)->gc+=1)
-#define	jry_bl_gc_minus(x)				((x)->gc-=1)
-#define	jry_bl_gc_reference_cnt(x)		(((x)->gc))
+#define	jry_bl_gc_plus(x)				((x)->gc+=2)
+#define	jry_bl_gc_minus(x)				((x)->gc-=2)
+#define	jry_bl_gc_reference_cnt(x)		(((x)->gc)>>1)
 
+#define	jry_bl_gc_set_ref(x)			((x)->gc|=0X01)
+#define	jry_bl_gc_reset_ref(x)			((x)->gc&=(-2))
+#define	jry_bl_gc_is_ref(x)				(((x)->gc)&0X01)
+
+#define jry_bl_refer_pull(x)			((jry_bl_gc_is_ref(x))?(((const jry_bl_reference*)x)->ptr):x)
 
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_stream.h"
-#define jry_bl_gc_view(x)	jry_bl_stream_push_chars(&jry_bl_stream_stdout,#x " @ "__FILE__" "),\
-							jry_bl_stream_push_uint64(&jry_bl_stream_stdout,__LINE__),\
-							jry_bl_stream_push_chars(&jry_bl_stream_stdout,"\tref_cnt:"),\
-							jry_bl_stream_push_uint64(&jry_bl_stream_stdout,jry_bl_gc_reference_cnt(x)),\
-							jry_bl_stream_push_char(&jry_bl_stream_stdout,'\n'),jry_bl_stream_do(&jry_bl_stream_stdout,1)
+#define jry_bl_gc_view(x)	jry_bl_stream_push_chars(jry_bl_stream_stdout,#x " @ "__FILE__" "),\
+							jry_bl_stream_push_uint64(jry_bl_stream_stdout,__LINE__),\
+							jry_bl_stream_push_chars(jry_bl_stream_stdout,"\tref_cnt:"),\
+							jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_gc_reference_cnt(x)),\
+							jry_bl_stream_push_char(jry_bl_stream_stdout,'\n'),jry_bl_stream_do(jry_bl_stream_stdout,1)
 #endif
 
 

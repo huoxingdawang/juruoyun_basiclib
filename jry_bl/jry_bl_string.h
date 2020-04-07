@@ -36,12 +36,15 @@ jry_bl_string *			jry_bl_string_copy									(jry_bl_string *that);
 jry_bl_string *			jry_bl_string_equal									(jry_bl_string *this,jry_bl_string *that);
 
 jry_bl_uint32			jry_bl_string_hash									(jry_bl_string *this);
-#define					jry_bl_string_get_length(a)							(a==NULL?0:(a)->len)
-#define					jry_bl_string_set_length(a,l)						((a)->len=l)
-#define					jry_bl_string_get_chars(this)						((this)->s)
-#define					jry_bl_string_get_size(this) 						((this)->size)
-#define					jry_bl_string_get_force(this,i)						((this)->s[(i)])
-#define					jry_bl_string_get(this,i)							(((i)<0||(i)>=(this)->len)?0:jry_bl_string_get_force(this,i))
+#define					jry_bl_string_get_length(a)							(a==NULL?0:((jry_bl_string*)jry_bl_refer_pull(a))->len)
+#define					jry_bl_string_get_length_force(a)					((a)->len)
+#define					jry_bl_string_set_length(a,l)						(((jry_bl_string*)jry_bl_refer_pull(a))->len=l)
+#define					jry_bl_string_set_length_force(a,l)					((a)->len=l)
+#define					jry_bl_string_get_chars(a)							(((jry_bl_string*)jry_bl_refer_pull(a))->s)
+#define					jry_bl_string_get_chars_force(a)					((a)->s)
+#define					jry_bl_string_get_size(a) 							(((jry_bl_string*)jry_bl_refer_pull(a))->size)
+#define					jry_bl_string_get_force(a,i)						((a)->s[(i)])
+#define					jry_bl_string_get(a,i)								(((i)<0||(i)>=jry_bl_string_get_length(a))?0:jry_bl_string_get_force(((jry_bl_string*)jry_bl_refer_pull(a)),i))
 
 #define					jry_bl_string_get_int64(this)						jry_bl_string_get_int64_start_v(this,0)
 jry_bl_int64			jry_bl_string_get_int64_start						(const jry_bl_string *this,jry_bl_string_size_type *start);
@@ -57,13 +60,13 @@ jry_bl_uint64			jry_bl_string_get_hex_start							(const jry_bl_string *this,jry
 jry_bl_uint64			jry_bl_string_get_hex_start_v						(const jry_bl_string *this,jry_bl_string_size_type start);
 
 
-#define					jry_bl_string_set_force(this,i,c)					(((this)->s[(i)]=c))
-#define					jry_bl_string_set(this,i,c)							((i<0?0:(this=jry_bl_string_extend_to(this,i),jry_bl_string_set_force(this,i,c))),this)
-#define					jry_bl_string_set_tail0(this)						(this=jry_bl_string_extend_to(this,jry_bl_string_get_length(this)+1),jry_bl_string_set_force(this,jry_bl_string_get_length(this),0),this)
+#define					jry_bl_string_set_force(a,i,c)						(((a)->s[(i)]=c))
+#define					jry_bl_string_set(a,i,c)							((i<0?0:(a=jry_bl_string_extend_to(a,i),jry_bl_string_set_force(((jry_bl_string*)jry_bl_refer_pull(a)),i,c))),a)
+#define					jry_bl_string_set_tail0(a)							(a=jry_bl_string_extend_to(a,jry_bl_string_get_length(a)+1),jry_bl_string_set_force(((jry_bl_string*)jry_bl_refer_pull(a)),jry_bl_string_get_length(a),0),a)
 #define					jry_bl_string_add_chars(x,y)						jry_bl_string_add_chars_length(x,y,jry_bl_strlen(y))
 jry_bl_string *			jry_bl_string_add_chars_length						(jry_bl_string *this,unsigned char *in,jry_bl_string_size_type len);
-jry_bl_string *			jry_bl_string_add_string							(jry_bl_string *this,jry_bl_string *in);
-#define					jry_bl_string_add_char(this,in)						(this=jry_bl_string_extend(this,1),this->s[this->len++]=in,this)
+jry_bl_string *			jry_bl_string_add_string							(jry_bl_string *this,const jry_bl_string *in);
+jry_bl_string *			jry_bl_string_add_char								(jry_bl_string *this,const char c);
 #define					jry_bl_string_add_char_force(this,in)				(this->s[this->len++]=(in))
 #define					jry_bl_string_add_int64(this,in)					jry_bl_string_add_int64_length(this,in,0,0)
 jry_bl_string *			jry_bl_string_add_int64_length						(jry_bl_string *this,jry_bl_int64 in,jry_bl_uint8 len,char c);
@@ -75,7 +78,7 @@ jry_bl_string *			jry_bl_string_add_unicode_as_utf8					(jry_bl_string *this,uns
 jry_bl_string *			jry_bl_string_add_hex								(jry_bl_string *this,jry_bl_uint64 in);
 jry_bl_string *			jry_bl_string_add_hex_8bits							(jry_bl_string *this,jry_bl_uint8 in);
 #define					jry_bl_string_delete_1_force(this)					(((this->len)>0?(--(this)->len):(0)))
-#define					jry_bl_string_delete_1(this)						(this=jry_bl_string_extend_to(this,0),jry_bl_string_delete_1_force(this),this)
+#define					jry_bl_string_delete_1(this)						(this=jry_bl_string_extend_to(this,0),jry_bl_string_delete_1_force(((jry_bl_string*)jry_bl_refer_pull(this))),this)
 
 char					jry_bl_string_space_ship							(const jry_bl_string *this,const jry_bl_string *that);
 #define					jry_bl_string_if_big(x,y)							(jry_bl_string_space_ship(x,y)>0)
