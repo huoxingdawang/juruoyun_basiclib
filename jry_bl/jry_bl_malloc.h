@@ -18,7 +18,7 @@ void					jry_bl_malloc_stop			();
 void*					jry_bl_malloc				(jry_bl_malloc_size_type size);
 void*					jry_bl_realloc				(void* ptr,jry_bl_malloc_size_type size);
 void					jry_bl_free					(void* p);
-jry_bl_malloc_size_type	jry_bl_malloc_size			(void* ptr);
+jry_bl_malloc_size_type	jry_bl_malloc_size			(const void* ptr);
 void					jry_bl_memory_copy			(void *to,const void * from,jry_bl_malloc_size_type len);
 void					jry_bl_memory_copy_reverse	(void *to,const void * from,jry_bl_malloc_size_type len,jry_bl_malloc_size_type size);
 #if JRY_BL_MALLOC_FAST==1

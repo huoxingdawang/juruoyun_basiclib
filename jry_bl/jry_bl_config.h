@@ -28,8 +28,8 @@
 #define JRY_BL_MD5_ENABLE			1	//need ying exception bitset malloc string
 #define JRY_BL_RAND_ENABLE			1	//need 
 #define JRY_BL_SHA1_ENABLE			1	//need ying exception bitset malloc string
-#define JRY_BL_STREAM_ENABLE		1	//need ying exception bitset malloc
-#define JRY_BL_STRING_ENABLE		1	//need ying exception bitset malloc
+#define JRY_BL_STREAM_ENABLE		1	//need ying exception bitset malloc gc
+#define JRY_BL_STRING_ENABLE		1	//need ying exception bitset malloc gc
 #define JRY_BL_TIME_ENABLE			0	//developing N/A
 #define JRY_BL_VAR_ENABLE			0	//need ying exception bitset malloc	
 #define JRY_BL_YING_ENABLE			1	//need 

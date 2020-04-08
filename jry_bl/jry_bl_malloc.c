@@ -84,7 +84,7 @@ void jry_bl_malloc_stop()
 #endif
 #if JRY_BL_MALLOC_FAST==1
 #if JRY_BL_STREAM_ENABLE==1
-	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Memory            :");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.size-JRY_BL_STREAM_EXCEED_LENGTH-(sizeof(jry_bl_stream)));jry_bl_stream_push_chars(jry_bl_stream_stdout,"B\n");	
+	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Memory            :");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.size-jry_bl_malloc_size(jry_bl_stream_stdout));jry_bl_stream_push_chars(jry_bl_stream_stdout,"B\n");	
 	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Max memory        :");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.peak);jry_bl_stream_push_chars(jry_bl_stream_stdout,"B(");jry_bl_stream_push_double(jry_bl_stream_stdout,(double)jry_bl_malloc_heap.peak/1048576);jry_bl_stream_push_chars(jry_bl_stream_stdout,"M)\n");	
 	jry_bl_stream_push_chars(jry_bl_stream_stdout,"Applied max memory:");jry_bl_stream_push_uint64(jry_bl_stream_stdout,jry_bl_malloc_heap.applied_peak>>20);jry_bl_stream_push_chars(jry_bl_stream_stdout,"M\n");	
 	jry_bl_stream_do(jry_bl_stream_stdout,1);
@@ -249,67 +249,6 @@ void __jry_bl_free_cached_chunks()
 	for(void*ptr;jry_bl_malloc_heap.cached_chunk;ptr=jry_bl_malloc_heap.cached_chunk->next,__jry_bl_free_aligned(jry_bl_malloc_heap.cached_chunk,0X200000),jry_bl_malloc_heap.cached_chunk=ptr,jry_bl_malloc_heap.applied_size-=0X200000);
 	jry_bl_malloc_heap.cached_chunk_count=0;
 }
-/*
-#define	slm(a,b)	(((b)>=64)?0:((a)<<(b)))
-void jry_bl_bitset_set(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt)
-{
-	jry_bl_uint8 start_page=(i>>jry_bl_malloc_fmap_2bits);
-	jry_bl_uint8 end_page=((cnt+i-1)>>jry_bl_malloc_fmap_2bits);
-	cnt=cnt+i-1-(end_page<<jry_bl_malloc_fmap_2bits);
-	i-=(start_page<<jry_bl_malloc_fmap_2bits);
-	if(start_page==end_page)
-		{fmap[start_page]|=slm(slm(1LL,(cnt+1-i))-1,(jry_bl_bitset_bits-cnt-1));return;}
-	fmap[start_page]|=(slm(1LL,(jry_bl_bitset_bits-i))-1);
-	++start_page;
-	while(start_page<end_page)fmap[start_page]=-1,++start_page;
-	fmap[end_page]|=slm((slm(1LL,(cnt+1))-1),(jry_bl_bitset_bits-cnt-1));	
-}
-void jry_bl_bitset_reset(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i,jry_bl_uint16 cnt)
-{
-	jry_bl_uint8 start_page=(i>>jry_bl_malloc_fmap_2bits);
-	jry_bl_uint8 end_page=((cnt+i-1)>>jry_bl_malloc_fmap_2bits);
-	cnt=cnt+i-1-(end_page<<jry_bl_malloc_fmap_2bits);
-	i-=(start_page<<jry_bl_malloc_fmap_2bits);
-	if(start_page==end_page)
-		{fmap[start_page]&=~slm(slm(1LL,(cnt+1-i))-1,(jry_bl_bitset_bits-cnt-1));return;}
-	fmap[start_page]&=~(slm(1LL,(jry_bl_bitset_bits-i))-1);
-	++start_page;
-	while(start_page<end_page)fmap[start_page]=0,++start_page;
-	fmap[end_page]&=~slm((slm(1LL,(cnt+1))-1),(jry_bl_bitset_bits-cnt-1));	
-}
-jry_bl_uint16 jry_bl_bitset_find0(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i)
-{
-	jry_bl_uint8 p=(i>>jry_bl_malloc_fmap_2bits);
-	i-=(p<<jry_bl_malloc_fmap_2bits);	
-	jry_bl_malloc_fmap_type tmp;
-	tmp=fmap[p];
-	tmp|=slm((slm(1LL,(i))-1),(jry_bl_bitset_bits-i));
-	if(tmp!=-1)
-		return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit0(tmp)-1;
-	++p;
-	while(fmap[p]==-1&&p<=jry_bl_malloc_fmap_len)++p;
-	if(p==(jry_bl_malloc_fmap_len+1))
-		return 512;
-	return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit0(fmap[p])-1;
-}
-jry_bl_uint16 jry_bl_bitset_find1(jry_bl_malloc_fmap_type fmap[jry_bl_malloc_fmap_len],jry_bl_uint16 i)
-{
-	jry_bl_uint8 p=(i>>jry_bl_malloc_fmap_2bits);
-	i-=(p<<jry_bl_malloc_fmap_2bits);	
-	jry_bl_malloc_fmap_type tmp;
-	tmp=fmap[p];
-	tmp&=(slm(1LL,(jry_bl_bitset_bits-i))-1);
-	
-	if(tmp!=0)
-		return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit(tmp)-1;
-	++p;
-	while(fmap[p]==0&&p<=jry_bl_malloc_fmap_len)++p;	
-	if(p==(jry_bl_malloc_fmap_len+1))
-		return 512;
-	return ((jry_bl_uint16)p<<jry_bl_malloc_fmap_2bits)+jry_bl_bitset_bits-jry_bl_highbit(fmap[p])-1;
-}
-#undef slm
-*/
 void *__jry_bl_malloc_page(jry_bl_uint16 nums,jry_bl_uint8 type)//type为0用于large，type为1用于small
 {
 	void * ptr=NULL;
@@ -511,7 +450,7 @@ inline void* jry_bl_malloc(jry_bl_malloc_size_type size)
 	return ptr;
 #endif	
 }
-jry_bl_malloc_size_type jry_bl_malloc_size(void* ptr)
+jry_bl_malloc_size_type jry_bl_malloc_size(const void* ptr)
 {
 	if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 #if JRY_BL_MALLOC_FAST==1
