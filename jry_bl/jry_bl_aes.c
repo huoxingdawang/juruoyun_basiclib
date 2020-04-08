@@ -51,8 +51,8 @@ static const jry_bl_uint8 __jry_bl_aes_invsbox[] =
 	0xa0,0xe0,0x3b,0x4d,0xae,0x2a,0xf5,0xb0,0xc8,0xeb,0xbb,0x3c,0x83,0x53,0x99,0x61, 
 	0x17,0x2b,0x04,0x7e,0xba,0x77,0xd6,0x26,0xe1,0x69,0x14,0x63,0x55,0x21,0x0c,0x7d 
 };
-void			__jry_bl_aes_128_encode_16		(jry_bl_aes_128_key *w,jry_bl_uint8* a,jry_bl_uint8* b);
-void			__jry_bl_aes_128_decode_16		(jry_bl_aes_128_key *w,jry_bl_uint8* a,jry_bl_uint8 *b);
+void			__jry_bl_aes_128_encode_16		(__jry_bl_aes_128_ex_key *w,jry_bl_uint8* a,jry_bl_uint8* b);
+void			__jry_bl_aes_128_decode_16		(__jry_bl_aes_128_ex_key *w,jry_bl_uint8* a,jry_bl_uint8 *b);
 #if JRY_BL_AES_128_FFMUL_TABLE_ENABLE ==1
 #define ffmul(x,y)	__jry_bl_aes_128_ffmul_##x[y]
 static const jry_bl_uint8	__jry_bl_aes_128_ffmul_0x02[] ={0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130,132,134,136,138,140,142,144,146,148,150,152,154,156,158,160,162,164,166,168,170,172,174,176,178,180,182,184,186,188,190,192,194,196,198,200,202,204,206,208,210,212,214,216,218,220,222,224,226,228,230,232,234,236,238,240,242,244,246,248,250,252,254,27,25,31,29,19,17,23,21,11,9,15,13,3,1,7,5,59,57,63,61,51,49,55,53,43,41,47,45,35,33,39,37,91,89,95,93,83,81,87,85,75,73,79,77,67,65,71,69,123,121,127,125,115,113,119,117,107,105,111,109,99,97,103,101,155,153,159,157,147,145,151,149,139,137,143,141,131,129,135,133,187,185,191,189,179,177,183,181,171,169,175,173,163,161,167,165,219,217,223,221,211,209,215,213,203,201,207,205,195,193,199,197,251,249,255,253,243,241,247,245,235,233,239,237,227,225,231,229};
@@ -83,16 +83,18 @@ inline jry_bl_uint8 __jry_bl_aes_128_ffmul(jry_bl_uint8 a,jry_bl_uint8 b)
 jry_bl_aes_128_key* jry_bl_aes_128_extend_key(jry_bl_uint8* key)
 {
 	jry_bl_aes_128_key *w=jry_bl_malloc(sizeof(jry_bl_aes_128_key));
+	jry_bl_gc_init(w);
+	jry_bl_gc_plus(w);	
 	jry_bl_uint8 rc[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36};
 	for(jry_bl_uint8 r=0;r<4;r++)
 		for(jry_bl_uint8 c=0;c<4;c++)
-			(*w)[0][r][c]=key[r+c*4];
+			w->key[0][r][c]=key[r+c*4];
 	for(jry_bl_uint8 i=1;i<=10;i++)
 		for(jry_bl_uint8 j=0;j<4;j++)
 		{
 			jry_bl_uint8 t[4];
 			for(jry_bl_uint8 r=0;r<4;r++)
-				t[r]=j?(*w)[i][r][j-1]:(*w)[i-1][r][3];
+				t[r]=j?w->key[i][r][j-1]:w->key[i-1][r][3];
 			if(j==0)
 			{
 				jry_bl_uint8 temp=t[0];
@@ -102,16 +104,24 @@ jry_bl_aes_128_key* jry_bl_aes_128_extend_key(jry_bl_uint8* key)
 				t[0]^=rc[i-1];
 			}
 			for(jry_bl_uint8 r=0;r<4;r++)
-				(*w)[i][r][j]=(*w)[i-1][r][j]^t[r];
+				w->key[i][r][j]=w->key[i-1][r][j]^t[r];
 		}
 	return w;
 }
+inline jry_bl_aes_128_key *jry_bl_aes_128_copy_key(jry_bl_aes_128_key *that)
+{
+	if(that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	jry_bl_gc_plus(that);
+	return that;
+}
 inline jry_bl_aes_128_key*	jry_bl_aes_128_free_key(jry_bl_aes_128_key* w)
 {
-	jry_bl_free(w);
+	jry_bl_gc_minus(w);
+	if(!jry_bl_gc_reference_cnt(w))
+		jry_bl_free(w);
 	return NULL;
 }
-inline void __jry_bl_aes_128_encode_16(jry_bl_aes_128_key *w,jry_bl_uint8* a,jry_bl_uint8* b)
+inline void __jry_bl_aes_128_encode_16(__jry_bl_aes_128_ex_key *w,jry_bl_uint8* a,jry_bl_uint8* b)
 {
 	jry_bl_uint8 state[4][4],state2[4][4];
 	state[0][0]=a[0]^(*w)[0][0][0],state[0][1]=a[4]^(*w)[0][0][1],state[0][2]=a[ 8]^(*w)[0][0][2],state[0][3]=a[12]^(*w)[0][0][3];
@@ -150,7 +160,7 @@ inline void __jry_bl_aes_128_encode_16(jry_bl_aes_128_key *w,jry_bl_uint8* a,jry
 	b[2]=__jry_bl_aes_sbox[state[2][2]]^(*w)[10][2][0],b[6]=__jry_bl_aes_sbox[state[2][3]]^(*w)[10][2][1],b[10]=__jry_bl_aes_sbox[state[2][0]]^(*w)[10][2][2],b[14]=__jry_bl_aes_sbox[state[2][1]]^(*w)[10][2][3];
 	b[3]=__jry_bl_aes_sbox[state[3][3]]^(*w)[10][3][0],b[7]=__jry_bl_aes_sbox[state[3][0]]^(*w)[10][3][1],b[11]=__jry_bl_aes_sbox[state[3][1]]^(*w)[10][3][2],b[15]=__jry_bl_aes_sbox[state[3][2]]^(*w)[10][3][3];
 }
-inline void __jry_bl_aes_128_decode_16(jry_bl_aes_128_key *w,jry_bl_uint8* a,jry_bl_uint8 *b)
+inline void __jry_bl_aes_128_decode_16(__jry_bl_aes_128_ex_key *w,jry_bl_uint8* a,jry_bl_uint8 *b)
 {
 	jry_bl_uint8 state[4][4],state2[4][4];
 	state[0][0]=a[0]^(*w)[10][0][0],state[0][1]=a[4]^(*w)[10][0][1],state[0][2]=a[ 8]^(*w)[10][0][2],state[0][3]=a[12]^(*w)[10][0][3];
@@ -193,78 +203,88 @@ inline void __jry_bl_aes_128_decode_16(jry_bl_aes_128_key *w,jry_bl_uint8* a,jry
 jry_bl_string * jry_bl_aes_128_ecb_encode(jry_bl_aes_128_key *w,const jry_bl_string *in,jry_bl_string *out)
 {
 	if(w==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);			
-	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	const jry_bl_string *in_=jry_bl_refer_pull(in);
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(w))->key);	
 	jry_bl_string_size_type i=0,len=jry_bl_string_get_length_force(in_);
 	out=jry_bl_string_extend(out,len+16);
 	jry_bl_string *out_=jry_bl_refer_pull(out);	
 	jry_bl_uint8 tmp[16],*sin=jry_bl_string_get_chars_force(in_),*sout=jry_bl_string_get_chars_force(out_);
 	for(jry_bl_string_size_type n=(len>>4)<<4;i<n;i+=16)
-		__jry_bl_aes_128_encode_16(w,sin+i,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
+		__jry_bl_aes_128_encode_16(key,sin+i,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	for(jry_bl_uint8 j=0,x=((len-i)==0?16:(16-(len&15)));j<16;tmp[j]=x,++j);
 	for(jry_bl_uint8 j=0;i<len;tmp[j]=jry_bl_string_get_force(in_,i),++i,++j);
-	__jry_bl_aes_128_encode_16(w,tmp,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
+	__jry_bl_aes_128_encode_16(key,tmp,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	return out;
 }
 jry_bl_string * jry_bl_aes_128_ecb_decode(jry_bl_aes_128_key *w,const jry_bl_string *in,jry_bl_string *out)
 {
-	if((*w)==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	if(w==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
 	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(w))->key);	
 	jry_bl_string_size_type len=jry_bl_string_get_length_force(in_);
 	out=jry_bl_string_extend(out,len);
 	jry_bl_string *out_=jry_bl_refer_pull(out);	
 	jry_bl_uint8 *sin=jry_bl_string_get_chars_force(in_),*sout=jry_bl_string_get_chars_force(out_);
 	for(jry_bl_string_size_type i=0;i<len;i+=16)
-		__jry_bl_aes_128_decode_16(w,sin+i,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
+		__jry_bl_aes_128_decode_16(key,sin+i,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)-sout[jry_bl_string_get_length_force(out_)-1]);
 	return out;
 }
 #if JRY_BL_STREAM_ENABLE==1
-void jry_bl_aes_128_ecb_encode_stream_operator(jry_bl_stream* this,jry_bl_uint8 flags)
+void __jry_bl_aes_128_ecb_seo(jry_bl_stream* this,jry_bl_uint8 flags)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
-	if(this->nxt!=NULL)
+	this=jry_bl_refer_pull(this);
+	jry_bl_stream *nxt=(this->nxt!=NULL?jry_bl_refer_pull(this->nxt):NULL);
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(this->data))->key);
+	if(nxt!=NULL)
 	{
 		jry_bl_uint16 i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
-				if((this->nxt->en+16)>this->nxt->size)	
-					jry_bl_stream_do(this->nxt,0);
-				__jry_bl_aes_128_encode_16(this->data,this->buf+i,this->nxt->buf+this->nxt->en),this->nxt->en+=16,i+=16;
+				if((nxt->en+16)>nxt->size)	
+					jry_bl_stream_do(nxt,0);
+				__jry_bl_aes_128_encode_16(key,this->buf+i,nxt->buf+nxt->en),nxt->en+=16,i+=16;
 			}
 		if((flags&jry_bl_stream_force))
 		{
-			if((this->nxt->en+16)>this->nxt->size)
-				jry_bl_stream_do(this->nxt,0);
+			if((nxt->en+16)>nxt->size)
+				jry_bl_stream_do(nxt,0);
 			jry_bl_uint8 s[16];
 			for(jry_bl_uint8 j=0,x=(this->en==0?16:(16-(this->en&15)));j<16;s[j]=x,++j);
 			for(jry_bl_uint8 j=0;i<this->en;s[j]=this->buf[i],++i,++j);
-			__jry_bl_aes_128_encode_16(this->data,s,this->nxt->buf+this->nxt->en),this->nxt->en+=16,i=this->en;
-			jry_bl_stream_do(this->nxt,flags);
+			__jry_bl_aes_128_encode_16(key,s,nxt->buf+nxt->en),nxt->en+=16,i=this->en;
+			jry_bl_stream_do(nxt,flags);
 		}
 		jry_bl_memory_copy(this->buf,this->buf+i,this->en-i);
 		this->en=this->en-i;
 	}
 }
-void jry_bl_aes_128_ecb_decode_stream_operator(jry_bl_stream* this,jry_bl_uint8 flags)
+void __jry_bl_aes_128_ecb_sdo(jry_bl_stream* this,jry_bl_uint8 flags)
 {
-	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
-	if(this->nxt!=NULL)
+	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	this=jry_bl_refer_pull(this);
+	jry_bl_stream *nxt=(this->nxt!=NULL?jry_bl_refer_pull(this->nxt):NULL);			
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(this->data))->key);
+	if(nxt!=NULL)
 	{
 		jry_bl_uint16 i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
-				if(this->nxt->en+16>this->nxt->size)	
-					jry_bl_stream_do(this->nxt,0);
-				__jry_bl_aes_128_decode_16(this->data,this->buf+i,this->nxt->buf+this->nxt->en),this->nxt->en+=16,i+=16;
+				if(nxt->en+16>nxt->size)	
+					jry_bl_stream_do(nxt,0);
+				__jry_bl_aes_128_decode_16(key,this->buf+i,nxt->buf+nxt->en),nxt->en+=16,i+=16;
 			}
 		if((flags&jry_bl_stream_force))
-			this->nxt->en-=this->nxt->buf[this->nxt->en-1],jry_bl_stream_do(this->nxt,flags);
+			nxt->en-=nxt->buf[nxt->en-1],jry_bl_stream_do(nxt,flags);
 		jry_bl_memory_copy(this->buf,this->buf+i,this->en-i);
 		this->en=this->en-i;
 	}
 }
+const jry_bl_stream_operater jry_bl_stream_aes_128_ecb_encode_operators={__jry_bl_aes_128_ecb_seo,(void (*)(void *))jry_bl_aes_128_free_key,NULL,NULL};
+const jry_bl_stream_operater jry_bl_stream_aes_128_ecb_decode_operators={__jry_bl_aes_128_ecb_sdo,(void (*)(void *))jry_bl_aes_128_free_key,NULL,NULL};
 #endif
 #endif
 #if JRY_BL_AES_128_CBC_ENABLE==1
@@ -272,6 +292,7 @@ jry_bl_string * jry_bl_aes_128_cbc_encode(jry_bl_aes_128_key *w,jry_bl_uint8 * v
 {
 	if(w==NULL||vi==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(w))->key);	
 	jry_bl_string_size_type len=jry_bl_string_get_length_force(in_);
 	out=jry_bl_string_extend(out,len+16);
 	jry_bl_string *out_=jry_bl_refer_pull(out);	
@@ -281,12 +302,12 @@ jry_bl_string * jry_bl_aes_128_cbc_encode(jry_bl_aes_128_key *w,jry_bl_uint8 * v
 		for(jry_bl_uint8 j=0;j<16;j++)
 			s[j]=((i+j>=len)?(16-(len&15)):(jry_bl_string_get_force(in_,i+j)))^vii[j];
 		vii=sout+jry_bl_string_get_length_force(out_);
-		__jry_bl_aes_128_encode_16(w,s,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
+		__jry_bl_aes_128_encode_16(key,s,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	}
 	if(len%16==0)
 	{
 		for(jry_bl_uint8 j=0;j<16;s[j]=16^vii[j],j++);
-		__jry_bl_aes_128_encode_16(w,s,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
+		__jry_bl_aes_128_encode_16(key,s,sout+jry_bl_string_get_length_force(out_)),jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
 	}
 	return out;	
 }
@@ -294,13 +315,14 @@ jry_bl_string * jry_bl_aes_128_cbc_decode(jry_bl_aes_128_key *w,jry_bl_uint8 * v
 {
 	if(w==NULL||vi==NULL||in==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);		
 	const jry_bl_string *in_=jry_bl_refer_pull(in);		
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(w))->key);		
 	jry_bl_string_size_type len=jry_bl_string_get_length_force(in_);
 	out=jry_bl_string_extend(out,len);
 	jry_bl_string *out_=jry_bl_refer_pull(out);	
 	jry_bl_uint8 *vii=vi,*sin=jry_bl_string_get_chars_force(in_),*sout=jry_bl_string_get_chars_force(out_);
 	for(jry_bl_string_size_type i=0;i<len;i+=16)
 	{
-		__jry_bl_aes_128_decode_16(w,sin+i,sout+jry_bl_string_get_length_force(out_));
+		__jry_bl_aes_128_decode_16(key,sin+i,sout+jry_bl_string_get_length_force(out_));
 		for(jry_bl_uint8 j=0;j<16;sout[j+jry_bl_string_get_length_force(out_)]^=vii[j],++j);
 		vii=sin+i;
 		jry_bl_string_set_length_force(out_,jry_bl_string_get_length_force(out_)+16);
@@ -309,63 +331,71 @@ jry_bl_string * jry_bl_aes_128_cbc_decode(jry_bl_aes_128_key *w,jry_bl_uint8 * v
 	return out;	
 }
 #if JRY_BL_STREAM_ENABLE==1
-void jry_bl_aes_128_cbc_encode_stream_operator(jry_bl_stream* this,jry_bl_uint8 flags)
+void __jry_bl_aes_128_cbc_seo(jry_bl_stream* this,jry_bl_uint8 flags)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	this=jry_bl_refer_pull(this);
+	jry_bl_stream *nxt=(this->nxt!=NULL?jry_bl_refer_pull(this->nxt):NULL);			
 	jry_bl_uint8 *vii=(jry_bl_uint8*)this->tmp;
-	if(this->nxt!=NULL)
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(this->data))->key);
+	if(nxt!=NULL)
 	{
 		jry_bl_uint16 i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 			while(i<len)
 			{
 				for(jry_bl_uint8 j=0;j<16;this->buf[i+j]^=vii[j],++j);
-				__jry_bl_aes_128_encode_16(this->data,this->buf+i,this->nxt->buf+this->nxt->en),this->nxt->en+=16,i+=16;
-				if((this->nxt->en+16)>this->nxt->size)
-					jry_bl_memory_copy(this->buf+this->size,this->nxt->buf+this->nxt->en-16,16),vii=this->buf+this->size,jry_bl_stream_do(this->nxt,0);//备份vi并下推流
+				__jry_bl_aes_128_encode_16(key,this->buf+i,nxt->buf+nxt->en),nxt->en+=16,i+=16;
+				if((nxt->en+16)>nxt->size)
+					jry_bl_memory_copy(this->buf+this->size,nxt->buf+nxt->en-16,16),vii=this->buf+this->size,jry_bl_stream_do(nxt,0);//备份vi并下推流
 				else
-					vii=this->nxt->buf+this->nxt->en-16;
+					vii=nxt->buf+nxt->en-16;
 			}
 		if((flags&jry_bl_stream_force))
 		{
-			if((this->nxt->en+16)>this->nxt->size)
-				jry_bl_memory_copy(this->buf+this->size,this->nxt->buf+this->nxt->en-16,16),vii=this->buf+this->size,jry_bl_stream_do(this->nxt,0);//备份vi并下推流
+			if((nxt->en+16)>nxt->size)
+				jry_bl_memory_copy(this->buf+this->size,nxt->buf+nxt->en-16,16),vii=this->buf+this->size,jry_bl_stream_do(nxt,0);//备份vi并下推流
 			jry_bl_uint8 s[16];
 			for(jry_bl_uint8 j=0,x=(this->en==0?16:(16-(this->en&15)));j<16;s[j]=x,++j);
 			for(jry_bl_uint8 j=0;i<this->en;s[j]=this->buf[i],++i,++j);
 			for(jry_bl_uint8 j=0;j<16;s[j]^=vii[j],++j);
-			__jry_bl_aes_128_encode_16(this->data,s,this->nxt->buf+this->nxt->en),this->nxt->en+=16,i=this->en;
-			jry_bl_stream_do(this->nxt,flags);
+			__jry_bl_aes_128_encode_16(key,s,nxt->buf+nxt->en),nxt->en+=16,i=this->en;
+			jry_bl_stream_do(nxt,flags);
 		}
 		this->tmp=(jry_bl_uint64)vii;
 		jry_bl_memory_copy(this->buf,this->buf+i,this->en-i);
 		this->en=this->en-i;
 	}
 }
-void jry_bl_aes_128_cbc_decode_stream_operator(jry_bl_stream* this,jry_bl_uint8 flags)
+void __jry_bl_aes_128_cbc_sdo(jry_bl_stream* this,jry_bl_uint8 flags)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+	this=jry_bl_refer_pull(this);
+	jry_bl_stream *nxt=(this->nxt!=NULL?jry_bl_refer_pull(this->nxt):NULL);			
 	jry_bl_uint8 *vii=(jry_bl_uint8*)this->tmp;
-	if(this->nxt!=NULL)
+	__jry_bl_aes_128_ex_key *key=&(((jry_bl_aes_128_key*)jry_bl_refer_pull(this->data))->key);
+	if(nxt!=NULL)
 	{
 		jry_bl_uint16 i=0,len=(this->en>>4)<<4;
 		if(len!=0)
 		{
 			while(i<len)
 			{
-				if(this->nxt->en+16>this->nxt->size)jry_bl_stream_do(this->nxt,0);
-				__jry_bl_aes_128_decode_16(this->data,this->buf+i,this->nxt->buf+this->nxt->en);
-				for(jry_bl_uint8 j=0;j<16;this->nxt->buf[this->nxt->en+j]^=vii[j],++j);
-				vii=this->buf+i,this->nxt->en+=16,i+=16;
+				if(nxt->en+16>nxt->size)jry_bl_stream_do(nxt,0);
+				__jry_bl_aes_128_decode_16(key,this->buf+i,nxt->buf+nxt->en);
+				for(jry_bl_uint8 j=0;j<16;nxt->buf[nxt->en+j]^=vii[j],++j);
+				vii=this->buf+i,nxt->en+=16,i+=16;
 			}
 		}
 		if((flags&jry_bl_stream_force))
-			this->nxt->en-=this->nxt->buf[this->nxt->en-1],jry_bl_stream_do(this->nxt,flags);//处理末尾长度，下推流
+			nxt->en-=nxt->buf[nxt->en-1],jry_bl_stream_do(nxt,flags);//处理末尾长度，下推流
 		jry_bl_memory_copy(this->buf+this->size,this->buf+i-16,16);this->tmp=(jry_bl_uint64)this->buf+this->size;//把最后成功解码的16字节拷到最后面做下一次的vi
 		jry_bl_memory_copy(this->buf,this->buf+i,this->en-i);
 		this->en=this->en-i;
 	}
 }
+const jry_bl_stream_operater jry_bl_stream_aes_128_cbc_encode_operators={__jry_bl_aes_128_cbc_seo,(void (*)(void *))jry_bl_aes_128_free_key,NULL,NULL};
+const jry_bl_stream_operater jry_bl_stream_aes_128_cbc_decode_operators={__jry_bl_aes_128_cbc_sdo,(void (*)(void *))jry_bl_aes_128_free_key,NULL,NULL};
 #endif
 #endif
 #undef ffmul
