@@ -18,12 +18,11 @@ jry_bl_string *	jry_bl_base64_decode					(const jry_bl_string *this,jry_bl_strin
 
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_stream.h"
-void			jry_bl_base64_encode_stream_operator	(jry_bl_stream* this,jry_bl_uint8 flags);
-#define			jry_bl_base64_encode_stream_init(a)		jry_bl_stream_init(a,jry_bl_base64_encode_stream_operator,NULL,jry_bl_malloc(JRY_BL_STREAM_EXCEED_LENGTH+8),JRY_BL_STREAM_EXCEED_LENGTH+8)
-#define			jry_bl_base64_encode_stream_free(a)		jry_bl_free((a)->buf),jry_bl_stream_free(a)
-void			jry_bl_base64_decode_stream_operator	(jry_bl_stream* this,jry_bl_uint8 flags);
-#define			jry_bl_base64_decode_stream_init(a)		jry_bl_stream_init(a,jry_bl_base64_decode_stream_operator,NULL,jry_bl_malloc(JRY_BL_STREAM_EXCEED_LENGTH+8),JRY_BL_STREAM_EXCEED_LENGTH+8)
-#define			jry_bl_base64_decode_stream_free(a)		jry_bl_free((a)->buf),jry_bl_stream_free(a)
+extern			const jry_bl_stream_operater jry_bl_stream_base64_encode_operators;
+extern			const jry_bl_stream_operater jry_bl_stream_base64_decode_operators;
+
+#define			jry_bl_base64_encode_stream_init()		jry_bl_stream_new(&jry_bl_stream_base64_encode_operators,NULL,JRY_BL_STREAM_EXCEED_LENGTH+8,NULL)
+#define			jry_bl_base64_decode_stream_init()		jry_bl_stream_new(&jry_bl_stream_base64_decode_operators,NULL,JRY_BL_STREAM_EXCEED_LENGTH+8,NULL)
 
 
 //typedef struct __jry_bl_stream_operater jry_bl_stream_operater;
