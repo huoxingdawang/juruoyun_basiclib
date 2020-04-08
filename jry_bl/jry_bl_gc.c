@@ -26,4 +26,16 @@ void * jry_bl_refer(void *ptr)
 	(*((jry_bl_reference**)(ptr)))=this;
 	return this;
 }
+void * jry_bl_derefer(void *ptr)
+{
+	if(ptr==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
+	if(!jry_bl_gc_is_ref((jry_bl_reference*)ptr))
+		return ptr;
+	void *data=((jry_bl_reference*)ptr)->ptr;
+	jry_bl_gc_minus((jry_bl_reference*)ptr);//减掉ref_cnt
+	jry_bl_gc_plus((jry_bl_reference*)data);//原始数据加一个ref_cnt，相当于从ref上转移一个ref_cnt到原始数据上
+	if(!jry_bl_gc_reference_cnt((jry_bl_reference*)ptr))
+		jry_bl_free(ptr);
+	return data;
+}
 #endif

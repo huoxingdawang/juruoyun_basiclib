@@ -18,7 +18,8 @@ typedef struct
 	jry_bl_gc gc;
 	void * ptr;
 }jry_bl_reference;
-void * jry_bl_refer(void *ptr);
+void 	*jry_bl_refer(void *ptr);
+void 	*jry_bl_derefer(void *ptr);
 #define	jry_bl_gc_init(x)				((x)->gc=0)
 #define	jry_bl_gc_plus(x)				((x)->gc+=2)
 #define	jry_bl_gc_minus(x)				((x)->gc-=2)

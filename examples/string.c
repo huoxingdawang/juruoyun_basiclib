@@ -14,12 +14,13 @@ int main()
 //	jry_bl_string_view(s4);
 
 	s2=jry_bl_string_copy(s1);
-//	jry_bl_gc_view(s1);
 	jry_bl_string_view(s2);
 	printf("Space ship test:%d\n",jry_bl_string_space_ship(s1,s2));
 	s1=jry_bl_string_add_chars(s1,"456");
 	printf("Space ship test:%d\n",jry_bl_string_space_ship(s1,s2));
-	
+
+	s1=jry_bl_derefer(s1);
+
 	s3=jry_bl_string_add_double(jry_bl_string_add_string(jry_bl_string_add_chars(jry_bl_string_copy(s1)," 0000 "),s2),-89789.1234);
 	s3=jry_bl_string_add_char(s3,'\n');
 	s3=jry_bl_string_add_unicode_as_utf8(jry_bl_string_add_unicode_as_utf8(jry_bl_string_add_unicode_as_utf8(s3,0X849f),0X84BB),0X4E91);
