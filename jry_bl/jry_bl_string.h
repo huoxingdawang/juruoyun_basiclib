@@ -29,7 +29,7 @@ jry_bl_string *			jry_bl_string_free									(jry_bl_string *this);													
 jry_bl_string *			jry_bl_string_extend_to								(jry_bl_string *this,jry_bl_string_size_type size);							//扩展字符串this到size字节
 jry_bl_string *			jry_bl_string_clear									(jry_bl_string *this);														//清空一个字符串
 jry_bl_string *			jry_bl_string_copy									(jry_bl_string *that);														//复制一个字符串
-jry_bl_string *			jry_bl_string_rrcopy								(jry_bl_string *that);														//复制一个字符串(将脱去refer,并重新构造refer)
+jry_bl_string *			jry_bl_string_rcopy									(jry_bl_string *that);														//复制一个字符串(将脱去refer复制)
 jry_bl_string *			jry_bl_string_equal									(jry_bl_string *this,jry_bl_string *that);									//释放that并复制this
 
 jry_bl_uint32			jry_bl_string_hash									(jry_bl_string *this);														//hash一个字符串

@@ -79,14 +79,10 @@ inline jry_bl_string *jry_bl_string_copy(jry_bl_string *that)
 	jry_bl_gc_plus(that);
 	return that;
 }
-inline jry_bl_string *jry_bl_string_rrcopy(jry_bl_string *that)
+inline jry_bl_string *jry_bl_string_rcopy(jry_bl_string *that)
 {
 	if(that==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);
-	jry_bl_string *that_=jry_bl_refer_pull(that);
-	jry_bl_string *this_=jry_bl_string_copy(that_);
-	jry_bl_string *this=jry_bl_refer(&this_);
-	jry_bl_string_free(this_);
-	return this;
+	return jry_bl_string_copy(jry_bl_refer_pull(that));
 }
 jry_bl_string *jry_bl_string_equal(jry_bl_string *this,jry_bl_string *that)
 {
@@ -423,7 +419,7 @@ void jry_bl_string_stream_update_buf(jry_bl_stream* this)
 const jry_bl_stream_operater jry_bl_stream_string_operators={
 	jry_bl_string_stream_operater,
 	(void (*)(void *))jry_bl_string_free,
-	(void* (*)(void *))jry_bl_string_rrcopy,
+	(void* (*)(void *))jry_bl_string_rcopy,
 	jry_bl_string_stream_update_buf
 };
 void jry_bl_string_put(const jry_bl_string* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str)
