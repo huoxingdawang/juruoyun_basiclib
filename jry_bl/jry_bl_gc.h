@@ -20,7 +20,7 @@ typedef struct
 }jry_bl_reference;
 void 	*jry_bl_refer(void *ptr);						//引用一个变量，********************特别的该函数必须传入一个二级指针********************
 void 	*jry_bl_derefer(void *ptr);						//取消引用一个变量
-#define jry_bl_refer_pull(x)			((jry_bl_gc_is_ref(x))?(((const jry_bl_reference*)x)->ptr):x)//脱离引用
+#define jry_bl_refer_pull(x)			((jry_bl_gc_is_ref((const jry_bl_reference*)x))?(((const jry_bl_reference*)x)->ptr):x)//脱离引用
 
 #define	jry_bl_gc_init(x)				((x)->gc=0)		//初始化gc字段
 #define	jry_bl_gc_plus(x)				((x)->gc+=2)	//引用计数加一
