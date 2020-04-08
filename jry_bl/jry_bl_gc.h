@@ -18,18 +18,19 @@ typedef struct
 	jry_bl_gc gc;
 	void * ptr;
 }jry_bl_reference;
-void 	*jry_bl_refer(void *ptr);
-void 	*jry_bl_derefer(void *ptr);
-#define	jry_bl_gc_init(x)				((x)->gc=0)
-#define	jry_bl_gc_plus(x)				((x)->gc+=2)
-#define	jry_bl_gc_minus(x)				((x)->gc-=2)
-#define	jry_bl_gc_reference_cnt(x)		(((x)->gc)>>1)
+void 	*jry_bl_refer(void *ptr);						//引用一个变量，********************特别的该函数必须传入一个二级指针********************
+void 	*jry_bl_derefer(void *ptr);						//取消引用一个变量
+#define jry_bl_refer_pull(x)			((jry_bl_gc_is_ref(x))?(((const jry_bl_reference*)x)->ptr):x)//脱离引用
 
-#define	jry_bl_gc_set_ref(x)			((x)->gc|=0X01)
-#define	jry_bl_gc_reset_ref(x)			((x)->gc&=(-2))
-#define	jry_bl_gc_is_ref(x)				(((x)->gc)&0X01)
+#define	jry_bl_gc_init(x)				((x)->gc=0)		//初始化gc字段
+#define	jry_bl_gc_plus(x)				((x)->gc+=2)	//引用计数加一
+#define	jry_bl_gc_minus(x)				((x)->gc-=2)	//引用计数减一
+#define	jry_bl_gc_reference_cnt(x)		(((x)->gc)>>1)	//获取引用计数
 
-#define jry_bl_refer_pull(x)			((jry_bl_gc_is_ref(x))?(((const jry_bl_reference*)x)->ptr):x)
+#define	jry_bl_gc_set_ref(x)			((x)->gc|=0X01)	//设置引用标记
+#define	jry_bl_gc_reset_ref(x)			((x)->gc&=(-2))	//删除引用标记
+#define	jry_bl_gc_is_ref(x)				(((x)->gc)&0X01)//获取引用标记
+
 
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_stream.h"
