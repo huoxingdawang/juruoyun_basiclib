@@ -16,8 +16,8 @@ int main()
 #if JRY_BL_STREAM_ENABLE==1
 	jry_bl_stream *ss1=jry_bl_string_stream_new(jry_bl_refer(&s1));
 	jry_bl_stream *ss2=jry_bl_string_stream_new(jry_bl_refer(&s2));
-	jry_bl_stream *b64en=jry_bl_base64_encode_stream_init();
-	jry_bl_stream *b64de=jry_bl_base64_decode_stream_init();
+	jry_bl_stream *b64en=jry_bl_stream_base64_encode_new();
+	jry_bl_stream *b64de=jry_bl_stream_base64_decode_new();
 	
 	jry_bl_stream_connect(ss1,b64en);
 	jry_bl_stream_connect(b64en,sout);

@@ -41,7 +41,7 @@ typedef enum
 	json,
 	view
 }jry_bl_put_type;
-jry_bl_stream *	jry_bl_stream_new						(const jry_bl_stream_operater *op,void *data,jry_bl_uint16 size,unsigned char *buf);
+jry_bl_stream *	jry_bl_stream_new						(const jry_bl_stream_operater *op,void *data,jry_bl_uint16 size,unsigned char *buf,const jry_bl_uint64 tmp);
 jry_bl_stream * jry_bl_stream_copy						(jry_bl_stream* this);
 jry_bl_stream * jry_bl_stream_free						(jry_bl_stream* this);
 #define 		jry_bl_stream_do(this,flag)				(this)->op->op(this,flag)
@@ -63,8 +63,8 @@ extern			jry_bl_stream *jry_bl_stream_stdout;
 extern			jry_bl_stream *jry_bl_stream_stdin;
 #define 		sout	jry_bl_stream_stdout
 #define 		sin		jry_bl_stream_stdin
-#define			jry_bl_stream_start()	jry_bl_stream_stdout=jry_bl_stream_new(&jry_bl_stream_file_operators,stdout,JRY_BL_STREAM_EXCEED_LENGTH,NULL),	\
-										jry_bl_stream_stdin =jry_bl_stream_new(&jry_bl_stream_file_operators,stdin ,0,NULL)
+#define			jry_bl_stream_start()	jry_bl_stream_stdout=jry_bl_stream_new(&jry_bl_stream_file_operators,stdout,JRY_BL_STREAM_EXCEED_LENGTH,NULL,0),	\
+										jry_bl_stream_stdin =jry_bl_stream_new(&jry_bl_stream_file_operators,stdin ,0,NULL,0)
 #define 		jry_bl_stream_stop()	jry_bl_stream_do(jry_bl_stream_stdout,jry_bl_stream_force),jry_bl_stream_stdout=jry_bl_stream_free(jry_bl_stream_stdout),	\
 										jry_bl_stream_stdin =jry_bl_stream_free(jry_bl_stream_stdin )
 

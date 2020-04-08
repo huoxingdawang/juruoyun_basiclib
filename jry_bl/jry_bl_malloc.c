@@ -79,7 +79,7 @@ void jry_bl_malloc_start()
 void jry_bl_malloc_stop()
 {	
 #if JRY_BL_STREAM_ENABLE==1
-	jry_bl_stream_stdout=jry_bl_stream_new(&jry_bl_stream_file_operators,stdout,JRY_BL_STREAM_EXCEED_LENGTH,NULL),//重新初始化stdout，因为它已经关了
+	jry_bl_stream_stdout=jry_bl_stream_new(&jry_bl_stream_file_operators,stdout,JRY_BL_STREAM_EXCEED_LENGTH,NULL,0),//重新初始化stdout，因为它已经关了
 	jry_bl_stream_push_chars(jry_bl_stream_stdout,"\n\n");
 #endif
 #if JRY_BL_MALLOC_FAST==1

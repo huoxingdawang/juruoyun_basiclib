@@ -70,7 +70,7 @@ jry_bl_string * jry_bl_base64_decode(const jry_bl_string *this,jry_bl_string *re
 }
 #if JRY_BL_STREAM_ENABLE==1
 #include "jry_bl_stream.h"
-void jry_bl_base64_encode_stream_operator(jry_bl_stream* this,jry_bl_uint8 flags)
+void __jry_bl_base64_seo(jry_bl_stream* this,jry_bl_uint8 flags)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	this=jry_bl_refer_pull(this);
@@ -101,7 +101,7 @@ void jry_bl_base64_encode_stream_operator(jry_bl_stream* this,jry_bl_uint8 flags
 		this->en=len;
 	}
 }
-void jry_bl_base64_decode_stream_operator(jry_bl_stream* this,jry_bl_uint8 flags)
+void __jry_bl_base64_sdo(jry_bl_stream* this,jry_bl_uint8 flags)
 {
 	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
 	this=jry_bl_refer_pull(this);
@@ -144,8 +144,8 @@ exit:
 			jry_bl_stream_do(nxt,flags);
 	}
 }
-const jry_bl_stream_operater jry_bl_stream_base64_encode_operators={jry_bl_base64_encode_stream_operator,NULL,NULL,NULL};
-const jry_bl_stream_operater jry_bl_stream_base64_decode_operators={jry_bl_base64_decode_stream_operator,NULL,NULL,NULL};
+const jry_bl_stream_operater jry_bl_stream_base64_encode_operators={__jry_bl_base64_seo,NULL,NULL,NULL};
+const jry_bl_stream_operater jry_bl_stream_base64_decode_operators={__jry_bl_base64_sdo,NULL,NULL,NULL};
 
 #endif
 #endif

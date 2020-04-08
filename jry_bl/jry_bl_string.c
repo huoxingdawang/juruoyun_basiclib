@@ -381,7 +381,7 @@ jry_bl_stream * jry_bl_string_stream_new(jry_bl_string *str)
 {
 	str=jry_bl_string_extend(str,128);
 	jry_bl_string *str_=jry_bl_refer_pull(str);
-	return jry_bl_stream_new(&jry_bl_stream_string_operators,str,str_->size-str_->len,str_->s+str_->len);
+	return jry_bl_stream_new(&jry_bl_stream_string_operators,str,str_->size-str_->len,str_->s+str_->len,0);
 }
 void jry_bl_string_stream_operater(jry_bl_stream* this,jry_bl_uint8 flags)
 {

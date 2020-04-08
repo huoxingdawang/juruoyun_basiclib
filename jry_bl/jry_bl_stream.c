@@ -9,7 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #include "jry_bl_stream.h"
 #if JRY_BL_STREAM_ENABLE==1
-jry_bl_stream * jry_bl_stream_new(const jry_bl_stream_operater *op,void *data,jry_bl_uint16 size,unsigned char *buf)
+jry_bl_stream * jry_bl_stream_new(const jry_bl_stream_operater *op,void *data,jry_bl_uint16 size,unsigned char *buf,const jry_bl_uint64 tmp)
 {
 	jry_bl_stream *this=jry_bl_malloc((sizeof(jry_bl_stream))+((buf==NULL)?size:0));
 	jry_bl_gc_init(this);
@@ -18,7 +18,7 @@ jry_bl_stream * jry_bl_stream_new(const jry_bl_stream_operater *op,void *data,jr
 	this->data	=data;
 	this->size	=size;
 	this->en	=0;
-	this->tmp	=0;
+	this->tmp	=tmp;
 	this->buf	=((buf==NULL)?(((jry_bl_uint8*)this)+(sizeof(jry_bl_stream))):buf);
 	return this;
 }

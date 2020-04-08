@@ -114,8 +114,8 @@ void					jry_bl_string_put									(const jry_bl_string* this,jry_bl_stream *out
 #define					jry_bl_string_view(x) 								jry_bl_string_put(x,jry_bl_stream_stdout,view,(jry_bl_view_default_tabs_num<<16)|(__LINE__<<1)|1,#x " @ "__FILE__),jry_bl_stream_push_char(jry_bl_stream_stdout,'\n'),jry_bl_stream_do(jry_bl_stream_stdout,1)
 void					jry_bl_string_to_json								(const jry_bl_string *this,jry_bl_string *result);
 
-jry_bl_stream *			jry_bl_string_stream_new							(jry_bl_string *str);
 extern	const jry_bl_stream_operater jry_bl_stream_string_operators;
+jry_bl_stream *			jry_bl_string_stream_new							(jry_bl_string *str);
 
 #define					jry_bl_string_stream_reset(a)						jry_bl_stream_reset(a),(a)->buf=((jry_bl_string *)(a)->data)->s+((jry_bl_string *)(a)->data)->len,(a)->size=((jry_bl_string *)(a)->data)->size-((jry_bl_string *)(a)->data)->len
 #define					jry_bl_string_stream_free(a)						jry_bl_stream_free(a)

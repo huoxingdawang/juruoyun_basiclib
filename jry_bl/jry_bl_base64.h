@@ -21,8 +21,8 @@ jry_bl_string *	jry_bl_base64_decode					(const jry_bl_string *this,jry_bl_strin
 extern			const jry_bl_stream_operater jry_bl_stream_base64_encode_operators;
 extern			const jry_bl_stream_operater jry_bl_stream_base64_decode_operators;
 
-#define			jry_bl_base64_encode_stream_init()		jry_bl_stream_new(&jry_bl_stream_base64_encode_operators,NULL,JRY_BL_STREAM_EXCEED_LENGTH+8,NULL)
-#define			jry_bl_base64_decode_stream_init()		jry_bl_stream_new(&jry_bl_stream_base64_decode_operators,NULL,JRY_BL_STREAM_EXCEED_LENGTH+8,NULL)
+#define			jry_bl_stream_base64_encode_new()		jry_bl_stream_new(&jry_bl_stream_base64_encode_operators,NULL,JRY_BL_STREAM_EXCEED_LENGTH+8,NULL,0)
+#define			jry_bl_stream_base64_decode_new()		jry_bl_stream_new(&jry_bl_stream_base64_decode_operators,NULL,JRY_BL_STREAM_EXCEED_LENGTH+8,NULL,0)
 
 
 //typedef struct __jry_bl_stream_operater jry_bl_stream_operater;
