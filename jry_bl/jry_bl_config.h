@@ -14,11 +14,11 @@
 
 
 
-#define JRY_BL_AES_128_ENABLE		1	//need ying exception bitset malloc string
+#define JRY_BL_AES_128_ENABLE		0	//need ying exception bitset malloc string
 #define JRY_BL_ARRAY_ENABLE			0	//not using
-#define JRY_BL_BASE64_ENABLE		1	//need ying exception bitset malloc string
+#define JRY_BL_BASE64_ENABLE		0	//need ying exception bitset malloc string
 #define JRY_BL_BITSET_ENABLE		1	//need ying exception
-#define JRY_BL_CMD_ENABLE			1//need ying exception bitset malloc string
+#define JRY_BL_CMD_ENABLE			1	//need ying exception bitset malloc string
 #define JRY_BL_EXCEPTION_ENABLE		1	//need ying 
 #define JRY_BL_FILE_ENABLE			0	//developing N/A
 #define JRY_BL_GC_ENABLE			1	//need ying 

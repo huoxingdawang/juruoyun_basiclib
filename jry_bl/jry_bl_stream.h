@@ -15,9 +15,10 @@
 #include "jry_bl_malloc.h"
 #include "jry_bl_exception.h"
 #include <stdio.h>
+typedef struct __jry_bl_stream_operater jry_bl_stream_operater;
 typedef struct __jry_bl_stream
 {
-	void (*op)(struct __jry_bl_stream*,jry_bl_uint8);
+	const jry_bl_stream_operater *op;
 	struct __jry_bl_stream *nxt;
 	jry_bl_uint16	en;
 	jry_bl_uint16	size;
@@ -25,14 +26,20 @@ typedef struct __jry_bl_stream
 	jry_bl_uint64	tmp;
 	unsigned char	*buf;
 }jry_bl_stream;
+
+typedef struct __jry_bl_stream_operater
+{
+	void (*op)(jry_bl_stream*,jry_bl_uint8);
+	void (*fd)(void*);
+}jry_bl_stream_operater;
 typedef enum
 {
 	json,
 	view
 }jry_bl_put_type;
-jry_bl_stream *	jry_bl_stream_new					(void *op,void *data,jry_bl_uint16 size,unsigned char *buf);
-#define			jry_bl_stream_free(s)				(jry_bl_free(s),NULL)
-#define 		jry_bl_stream_do(this,flag)			(this)->op(this,flag)
+jry_bl_stream *	jry_bl_stream_new					(const jry_bl_stream_operater *op,void *data,jry_bl_uint16 size,unsigned char *buf);
+#define			jry_bl_stream_free(s)				((((s)->op->fd!=NULL)?((s)->op->fd((s)->data)):0),jry_bl_free(s),NULL)
+#define 		jry_bl_stream_do(this,flag)			(this)->op->op(this,flag)
 #define 		jry_bl_stream_connect(this,that)	(this)->nxt=that
 #define 		jry_bl_stream_reset(this)			(this)->en=0,(this)->tmp=0
 		
@@ -45,12 +52,14 @@ void			jry_bl_stream_push_int64			(jry_bl_stream* this,jry_bl_int64 in);
 void			jry_bl_stream_push_double			(jry_bl_stream* this,double in);
 
 void			jry_bl_stream_file_operator			(jry_bl_stream* this,jry_bl_uint8 flags);
+extern			const jry_bl_stream_operater jry_bl_stream_file_operators;
+
 extern			jry_bl_stream *jry_bl_stream_stdout;
 extern			jry_bl_stream *jry_bl_stream_stdin;
 #define 		sout	jry_bl_stream_stdout
 #define 		sin		jry_bl_stream_stdin
-#define			jry_bl_stream_start()	jry_bl_stream_stdout=jry_bl_stream_new(jry_bl_stream_file_operator,stdout,JRY_BL_STREAM_EXCEED_LENGTH,NULL),	\
-										jry_bl_stream_stdin =jry_bl_stream_new(jry_bl_stream_file_operator,stdin ,0,NULL)
+#define			jry_bl_stream_start()	jry_bl_stream_stdout=jry_bl_stream_new(&jry_bl_stream_file_operators,stdout,JRY_BL_STREAM_EXCEED_LENGTH,NULL),	\
+										jry_bl_stream_stdin =jry_bl_stream_new(&jry_bl_stream_file_operators,stdin ,0,NULL)
 #define 		jry_bl_stream_stop()	jry_bl_stream_do(jry_bl_stream_stdout,jry_bl_stream_force),jry_bl_stream_stdout=jry_bl_stream_free(jry_bl_stream_stdout),	\
 										jry_bl_stream_stdin =jry_bl_stream_free(jry_bl_stream_stdin )
 

@@ -40,7 +40,15 @@ int main()
 	jry_bl_stream_push_double(sout,jry_bl_string_get_double(s3));jry_bl_stream_push_char(sout,'\n');
 	jry_bl_stream_do(sout,jry_bl_stream_force);
 	
+#if JRY_BL_STREAM_ENABLE==1
+	jry_bl_stream *ss1=jry_bl_string_stream_new(jry_bl_refer(&s1));
+	puts("input something");
+	jry_bl_stream_connect(jry_bl_stream_stdin,ss1);
+	jry_bl_stream_do(jry_bl_stream_stdin,jry_bl_stream_force);
+	jry_bl_string_view(s1);
+	ss1=jry_bl_stream_free(ss1);
 	
+#endif
 	
 	
 exit:	

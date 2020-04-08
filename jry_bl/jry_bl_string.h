@@ -118,6 +118,8 @@ void					jry_bl_string_to_json								(const jry_bl_string *this,jry_bl_string *
 
 void					jry_bl_string_stream_operater						(jry_bl_stream* this,jry_bl_uint8 flags);
 jry_bl_stream *			jry_bl_string_stream_new							(jry_bl_string *str);
+extern	const jry_bl_stream_operater jry_bl_stream_string_operators;
+
 #define					jry_bl_string_stream_reset(a)						jry_bl_stream_reset(a),(a)->buf=((jry_bl_string *)(a)->data)->s+((jry_bl_string *)(a)->data)->len,(a)->size=((jry_bl_string *)(a)->data)->size-((jry_bl_string *)(a)->data)->len
 #define					jry_bl_string_stream_free(a)						jry_bl_stream_free(a)
 #endif

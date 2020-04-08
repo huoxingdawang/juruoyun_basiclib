@@ -372,22 +372,19 @@ jry_bl_string_size_type	jry_bl_string_find_char_start(const jry_bl_string *this,
 // }
 // #endif
 #if JRY_BL_STREAM_ENABLE==1
+const jry_bl_stream_operater jry_bl_stream_string_operators={jry_bl_string_stream_operater,(void (*)(void *))jry_bl_string_free};
 jry_bl_stream * jry_bl_string_stream_new(jry_bl_string *str)
 {
-/*
-	jry_bl_stream *this=jry_bl_stream_new(jry_bl_string_stream_operater,str,);
-	this->op=op;
-	this->data=data;
-	this->size=size;
+	jry_bl_stream *this=jry_bl_stream_new(&jry_bl_stream_string_operators,str,0,NULL);
 	this->en=0;
 	this->tmp=0;
-	this->buf=((buf==NULL)?((jry_bl_uint8)this)+(sizeof(jry_bl_stream)):buf);
+	str=jry_bl_string_extend(str,128);
+	jry_bl_string *str_=jry_bl_refer_pull(str);
+	this->buf=str_->s+str_->len;
+	this->size=str_->size-str_->len;
+	this->data=str;	
 	return this;
-*/
-	return NULL;
 }
-
-
 void jry_bl_string_put(const jry_bl_string* this,jry_bl_stream *output_stream,jry_bl_put_type type,jry_bl_uint32 format,char*str)
 {
 	if(this==NULL||output_stream==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
@@ -430,24 +427,27 @@ void jry_bl_string_to_json(const jry_bl_string *this,jry_bl_string *result)
 }
 void jry_bl_string_stream_operater(jry_bl_stream* this,jry_bl_uint8 flags)
 {
-	// if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
-	// ((jry_bl_string*)this->data)->len+=this->en;
-	// jry_bl_string_extend(((jry_bl_string*)this->data),128);
-	// this->buf=((jry_bl_string*)this->data)->s+((jry_bl_string*)this->data)->len;
-	// this->size=((jry_bl_string*)this->data)->size-((jry_bl_string*)this->data)->len;
-	// this->en=0;
-	// if(this->nxt!=NULL)
-	// {
-		// while(this->tmp<((jry_bl_string*)this->data)->len)
-		// {
-			// jry_bl_uint16 len=((((jry_bl_string*)this->data)->len-this->tmp)>(this->nxt->size-this->nxt->en))?(this->nxt->size-this->nxt->en):(((jry_bl_string*)this->data)->len-this->tmp);
-			// jry_bl_memory_copy(this->nxt->buf+this->nxt->en,((jry_bl_string*)this->data)->s+this->tmp,len);
-			// this->tmp+=len;
-			// this->nxt->en+=len;
-			// jry_bl_stream_do(this->nxt,0);
-		// }
-		// jry_bl_stream_do(this->nxt,flags);
-	// }
+	if(this==NULL)jry_bl_exception(JRY_BL_ERROR_NULL_POINTER);	
+	jry_bl_string *str=((jry_bl_string*)this->data);
+	jry_bl_string *str_=jry_bl_refer_pull(str);
+	str_->len+=this->en;
+	str=jry_bl_string_extend(str,128);
+	str_=jry_bl_refer_pull(str_);
+	this->buf=str_->s+str_->len;
+	this->size=str_->size-str_->len;
+	this->en=0;
+	if(this->nxt!=NULL)
+	{
+		while(this->tmp<str_->len)
+		{
+			jry_bl_uint16 len=jry_bl_min((str_->len-this->tmp),(this->nxt->size-this->nxt->en));
+			jry_bl_memory_copy(this->nxt->buf+this->nxt->en,str_->s+this->tmp,len);
+			this->tmp+=len;
+			this->nxt->en+=len;
+			jry_bl_stream_do(this->nxt,0);
+		}
+		jry_bl_stream_do(this->nxt,flags);
+	}
 }
 #endif
 // #if JRY_BL_LINK_LIST_ENABLE==1
