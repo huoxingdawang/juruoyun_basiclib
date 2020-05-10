@@ -3,20 +3,20 @@
 int main()
 {
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jry_bl_start();
-	printf("jry_bl_file size:%lld\n",(long long)(sizeof (jry_bl_file)));	
-	jry_bl_string	dir;jry_bl_string_init(&dir);
-	jry_bl_file		test;jry_bl_file_init(&test);
-	jry_bl_string_equal_chars(&dir,"testfiles");
+	jbl_start();
+	printf("jbl_file size:%lld\n",(long long)(sizeof (jbl_file)));	
+	jbl_string	dir;jbl_string_init(&dir);
+	jbl_file		test;jbl_file_init(&test);
+	jbl_string_equal_chars(&dir,"testfiles");
 	
 	
-	jry_bl_file_open(&test,&dir,move);
-	jry_bl_file_view(&test,stderr);
+	jbl_file_open(&test,&dir,move);
+	jbl_file_view(&test,stderr);
 	
 	
 	
-	jry_bl_file_free(&test);
-	jry_bl_string_free(&dir);
-	jry_bl_stop(); 
+	jbl_file_free(&test);
+	jbl_string_free(&dir);
+	jbl_stop(); 
 	
 }

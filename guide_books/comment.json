@@ -231,7 +231,7 @@
 		"name":"jry_bl_execute_cmd",
 		"file":"jry_bl/jry_bl_cmd.c",
 		"type":"f",
-		"comment":"这个函数请求一段cmd"
+		"comment":"这个函数请yiyiyicmd"
 	},
 	"jry_bl_file":{
 		"name":"jry_bl_file",
@@ -567,11 +567,16 @@
 		"name":"jry_bl_hash_table_space_ship",
 		"file":"jry_bl/jry_bl_hash_table.c",
 		"type":"f",
-		"comment":"哈希表太空船操作符。
-例如jry_bl_hash_table_space_ship(a,b)
-若a<b则返回-1,
-若a==b则返回0,
-若a>b则返回1。
+		"comment":"哈希表太空船操作符。
+
+例如jry_bl_hash_table_space_ship(a,b)
+
+若a<b则返回-1,
+
+若a==b则返回0,
+
+若a>b则返回1。
+
 将首先比较长度，然后遍历a，若b中无同样key的值，则a大，若b中有同样key的值，则比较这两个值，如果不同则返回，如果相同则接着比，直到a枚举完"
 	},
 	"jry_bl_hash_table_to_json":{
@@ -2145,9 +2150,12 @@
 		"file":"jry_bl/jry_bl_var.c",
 		"type":"f",
 		"comment":"var的太空船操作符
-例如jry_bl_var_space_ship(a,b)
-若a<b则返回-1,
-若a==b则返回0,
+例如jry_bl_var_space_ship(a,b)
+
+若a<b则返回-1,
+
+若a==b则返回0,
+
 若a>b则返回1。特别的，如果两个类型不同的var比较大小，将返回type的大小情况"
 	},
 	"jry_bl_var_tmp_functions":{

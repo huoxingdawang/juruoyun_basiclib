@@ -3,8 +3,8 @@
 int main()
 {
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jry_bl_start();
+	jbl_start();
 	
 	
-	jry_bl_stop(); 	
+	jbl_stop(); 	
 }
