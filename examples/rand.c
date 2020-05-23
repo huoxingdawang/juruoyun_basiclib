@@ -11,11 +11,31 @@ int main()
 		jbl_stream_push_uint64(sout,jbl_rand_between (0,200)),jbl_stream_push_char(sout,'\n');
 	
 #if JBL_STRING_ENABLE==1
+	jbl_string *s1=NULL;
 	for(jbl_uint8 i=0;i<100;i++)
 	{
-		jbl_string *s1=jbl_rand_string(NULL,40,"abcdefghijklmnopqrstuvwxyz");
-		jbl_string_view(s1);
-		s1=jbl_string_free(s1);
+		s1=jbl_rand_string(NULL,40,jbl_rand_dict_small);
+		jbl_string_view(s1);s1=jbl_string_free(s1);
+	}
+	for(jbl_uint8 i=0;i<100;i++)
+	{
+		s1=jbl_rand_string(NULL,40,jbl_rand_dict_big);
+		jbl_string_view(s1);s1=jbl_string_free(s1);
+	}
+	for(jbl_uint8 i=0;i<100;i++)
+	{
+		s1=jbl_rand_string(NULL,40,jbl_rand_dict_number);
+		jbl_string_view(s1);s1=jbl_string_free(s1);
+	}
+	for(jbl_uint8 i=0;i<100;i++)
+	{
+		s1=jbl_rand_string(NULL,40,jbl_rand_dict_symbol);
+		jbl_string_view(s1);s1=jbl_string_free(s1);
+	}
+	for(jbl_uint8 i=0;i<100;i++)
+	{
+		s1=jbl_rand_string(NULL,40,jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
+		jbl_string_view(s1);s1=jbl_string_free(s1);
 	}
 #endif 	
 	
