@@ -15,7 +15,7 @@
 #include "jbl_var.h"
 #include "jbl_ying.h"
 #include "jbl_time.h"
-#include "jbl_hash_table.h"
+#include "jbl_ht.h"
 #include <dirent.h>
 #define JBL_FILE_TYPE_UNKNOW	0
 #define JBL_FILE_TYPE_FILE	1
@@ -36,7 +36,7 @@ typedef struct __jbl_file
 		}file;
 		struct
 		{
-			jbl_hash_table child;
+			jbl_ht child;
 			
 		}dir;
 	};

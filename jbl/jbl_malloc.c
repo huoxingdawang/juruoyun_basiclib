@@ -65,6 +65,9 @@ static const struct
 #else
 #include <malloc.h>	
 #endif	
+#if JBL_MALLOC_COUNT==1
+	jbl_uint64 __jbl_malloc_count[3];
+#endif
 jbl_malloc_heap_struct jbl_malloc_heap;
 void jbl_malloc_start()
 {
@@ -78,18 +81,27 @@ void jbl_malloc_start()
 	jbl_malloc_heap.main_chunk=NULL;
 	jbl_malloc_heap.cached_chunk=NULL;
 #endif	
+#if JBL_MALLOC_COUNT==1
+	__jbl_malloc_count[0]=0;
+	__jbl_malloc_count[1]=0;
+	__jbl_malloc_count[2]=0;
+#endif
 }
 void jbl_malloc_stop()
 {	
-#if JBL_STREAM_ENABLE==1
-	jbl_stream_stdout=jbl_stream_new(&jbl_stream_file_operators,stdout,JBL_STREAM_EXCEED_LENGTH,NULL,0),//重新初始化stdout，因为它已经关了
-	jbl_stream_push_chars(jbl_stream_stdout,"\n\n");
-#endif
 #if JBL_MALLOC_FAST==1
 #if JBL_STREAM_ENABLE==1
-	jbl_stream_push_chars(jbl_stream_stdout,"Memory            :");jbl_stream_push_uint64(jbl_stream_stdout,jbl_malloc_heap.size-jbl_malloc_size(jbl_stream_stdout));jbl_stream_push_chars(jbl_stream_stdout,"B\n");	
+	jbl_stream_push_chars(jbl_stream_stdout,"\n\n");
+	jbl_stream_push_chars(jbl_stream_stdout,"Memory            :");jbl_stream_push_uint64(jbl_stream_stdout,jbl_malloc_heap.size-jbl_malloc_size(jbl_stream_stdout)-(jbl_gc_is_ref(jbl_stream_stdout)?jbl_malloc_size(jbl_refer_pull(jbl_stream_stdout)):0));jbl_stream_push_chars(jbl_stream_stdout,"B\n");	
 	jbl_stream_push_chars(jbl_stream_stdout,"Max memory        :");jbl_stream_push_uint64(jbl_stream_stdout,jbl_malloc_heap.peak);jbl_stream_push_chars(jbl_stream_stdout,"B(");jbl_stream_push_double(jbl_stream_stdout,(double)jbl_malloc_heap.peak/1048576);jbl_stream_push_chars(jbl_stream_stdout,"M)\n");	
 	jbl_stream_push_chars(jbl_stream_stdout,"Applied max memory:");jbl_stream_push_uint64(jbl_stream_stdout,jbl_malloc_heap.applied_peak>>20);jbl_stream_push_chars(jbl_stream_stdout,"M\n");	
+#if JBL_MALLOC_COUNT==1
+	jbl_uint64 n=__jbl_malloc_count[0]+__jbl_malloc_count[1]+__jbl_malloc_count[2];
+	jbl_stream_push_chars(jbl_stream_stdout,"Small             :");jbl_stream_push_uint64(jbl_stream_stdout,__jbl_malloc_count[0]);jbl_stream_push_chars(jbl_stream_stdout," (");jbl_stream_push_double(jbl_stream_stdout,(double)__jbl_malloc_count[0]*100/n);jbl_stream_push_chars(jbl_stream_stdout,"%)\n");	
+	jbl_stream_push_chars(jbl_stream_stdout,"Large             :");jbl_stream_push_uint64(jbl_stream_stdout,__jbl_malloc_count[1]);jbl_stream_push_chars(jbl_stream_stdout," (");jbl_stream_push_double(jbl_stream_stdout,(double)__jbl_malloc_count[1]*100/n);jbl_stream_push_chars(jbl_stream_stdout,"%)\n");	
+	jbl_stream_push_chars(jbl_stream_stdout,"Huge              :");jbl_stream_push_uint64(jbl_stream_stdout,__jbl_malloc_count[2]);jbl_stream_push_chars(jbl_stream_stdout," (");jbl_stream_push_double(jbl_stream_stdout,(double)__jbl_malloc_count[2]*100/n);jbl_stream_push_chars(jbl_stream_stdout,"%)\n");	
+	
+#endif
 	jbl_stream_do(jbl_stream_stdout,1);
 	jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
 #endif
@@ -100,11 +112,11 @@ void jbl_malloc_stop()
 
 	if(jbl_malloc_heap.huge_list)			jbl_exception(JBL_ERROR_MEMORY_ERROR);
 	if(jbl_malloc_heap.main_chunk)			jbl_exception(JBL_ERROR_MEMORY_ERROR);
-	if(jbl_malloc_heap.cached_chunk)			jbl_exception(JBL_ERROR_MEMORY_ERROR);
-	if(jbl_malloc_heap.applied_size)			jbl_exception(JBL_ERROR_MEMORY_ERROR);
+	if(jbl_malloc_heap.cached_chunk)		jbl_exception(JBL_ERROR_MEMORY_ERROR);
+	if(jbl_malloc_heap.applied_size)		jbl_exception(JBL_ERROR_MEMORY_ERROR);
 #else
 #if JBL_STREAM_ENABLE==1
-	jbl_stream_push_chars(jbl_stream_stdout,"Memory    :");jbl_stream_push_uint64(jbl_stream_stdout,jbl_malloc_heap.size-24);jbl_stream_push_chars(jbl_stream_stdout,"B\n");	
+	jbl_stream_push_chars(jbl_stream_stdout,"Memory    :");jbl_stream_push_uint64(jbl_stream_stdout,jbl_malloc_heap.size-jbl_malloc_size(jbl_stream_stdout));jbl_stream_push_chars(jbl_stream_stdout,"B\n");	
 	jbl_stream_push_chars(jbl_stream_stdout,"Max memory:");jbl_stream_push_uint64(jbl_stream_stdout,jbl_malloc_heap.peak);jbl_stream_push_chars(jbl_stream_stdout,"B(");jbl_stream_push_double(jbl_stream_stdout,(double)jbl_malloc_heap.peak/1048576);jbl_stream_push_chars(jbl_stream_stdout,"M)\n");	
 	jbl_stream_do(jbl_stream_stdout,1);jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
 #endif
@@ -440,12 +452,27 @@ inline void* jbl_malloc(mst size)
 {
 	if(size==0)jbl_exception(JBL_ERROR_MEMORY_ERROR);		
 #if JBL_MALLOC_FAST==1
-	if(size<=3072)//small		
+	if(size<=3072)//small
+	{
+#if JBL_MALLOC_COUNT==1		
+		++__jbl_malloc_count[0];
+#endif
 		return __jbl_malloc_small(size);
+	}
 	else if(size<=2093056)//large 2*1024*1024-4*1024(2M-4K)
+	{
+#if JBL_MALLOC_COUNT==1		
+		++__jbl_malloc_count[1];
+#endif
 		return __jbl_malloc_large(size);
+	}
 	else//huge
+	{
+#if JBL_MALLOC_COUNT==1		
+		++__jbl_malloc_count[2];
+#endif
 		return __jbl_malloc_huge(size);
+	}
 #else
 	void *ptr=malloc(size);
 	if(ptr==NULL)jbl_exception(JBL_ERROR_MEMORY_ERROR);	
@@ -453,7 +480,7 @@ inline void* jbl_malloc(mst size)
 	return ptr;
 #endif	
 }
-mst jbl_malloc_size(const void* ptr)
+mst jbl_malloc_size(void* ptr)
 {
 	if(ptr==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);	
 #if JBL_MALLOC_FAST==1
@@ -488,6 +515,9 @@ void* jbl_realloc(void* ptr,mst size)
 	
 	if(3072<size_now&&size_now<=2093056&&3072<size&&size<=2093056)//全在large
 	{
+#if JBL_MALLOC_COUNT==1		
+		++__jbl_malloc_count[1];
+#endif
 		jbl_malloc_chunk_struct *chunk=(void*)(((mst)ptr)&(~0X1fffff));
 		jbl_uint16 i=((mst)(ptr-(void*)chunk))>>12;
 		jbl_uint16 n=chunk->map[i]&(0X1FF);				//有的

@@ -14,8 +14,10 @@
 #include "jbl_ying.h"
 #if __SIZEOF_POINTER__ == 8
 	typedef jbl_uint64 			jbl_string_size_type;		//字符串长度类型
+	typedef jbl_uint64 			jbl_string_hash_type;		//字符串哈希类型
 #else
 	typedef jbl_uint32 			jbl_string_size_type;		//字符串长度类型
+	typedef jbl_uint32 			jbl_string_hash_type;		//字符串哈希类型
 #endif
 
 #define JBL_STRING_BASIC_LENGTH	32								//步进长度

@@ -4,9 +4,7 @@
 int main()
 {
 	printf("\n--------------------------------" __FILE__ "--------------------------------\n");
-	printf("jbl_string size:%lld\n",(long long)(sizeof (jbl_string)));	
 	jbl_start();
-
 	jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL;
 //	jbl_string *s4=jbl_refer(&s1);
 	s1=jbl_string_add_chars(s1,"-123");
@@ -15,9 +13,9 @@ int main()
 
 	s2=jbl_string_copy(s1);
 	jbl_string_view(s2);
-	printf("Space ship test:%d\n",jbl_string_space_ship(s1,s2));
+	pchars("Space ship test:"),pint(jbl_string_space_ship(s1,s2)),pchar('\n');
 	s1=jbl_string_add_chars(s1,"456");
-	printf("Space ship test:%d\n",jbl_string_space_ship(s1,s2));
+	pchars("Space ship test:"),pint(jbl_string_space_ship(s1,s2)),pchar('\n');
 
 	s1=jbl_derefer(s1);
 
@@ -41,7 +39,6 @@ int main()
 	jbl_stream_push_double(sout,jbl_string_get_double(s3));jbl_stream_push_char(sout,'\n');
 	jbl_stream_do(sout,jbl_stream_force);
 	
-#if JBL_STREAM_ENABLE==1
 	jbl_stream *ss1=jbl_string_stream_new(jbl_refer(&s1));
 	puts("input something");
 	jbl_stream_connect(jbl_stream_stdin,ss1);
@@ -49,13 +46,17 @@ int main()
 	jbl_string_view(s1);
 	ss1=jbl_stream_free(ss1);
 	
+	jbl_string *s4=jbl_string_json_encode(s1,NULL,0,0);
+	jbl_string_view(s4);
+#if JBL_LL_ENABLE==1
+	jbl_ll *l1=jbl_string_cut(s4,NULL,'3');
+	jbl_ll_view(l1);
+	l1=jbl_ll_free(l1);
 #endif
-	
 	
 exit:	
 	s1=jbl_string_free(s1);s2=jbl_string_free(s2);s3=jbl_string_free(s3);
-//	s4=jbl_string_free(s4);
-
+	s4=jbl_string_free(s4);
 	jbl_stop();
 	return 0;
 }

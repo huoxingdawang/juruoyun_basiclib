@@ -7,13 +7,16 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JBL_HASH_TABLE_CONFIG_H
-#define __JBL_HASH_TABLE_CONFIG_H
+#ifndef __JBL_LL_CONFIG_H
+#define __JBL_LL_CONFIG_H
 #include "jbl_config.h"
-#if JBL_HASH_TABLE_ENABLE==1
+#if JBL_LL_ENABLE==1
 #include "jbl_ying.h"
-typedef jbl_uint64 jbl_hash_table_size_type;
-#define JBL_HASH_TABLE_MIN_SIZE 8
+#if __SIZEOF_POINTER__ == 8
+	typedef jbl_uint64 jbl_ll_size_type;		
+#else
+	typedef jbl_uint32 jbl_ll_size_type;		
+#endif
 
 #endif
 #endif

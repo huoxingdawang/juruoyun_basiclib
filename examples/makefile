@@ -8,7 +8,7 @@
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
 CC = gcc
-BITS = -m64 
+BITS =
 BITSLIB = $(JBL_BITSLIB)
 ifeq ($(shell uname),Linux)
 	H = /
@@ -17,8 +17,8 @@ else
 	H = \\
 	rm = del
 endif
-# all:jbl aes array base64 bitset cmd file json hash_table link_list malloc md5 rand stream string time sha1 test var
-all:jbl aes array base64 bitset cmd md5 rand stream string sha1 var
+# all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test var
+all:jbl aes base64 bitset cmd ht ll malloc md5 rand stream string time sha1 var
 clean:
 	$(rm) tmp$(H)*.o /s
 	$(rm) tmp$(H)*.a /s
@@ -36,17 +36,17 @@ run:
 	exes$(H)base64
 	exes$(H)bitset
 	exes$(H)cmd
-	exes$(H)file
-	exes$(H)json
-	exes$(H)hash_table
-	exes$(H)link_list
+#	exes$(H)file
+#	exes$(H)json
+	exes$(H)ht
+#	exes$(H)ll
 	exes$(H)malloc
 	exes$(H)rand
 	exes$(H)md5
 	exes$(H)stream
 	exes$(H)sha1
 	exes$(H)time
-	exes$(H)test
+#	exes$(H)test
 	exes$(H)var
 #examples
 aes:jbl
@@ -70,12 +70,12 @@ file:jbl
 json:jbl
 	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)json.o examples$(H)json.c	$(BITSLIB)
 	$(CC) $(BITS) -o exes$(H)json tmp$(H)json.o tmp$(H)jbl.a
-hash_table:jbl
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)hash_table.o examples$(H)hash_table.c $(BITSLIB)
-	$(CC) $(BITS) -o exes$(H)hash_table tmp$(H)hash_table.o tmp$(H)jbl.a	
-link_list:jbl
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)link_list.o examples$(H)link_list.c $(BITSLIB)
-	$(CC) $(BITS) -o exes$(H)link_list tmp$(H)link_list.o tmp$(H)jbl.a
+ht:jbl
+	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)ht.o examples$(H)ht.c $(BITSLIB)
+	$(CC) $(BITS) -o exes$(H)ht tmp$(H)ht.o tmp$(H)jbl.a	
+ll:jbl
+	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)ll.o examples$(H)ll.c $(BITSLIB)
+	$(CC) $(BITS) -o exes$(H)ll tmp$(H)ll.o tmp$(H)jbl.a
 malloc:jbl
 	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)malloc.o examples$(H)malloc.c $(BITSLIB)
 	$(CC) $(BITS) -o exes$(H)malloc tmp$(H)malloc.o tmp$(H)jbl.a

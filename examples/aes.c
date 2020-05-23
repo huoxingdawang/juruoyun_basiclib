@@ -20,15 +20,15 @@ int main()
 	jbl_stream *b64de=jbl_stream_base64_decode_new();
 	jbl_stream *ecben=jbl_stream_aes_128_ecb_encode_new(key);
 	jbl_stream *ecbde=jbl_stream_aes_128_ecb_decode_new(key);
-	
-	jbl_stream_connect(ss1,ecben);
+
+	jbl_stream_connect_ref(b64en,sout);
 	jbl_stream_connect(ecben,b64en);
-	jbl_stream_connect(b64en,sout);
+	jbl_stream_connect(ss1,ecben);
 	jbl_stream_do(ss1,jbl_stream_force);
 	putchar('\n');
-	jbl_stream_connect(ss4,b64de);
+	jbl_stream_connect_ref(ecbde,sout);
 	jbl_stream_connect(b64de,ecbde);
-	jbl_stream_connect(ecbde,sout);
+	jbl_stream_connect(ss4,b64de);
 	jbl_stream_do(ss4,jbl_stream_force);
 	putchar('\n');
 
@@ -57,14 +57,14 @@ int main()
 	jbl_stream *cbcen=jbl_stream_aes_128_cbc_encode_new(key,"0CoJUm6Qyw8W8jud");
 	jbl_stream *cbcde=jbl_stream_aes_128_cbc_decode_new(key,"0CoJUm6Qyw8W8jud");
 	
-	jbl_stream_connect(ss1,cbcen);
-	jbl_stream_connect(cbcen,b64en);
 	jbl_stream_connect(b64en,sout);
+	jbl_stream_connect(cbcen,b64en);
+	jbl_stream_connect(ss1,cbcen);
 	jbl_stream_do(ss1,jbl_stream_force);
 	putchar('\n');
-	jbl_stream_connect(ss4,b64de);
-	jbl_stream_connect(b64de,cbcde);
 	jbl_stream_connect(cbcde,sout);
+	jbl_stream_connect(b64de,cbcde);
+	jbl_stream_connect(ss4,b64de);
 	jbl_stream_do(ss4,jbl_stream_force);
 	putchar('\n');
 
@@ -82,6 +82,6 @@ int main()
 	
 	
 	s1=jbl_string_free(s1);
-	key=jbl_aes_128_free_key(key);
+	key=jbl_aes_128_key_free(key);
 	jbl_stop();	
 }

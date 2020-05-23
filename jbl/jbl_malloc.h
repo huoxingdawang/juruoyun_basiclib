@@ -13,12 +13,12 @@
 #if JBL_MALLOC_ENABLE==1
 #include "jbl_ying.h"
 #include "jbl_bitset.h"
-void					jbl_malloc_start			();
+void					jbl_malloc_start		();
 void					jbl_malloc_stop			();
 void*					jbl_malloc				(jbl_malloc_size_type size);
 void*					jbl_realloc				(void* ptr,jbl_malloc_size_type size);
-void					jbl_free					(void* p);
-jbl_malloc_size_type	jbl_malloc_size			(const void* ptr);
+void					jbl_free				(void* p);
+jbl_malloc_size_type	jbl_malloc_size			(void* ptr);
 void					jbl_memory_copy			(void *to,const void * from,jbl_malloc_size_type len);
 void					jbl_memory_copy_reverse	(void *to,const void * from,jbl_malloc_size_type len,jbl_malloc_size_type size);
 #if JBL_MALLOC_FAST==1

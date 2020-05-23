@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+﻿/* Copyright (c) [2019] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -12,11 +12,12 @@
 #if JBL_VAR_ENABLE==1
 #include "jbl_var.h"
 #endif
-inline jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmp)
+#include <stdio.h>
+inline jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp)
 {
-	return jbl_stream_init(jbl_malloc((sizeof(jbl_stream))+((buf==NULL)?size:0)),op,data,size,buf,tmp);
+	return jbl_stream_init(jbl_malloc((sizeof(jbl_stream))+((buf==NULL)?size:0)),op,data,size,buf,tmpv,tmpp);
 }
-jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmp)
+jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp)
 {
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数		
@@ -24,16 +25,20 @@ jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void
 	this->data	=data;
 	this->size	=size;
 	this->en	=0;
-	this->tmpv	=tmp;
+	if(tmpp)this->tmpp=tmpp;
+	else	this->tmpv=tmpv;
 	this->buf	=((buf==NULL)?(((jbl_uint8*)this)+(sizeof(jbl_stream))):buf);
+	this->nxt	=NULL;
 	return this;
 }
 jbl_stream * jbl_stream_free(jbl_stream* this)
 {
+	if(this==NULL)return NULL;
 	jbl_gc_minus(this);
 	if(!jbl_gc_reference_cnt(this))
 	{
-		((jbl_gc_is_ref(this))?jbl_stream_free((jbl_stream *)jbl_refer_pull(this)):((((this->op->free!=NULL)?(this->op->free(this->data)):0))));
+		((jbl_gc_is_ref(this))?jbl_stream_free((jbl_stream *)jbl_refer_pull(this)):((((this->op->free!=NULL)?(this->op->free(this->data)):0)),jbl_stream_free(((jbl_stream *)jbl_refer_pull(this))->nxt)));
+		
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));
@@ -45,7 +50,7 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 }
 jbl_stream * jbl_stream_copy(jbl_stream* this)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL)return NULL;
 	if(jbl_gc_is_ref(this))
 	{
 		jbl_gc_plus(this);
@@ -56,13 +61,21 @@ jbl_stream * jbl_stream_copy(jbl_stream* this)
 	jbl_gc_init(that);
 	jbl_gc_plus(that);//增加引用计数	
 	that->op	=this->op;
-	that->size	=this->size;
-	that->en	=this->en;
 	that->tmpv	=this->tmpv;
+	that->nxt	=jbl_stream_copy(this->nxt);
 	if(that->op->scp!=NULL)
 		that->data	=that->op->scp(this->data);
 	if(that->op->usb!=NULL)
 		that->op->usb(that);
+	else if(this->buf==(((jbl_uint8*)this)+(sizeof(jbl_stream))))
+	{
+		that->en	=this->en;
+		that->size	=this->size;
+		that->buf	=(((jbl_uint8*)that)+(sizeof(jbl_stream)));
+		jbl_memory_copy(that->buf,this->buf,this->en);
+	}
+	else
+		that->en=0,that->size=0,that->buf=NULL;
 	return that;
 }
 inline void jbl_stream_push_char(jbl_stream* this,char c)
@@ -130,23 +143,31 @@ void jbl_stream_file_operator(jbl_stream* this,jbl_uint8 flags)
 			nxt->buf[nxt->en++]=c;
 		}		
 }
-const jbl_stream_operater jbl_stream_file_operators={jbl_stream_file_operator,NULL,NULL,NULL};
+FILE* jbl_stream_file_copy(FILE* this)
+{
+	return  this;
+}
+const jbl_stream_operater jbl_stream_file_operators={jbl_stream_file_operator,NULL,(void* (*)(void *))jbl_stream_file_copy,NULL};
 jbl_stream *jbl_stream_stdout;
 jbl_stream *jbl_stream_stdin;
 #if JBL_VAR_ENABLE==1
 const jbl_var_operators jbl_stream_operators={
 	(void* (*)(void *))jbl_stream_free,
 	(void* (*)(void *))jbl_stream_copy,
-
+	NULL,
+#if JBL_STRING_ENABLE==1
+	NULL,
+#endif		
 #if JBL_STREAM_ENABLE==1
+	NULL,
 	NULL,
 #endif	
 };
-inline jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmp)
+inline jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp)
 {
-	jbl_var * this=jbl_malloc((sizeof(jbl_stream))+8+((buf==NULL)?size:0));
-	jbl_stream_init($bl_stream(this),op,data,size,buf,tmp);
-	jbl_gc_set_var($bl_stream(this));
+	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_stream))+(sizeof(jbl_var))+((buf==NULL)?size:0))+(sizeof(jbl_var))));	
+	jbl_stream_init($jbl_stream(this),op,data,size,buf,tmpv,tmpp);
+	jbl_gc_set_var($jbl_stream(this));
 	jbl_var_set_operators(this,&jbl_stream_operators);
 	return this;	
 }

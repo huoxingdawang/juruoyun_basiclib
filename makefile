@@ -8,7 +8,7 @@
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
 CC = gcc
-BITS = -m64 
+BITS =
 BITSLIB = $(JBL_BITSLIB)
 ifeq ($(shell uname),Linux)
 	H = /
@@ -17,8 +17,8 @@ else
 	H = \\
 	rm = del
 endif
-# all:jbl aes array base64 bitset cmd file json hash_table link_list malloc md5 rand stream string time sha1 test var
-all:jbl aes array base64 bitset cmd md5 rand stream string sha1 var
+# all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test var
+all:jbl aes base64 bitset cmd ht ll md5 rand stream string sha1 var
 clean:
 	$(rm) tmp$(H)*.o /s
 	$(rm) tmp$(H)*.a /s
@@ -36,23 +36,23 @@ run:
 	exes$(H)base64
 	exes$(H)bitset
 	exes$(H)cmd
-	exes$(H)file
-	exes$(H)json
-	exes$(H)hash_table
-	exes$(H)link_list
-	exes$(H)malloc
+#	exes$(H)file
+#	exes$(H)json
+	exes$(H)ht
+#	exes$(H)ll
+#	exes$(H)malloc
 	exes$(H)rand
 	exes$(H)md5
 	exes$(H)stream
 	exes$(H)sha1
-	exes$(H)time
-	exes$(H)test
+#	exes$(H)time
+#	exes$(H)test
 	exes$(H)var
 #examples
 aes:jbl
 	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)aes.o examples$(H)aes.c $(BITSLIB)
 	$(CC) $(BITS) -o exes$(H)aes tmp$(H)aes.o tmp$(H)jbl.a
-array:jbl
+#array:jbl
 #	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)array.o examples$(H)array.c $(BITSLIB)
 #	$(CC) -o exes$(H)array tmp$(H)array.o tmp$(H)jbl.a
 base64:jbl
@@ -70,12 +70,12 @@ file:jbl
 json:jbl
 	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)json.o examples$(H)json.c	$(BITSLIB)
 	$(CC) $(BITS) -o exes$(H)json tmp$(H)json.o tmp$(H)jbl.a
-hash_table:jbl
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)hash_table.o examples$(H)hash_table.c $(BITSLIB)
-	$(CC) $(BITS) -o exes$(H)hash_table tmp$(H)hash_table.o tmp$(H)jbl.a	
-link_list:jbl
-	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)link_list.o examples$(H)link_list.c $(BITSLIB)
-	$(CC) $(BITS) -o exes$(H)link_list tmp$(H)link_list.o tmp$(H)jbl.a
+ht:jbl
+	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)ht.o examples$(H)ht.c $(BITSLIB)
+	$(CC) $(BITS) -o exes$(H)ht tmp$(H)ht.o tmp$(H)jbl.a	
+ll:jbl
+	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)ll.o examples$(H)ll.c $(BITSLIB)
+	$(CC) $(BITS) -o exes$(H)ll tmp$(H)ll.o tmp$(H)jbl.a
 malloc:jbl
 	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)malloc.o examples$(H)malloc.c $(BITSLIB)
 	$(CC) $(BITS) -o exes$(H)malloc tmp$(H)malloc.o tmp$(H)jbl.a
@@ -118,7 +118,7 @@ JBL_BITSLIB =
 else
 JBL_BITSLIB = 
 endif
-jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_file jbl/jbl_gc jbl/jbl_hash_table jbl/jbl_link_list jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
+jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_ll jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
 	ar  rc tmp$(H)jbl.a tmp$(H)jbl_*.o
 jbl/jbl_aes            :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_aes.o        jbl$(H)jbl_aes.c        $(JBL_BITSLIB)
@@ -136,10 +136,10 @@ jbl/jbl_file           :
 	$(CC) $(BITS) -c       -std=gnu99 -o tmp$(H)jbl_file.o       jbl$(H)jbl_file.c       $(JBL_BITSLIB)
 jbl/jbl_gc             :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_gc.o         jbl$(H)jbl_gc.c         $(JBL_BITSLIB)
-jbl/jbl_hash_table     :
-	$(CC) $(BITS) -c       -std=gnu99 -o tmp$(H)jbl_hash_table.o jbl$(H)jbl_hash_table.c $(JBL_BITSLIB)
-jbl/jbl_link_list      :
-	$(CC) $(BITS) -c       -std=gnu99 -o tmp$(H)jbl_link_list.o  jbl$(H)jbl_link_list.c  $(JBL_BITSLIB)
+jbl/jbl_ht             :
+	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_ht.o         jbl$(H)jbl_ht.c $(JBL_BITSLIB)
+jbl/jbl_ll             :
+	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_ll.o         jbl$(H)jbl_ll.c  $(JBL_BITSLIB)
 jbl/jbl_malloc         :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_malloc.o     jbl$(H)jbl_malloc.c     $(JBL_BITSLIB)
 jbl/jbl_md5            :
@@ -157,4 +157,4 @@ jbl/jbl_time           :
 jbl/jbl_var            :
 	$(CC) $(BITS) -c -w    -std=gnu99 -o tmp$(H)jbl_var.o        jbl$(H)jbl_var.c        $(JBL_BITSLIB)
 jbl/jbl_ying           :
-	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_ying.o       jbl$(H)jbl_ying.c       $(JBL_BITSLIB)
+	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_ying.o       jbl$(H)jbl_ying.c       $(JBL_BITSLIB)

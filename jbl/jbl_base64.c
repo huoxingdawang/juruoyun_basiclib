@@ -34,6 +34,7 @@ jbl_string * jbl_base64_encode(const jbl_string *this,jbl_string *result)
 		else if(len%3==2)
 			jbl_string_add_char_force(result_,ent[(((unsigned char)jbl_string_get_force(this_,i)&0x03)<<4)+((unsigned char)jbl_string_get_force(this_,i+1)>>4)]),jbl_string_add_char_force(result_,ent[((unsigned char)jbl_string_get_force(this_,i+1)&0x0f)<<2]),jbl_string_add_char_force(result_,'=');
 	}
+	jbl_string_hash_clear(result);
 	return result;
 }
 
@@ -66,6 +67,7 @@ jbl_string * jbl_base64_decode(const jbl_string *this,jbl_string *result)
 		}
 		++i;
 	}	
+	jbl_string_hash_clear(result);	
 	return result;
 }
 #if JBL_STREAM_ENABLE==1

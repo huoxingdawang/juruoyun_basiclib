@@ -108,13 +108,13 @@ jbl_aes_128_key* jbl_aes_128_extend_key(jbl_uint8* key)
 		}
 	return w;
 }
-inline jbl_aes_128_key *jbl_aes_128_copy_key(jbl_aes_128_key *that)
+inline jbl_aes_128_key *jbl_aes_128_key_copy(jbl_aes_128_key *that)
 {
 	if(that==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
 	jbl_gc_plus(that);
 	return that;
 }
-inline jbl_aes_128_key*	jbl_aes_128_free_key(jbl_aes_128_key* w)
+inline jbl_aes_128_key*	jbl_aes_128_key_free(jbl_aes_128_key* w)
 {
 	jbl_gc_minus(w);
 	if(!jbl_gc_reference_cnt(w))
@@ -214,6 +214,7 @@ jbl_string * jbl_aes_128_ecb_encode(jbl_aes_128_key *w,const jbl_string *in,jbl_
 	for(jbl_uint8 j=0,x=((len-i)==0?16:(16-(len&15)));j<16;tmp[j]=x,++j);
 	for(jbl_uint8 j=0;i<len;tmp[j]=jbl_string_get_force(in_,i),++i,++j);
 	__jbl_aes_128_encode_16(key,tmp,sout+jbl_string_get_length_force(out_)),jbl_string_set_length_force(out_,jbl_string_get_length_force(out_)+16);
+	jbl_string_hash_clear(out);
 	return out;
 }
 jbl_string * jbl_aes_128_ecb_decode(jbl_aes_128_key *w,const jbl_string *in,jbl_string *out)
@@ -228,6 +229,7 @@ jbl_string * jbl_aes_128_ecb_decode(jbl_aes_128_key *w,const jbl_string *in,jbl_
 	for(jbl_string_size_type i=0;i<len;i+=16)
 		__jbl_aes_128_decode_16(key,sin+i,sout+jbl_string_get_length_force(out_)),jbl_string_set_length_force(out_,jbl_string_get_length_force(out_)+16);
 	jbl_string_set_length_force(out_,jbl_string_get_length_force(out_)-sout[jbl_string_get_length_force(out_)-1]);
+	jbl_string_hash_clear(out);
 	return out;
 }
 #if JBL_STREAM_ENABLE==1
@@ -283,8 +285,8 @@ void __jbl_aes_128_ecb_sdo(jbl_stream* this,jbl_uint8 flags)
 		this->en=this->en-i;
 	}
 }
-const jbl_stream_operater jbl_stream_aes_128_ecb_encode_operators={__jbl_aes_128_ecb_seo,(void (*)(void *))jbl_aes_128_free_key,NULL,NULL};
-const jbl_stream_operater jbl_stream_aes_128_ecb_decode_operators={__jbl_aes_128_ecb_sdo,(void (*)(void *))jbl_aes_128_free_key,NULL,NULL};
+const jbl_stream_operater jbl_stream_aes_128_ecb_encode_operators={__jbl_aes_128_ecb_seo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,NULL};
+const jbl_stream_operater jbl_stream_aes_128_ecb_decode_operators={__jbl_aes_128_ecb_sdo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,NULL};
 #endif
 #endif
 #if JBL_AES_128_CBC_ENABLE==1
@@ -309,6 +311,7 @@ jbl_string * jbl_aes_128_cbc_encode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_
 		for(jbl_uint8 j=0;j<16;s[j]=16^vii[j],j++);
 		__jbl_aes_128_encode_16(key,s,sout+jbl_string_get_length_force(out_)),jbl_string_set_length_force(out_,jbl_string_get_length_force(out_)+16);
 	}
+	jbl_string_hash_clear(out);
 	return out;	
 }
 jbl_string * jbl_aes_128_cbc_decode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_string *in,jbl_string *out)
@@ -328,6 +331,7 @@ jbl_string * jbl_aes_128_cbc_decode(jbl_aes_128_key *w,jbl_uint8 * vi,const jbl_
 		jbl_string_set_length_force(out_,jbl_string_get_length_force(out_)+16);
 	}
 	jbl_string_set_length_force(out_,jbl_string_get_length_force(out_)-sout[jbl_string_get_length_force(out_)-1]);
+	jbl_string_hash_clear(out);
 	return out;	
 }
 #if JBL_STREAM_ENABLE==1
@@ -394,8 +398,8 @@ void __jbl_aes_128_cbc_sdo(jbl_stream* this,jbl_uint8 flags)
 		this->en=this->en-i;
 	}
 }
-const jbl_stream_operater jbl_stream_aes_128_cbc_encode_operators={__jbl_aes_128_cbc_seo,(void (*)(void *))jbl_aes_128_free_key,NULL,NULL};
-const jbl_stream_operater jbl_stream_aes_128_cbc_decode_operators={__jbl_aes_128_cbc_sdo,(void (*)(void *))jbl_aes_128_free_key,NULL,NULL};
+const jbl_stream_operater jbl_stream_aes_128_cbc_encode_operators={__jbl_aes_128_cbc_seo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,NULL};
+const jbl_stream_operater jbl_stream_aes_128_cbc_decode_operators={__jbl_aes_128_cbc_sdo,(void (*)(void *))jbl_aes_128_key_free,(void* (*)(void *))jbl_aes_128_key_copy,NULL};
 #endif
 #endif
 #undef ffmul

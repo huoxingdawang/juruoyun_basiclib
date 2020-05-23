@@ -13,7 +13,7 @@ JBL_BITSLIB =
 else
 JBL_BITSLIB = 
 endif
-jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_file jbl/jbl_gc jbl/jbl_hash_table jbl/jbl_link_list jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
+jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_ll jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
 	ar  rc tmp$(H)jbl.a tmp$(H)jbl_*.o
 jbl/jbl_aes            :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_aes.o        jbl$(H)jbl_aes.c        $(JBL_BITSLIB)
@@ -31,10 +31,10 @@ jbl/jbl_file           :
 	$(CC) $(BITS) -c       -std=gnu99 -o tmp$(H)jbl_file.o       jbl$(H)jbl_file.c       $(JBL_BITSLIB)
 jbl/jbl_gc             :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_gc.o         jbl$(H)jbl_gc.c         $(JBL_BITSLIB)
-jbl/jbl_hash_table     :
-	$(CC) $(BITS) -c       -std=gnu99 -o tmp$(H)jbl_hash_table.o jbl$(H)jbl_hash_table.c $(JBL_BITSLIB)
-jbl/jbl_link_list      :
-	$(CC) $(BITS) -c       -std=gnu99 -o tmp$(H)jbl_link_list.o  jbl$(H)jbl_link_list.c  $(JBL_BITSLIB)
+jbl/jbl_ht             :
+	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_ht.o         jbl$(H)jbl_ht.c $(JBL_BITSLIB)
+jbl/jbl_ll             :
+	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_ll.o         jbl$(H)jbl_ll.c  $(JBL_BITSLIB)
 jbl/jbl_malloc         :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)jbl_malloc.o     jbl$(H)jbl_malloc.c     $(JBL_BITSLIB)
 jbl/jbl_md5            :

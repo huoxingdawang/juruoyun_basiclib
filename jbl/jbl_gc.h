@@ -26,7 +26,7 @@ void 	*jbl_refer_as_var(void *ptr,const jbl_var_operators *ops);		//引用一个
 void 	*jbl_refer(void *ptr);		//引用一个变量，********************特别的该函数必须传入一个二级指针********************
 #endif
 void 	*jbl_derefer(void *ptr);												//取消引用一个变量
-#define jbl_refer_pull(x)			((jbl_gc_is_ref((const jbl_reference*)x))?(((const jbl_reference*)x)->ptr):x)//脱离引用
+#define jbl_refer_pull(x)			(x?((jbl_gc_is_ref((const jbl_reference*)x))?(((const jbl_reference*)x)->ptr):x):NULL)//脱离引用
 
 #define	jbl_gc_init(x)				((x)->gc=0)		//初始化gc字段
 #define	jbl_gc_plus(x)				((x)->gc+=4)	//引用计数加一

@@ -29,14 +29,14 @@ void jbl_file_init_as(jbl_file *this,jbl_uint8 type)
 			if(this->file.handle!=NULL)
 				fclose(this->file.handle),this->file.handle=NULL;		
 		else if(type==JBL_FILE_TYPE_DIR)
-			jbl_hash_table_clear(&this->dir.child);
+			jbl_ht_clear(&this->dir.child);
 	}
 	else if(this->type==JBL_FILE_TYPE_UNKNOW)
 	{
 		if(type==JBL_FILE_TYPE_FILE)
 			this->file.handle=NULL;
 		else if(type==JBL_FILE_TYPE_DIR)
-			jbl_hash_table_init(&this->dir.child);
+			jbl_ht_init(&this->dir.child);
 		this->type=type;		
 	}
 	else
@@ -45,7 +45,7 @@ void jbl_file_init_as(jbl_file *this,jbl_uint8 type)
 			if(this->file.handle!=NULL)
 				fclose(this->file.handle),this->file.handle=NULL;
 		else if(this->type==JBL_FILE_TYPE_DIR)
-			jbl_hash_table_free(&this->dir.child);			
+			jbl_ht_free(&this->dir.child);			
 		this->type=type;		
 	}
 }
@@ -60,7 +60,7 @@ void jbl_file_clear(jbl_file *this)
 			fclose(this->file.handle),this->file.handle=NULL;
 	}
 	else if(this->type==JBL_FILE_TYPE_DIR)
-		jbl_hash_table_free(&this->dir.child);
+		jbl_ht_free(&this->dir.child);
 	this->light_copy=0;
 	this->type=JBL_FILE_TYPE_UNKNOW;
 	jbl_string_clear(&this->name);	
@@ -74,7 +74,7 @@ void jbl_file_free(jbl_file *this)
 			fclose(this->file.handle),this->file.handle=NULL;
 	}
 	else if(this->type==JBL_FILE_TYPE_DIR)
-		jbl_hash_table_free(&this->dir.child);	
+		jbl_ht_free(&this->dir.child);	
 	this->type=JBL_FILE_TYPE_UNKNOW;
 	jbl_string_free(&this->name);
 	this->f=NULL;
@@ -94,7 +94,7 @@ void jbl_file_copy(jbl_file *this,jbl_file *that,jbl_copy_type cpt)
 			this->light_copy=that->light_copy,this->file.handle=that->file.handle,((cpt==move)?that:this)->light_copy=1;
 	}
 	else if(that->type==JBL_FILE_TYPE_DIR)
-		jbl_hash_table_copy(&this->dir.child,&that->dir.child,cpt);
+		jbl_ht_copy(&this->dir.child,&that->dir.child,cpt);
 }
 inline char jbl_file_space_ship(const jbl_file *this,const jbl_file *that)
 {
@@ -122,8 +122,8 @@ void jbl_file_view_ex(const jbl_file *this,FILE * file,char*str,int a,int tabs)
 	else if(this->type==JBL_FILE_TYPE_DIR)
 	{
 		fputc('\n',file);
-		jbl_hash_table_foreach(&this->dir.child,i)
-			jbl_file_view_ex(jbl_var_get_file(jbl_hash_table_get_var(i)),file,"",-1,tabs+1);
+		jbl_ht_foreach(&this->dir.child,i)
+			jbl_file_view_ex(jbl_var_get_file(jbl_ht_get_var(i)),file,"",-1,tabs+1);
 	}
 }
 void jbl_file_file_open_ex(jbl_file *this,jbl_file *f,jbl_string *name,jbl_copy_type ncpt,jbl_uint32 recursive_time)
@@ -154,10 +154,10 @@ void jbl_file_file_open_ex(jbl_file *this,jbl_file *f,jbl_string *name,jbl_copy_
 				jbl_string_add_char(&tmp1,'\\');
 #endif
 			jbl_string_size_type nn=jbl_string_get_length(&tmp1);
-			jbl_hash_table_size_type cnt=0;
+			jbl_ht_size_type cnt=0;
 			jbl_var tv;jbl_var_init(&tv);
 			while((dirp=readdir(dir)))++cnt;
-			jbl_hash_table_extend(&this->dir.child,cnt);
+			jbl_ht_extend(&this->dir.child,cnt);
 			rewinddir(dir);
 			while((dirp=readdir(dir)))
 			{
@@ -167,7 +167,7 @@ void jbl_file_file_open_ex(jbl_file *this,jbl_file *f,jbl_string *name,jbl_copy_
 				jbl_var_init_as(&tv,JBL_VAR_TYPE_FILE);
 				jbl_string_add_chars(&tmp1,dirp->d_name);
 				jbl_file_file_open_ex(jbl_var_get_file(&tv),this,&tmp1,move,recursive_time-1);
-				jbl_hash_table_insert(&this->dir.child,&tmp2,&tv,move,move);
+				jbl_ht_insert(&this->dir.child,&tmp2,&tv,move,move);
 				jbl_string_get_length(&tmp1)=nn;
 			}
 			jbl_var_free(&tv);

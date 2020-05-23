@@ -7,13 +7,20 @@
    IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
    PURPOSE.
    See the Mulan PSL v1 for more details.*/
-#ifndef __JBL_LINK_LIST_CONFIG_H
-#define __JBL_LINK_LIST_CONFIG_H
+#ifndef __JBL_HT_CONFIG_H
+#define __JBL_HT_CONFIG_H
 #include "jbl_config.h"
-#if JBL_LINK_LIST_ENABLE==1
+#if JBL_HT_ENABLE==1
 #include "jbl_ying.h"
-typedef jbl_uint64 jbl_link_list_size_type;
+#if __SIZEOF_POINTER__ == 8
+	typedef jbl_uint64 			jbl_ht_size_type;		
+	typedef jbl_int64 			__jbl_ht_size_type;		
+#else
+	typedef jbl_uint32 			jbl_ht_size_type;		
+	typedef jbl_int32 			__jbl_ht_size_type;		
+#endif
 
+#define JBL_HT_MIN_SIZE 8
 
 #endif
 #endif

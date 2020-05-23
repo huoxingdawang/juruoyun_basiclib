@@ -21,8 +21,8 @@ jbl_string *	jbl_base64_decode					(const jbl_string *this,jbl_string *result);
 extern			const jbl_stream_operater jbl_stream_base64_encode_operators;
 extern			const jbl_stream_operater jbl_stream_base64_decode_operators;
 
-#define			jbl_stream_base64_encode_new()		jbl_stream_new(&jbl_stream_base64_encode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)
-#define			jbl_stream_base64_decode_new()		jbl_stream_new(&jbl_stream_base64_decode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)
+#define			jbl_stream_base64_encode_new()		jbl_stream_new(&jbl_stream_base64_encode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0,NULL)
+#define			jbl_stream_base64_decode_new()		jbl_stream_new(&jbl_stream_base64_decode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0,NULL)
 
 
 //typedef struct __jbl_stream_operater jbl_stream_operater;
