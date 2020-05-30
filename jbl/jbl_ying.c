@@ -13,6 +13,7 @@ inline jbl_int64 jbl_ceil(long double i)
 {
 	return (((jbl_int64)i)==i)?((jbl_int64)i):(((jbl_int64)i)+1);
 }
+/*
 jbl_uint8 jbl_get_uint64_length(jbl_uint64 tmp)
 {
 	jbl_uint8 len=0;
@@ -39,4 +40,5 @@ jbl_uint8 jbl_get_double_length(double tmp)
 	len+=jbl_get_uint64_length(tmp*ji);
 	return len;
 }
+*/
 #endif

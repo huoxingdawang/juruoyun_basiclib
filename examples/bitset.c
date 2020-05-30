@@ -3,8 +3,8 @@
 const jbl_uint8 len=(512>>jbl_bitset_2bits);
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_bitset_type bitset[len];
 	jbl_bitset_init(bitset,len);
 	jbl_bitset_view(bitset,len);

@@ -1,4 +1,4 @@
-﻿/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2019] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -93,10 +93,7 @@ void jbl_stream_push_uint64(jbl_stream* this,jbl_uint64 in)
 {
 	this=jbl_refer_pull(this);
 	if(in==0)
-	{
-		jbl_stream_push_char_force(this,'0');
-		return;
-	}
+		return jbl_stream_push_char(this,'0');
 	int cnt=20;
 	char b[21];
 	b[cnt--]=0;
@@ -114,16 +111,44 @@ inline void jbl_stream_push_double(jbl_stream* this,double in)
 {
 	this=jbl_refer_pull(this);
 	jbl_stream_push_int64(this,in);
-	if(in<0)
-		in=-in;
+	if(in<0)in=-in;
 	in-=(jbl_uint64)in;
-	jbl_uint64 ji=10;
-	for(double t=in*ji;(t-(jbl_uint64)t<(-JBL_DOUBLE_PRECISION)||t-(jbl_uint64)t>(JBL_DOUBLE_PRECISION));ji=(ji<<3)+(ji<<1),t=in*ji);
 	jbl_stream_push_char_force(this,'.');
-	ji=(ji<<3)+(ji<<1);
-	jbl_stream_push_uint64(this,((jbl_uint64)((in*ji+0.5)/10)));	
+	jbl_uint64 t=(in*1000000+0.5)/10;
+	if(t==0)
+		return jbl_stream_push_char(this,'0');
+	char b[21];
+	for(register unsigned char i=0;i<21;b[i]='0',++i);
+	register unsigned char cnt=20;
+	b[cnt--]=0;
+	while(t)b[cnt--]=t%10+'0',t/=10;
+	jbl_stream_push_chars(this,b+20-7+2);
 }
-
+void jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)
+{
+	const char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+	jbl_stream_push_char(this,hex[in>>4]),jbl_stream_push_char(this,hex[in&15]);	
+}
+inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,char*name,jbl_int32 format,char*str,jbl_int32 *tabs)
+{
+	if(out==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(format&&*tabs>=0)for(jbl_int16 i=0;i<*tabs;jbl_stream_push_char(out,'\t'),++i);else *tabs=-*tabs;
+	if(this)jbl_stream_push_chars(out,name);
+	else	jbl_stream_push_chars(out,"null          ");
+	if(format&&str)jbl_stream_push_chars(out,str),jbl_stream_push_char(out,' '),(format!=-1?jbl_stream_push_uint64(out,format):0);
+	++*tabs;
+	return this?0:1;
+}
+#if JBL_JSON_ENABLE==1
+inline char jbl_stream_json_put_format(const void *this,jbl_stream *out,char format,jbl_int32 *tabs)
+{
+	if(out==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(format&&*tabs>=0)for(jbl_int16 i=0;i<*tabs;jbl_stream_push_char(out,'\t'),++i);else *tabs=-*tabs;	
+	++*tabs;
+	if(!this)return jbl_stream_push_chars(out,"null"),1;
+	return 0;
+}
+#endif
 void jbl_stream_file_operator(jbl_stream* this,jbl_uint8 flags)
 {
 	this=jbl_refer_pull(this);
@@ -156,18 +181,23 @@ const jbl_var_operators jbl_stream_operators={
 	(void* (*)(void *))jbl_stream_copy,
 	NULL,
 #if JBL_STRING_ENABLE==1
+#if JBL_JSON_ENABLE==1
 	NULL,
+#endif		
 #endif		
 #if JBL_STREAM_ENABLE==1
 	NULL,
+#if JBL_JSON_ENABLE==1
 	NULL,
 #endif	
+#endif	
 };
+inline jbl_stream * jbl_Vstream(jbl_var * this){if(!Vis_jbl_stream(this))jbl_exception(JBL_ERROR_VAR_TYPE_ERROR);return((jbl_stream*)this);}
 inline jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp)
 {
 	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_stream))+(sizeof(jbl_var))+((buf==NULL)?size:0))+(sizeof(jbl_var))));	
-	jbl_stream_init($jbl_stream(this),op,data,size,buf,tmpv,tmpp);
-	jbl_gc_set_var($jbl_stream(this));
+	jbl_stream_init(jbl_Vstream(this),op,data,size,buf,tmpv,tmpp);
+	jbl_gc_set_var(jbl_Vstream(this));
 	jbl_var_set_operators(this,&jbl_stream_operators);
 	return this;	
 }

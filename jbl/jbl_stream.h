@@ -39,11 +39,6 @@ typedef struct __jbl_stream_operater
 	void* (*scp)(void*);//stream copy
 	void  (*usb)(jbl_stream*);// update stream buf
 }jbl_stream_operater;
-typedef enum
-{
-	json,
-	view
-}jbl_put_type;
 jbl_stream *	jbl_stream_new						(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp);
 jbl_stream * 	jbl_stream_init						(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void* tmpp);
 jbl_stream * 	jbl_stream_copy						(jbl_stream* this);
@@ -62,22 +57,28 @@ void			jbl_stream_push_chars				(jbl_stream* this,char *str);
 void			jbl_stream_push_uint64				(jbl_stream* this,jbl_uint64 in);
 void			jbl_stream_push_int64				(jbl_stream* this,jbl_int64 in);
 void			jbl_stream_push_double				(jbl_stream* this,double in);
-
+void			jbl_stream_push_hex_8bits			(jbl_stream *this,jbl_uint8 in);
 #define			pchars(x)							jbl_stream_push_chars(jbl_stream_stdout,x)
 #define			pint(x)								jbl_stream_push_int64(jbl_stream_stdout,x)
 #define			puint(x)							jbl_stream_push_uint64(jbl_stream_stdout,x)
 #define			pchar(x)							jbl_stream_push_char(jbl_stream_stdout,x)
+#define			pdouble(x)							jbl_stream_push_double(jbl_stream_stdout,x)
 #define			pn()								pchar('\n')
 #define			pf()								jbl_stream_do(jbl_stream_stdout,jbl_stream_force)
 #define			pl()								puint(__LINE__),pchars(" @ "__FILE__),pn(),pf()
+
+char			jbl_stream_view_put_format			(const void *this,jbl_stream *out,char*name,jbl_int32 format,char*str,jbl_int32 *tabs);
+#if JBL_JSON_ENABLE==1
+char			jbl_stream_json_put_format			(const void *this,jbl_stream *out,char format,jbl_int32 *tabs);
+#endif
 
 extern			const jbl_stream_operater jbl_stream_file_operators;
 extern			jbl_stream *jbl_stream_stdout;
 extern			jbl_stream *jbl_stream_stdin;
 #define 		sout	jbl_stream_stdout
 #define 		sin		jbl_stream_stdin
-#define			jbl_stream_start()	jbl_stream_stdout=jbl_stream_new(&jbl_stream_file_operators,stdout,JBL_STREAM_EXCEED_LENGTH,NULL,0,NULL),	\
-									jbl_stream_stdin =jbl_stream_new(&jbl_stream_file_operators,stdin ,0,NULL,0,NULL)
+#define			jbl_stream_start()	jbl_stream_stdout=jbl_stream_new(&jbl_stream_file_operators,JBL_STREAM_STDOUT,JBL_STREAM_EXCEED_LENGTH,NULL,0,NULL),	\
+									jbl_stream_stdin =jbl_stream_new(&jbl_stream_file_operators,JBL_STREAM_STDIN ,0,NULL,0,NULL)
 #define 		jbl_stream_stop()	/*不关闭stdout,给malloc留条活路jbl_stream_do(jbl_stream_stdout,jbl_stream_force),jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout),*/	\
 									jbl_stream_stdin =jbl_stream_free(jbl_stream_stdin )
 
@@ -85,16 +86,16 @@ extern			jbl_stream *jbl_stream_stdin;
 typedef	struct	__jbl_var_operators	jbl_var_operators;
 typedef	struct	__jbl_var 			jbl_var;
 extern	const	jbl_var_operators	jbl_stream_operators;
-#define			$jbl_stream(x)							((jbl_stream*)x)
+
+jbl_stream *	jbl_Vstream								(jbl_var * this);
+#define			Vis_jbl_stream(x)						(jbl_var_get_operators(x)==&jbl_stream_operators)
 jbl_var *		jbl_Vstream_new							(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,const jbl_uint64 tmpv,const void *tmpp);
-#define 		jbl_Vstream_connect(this,that)			($jbl_stream(this))->nxt=$jbl_stream(that)
-#define 		jbl_Vstream_do(this,flag)				($jbl_stream(this))->op->op($jbl_stream(this),flag)
 
-#define			jbl_var_copy_from_stream(x)				((jbl_var*)jbl_stream_copy($jbl_stream(jbl_Vstream_new()),x))
-#define			jbl_stream_copy_from_var(x)				jbl_stream_copy(NULL,$jbl_stream(x))
+#define			jbl_var_copy_from_stream(x)				((jbl_var*)jbl_stream_copy(jbl_Vstream(jbl_Vstream_new()),x))
+#define			jbl_stream_copy_from_var(x)				jbl_stream_copy(NULL,jbl_Vstream(x))
 
-//#define		jbl_var_move_from_string(x)				((jbl_var*)jbl_string_move($jbl_string(jbl_Vstring_new()),x))
-//#define		jbl_string_move_from_var(x)				jbl_string_move(NULL,$jbl_string(x))
+//#define		jbl_var_move_from_string(x)				((jbl_var*)jbl_string_move(jbl_Vstring(jbl_Vstring_new()),x))
+//#define		jbl_string_move_from_var(x)				jbl_string_move(NULL,jbl_Vstring(x))
 
 
 

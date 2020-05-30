@@ -12,6 +12,6 @@
 #include "jbl_sha1_config.h"
 #if JBL_SHA1_ENABLE==1
 #include "jbl_string.h"
-jbl_string*	jbl_sha1	(const jbl_string* this,jbl_string* out);
+jbl_string*	jbl_sha1	(const jbl_string* this,jbl_string* out);//进行sha1加密
 #endif
 #endif

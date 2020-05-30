@@ -28,22 +28,30 @@ const jbl_var_operators jbl_ht_operators={
 	(void* (*)(void *))jbl_ht_free,
 	(void* (*)(void *))jbl_ht_copy,
 	(char  (*)(const void*,const void*))jbl_ht_space_ship,
+#if JBL_JSON_ENABLE==1
 	(jbl_string*(*)(const void*,jbl_string *,char,jbl_int32))jbl_ht_json_encode,
+#endif	
 #if JBL_STREAM_ENABLE==1
 	(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))jbl_ht_view_put,
+#if JBL_JSON_ENABLE==1
 	(void(*)(const void*,jbl_stream *,char,jbl_int32))jbl_ht_json_put,
 #endif	
+#endif	
 };
-void jbl_ht_data_init(jbl_ht_data *this);
-void jbl_ht_data_free(jbl_ht_data *this);
-inline void jbl_ht_data_init(jbl_ht_data *this)
+inline jbl_ht* jbl_Vht(jbl_var * this){if(!Vis_jbl_ht(this))jbl_exception(JBL_ERROR_VAR_TYPE_ERROR);return((jbl_ht*)this);}
+inline jbl_var * jbl_htv(jbl_ht_data *node){return node->v;}
+inline jbl_string * jbl_htk(jbl_ht_data *node){return node->k;}
+inline jbl_string_hash_type jbl_hth(jbl_ht_data *node){return node->h;}
+void __jbl_ht_data_init(jbl_ht_data *this);
+void __jbl_ht_data_free(jbl_ht_data *this);
+inline void __jbl_ht_data_init(jbl_ht_data *this)
 {
 	this->k=NULL;
 	this->v=NULL;
 	this->h=0;
 	this->nxt=((st)-1);
 }
-inline void jbl_ht_data_free(jbl_ht_data *this)
+inline void __jbl_ht_data_free(jbl_ht_data *this)
 {
 	this->k=jbl_string_free(this->k);
 	this->v=jbl_var_free(this->v);
@@ -58,9 +66,9 @@ inline jbl_ht * jbl_ht_new()
 jbl_var * jbl_Vht_new()
 {
 	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_ht))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
-	jbl_ht_init($jbl_ht(this));
-	jbl_gc_set_var($jbl_ht(this));
 	jbl_var_set_operators(this,&jbl_ht_operators);
+	jbl_ht_init(jbl_Vht(this));
+	jbl_gc_set_var(jbl_Vht(this));
 	return this;		
 }
 inline jbl_ht * jbl_ht_init(jbl_ht *this)
@@ -82,7 +90,7 @@ jbl_ht* jbl_ht_free(jbl_ht *this)
 		else
 			if(this->size!=0)
 			{
-				for(register st i=0;i<this->size;jbl_ht_data_free(&this->data[i]),++i);	
+				for(register st i=0;i<this->size;__jbl_ht_data_free(&this->data[i]),++i);	
 				jbl_free((char*)this->data-sizeof(st)*this->size);
 			}
 		jbl_free(((jbl_gc_is_var(this))?(jbl_ht*)((char*)this-sizeof(jbl_var)):this));
@@ -103,7 +111,7 @@ jbl_ht * jbl_ht_extend_to(jbl_ht *this,st size)
 	
 	jbl_ht *tmp=NULL;
 	if((jbl_gc_reference_cnt(this)==1))	tmp=this;
-	else								tmp=(jbl_gc_is_var(this))?$jbl_ht(jbl_Vht_new()):jbl_ht_new();
+	else								tmp=(jbl_gc_is_var(this))?jbl_Vht(jbl_Vht_new()):jbl_ht_new();
 	st old_size=this->size;
 	jbl_max_update(tmp->size,JBL_HT_MIN_SIZE);
 	jbl_max_update(tmp->size,this->len);
@@ -116,7 +124,7 @@ jbl_ht * jbl_ht_extend_to(jbl_ht *this,st size)
 	if((jbl_gc_reference_cnt(this)==1)&&size-old_size+this->len<=old_size&&(this->len<=(this->nxt>>1))&&this->data!=NULL)
 		return ref?(ref->ptr=jbl_ht_rehash(this),((jbl_ht *)ref)):tmp;
 	dt *tmpd=(dt*)(((char*)jbl_malloc(tmp->size*(sizeof(dt)+sizeof(st))))+sizeof(st)*tmp->size);
-	for(register st i=0;i<tmp->size;jbl_ht_data_init(&tmpd[i]),((st*)tmpd)[-i-1]=((_st)-1),++i);
+	for(register st i=0;i<tmp->size;__jbl_ht_data_init(&tmpd[i]),((st*)tmpd)[-i-1]=((_st)-1),++i);
 	if(this->data==NULL)
 		tmp->data=tmpd;
 	else
@@ -135,7 +143,7 @@ jbl_ht * jbl_ht_extend_to(jbl_ht *this,st size)
 			}		
 		if(old_size!=0&&(jbl_gc_reference_cnt(this)==1))
 		{
-			for(register st i=0;i<old_size;jbl_ht_data_free(&this->data[i]),++i);	
+			for(register st i=0;i<old_size;__jbl_ht_data_free(&this->data[i]),++i);	
 			jbl_free((char*)this->data-sizeof(st)*old_size);
 		}
 		tmp->data=tmpd;
@@ -159,7 +167,7 @@ jbl_ht * jbl_ht_rehash(jbl_ht *this)
 			thi->data[j].nxt=(((st*)thi->data)[h2]>=i)?(thi->data[i].nxt):(((st*)thi->data)[h2]);
 			((st*)thi->data)[h2]=j;		
 			++j;
-			jbl_ht_data_free(&thi->data[i]);
+			__jbl_ht_data_free(&thi->data[i]);
 		}
 	thi->nxt=j;
 	return this;
@@ -176,14 +184,14 @@ jbl_ht * __jbl_ht_insert(jbl_ht *this,ht h,jbl_string *k,jbl_var *v)
 			if(h==thi->data[i].h&&jbl_string_if_equal(thi->data[i].k,k))
 			{
 				jbl_var_free(thi->data[i].v);
-				thi->data[i].v=jbl_var_copy(v);
+				thi->data[i].v=v?jbl_var_copy(v):jbl_Vnull_new();
 				return thi;
 			}
 	}
 	h2=gh2(thi,h);
 	thi->data[thi->nxt].h=h;
 	thi->data[thi->nxt].k=jbl_string_copy(jbl_refer_pull(k));
-	thi->data[thi->nxt].v=jbl_var_copy(v);
+	thi->data[thi->nxt].v=v?jbl_var_copy(v):jbl_Vnull_new();
 	thi->data[thi->nxt].nxt=((st*)thi->data)[h2];
 	((st*)thi->data)[h2]=thi->nxt;
 	++thi->len;
@@ -216,7 +224,7 @@ jbl_ht * __jbl_ht_unset(jbl_ht *this,ht h,jbl_string *k)
 					(((st*)thi->data)[h2])=thi->data[i].nxt;
 				else
 					thi->data[j].nxt=thi->data[i].nxt;
-				jbl_ht_data_free(&thi->data[i]);
+				__jbl_ht_data_free(&thi->data[i]);
 				--thi->len;
 			}
 	}
@@ -296,24 +304,19 @@ jbl_ht * jbl_ht_merge_int(jbl_ht *this)
 				++thi->len;
 				++thi->nxt;
 			}
-			jbl_ht_data_free(&thi->data[i]);
+			__jbl_ht_data_free(&thi->data[i]);
 			jbl_string_free(s);
 			
 		}
 	return this;
 }
+#if JBL_JSON_ENABLE==1
 jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,char format,jbl_int32 tabs)
 {
-	if(out==NULL)out=jbl_string_new();
-	this=jbl_refer_pull(this);
-	out=jbl_refer_pull(out);
-	if(format&&tabs<0)out=jbl_string_add_char(out,'\n'),tabs=-tabs;
-	if(format&&tabs>=0)for(jbl_int16 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);else tabs=-tabs;
-	if(!this)return jbl_string_add_chars_length(out,(unsigned char *)"null",4);	
-	
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
+
 	out=jbl_string_add_char(out,'{');
 
-	++tabs;
 	char flag=0;
 	jbl_ht_foreach(this,i)
 	{
@@ -332,95 +335,71 @@ jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,char format,jb
 	out=jbl_string_add_char(out,'}');
 	return out;
 }
-/*
-jbl_string_size_type jbl_ht_from_json_start(jbl_ht *this,const jbl_string *in,jbl_string_size_type start)
+jbl_ht* jbl_ht_json_decode(jbl_ht *this,const jbl_string* in,jbl_string_size_type *start)
 {
-	if(this==NULL||in==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
-	register jbl_string_size_type i=start,n=jbl_string_get_length(in),ii;
-	jbl_string		k;jbl_string_init(&k);
-	jbl_var 			v;jbl_var_init(&v);
-	jbl_ht	t;jbl_ht_init(&t);	
-	for(;(i<n)&&(!(in->s[i]=='{'));++i);++i;
-	jbl_uint64 cnt=0,deep=0;jbl_uint8 str=1;
-	for(register jbl_string_size_type j=i;(j<n)&&(!(in->s[j]=='}'&&deep==0));++j)
+	char flag=0;
+	if(!this)this=jbl_ht_new(),flag=1;
+	in=jbl_refer_pull(in);
+	if(!in)jbl_exception(JBL_ERROR_NULL_POINTER);
+	jbl_string_size_type i=start?(*start):0,n=in->len;
+	for(;i<n&&in->s[i]<=32;++i);
+//	pchar(in->s[i]);pn();
+	if(in->s[i]!='{')goto fail;
+	++i;
+	for(;i<n;)
 	{
-		if((in->s[j]=='"'&&in->s[j-1]!='\\'))
-			str=!str;
-		else if(in->s[j]=='{'||in->s[j]=='[')
-			deep+=str;
-		else if(in->s[j]=='}'||in->s[j]==']')
-			deep-=str;
-		else if(in->s[j]==','&&deep==0)
-			++cnt;
+		for(;i<n&&in->s[i]<=32;++i);
+		if(in->s[i]=='}'){++i;goto success;}
+		jbl_string * k=jbl_string_json_decode(NULL,in,&i);
+		if(k==NULL)goto fail;
+		for(;i<n&&in->s[i]<=32;++i);
+		if(in->s[i]!=':'){k=jbl_string_free(k);goto fail;}
+		++i;
+		jbl_var *v=jbl_var_json_decode(NULL,in,&i);
+		if(v==NULL)goto fail;
+		this=jbl_ht_insert(this,k,v);
+		v=jbl_var_free(v);
+		k=jbl_string_free(k);
+		for(;i<n&&in->s[i]<=32;++i);
+		if(in->s[i]=='}'){++i;goto success;}
+		if(in->s[i]!=',')goto fail;
+		++i;
 	}
-	if(cnt!=0)++cnt;
-	jbl_ht_extend(&t,cnt);
-	while(i<n)
-	{
-begin:
-		jbl_string_clear(&k);
-		ii=jbl_string_from_json_start(&k,in,i);
-		if(ii==i){for(;i<n;++i)if(in->s[i]=='}')goto success;else if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')goto fail;goto fail;}i=ii;
-		for(;(i<n)&&(!(in->s[i]==':'));++i)if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')goto fail;if(i>=n)goto fail;++i;
-		ii=jbl_var_from_json_start(&v,in,i);if(ii==i)goto fail;i=ii;
-		jbl_ht_insert(&t,&k,&v,move,move);
-		for(;i<n;++i)
-			if(in->s[i]==',')
-				{++i;goto begin;}
-			else if(in->s[i]=='}')
-				goto success;
-			else if(in->s[i]!=' '&&in->s[i]!='\r'&&in->s[i]!='\t'&&in->s[i]!='\n')
-				goto fail;
-		goto fail;
-	}
-fail:	
-	jbl_ht_free(&t);jbl_string_free(&k);jbl_var_free(&v);
-	return start;
-success:
-	jbl_ht_merge(this,&t,move);
-	jbl_ht_free(&t);jbl_string_free(&k);jbl_var_free(&v);
-	return i+1;
+	goto fail;
+success:;
+	start?(*start=i):0;
+	return this;
+fail:;
+	if(flag)this=jbl_ht_free(this);
+	return NULL;
 }
-*/
+#endif
 #if JBL_STREAM_ENABLE==1
 void jbl_ht_view_put(const jbl_ht* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs)
 {
-	if(this==NULL||output_stream==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
-	output_stream=jbl_refer_pull(output_stream);
-	this=jbl_refer_pull(this);
-	if(format&&tabs>=0)for(jbl_int16 i=0;i<tabs;jbl_stream_push_char_force(output_stream,'\t'),++i);else tabs=-tabs;	
-	if(this)jbl_stream_push_chars(output_stream,"jbl_ht        ");
-	else	jbl_stream_push_chars(output_stream,"null          ");
-	if(format&&str)jbl_stream_push_chars(output_stream,str),jbl_stream_push_char_force(output_stream,' '),(format!=-1?jbl_stream_push_uint64(output_stream,format):0);
-	if(!this)return;	
+	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),output_stream,"jbl_ht        ",format,str,&tabs))return;
 	jbl_stream_push_chars(output_stream,"\tlen:");
 	jbl_stream_push_uint64(output_stream,this->len);
 	jbl_stream_push_chars(output_stream,"\tnxt:");
 	jbl_stream_push_uint64(output_stream,this->nxt);
 	jbl_stream_push_chars(output_stream,"\tsize:");
 	jbl_stream_push_uint64(output_stream,this->size);
-	++tabs;
 	jbl_ht_foreach(this,i)
 	{
 		if(format){jbl_stream_push_char(output_stream,'\n');for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(output_stream,'\t'),++i);}//格式化的\t和\n
 		if(i->k==NULL)
 			jbl_stream_push_uint64(output_stream,i->h);
 		else
-			jbl_string_json_put(i->k,output_stream,0,0);
+			jbl_stream_push_char(output_stream,'"'),jbl_stream_push_string(output_stream,i->k),jbl_stream_push_char(output_stream,'"');
 		jbl_stream_push_char(output_stream,':');
 		jbl_var_view_put(i->v,output_stream,(format?(-1):0),NULL,-tabs);
 	}	
 }
+#if JBL_JSON_ENABLE==1
 void jbl_ht_json_put(const jbl_ht* this,jbl_stream *output_stream,char format,jbl_int32 tabs)
-{
-	if(output_stream==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
-	output_stream=jbl_refer_pull(output_stream);
-	this=jbl_refer_pull(this);
-	if(format&&tabs<0)jbl_stream_push_char_force(output_stream,'\n'),tabs=-tabs;	
-	if(format&&tabs>=0)for(jbl_int16 i=0;i<tabs;jbl_stream_push_char_force(output_stream,'\t'),++i);else tabs=-tabs;
-	if(!this)return jbl_stream_push_chars(output_stream,"null");	
+{	
+	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),output_stream,format,&tabs))return;
 	jbl_stream_push_char(output_stream,'{');
-	++tabs;
 	char flag=0;
 	jbl_ht_foreach(this,i)
 	{
@@ -437,6 +416,7 @@ void jbl_ht_json_put(const jbl_ht* this,jbl_stream *output_stream,char format,jb
 	if(format){jbl_stream_push_char(output_stream,'\n');for(jbl_int32 i=0;i<tabs-1;jbl_stream_push_char(output_stream,'\t'),++i);}//格式化的\t和\n
 	jbl_stream_push_char(output_stream,'}');
 }
+#endif
 #endif
 #if JBL_LL_ENABLE==1
 jbl_ht *jbl_ht_merge_ll(jbl_ht *this,jbl_ll *that)

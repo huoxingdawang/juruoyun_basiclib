@@ -3,23 +3,23 @@
 
 int main()
 {
-	printf("\n--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL;
 //	jbl_string *s4=jbl_refer(&s1);
-	s1=jbl_string_add_chars(s1,"-123");
+	s1=jbl_string_add_chars(s1,UC"-123");
 	jbl_string_view(s1);
 //	jbl_string_view(s4);
 
 	s2=jbl_string_copy(s1);
 	jbl_string_view(s2);
 	pchars("Space ship test:"),pint(jbl_string_space_ship(s1,s2)),pchar('\n');
-	s1=jbl_string_add_chars(s1,"456");
+	s1=jbl_string_add_chars(s1,UC"456");
 	pchars("Space ship test:"),pint(jbl_string_space_ship(s1,s2)),pchar('\n');
 
 	s1=jbl_derefer(s1);
 
-	s3=jbl_string_add_double(jbl_string_add_string(jbl_string_add_chars(jbl_string_copy(s1)," 0000 "),s2),-89789.1234);
+	s3=jbl_string_add_double(jbl_string_add_string(jbl_string_add_chars(jbl_string_copy(s1),UC" 0000"),s2),-89789.01234);
 	s3=jbl_string_add_char(s3,'\n');
 	s3=jbl_string_add_unicode_as_utf8(jbl_string_add_unicode_as_utf8(jbl_string_add_unicode_as_utf8(s3,0X849f),0X84BB),0X4E91);
 	jbl_string_view(s3);
@@ -40,7 +40,7 @@ int main()
 	jbl_stream_do(sout,jbl_stream_force);
 	
 	jbl_stream *ss1=jbl_string_stream_new(jbl_refer(&s1));
-	puts("input something");
+	pchars("input something\n");
 	jbl_stream_connect(jbl_stream_stdin,ss1);
 	jbl_stream_do(jbl_stream_stdin,jbl_stream_force);
 	jbl_string_view(s1);
@@ -54,7 +54,7 @@ int main()
 	l1=jbl_ll_free(l1);
 #endif
 	
-exit:	
+//exit:	
 	s1=jbl_string_free(s1);s2=jbl_string_free(s2);s3=jbl_string_free(s3);
 	s4=jbl_string_free(s4);
 	jbl_stop();

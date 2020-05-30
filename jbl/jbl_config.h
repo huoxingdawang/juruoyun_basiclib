@@ -24,6 +24,7 @@
 #define JBL_GC_ENABLE			1	//need ying 
 #define JBL_HT_ENABLE			1	//need ying exception bitset malloc string var
 #define JBL_LL_ENABLE			1	//need ying exception bitset malloc        var					/////////////
+#define JBL_JSON_ENABLE			1	//
 #define JBL_MALLOC_ENABLE		1	//need ying exception bitset
 #define JBL_MD5_ENABLE			1	//need ying exception bitset malloc string
 #define JBL_RAND_ENABLE			1	//need 

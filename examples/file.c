@@ -2,8 +2,8 @@
 
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	printf("jbl_file size:%lld\n",(long long)(sizeof (jbl_file)));	
 	jbl_string	dir;jbl_string_init(&dir);
 	jbl_file		test;jbl_file_init(&test);

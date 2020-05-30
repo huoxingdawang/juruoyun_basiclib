@@ -1,11 +1,12 @@
 #include "main.h"
+//TODO
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	
 	jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL;
-	s1=jbl_string_add_chars(s1,"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
+	s1=jbl_string_add_chars(s1,UC"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
 	s2=jbl_base64_encode(s1,NULL);
 	s3=jbl_base64_decode(s2,NULL);
 	
@@ -20,12 +21,12 @@ int main()
 	jbl_stream *b64de=jbl_stream_base64_decode_new();
 	
 	jbl_stream_connect_ref(b64en,(sout));
-	jbl_Vstream_connect(ss1,b64en);
-	jbl_Vstream_do(ss1,jbl_stream_force);
+	jbl_stream_connect(jbl_Vstream(ss1),b64en);
+	jbl_stream_do(jbl_Vstream(ss1),jbl_stream_force);
 	putchar('\n');
 	jbl_stream_connect_ref(b64de,(sout));
-	jbl_Vstream_connect(ss2,b64de);
-	jbl_Vstream_do(ss2,jbl_stream_force);
+	jbl_stream_connect(jbl_Vstream(ss2),b64en);
+	jbl_stream_do(jbl_Vstream(ss2),jbl_stream_force);
 	putchar('\n');
 
 	ss1=jbl_var_free(ss1);	

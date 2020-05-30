@@ -21,5 +21,7 @@
 #endif
 
 #define JBL_STRING_BASIC_LENGTH	32								//步进长度
+
+
 #endif
 #endif

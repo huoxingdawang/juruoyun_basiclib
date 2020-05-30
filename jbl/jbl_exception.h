@@ -17,10 +17,11 @@
 #define JBL_ERROR_MEMORY_ERROR	1000002
 #define JBL_ERROR_FILE_NOT_EXIST	1000003
 #define JBL_ERROR_STREAM_ERROR	1000004
+#define JBL_ERROR_VAR_TYPE_ERROR	1000005
 
 
 
-#define jbl_exception(x) __jbl_exception(__FILE__,__LINE__,x)
-void __jbl_exception(const char * file,int line,int x);
+#define jbl_exception(x) __jbl_exception(__FUNCTION__,__FILE__,__LINE__,x)//抛出一个异常
+void __jbl_exception(const char * funtion,const char * file,int line,int x);
 #endif
 #endif

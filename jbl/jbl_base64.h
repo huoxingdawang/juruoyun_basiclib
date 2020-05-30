@@ -13,16 +13,16 @@
 #if JBL_BASE64_ENABLE==1
 #include "jbl_string.h"
 #include "jbl_ying.h"
-jbl_string *	jbl_base64_encode					(const jbl_string *this,jbl_string *result);
-jbl_string *	jbl_base64_decode					(const jbl_string *this,jbl_string *result);
+jbl_string *	jbl_base64_encode					(const jbl_string *this,jbl_string *result);	//base64加密
+jbl_string *	jbl_base64_decode					(const jbl_string *this,jbl_string *result);	//base64解密
 
 #if JBL_STREAM_ENABLE==1
 #include "jbl_stream.h"
-extern			const jbl_stream_operater jbl_stream_base64_encode_operators;
-extern			const jbl_stream_operater jbl_stream_base64_decode_operators;
+extern			const jbl_stream_operater jbl_stream_base64_encode_operators;						//base64加密流处理器
+extern			const jbl_stream_operater jbl_stream_base64_decode_operators;						//base64解密流处理器
 
-#define			jbl_stream_base64_encode_new()		jbl_stream_new(&jbl_stream_base64_encode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0,NULL)
-#define			jbl_stream_base64_decode_new()		jbl_stream_new(&jbl_stream_base64_decode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0,NULL)
+#define			jbl_stream_base64_encode_new()		jbl_stream_new(&jbl_stream_base64_encode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0,NULL)	//新建base64加密流
+#define			jbl_stream_base64_decode_new()		jbl_stream_new(&jbl_stream_base64_decode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0,NULL)	//新建base64解密流
 
 
 //typedef struct __jbl_stream_operater jbl_stream_operater;

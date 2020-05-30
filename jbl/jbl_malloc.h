@@ -13,23 +13,23 @@
 #if JBL_MALLOC_ENABLE==1
 #include "jbl_ying.h"
 #include "jbl_bitset.h"
-void					jbl_malloc_start		();
-void					jbl_malloc_stop			();
-void*					jbl_malloc				(jbl_malloc_size_type size);
-void*					jbl_realloc				(void* ptr,jbl_malloc_size_type size);
-void					jbl_free				(void* p);
-jbl_malloc_size_type	jbl_malloc_size			(void* ptr);
-void					jbl_memory_copy			(void *to,const void * from,jbl_malloc_size_type len);
-void					jbl_memory_copy_reverse	(void *to,const void * from,jbl_malloc_size_type len,jbl_malloc_size_type size);
+void					jbl_malloc_start		();										//启动内存管理
+void					jbl_malloc_stop			();										//关闭内存管理
+void*					jbl_malloc				(jbl_malloc_size_type size);			//申请一段内存
+void*					jbl_realloc				(void* ptr,jbl_malloc_size_type size);	//重新申请一段内存
+void					jbl_free				(void* p);								//释放一段内存
+jbl_malloc_size_type	jbl_malloc_size			(void* ptr);							//获取一段内存的大小
+void					jbl_memory_copy			(void *to,const void * from,jbl_malloc_size_type len);								//复制
+void					jbl_memory_copy_reverse	(void *to,const void * from,jbl_malloc_size_type len,jbl_malloc_size_type size);	//倒序复制
 #if JBL_MALLOC_FAST==1
 	#if  jbl_bitset_bits==32
 		#define jbl_malloc_fmap_len		16	//(512/jbl_bitset_bits)
 	#else
 		#define jbl_malloc_fmap_len		8	//(512/jbl_bitset_bits)
 	#endif
-	typedef struct __jbl_malloc_free_slot	jbl_malloc_free_slot;
-	typedef struct __jbl_malloc_heap_struct	jbl_malloc_heap_struct;
-	typedef struct __jbl_malloc_huge_struct	jbl_malloc_huge_struct;
+	typedef struct __jbl_malloc_free_slot		jbl_malloc_free_slot;
+	typedef struct __jbl_malloc_heap_struct		jbl_malloc_heap_struct;
+	typedef struct __jbl_malloc_huge_struct		jbl_malloc_huge_struct;
 	typedef struct __jbl_malloc_chunk_struct	jbl_malloc_chunk_struct;
 	
 	typedef struct __jbl_malloc_free_slot

@@ -1,11 +1,12 @@
 #include "main.h"
+//TODO
 #include <time.h>
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_time * t1=jbl_time_now(NULL);
-	jbl_var  * v1=jbl_Vtime_now(jbl_Vtime_new());
+	jbl_var  * v1=jbl_V(jbl_time_now(jbl_Vtime(jbl_Vtime_new())));
 	jbl_string *s1=jbl_time_to_string(t1,NULL);
 	jbl_string_view(s1);
 	s1=jbl_string_free(s1);

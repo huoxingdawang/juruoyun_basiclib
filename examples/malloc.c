@@ -1,8 +1,8 @@
 #include "main.h"
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_start();	
+	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_rand_srand(0);
 	jbl_time *t1=NULL,*t2=NULL;
 	
@@ -35,7 +35,7 @@ int main()
 			jbl_free(a[pos]),a[pos]=NULL;	
 		}			
 	}
-	fprintf(stderr,"\nmalloc used time:%lldms\n",jbl_time_minus((t2=jbl_time_now(t2)),t1));	
+	fprintf(stderr,"\nmalloc used time:%I64dms\n",jbl_time_minus((t2=jbl_time_now(t2)),t1));	
 	for(int i=0;i<slot;++i)if(a[i]!=NULL)jbl_free(a[i]);
 	jbl_free(a);a=NULL;
 

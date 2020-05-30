@@ -12,6 +12,6 @@
 #include "jbl_md5_config.h"
 #if JBL_MD5_ENABLE==1
 #include "jbl_string.h"
-jbl_string*	jbl_md5	(const jbl_string* this,jbl_string* out);
+jbl_string*	jbl_md5	(const jbl_string* this,jbl_string* out);	//进行md5加密
 #endif
 #endif

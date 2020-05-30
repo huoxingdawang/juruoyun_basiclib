@@ -79,67 +79,73 @@ jbl_uint8 jbl_time_if_dst(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year)
 	}
 	
 }
-
-#if JBL_STRING_ENABLE==1
-jbl_string * jbl_time_to_string(const jbl_time *this,jbl_string *result)
+void jbl_time_decode(const jbl_time *this,jbl_time_decoded *tt)
 {
 	jbl_int64 ts=jbl_time_to_unix(this);
-	int year=0,month=0,day=0,hour=0,minute=0,second=0,ms=0,days=0,dayTmp=0,secs=0;
-	result=jbl_string_extend(result,64);
+	int days=0,dayTmp=0,secs=0;
 	if(jbl_time_time_zone==JBL_TIME_ZONE_ASIA_SHANGHAI)
 		ts+=8*3600000;
 	if(ts>0)
 	{
-		ms=ts%1000,ts/=1000,days=ts/86400,secs=ts%86400;
-		for(year=1970;days>0;++year)
-			if(days>=(dayTmp=(365+jbl_time_if_leap_year(year))))
+		tt->ms=ts%1000,ts/=1000,days=ts/86400,secs=ts%86400;
+		for(tt->year=1970;days>0;++tt->year)
+			if(days>=(dayTmp=(365+jbl_time_if_leap_year(tt->year))))
 				days-=dayTmp;
 			else
 				break;
-		for(month=1;month<12;++month)
-			if(days>=(dayTmp=jbl_time_get_day_of_month(month,year)))
+		for(tt->month=1;tt->month<12;++tt->month)
+			if(days>=(dayTmp=jbl_time_get_day_of_month(tt->month,tt->year)))
 				days-=dayTmp;
 			else
 				break;
-		month=month,day=days+1;
+		tt->month=tt->month,tt->day=days+1;
 	}
 	else
 	{
-		ms=(1000-(-ts)%1000),ts=((ts-(1000-ms))/1000),((ms==1000)?(ms=0):0),secs=-(ts%86400),secs=(secs==0)?0:(86400-secs),days=(ts-secs)/86400;
-		for(year=1969;days<0;--year)
-			if((-days)>=(dayTmp=(365+jbl_time_if_leap_year(year))))
+		tt->ms=(1000-(-ts)%1000),ts=((ts-(1000-tt->ms))/1000),((tt->ms==1000)?(tt->ms=0):0),secs=-(ts%86400),secs=(secs==0)?0:(86400-secs),days=(ts-secs)/86400;
+		for(tt->year=1969;days<0;--tt->year)
+			if((-days)>=(dayTmp=(365+jbl_time_if_leap_year(tt->year))))
 				days+=dayTmp;
 			else
 				break;
-		for(month=12;month>0;--month)
-			if(days<(dayTmp=jbl_time_get_day_of_month(month,year)))
+		for(tt->month=12;tt->month>0;--tt->month)
+			if(days<(dayTmp=jbl_time_get_day_of_month(tt->month,tt->year)))
 				days+=dayTmp;
 			else
 				break;
-		if(days>jbl_time_get_day_of_month(month+1,year))
-			++month,days-=jbl_time_get_day_of_month(month,year);
-		month=month+1,day=days+1;
+		if(days>jbl_time_get_day_of_month(tt->month+1,tt->year))
+			++tt->month,days-=jbl_time_get_day_of_month(tt->month,tt->year);
+		tt->month=tt->month+1,tt->day=days+1;
 	}
-	
-	hour=secs/3600,secs%=3600,minute=secs/60,second=secs%60;
-	result=jbl_string_add_uint64_length(result,year,4,'0');
+	tt->hour=secs/3600,secs%=3600,tt->minute=secs/60,tt->second=secs%60;	
+}
+
+
+#if JBL_STRING_ENABLE==1
+jbl_string * jbl_time_to_string(const jbl_time *this,jbl_string *result)
+{
+	jbl_time_decoded tt;
+	jbl_time_decode(this,&tt);
+	result=jbl_string_extend(result,64);
+	result=jbl_string_add_uint64_length(result,tt.year,4,'0');
 	result=jbl_string_add_char(result,'-');
-	result=jbl_string_add_uint64_length(result,month,2,'0');
+	result=jbl_string_add_uint64_length(result,tt.month,2,'0');
 	result=jbl_string_add_char(result,'-');
-	result=jbl_string_add_uint64_length(result,day,2,'0');
+	result=jbl_string_add_uint64_length(result,tt.day,2,'0');
 	result=jbl_string_add_char(result,' ');
-	result=jbl_string_add_uint64_length(result,hour,2,'0');
+	result=jbl_string_add_uint64_length(result,tt.hour,2,'0');
 	result=jbl_string_add_char(result,':');
-	result=jbl_string_add_uint64_length(result,minute,2,'0');
+	result=jbl_string_add_uint64_length(result,tt.minute,2,'0');
 	result=jbl_string_add_char(result,':');
-	result=jbl_string_add_uint64_length(result,second,2,'0');
+	result=jbl_string_add_uint64_length(result,tt.second,2,'0');
 	result=jbl_string_add_char(result,'.');
-	result=jbl_string_add_uint64_length(result,ms,3,'0');
+	result=jbl_string_add_uint64_length(result,tt.ms,3,'0');
 	result=jbl_string_add_char(result,' ');
 	
-	result=jbl_string_add_uint64_length(result,jbl_time_get_weekday(day,month,year),1,'0');
+	result=jbl_string_add_uint64_length(result,jbl_time_get_weekday(tt.day,tt.month,tt.year),1,'0');
 	return result;
 }
+#if JBL_JSON_ENABLE==1
 inline jbl_string* jbl_time_json_encode(const jbl_time* this,jbl_string *out,char format,jbl_int32 tabs)
 {
 	jbl_string *s1=jbl_time_to_string(this,NULL);
@@ -148,6 +154,7 @@ inline jbl_string* jbl_time_json_encode(const jbl_time* this,jbl_string *out,cha
 	return out;
 }
 #endif
+#endif
 
 
 #if JBL_VAR_ENABLE==1
@@ -155,17 +162,24 @@ const jbl_var_operators jbl_time_operators={
 	(void* (*)(void *))jbl_time_free,
 	(void* (*)(void *))jbl_time_copy,
 	(char  (*)(const void*,const void*))jbl_time_space_ship,
+#if JBL_STRING_ENABLE==1
+#if JBL_JSON_ENABLE==1
 	(jbl_string*(*)(const void*,jbl_string *,char,jbl_int32))jbl_time_json_encode,
+#endif
+#endif
 #if JBL_STREAM_ENABLE==1
 	/*(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))jbl_time_view_put*/NULL,
+#if JBL_JSON_ENABLE==1
 	/*(void(*)(const void*,jbl_stream *,char,jbl_int32))jbl_time_json_put*/NULL,
 #endif
+#endif
 };
+inline jbl_time* jbl_Vtime(jbl_var * this){if(!Vis_jbl_time(this))jbl_exception(JBL_ERROR_VAR_TYPE_ERROR);return((jbl_time*)this);}
 jbl_var * jbl_Vtime_new()
 {
 	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_time))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
-	jbl_time_init($jbl_time(this));
-	jbl_gc_set_var($jbl_time(this));
+	jbl_time_init(jbl_Vtime(this));
+	jbl_gc_set_var(jbl_Vtime(this));
 	jbl_var_set_operators(this,&jbl_time_operators);
 	return this;
 }

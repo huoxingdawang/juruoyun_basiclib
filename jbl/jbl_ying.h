@@ -27,13 +27,6 @@
 #define jbl_stop()		\
 	jbl_stream_stop();	\
 	jbl_malloc_stop()	
-#define JBL_PRINT_COLORFUL_BLACK			0
-#define JBL_PRINT_COLORFUL_RED			1
-#define JBL_PRINT_COLORFUL_LIGHT_GREEN	2
-#define JBL_PRINT_COLORFUL_YELLOW		3
-#define JBL_PRINT_COLORFUL_PURPLE		4
-#define JBL_PRINT_COLORFUL_GREEN			5
-#define JBL_PRINT_COLORFUL_WHITE			6
 typedef char				jbl_int8;
 typedef unsigned char		jbl_uint8;
 typedef short				jbl_int16;
@@ -43,12 +36,16 @@ typedef unsigned int		jbl_uint32;
 typedef long long			jbl_int64;
 typedef unsigned long long	jbl_uint64;
 
-typedef enum
-{
-	copy,
-	light,
-	move
-}jbl_copy_type;
+#define UC	(unsigned char *)
+
+#define JBL_PRINT_COLORFUL_BLACK		0
+#define JBL_PRINT_COLORFUL_RED			1
+#define JBL_PRINT_COLORFUL_LIGHT_GREEN	2
+#define JBL_PRINT_COLORFUL_YELLOW		3
+#define JBL_PRINT_COLORFUL_PURPLE		4
+#define JBL_PRINT_COLORFUL_GREEN		5
+#define JBL_PRINT_COLORFUL_WHITE		6
+
 #ifdef __linux__
 	#define jbl_print_colorful(f,s,bc,fc) fprintf(f,"\x1b[%d;%dm%s\x1b[0m",bc+40,fc+30,s)
 	typedef jbl_uint64 jbl_pointer_int;
@@ -56,10 +53,11 @@ typedef enum
 	#define jbl_print_colorful(f,s,bc,fc) fprintf(f,s)
 	typedef jbl_uint32 jbl_pointer_int;
 #endif
-jbl_int64	jbl_ceil					(long double i);
-jbl_uint8	jbl_get_uint64_length	(jbl_uint64 tmp);
-jbl_uint8	jbl_get_int64_length		(jbl_int64 tmp);
-jbl_uint8	jbl_get_double_length	(double tmp);
+
+jbl_int64	jbl_ceil				(long double i);	//上取整
+//jbl_uint8	jbl_get_uint64_length	(jbl_uint64 tmp);
+//jbl_uint8	jbl_get_int64_length	(jbl_int64 tmp);
+//jbl_uint8	jbl_get_double_length	(double tmp);
 
 #define	jbl_max(a,b)		(((a)>(b))?(a):(b))
 #define	jbl_max_update(a,b)	(a)=(((a)>(b))?(a):(b))

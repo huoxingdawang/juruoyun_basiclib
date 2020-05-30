@@ -2,15 +2,15 @@
 
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_start();	
+	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_ll * l1=jbl_ll_new();
 	jbl_ll * l2=NULL;
 	jbl_ll * l3=NULL;
 	jbl_var * vl1=NULL;
 	jbl_var * vl2=NULL;	
-	jbl_var * v1=jbl_Vstring_add_chars(jbl_Vstring_new(),"juruoyun");
-	jbl_var * v2=jbl_Vstring_add_chars(jbl_Vstring_new(),"12345678");
+	jbl_var * v1=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"juruoyun"));
+	jbl_var * v2=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"12345678"));
 	jbl_var * v3=jbl_Vuint_set(NULL,19260817);
 	jbl_string *s1=NULL;
 
@@ -65,13 +65,13 @@ pchars("Var & refer\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");		
 	
 	vl1=jbl_Vll_new();
-	vl1=jbl_Vll_merge(vl1,l2);
+	vl1=jbl_V(jbl_ll_merge(jbl_Vll(vl1),l2));
 	jbl_var_view(vl1);
 	l3=jbl_refer(&l2);
 	jbl_ll_view(l3);
 	vl2=jbl_refer(&vl1);
 	jbl_var_view(vl2);
-	vl2=jbl_Vll_add(vl2,v3);
+	vl2=jbl_V(jbl_ll_add(jbl_Vll(vl2),v3));
 	jbl_var_view(vl2);
 	l3=jbl_ll_delete_head(l3);
 	l3=jbl_ll_delete_tail(l3);
@@ -85,7 +85,7 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	jbl_ht_view(h1);
 	h1=jbl_ht_free(h1);
 #endif	
-exit:;
+//exit:;
 	l1=jbl_ll_free(l1);
 	l2=jbl_ll_free(l2);
 	l3=jbl_ll_free(l3);
@@ -116,21 +116,21 @@ exit:;
 	jbl_ll_frees(2,&l1,&l2);
 */	
 /*	
-	jbl_string_equal_chars(&s1,"12312312\n1231231");
+	jbl_string_equal_chars(&s1,UC"12312312\n1231231");
 	jbl_string_cut(&s1,&l1,'\n');
 	jbl_ll_view(&l1);
-	jbl_string_equal_chars(&s1,"125675675675763\n1231231");
+	jbl_string_equal_chars(&s1,UC"125675675675763\n1231231");
 	jbl_string_cut(&s1,&l2,'\n');
 	jbl_ll_view(&l2);
 	printf("space ship:%d",jbl_ll_space_ship(&l1,&l2));
 	jbl_ll_frees(2,&l1,&l2);
-	jbl_string_equal_chars(&s1,"12312312\n1231231");
+	jbl_string_equal_chars(&s1,UC"12312312\n1231231");
 	jbl_string_cut(&s1,&l1,'\n');
 	jbl_ll_equal_move(&l2,&l1);
 	jbl_stop();	
 	jbl_ll_frees(1,&l1);
 	jbl_ll_view(&l2);
-	jbl_string_equal_chars(&s1,"12312312\n1231231");
+	jbl_string_equal_chars(&s1,UC"12312312\n1231231");
 	jbl_string_cut(&s1,&l1,'\n');
 	jbl_ll_put(&l1,&jbl_stream_stdout,view,(jbl_view_default_tabs_num<<16)|(__LINE__<<1)|1,__FILE__);jbl_stream_do(&jbl_stream_stdout,1);
 	

@@ -2,24 +2,26 @@
 
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_start();	
+	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_ht *  ht1 =jbl_ht_new();
 	jbl_ht *  ht2 =NULL;
 	jbl_var * Vht3=jbl_Vht_new();
 	jbl_ht *ht4=NULL;
 	jbl_var *Vht5=NULL;
-	jbl_string * s1=jbl_string_add_chars(NULL,"juruoyun");
-	jbl_string * s2=jbl_string_add_chars(NULL,"juruo");
+	jbl_string * s1=jbl_string_add_chars(NULL,UC"juruoyun");
+	jbl_string * s2=jbl_string_add_chars(NULL,UC"juruo");
 	jbl_string * s3=NULL;
-	jbl_var * v1=jbl_Vstring_add_chars(jbl_Vstring_new(),"juruoyun");
+	jbl_var * v1=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"juruoyun"));
 	jbl_var * v2=jbl_Vuint_set(NULL,19260817);
-	jbl_var * v3=jbl_Vstring_add_chars(jbl_Vstring_new(),"juruoyunjuruoyunjuruoyunjuruoyun");
+	jbl_var * v3=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"juruoyunjuruoyunjuruoyunjuruoyun"));
 	ht1=jbl_ht_insert(ht1,s1,v1);
 	jbl_ht_view(ht1);
 	ht1=jbl_ht_insert(ht1,s2,v2);
 	jbl_ht_view(ht1);
 	ht1=jbl_ht_insert(ht1,s1,v3);
+	jbl_ht_view(ht1);
+	ht1=jbl_ht_insert(ht1,s1,NULL);
 	jbl_ht_view(ht1);
 	ht1=jbl_ht_unset(ht1,s1);
 	jbl_ht_view(ht1);
@@ -30,16 +32,16 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 pchars("写时分离\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");			
 	ht2=jbl_ht_copy(ht1);
-	ht1=jbl_ht_insert_chars(ht1,"0",v1);
-	ht1=jbl_ht_insert_chars(ht1,"1",v1);
-	ht1=jbl_ht_insert_chars(ht1,"2",v1);
-	ht1=jbl_ht_insert_chars(ht1,"3",v1);
-	ht1=jbl_ht_insert_chars(ht1,"4",v1);
-	ht1=jbl_ht_insert_chars(ht1,"5",v1);
-	ht1=jbl_ht_insert_chars(ht1,"6",v1);
-	ht1=jbl_ht_insert_chars(ht1,"7",v1);
-	ht1=jbl_ht_insert_chars(ht1,"8",v1);
-	ht1=jbl_ht_insert_chars(ht1,"9",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"0",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"1",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"2",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"3",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"4",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"5",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"6",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"7",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"8",v1);
+	ht1=jbl_ht_insert_chars(ht1,UC"9",v1);
 	ht1=jbl_ht_insert_int(ht1,0,v2);
 	ht1=jbl_ht_insert_int(ht1,1,v3);
 	jbl_ht_view(ht1);
@@ -51,7 +53,7 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	v4=jbl_ht_get(ht1,s2);
 	jbl_var_view(v4);
 	v4=jbl_var_free(v4);
-	v4=jbl_ht_get_chars(ht1,"2");
+	v4=jbl_ht_get_chars(ht1,UC"2");
 	jbl_var_view(v4);
 	v4=jbl_var_free(v4);
 	v4=jbl_ht_get_int(ht1,0);
@@ -64,7 +66,7 @@ pchars("删除前\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");		
 	jbl_ht_view(ht1);	
 	ht1=jbl_ht_unset(ht1,s2);
-	ht1=jbl_ht_unset_chars(ht1,"7");
+	ht1=jbl_ht_unset_chars(ht1,UC"7");
 	ht1=jbl_ht_unset_int(ht1,1);
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("删除后(删除 \"juruo\" \"7\" 1)\n");
@@ -93,7 +95,7 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	ht1=jbl_ht_merge(ht1,ht2);
 	jbl_ht_view(ht1);
 	
-	Vht3=jbl_Vht_merge(Vht3,ht2);
+	Vht3=jbl_V(jbl_ht_merge(jbl_Vht(Vht3),ht2));
 	jbl_var_view(Vht3);
 	
 	
@@ -106,9 +108,10 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	jbl_ht_view(ht4);
 
 	Vht5=jbl_refer(&Vht3);	
-	Vht5=jbl_Vht_insert_int(Vht5,1000,v1);
+	Vht5=jbl_V(jbl_ht_insert_int(jbl_Vht(Vht5),1000,v1));
 	jbl_var_view(Vht3);
 	jbl_var_view(Vht5);
+#if JBL_JSON_ENABLE==1
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("Notice : JSON格式化不会输出int key类型的数据\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");
@@ -130,6 +133,7 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	jbl_ht_view(ht1);
 	jbl_ht_json_put(ht1,jbl_stream_stdout,1,1);
 	jbl_stream_push_char(jbl_stream_stdout,'\n');
+#endif
 #if JBL_LL_ENABLE==1
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("ll合并\n");

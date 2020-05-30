@@ -15,6 +15,9 @@
 
 #define JBL_STREAM_EXCEED_LENGTH 64
 
+//#define JBL_STREAM_STDOUT	fopen("tmp/out.tmp","wb")
+#define JBL_STREAM_STDOUT	stdout
+#define JBL_STREAM_STDIN	stdin
 
 #endif
 #endif

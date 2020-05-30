@@ -28,28 +28,20 @@ void*	__jbl_malloc_mmap(mst size);
 void	__jbl_malloc_munmap(void *ptr, mst size);
 void*	__jbl_malloc_aligned(mst size,mst alignment);
 void	__jbl_free_aligned(void* ptr,mst size);
-void*	__jbl_malloc_chunk();									//该函数不会操作size				但会操作applied_size
-void	__jbl_free_chunk(void *ptr);								//该函数不会操作size				但会操作applied_size
-void	__jbl_free_chunks();										//该函数不会操作size和applied_size
-void	__jbl_free_cached_chunks();								//该函数不会操作size				但会操作applied_size
-void*	__jbl_malloc_page(jbl_uint16 nums,jbl_uint8 type);	//该函数不会操作size和applied_size
+void*	__jbl_malloc_chunk();									//该函数不会操作size              但会操作applied_size
+void	__jbl_free_chunk(void *ptr);							//该函数不会操作size              但会操作applied_size
+void	__jbl_free_chunks();									//该函数不会操作size和applied_size
+void	__jbl_free_cached_chunks();								//该函数不会操作size              但会操作applied_size
+void*	__jbl_malloc_page(jbl_uint16 nums,jbl_uint8 type);		//该函数不会操作size和applied_size
 void	__jbl_free_page(void *ptr);								//该函数不会操作size和applied_size
-void*	__jbl_malloc_large(mst size);		//该函数  会操作size				但不会操作applied_size
-void	__jbl_free_large(void *ptr);								//该函数  会操作size               但不会操作applied_size
-void*	__jbl_malloc_small(jbl_uint16 size);					//该函数  会操作size				但不会操作applied_size
-void	__jbl_free_small(void* ptr);								//该函数  会操作size               但不会操作applied_size
-void	__jbl_free_smalls();										//该函数不会操作size和applied_size
-void*	__jbl_malloc_huge(mst size);			//该函数  会操作size和applied_size
+void*	__jbl_malloc_large(mst size);							//该函数  会操作size              但不会操作applied_size
+void	__jbl_free_large(void *ptr);							//该函数  会操作size              但不会操作applied_size
+void*	__jbl_malloc_small(jbl_uint16 size);					//该函数  会操作size              但不会操作applied_size
+void	__jbl_free_small(void* ptr);							//该函数  会操作size              但不会操作applied_size
+void	__jbl_free_smalls();									//该函数不会操作size和applied_size
+void*	__jbl_malloc_huge(mst size);							//该函数  会操作size和applied_size
 void	__jbl_free_huge(void* ptr);								//该函数  会操作size和applied_size
 
-/*
-
-void jbl_bitset_set(jbl_malloc_fmap_type fmap[jbl_malloc_fmap_len],jbl_uint16 i,jbl_uint16 cnt);
-void jbl_bitset_reset(jbl_malloc_fmap_type fmap[jbl_malloc_fmap_len],jbl_uint16 i,jbl_uint16 cnt);
-jbl_uint16 jbl_bitset_find0(jbl_malloc_fmap_type fmap[jbl_malloc_fmap_len],jbl_uint16 i);
-jbl_uint16 jbl_bitset_find1(jbl_malloc_fmap_type fmap[jbl_malloc_fmap_len],jbl_uint16 i);
-#define __jbl_malloc_view_fmap(fmap)	for(int i=0;i<jbl_malloc_fmap_len;printf("%0 16llX ",fmap[i]),++i);putchar('\n')
-*/
 static const struct
 {
 	jbl_uint8 num;

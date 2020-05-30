@@ -1,10 +1,10 @@
 #include "main.h"
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_start();	
+	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	
-	jbl_string *s1=jbl_string_add_chars(NULL,"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
+	jbl_string *s1=jbl_string_add_chars(NULL,UC"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
 	jbl_string *s2=jbl_md5(s1,NULL);
 	
 	

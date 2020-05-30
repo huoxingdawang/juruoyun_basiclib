@@ -80,7 +80,7 @@ inline jbl_uint8 __jbl_aes_128_ffmul(jbl_uint8 a,jbl_uint8 b)
 	return res;
 }
 #endif
-jbl_aes_128_key* jbl_aes_128_extend_key(jbl_uint8* key)
+jbl_aes_128_key* jbl_aes_128_extend_key(unsigned char* key)
 {
 	jbl_aes_128_key *w=jbl_malloc(sizeof(jbl_aes_128_key));
 	jbl_gc_init(w);

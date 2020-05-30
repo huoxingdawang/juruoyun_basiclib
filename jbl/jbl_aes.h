@@ -22,36 +22,36 @@ typedef struct __jbl_aes_128_key
 
 jbl_aes_128_key*	jbl_aes_128_extend_key					(unsigned char* key);			//生成一个aes128加密密钥
 jbl_aes_128_key*	jbl_aes_128_key_copy					(jbl_aes_128_key *that);		//复制一个aes128加密密钥
-jbl_aes_128_key*	jbl_aes_128_key_free					(jbl_aes_128_key* w);		//释放一个aes128加密密钥
+jbl_aes_128_key*	jbl_aes_128_key_free					(jbl_aes_128_key* w);			//释放一个aes128加密密钥
 #if JBL_STREAM_ENABLE==1
 typedef struct __jbl_stream_operater jbl_stream_operater;									//声明流处理器结构
 #endif
 #if JBL_AES_128_ECB_ENABLE==1
-jbl_string *	jbl_aes_128_ecb_encode					(jbl_aes_128_key *w,const jbl_string *in,jbl_string *out);//进行AES128ECB加密
-jbl_string *	jbl_aes_128_ecb_decode					(jbl_aes_128_key *w,const jbl_string *in,jbl_string *out);//进行AES128ECB解密
+jbl_string *	jbl_aes_128_ecb_encode					(jbl_aes_128_key *w,const jbl_string *in,jbl_string *out);	//进行AES128ECB加密
+jbl_string *	jbl_aes_128_ecb_decode					(jbl_aes_128_key *w,const jbl_string *in,jbl_string *out);	//进行AES128ECB解密
 #if JBL_STREAM_ENABLE==1
-extern const jbl_stream_operater jbl_stream_aes_128_ecb_encode_operators;//AES128ECB加密流处理器
-extern const jbl_stream_operater jbl_stream_aes_128_ecb_decode_operators;//AES128ECB解密流处理器
-#define			jbl_stream_aes_128_ecb_encode_new(w)	jbl_stream_new(&jbl_stream_aes_128_ecb_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)
-#define			jbl_stream_aes_128_ecb_decode_new(w)	jbl_stream_new(&jbl_stream_aes_128_ecb_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)
+extern const jbl_stream_operater jbl_stream_aes_128_ecb_encode_operators;	//AES128ECB加密流处理器
+extern const jbl_stream_operater jbl_stream_aes_128_ecb_decode_operators;	//AES128ECB解密流处理器
+#define			jbl_stream_aes_128_ecb_encode_new(w)	jbl_stream_new(&jbl_stream_aes_128_ecb_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)	//新建AES128ECB加密流
+#define			jbl_stream_aes_128_ecb_decode_new(w)	jbl_stream_new(&jbl_stream_aes_128_ecb_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)	//新建AES128ECB解密流
 #if JBL_VAR_ENABLE == 1
-#define			jbl_vstream_aes_128_ecb_encode_new(w)	jbl_Vstream_new(&jbl_stream_aes_128_ecb_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)
-#define			jbl_vstream_aes_128_ecb_decode_new(w)	jbl_Vstream_new(&jbl_stream_aes_128_ecb_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)
+#define			jbl_vstream_aes_128_ecb_encode_new(w)	jbl_Vstream_new(&jbl_stream_aes_128_ecb_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)	//新建AES128ECB加密流
+#define			jbl_vstream_aes_128_ecb_decode_new(w)	jbl_Vstream_new(&jbl_stream_aes_128_ecb_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,NULL)	//新建AES128ECB解密流
 #endif
 
 #endif
 #endif
 #if JBL_AES_128_CBC_ENABLE==1
-jbl_string *	jbl_aes_128_cbc_encode					(jbl_aes_128_key *w,unsigned char *vi,const jbl_string *in,jbl_string *out);//进行AES128CBC加密
-jbl_string *	jbl_aes_128_cbc_decode					(jbl_aes_128_key *w,unsigned char *vi,const jbl_string *in,jbl_string *out);//进行AES128CBC解密
+jbl_string *	jbl_aes_128_cbc_encode					(jbl_aes_128_key *w,unsigned char *vi,const jbl_string *in,jbl_string *out);	//进行AES128CBC加密
+jbl_string *	jbl_aes_128_cbc_decode					(jbl_aes_128_key *w,unsigned char *vi,const jbl_string *in,jbl_string *out);	//进行AES128CBC解密
 #if JBL_STREAM_ENABLE==1
-extern const jbl_stream_operater jbl_stream_aes_128_cbc_encode_operators;//AES128CBC加密流处理器
-extern const jbl_stream_operater jbl_stream_aes_128_cbc_decode_operators;//AES128CBC解密流处理器
-#define			jbl_stream_aes_128_cbc_encode_new(w,v)	jbl_stream_new(&jbl_stream_aes_128_cbc_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)
-#define			jbl_stream_aes_128_cbc_decode_new(w,v)	jbl_stream_new(&jbl_stream_aes_128_cbc_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)
+extern const jbl_stream_operater jbl_stream_aes_128_cbc_encode_operators;	//AES128CBC加密流处理器
+extern const jbl_stream_operater jbl_stream_aes_128_cbc_decode_operators;	//AES128CBC解密流处理器
+#define			jbl_stream_aes_128_cbc_encode_new(w,v)	jbl_stream_new(&jbl_stream_aes_128_cbc_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)	//新建AES128CBC加密流
+#define			jbl_stream_aes_128_cbc_decode_new(w,v)	jbl_stream_new(&jbl_stream_aes_128_cbc_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)	//新建AES128CBC解密流
 #if JBL_VAR_ENABLE == 1
-#define			jbl_vstream_aes_128_cbc_encode_new(w,v)	jbl_Vstream_new(&jbl_stream_aes_128_cbc_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)
-#define			jbl_vstream_aes_128_cbc_decode_new(w,v)	jbl_Vstream_new(&jbl_stream_aes_128_cbc_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)
+#define			jbl_vstream_aes_128_cbc_encode_new(w,v)	jbl_Vstream_new(&jbl_stream_aes_128_cbc_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)	//新建AES128CBC加密流
+#define			jbl_vstream_aes_128_cbc_decode_new(w,v)	jbl_Vstream_new(&jbl_stream_aes_128_cbc_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,0,v)	//新建AES128CBC解密流
 #endif
 
 

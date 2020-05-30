@@ -12,12 +12,6 @@
 #include "jbl_config.h"
 #if JBL_VAR_ENABLE==1
 #include "jbl_ying.h"
-typedef jbl_uint16 jbl_var_type_type;
-#define jbl_var_type_bit 8
-#define jbl_var_tmp_size 0
-#define jbl_var_fs_size	2
-
-
 
 #endif
 #endif
