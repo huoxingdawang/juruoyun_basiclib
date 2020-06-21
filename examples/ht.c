@@ -15,6 +15,8 @@ int main()
 	jbl_var * v1=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"juruoyun"));
 	jbl_var * v2=jbl_Vuint_set(NULL,19260817);
 	jbl_var * v3=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"juruoyunjuruoyunjuruoyunjuruoyun"));
+	jbl_var * v4=NULL;
+	jbl_var * v5=NULL;
 	ht1=jbl_ht_insert(ht1,s1,v1);
 	jbl_ht_view(ht1);
 	ht1=jbl_ht_insert(ht1,s2,v2);
@@ -32,6 +34,7 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 pchars("写时分离\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");			
 	ht2=jbl_ht_copy(ht1);
+	v5=jbl_ht_copy_as_var(ht1);
 	ht1=jbl_ht_insert_chars(ht1,UC"0",v1);
 	ht1=jbl_ht_insert_chars(ht1,UC"1",v1);
 	ht1=jbl_ht_insert_chars(ht1,UC"2",v1);
@@ -44,12 +47,13 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	ht1=jbl_ht_insert_chars(ht1,UC"9",v1);
 	ht1=jbl_ht_insert_int(ht1,0,v2);
 	ht1=jbl_ht_insert_int(ht1,1,v3);
+	v5=jbl_V(jbl_ht_insert_chars(jbl_Vht(v5),UC"9",v1));
 	jbl_ht_view(ht1);
 	jbl_ht_view(ht2);
+	jbl_var_view(v5);
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("获取操作\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");		
-	jbl_var * v4=NULL;
 	v4=jbl_ht_get(ht1,s2);
 	jbl_var_view(v4);
 	v4=jbl_var_free(v4);
@@ -84,7 +88,6 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	ht2=jbl_ht_insert_int(ht2,0,v3);
 	jbl_ht_view(ht2);
 	pchars("Space ship test:"),pint(jbl_ht_space_ship(ht1,ht2)),pn();
-	
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("Notice : 合并操作后面的会覆盖前面的\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");
@@ -155,5 +158,8 @@ exit:;
 	v1=jbl_var_free(v1);
 	v2=jbl_var_free(v2);
 	v3=jbl_var_free(v3);
+	v4=jbl_var_free(v4);
+	v5=jbl_var_free(v5);
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();	
 }

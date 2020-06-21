@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -9,38 +9,23 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_ll.h"
 #if JBL_LL_ENABLE==1
+/*******************************************************************************************/
+/*                            依赖 jbl_gc jbl_malloc jbl_ying jbl_exception jbl_var        */
+/*******************************************************************************************/
 #include "jbl_exception.h"
+#include "jbl_gc.h"
 #include "jbl_malloc.h"
 #include "jbl_ying.h"
 #include "jbl_var.h"
-#if JBL_STRING_ENABLE==1
+/*******************************************************************************************/
+/*                            联动jbl_stream jbl_string jbl_ht                             */
+/*******************************************************************************************/
 #include "jbl_string.h"
-#endif
-#if JBL_STREAM_ENABLE==1
 #include "jbl_stream.h"
-#endif
-#if JBL_HT_ENABLE==1
 #include "jbl_ht.h"
-#endif
-
-const jbl_var_operators jbl_ll_operators={
-	(void* (*)(void *))jbl_ll_free,
-	(void* (*)(void *))jbl_ll_copy,
-	(char  (*)(const void*,const void*))jbl_ll_space_ship,
-#if JBL_STRING_ENABLE==1
-#if JBL_JSON_ENABLE==1
-	(jbl_string*(*)(const void*,jbl_string *,char,jbl_int32))jbl_ll_json_encode,
-#endif	
-#endif	
-#if JBL_STREAM_ENABLE==1
-	(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))jbl_ll_view_put,
-#if JBL_JSON_ENABLE==1
-	(void(*)(const void*,jbl_stream *,char,jbl_int32))jbl_ll_json_put,
-#endif	
-#endif	
-};
-inline jbl_ll* jbl_Vll(jbl_var * this){if(!Vis_jbl_ll(this))jbl_exception(JBL_ERROR_VAR_TYPE_ERROR);return((jbl_ll*)this);}
-inline jbl_var* jbl_llv(jbl_ll_node *node){return node->v;}
+/*******************************************************************************************/
+/*                            以下函实现链节点基本操作                                   */
+/*******************************************************************************************/
 jbl_ll_node * jbl_ll_node_init(jbl_ll_node *node)
 {
 	node->pre=NULL;
@@ -94,6 +79,11 @@ void jbl_ll_node_delete(jbl_ll *this,jbl_ll_node *node)
 
 
 
+/*******************************************************************************************/
+/*                            以下函实现链表基本操作                                      */
+/*******************************************************************************************/
+jbl_var_operators_new(jbl_ll_operators,jbl_ll_free,jbl_ll_copy,jbl_ll_space_ship,jbl_ll_json_encode,jbl_ll_view_put,jbl_ll_json_put);
+inline jbl_ll* jbl_Vll(jbl_var * this){if(this&&!Vis_jbl_ll(this))jbl_exception("VAR TYPE ERROR");return((jbl_ll*)this);}
 inline jbl_ll * jbl_ll_new()
 {
 	return jbl_ll_init(jbl_malloc((sizeof(jbl_ll))));	
@@ -101,9 +91,9 @@ inline jbl_ll * jbl_ll_new()
 jbl_var * jbl_Vll_new()
 {
 	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_ll))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
+	jbl_ll_init((jbl_ll*)this);
+	jbl_gc_set_var((jbl_ll*)this);
 	jbl_var_set_operators(this,&jbl_ll_operators);
-	jbl_ll_init(jbl_Vll(this));
-	jbl_gc_set_var(jbl_Vll(this));
 	return this;		
 }
 inline jbl_ll* jbl_ll_init(jbl_ll *this)
@@ -116,11 +106,11 @@ inline jbl_ll* jbl_ll_init(jbl_ll *this)
 }
 jbl_ll* jbl_ll_free(jbl_ll *this)
 {
-	if(this==NULL)return NULL;
+	if(!this)return NULL;
 	jbl_gc_minus(this);
-	if(!jbl_gc_reference_cnt(this))
+	if(!jbl_gc_refcnt(this))
 	{
-		if(jbl_gc_is_ref(this))
+		if(jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))
 			jbl_ll_free((jbl_ll *)jbl_refer_pull(this));
 		else
 			jbl_ll_foreach_del(this,i,j)
@@ -129,15 +119,27 @@ jbl_ll* jbl_ll_free(jbl_ll *this)
 	}
 	return NULL;	
 }
-jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b)
+inline jbl_ll *jbl_ll_copy(jbl_ll *that)
 {
-	if(this==NULL)return jbl_ll_new();
-	jbl_reference *ref=NULL;
-	if(jbl_gc_is_ref(this))
-		ref=(jbl_reference*)this,this=((jbl_reference*)this)->ptr;
-	if((jbl_gc_reference_cnt(this)<=1))return ref?((jbl_ll *)ref):this;
+	if(that==NULL)return NULL;
+	jbl_gc_plus(that);
+	return that;
+}
+jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi)
+{
+	if(!this){this=jbl_ll_new();if(pthi)*pthi=this;return this;}
+	jbl_reference *ref=NULL;jbl_ll *thi=jbl_refer_pull_keep_father(this,&ref);
+	if(jbl_gc_is_pvar(thi))
+	{
+		jbl_ll *ttt=((jbl_reference*)thi)->ptr;
+		if(jbl_gc_refcnt(thi)==1)
+			((jbl_reference*)thi)->ptr=NULL,pl();
+		jbl_ll_free(thi);
+		thi=ttt;
+	}
+	if((jbl_gc_refcnt(thi)<=1)){if(pthi)*pthi=thi;return this;}
 	jbl_ll *tmp=(jbl_gc_is_var(this))?jbl_Vll(jbl_Vll_new()):jbl_ll_new();
-	jbl_ll_foreach(this,i)
+	jbl_ll_foreach(thi,i)
 	{
 		jbl_ll_node *node=jbl_ll_node_new();
 		node->v=jbl_var_copy(i->v);
@@ -145,34 +147,76 @@ jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b)
 		if(b&&(*b==i))*b=node;
 		jbl_ll_node_insert(tmp,node,tmp->tail);		
 	}
-	jbl_gc_minus(this);
-	return ref?(ref->ptr=tmp,((jbl_ll *)ref)):tmp;
-}
-jbl_ll * jbl_ll_insert(jbl_ll *this,jbl_var *var,jbl_ll_node *after)
-{
-	this=jbl_ll_extend(this,&after,NULL);
-	jbl_ll_node *node=jbl_ll_node_new();
-	node->v=(var?jbl_var_copy(var):jbl_Vnull_new());
-	jbl_ll_node_insert(((jbl_ll *)jbl_refer_pull(this)),node,after);
+	jbl_ll_free(thi);
+	if(ref)		ref->ptr=tmp;
+	else		this=tmp;
+	if(pthi)	*pthi=tmp;
 	return this;
 }
+/*******************************************************************************************/
+/*                            以下函实现链表插入操作                                     */
+/*******************************************************************************************/
+jbl_ll * jbl_ll_insert(jbl_ll *this,jbl_var *var,jbl_ll_node *after)
+{
+	jbl_ll *thi;this=jbl_ll_extend(this,&after,NULL,&thi);
+	jbl_ll_node *node=jbl_ll_node_new();
+	node->v=(var?jbl_var_copy(var):jbl_Vnull_new());
+	jbl_ll_node_insert(thi,node,after);
+	return this;
+}
+/*******************************************************************************************/
+/*                            以下函实现链表合并操作                                     */
+/*******************************************************************************************/
+jbl_ll *jbl_ll_merge(jbl_ll *this,jbl_ll *that)
+{
+	if(that==NULL)return this;
+	jbl_ll * tha=jbl_refer_pull(that);
+	jbl_ll *thi;this=jbl_ll_extend(this,NULL,NULL,&thi);
+	jbl_ll_foreach(tha,i)
+		jbl_ll_insert(thi,i->v,thi->tail);
+	return this;
+}
+#if JBL_HT_ENABLE==1
+jbl_ll *jbl_ll_merge_ht(jbl_ll *this,jbl_ht *that)
+{
+#if JBL_HT_SYS_ENABLE==1
+	if(!that||jbl_ht_is_sys(that))return this;
+#endif
+	jbl_ht_foreach(that,i)
+		this=jbl_ll_add(this,i->v);	
+	return this;
+}
+#endif
+/*******************************************************************************************/
+/*                            以下函实现链表删除操作                                     */
+/*******************************************************************************************/
 jbl_ll * jbl_ll_delete(jbl_ll *this,jbl_ll_node *node)
 {
 	if(!node)return this;
-	this=jbl_ll_extend(this,&node,NULL);
-	jbl_ll_node_delete(((jbl_ll *)jbl_refer_pull(this)),node);
+	jbl_ll *thi;this=jbl_ll_extend(this,&node,NULL,&thi);
+	jbl_ll_node_delete(thi,node);
 	return this;
 }
+/*******************************************************************************************/
+/*                            以下函实现链表获取操作                                      */
+/*******************************************************************************************/
+inline jbl_var* jbl_llv(jbl_ll_node *node){return node->v;}
+/*******************************************************************************************/
+/*                            以下函实现链表交换操作                                     */
+/*******************************************************************************************/
 jbl_ll * jbl_ll_swap_node(jbl_ll *this,jbl_ll_node *a,jbl_ll_node *b)
 {
 	if(a==b)return this;
-	this=jbl_ll_extend(this,&a,&b);
+	this=jbl_ll_extend(this,&a,&b,NULL);
 	jbl_var *v;
 	v=a->v;
 	a->v=b->v;
 	b->v=v;
 	return this;
 }
+/*******************************************************************************************/
+/*                            以下函实现链表比较操作                                     */
+/*******************************************************************************************/
 char jbl_ll_space_ship(const jbl_ll *this,const jbl_ll *that)
 {
 	if(this==that){return 0;}if(this==NULL){return -1;}if(that==NULL){return 1;}
@@ -185,25 +229,11 @@ char jbl_ll_space_ship(const jbl_ll *this,const jbl_ll *that)
 	for(jbl_ll_node *i=thi->head,*j=tha->head;i!=NULL&&a==0;a=jbl_var_space_ship(i->v,j->v),i=i->nxt,j=j->nxt);
 	return a;
 }
-inline jbl_ll *jbl_ll_copy(jbl_ll *that)
-{
-	if(that==NULL)return NULL;
-	jbl_gc_plus(that);
-	return that;
-}
-jbl_ll *jbl_ll_merge(jbl_ll *this,jbl_ll *that)
-{
-	if(that==NULL)return this;
-	jbl_ll * tha=jbl_refer_pull(that);
-	if(tha==NULL)return this;
-	this=jbl_ll_extend(this,NULL,NULL);
-	jbl_ll * thi=jbl_refer_pull(this);
-	jbl_ll_foreach(tha,i)
-		jbl_ll_insert(thi,i->v,thi->tail);
-	return this;
-}
-#if JBL_STRING_ENABLE==1
 #if JBL_JSON_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函实现链表JSON操作                                      */
+/*******************************************************************************************/
+#if JBL_STRING_ENABLE==1
 jbl_string* jbl_ll_json_encode(const jbl_ll* this,jbl_string *out,char format,jbl_int32 tabs)
 {
 	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
@@ -252,22 +282,7 @@ fail:;
 	return NULL;
 }
 #endif
-#endif
 #if JBL_STREAM_ENABLE==1
-void jbl_ll_view_put(const jbl_ll* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
-{
-	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jbl_ll        ",format,str,&tabs))return;
-	jbl_stream_push_chars(out,"\tlen:");jbl_stream_push_uint64(out,this->len);
-	jbl_ll_size_type j=0;
-	jbl_ll_foreach(this,i)
-	{
-		if(format){jbl_stream_push_char(out,'\n');for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}//¸ñÊ½»¯µÄ\tºÍ\n
-		jbl_stream_push_uint64(out,j++);
-		jbl_stream_push_char(out,':');
-		jbl_var_view_put(i->v,out,(format?(-1):0),NULL,-tabs);
-	}	
-}
-#if JBL_JSON_ENABLE==1
 void jbl_ll_json_put(const jbl_ll* this,jbl_stream *out,char format,jbl_int32 tabs)
 {
 	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,&tabs))return;	
@@ -284,12 +299,22 @@ void jbl_ll_json_put(const jbl_ll* this,jbl_stream *out,char format,jbl_int32 ta
 }
 #endif
 #endif
-#if JBL_HT_ENABLE==1
-jbl_ll *jbl_ll_merge_ht(jbl_ll *this,jbl_ht *that)
+/*******************************************************************************************/
+/*                            以下函实现链表插看操作                                      */
+/*******************************************************************************************/
+#if JBL_STREAM_ENABLE==1
+void jbl_ll_view_put(const jbl_ll* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs)
 {
-	jbl_ht_foreach(that,i)
-		this=jbl_ll_add(this,i->v);	
-	return this;
+	if(jbl_stream_view_put_format(this=jbl_refer_pull(this),out,"jbl_ll        ",format,str,&tabs))return;
+	jbl_stream_push_chars(out,UC"\tlen:");jbl_stream_push_uint(out,this->len);
+	jbl_ll_size_type j=0;
+	jbl_ll_foreach(this,i)
+	{
+		if(format){jbl_stream_push_char(out,'\n');for(jbl_int32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);}//¸ñÊ½»¯µÄ\tºÍ\n
+		jbl_stream_push_uint(out,j++);
+		jbl_stream_push_char(out,':');
+		jbl_var_view_put(i->v,out,(format?(-1):0),NULL,-tabs);
+	}	
 }
 #endif
 #endif

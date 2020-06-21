@@ -13,19 +13,18 @@ int main()
 	jbl_string_view(s1);
 	jbl_string_view(s2);
 	jbl_string_view(s3);
-	
 #if JBL_STREAM_ENABLE==1
 	jbl_var *ss1=jbl_string_Vstream_new(jbl_refer(&s1));
 	jbl_var *ss2=jbl_string_Vstream_new(jbl_refer(&s2));
 	jbl_stream *b64en=jbl_stream_base64_encode_new();
 	jbl_stream *b64de=jbl_stream_base64_decode_new();
-	
-	jbl_stream_connect_ref(b64en,(sout));
+		
+	jbl_stream_connect(b64en,(jbl_stream_stdout));
 	jbl_stream_connect(jbl_Vstream(ss1),b64en);
 	jbl_stream_do(jbl_Vstream(ss1),jbl_stream_force);
 	putchar('\n');
-	jbl_stream_connect_ref(b64de,(sout));
-	jbl_stream_connect(jbl_Vstream(ss2),b64en);
+	jbl_stream_connect(b64de,(jbl_stream_stdout));
+	jbl_stream_connect(jbl_Vstream(ss2),b64de);
 	jbl_stream_do(jbl_Vstream(ss2),jbl_stream_force);
 	putchar('\n');
 
@@ -34,9 +33,9 @@ int main()
 	b64en=jbl_stream_free(b64en);	
 	b64de=jbl_stream_free(b64de);	
 #endif	
-	
 	s1=jbl_string_free(s1);s2=jbl_string_free(s2);s3=jbl_string_free(s3);
 
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
 	return 0;
 }

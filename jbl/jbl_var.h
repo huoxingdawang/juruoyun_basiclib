@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -36,6 +36,94 @@ typedef struct __jbl_var_operators
 #endif
 }jbl_var_operators;
 
+#if JBL_STRING_ENABLE==1
+	#if JBL_STREAM_ENABLE==1
+		#if JBL_JSON_ENABLE==1
+			//STRING 开 STREAM 开 JSON 开
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+				(jbl_string*(*)(const void*,jbl_string *,char,jbl_int32))json_encode,				\
+				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
+				(void(*)(const void*,jbl_stream *,char,jbl_int32))json_put,							\
+			};
+		#else
+			//STRING 开 STREAM 开 JSON 关
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
+			};
+		#endif
+	#else
+		#if JBL_JSON_ENABLE==1
+			//STRING 开 STREAM 关 JSON 开
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+				(jbl_string*(*)(const void*,jbl_string *,char,jbl_int32))json_encode,				\
+			};
+		#else
+			//STRING 开 STREAM 关 JSON 关
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+			};
+		#endif
+	#endif
+#else
+	#if JBL_STREAM_ENABLE==1
+		#if JBL_JSON_ENABLE==1
+			//STRING 关 STREAM 开 JSON 开
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
+				(void(*)(const void*,jbl_stream *,char,jbl_int32))json_put,							\
+			};
+		#else
+			//STRING 关 STREAM 开 JSON 关
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+				(void(*)(const void*,jbl_stream *,jbl_int32,char*,jbl_int32))view_put,				\
+			};
+		#endif
+	#else
+		#if JBL_JSON_ENABLE==1
+			//STRING 关 STREAM 关 JSON 开
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+			};
+		#else
+			//STRING 关 STREAM 关 JSON 关
+			#define jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)	\
+			const jbl_var_operators name={															\
+				(void* (*)(void *))free,															\
+				(void* (*)(void *))copy,															\
+				(char  (*)(const void*,const void*))space_ship,										\
+			};
+		#endif
+	#endif
+#endif
+
+
+
 typedef struct __jbl_var
 {
 	const jbl_var_operators *ops;
@@ -50,17 +138,19 @@ typedef struct __jbl_var_data
 		double d;
 	};
 }jbl_var_data;
-#define		jbl_var_set_operators(this,op)	((jbl_var*)(((char*)this)-(sizeof(jbl_var))))->ops=(op)				//设置一个var的操作器
-#define		jbl_var_get_operators(this)		(this?(((jbl_var*)(((char*)this)-(sizeof(jbl_var))))->ops):NULL)	//获取一个var的操作器
+
 #define		jbl_V(x)						((jbl_var*)x)														//按照var使用一个变量
+jbl_var *	jbl_var_set_operators			(jbl_var * this,const jbl_var_operators *ops);						//设置一个var的操作器
+const jbl_var_operators *	jbl_var_get_operators			(const jbl_var * this);													//获取一个var的操作器
 jbl_var *	jbl_var_free					(jbl_var * this);													//释放一个var
 jbl_var *	jbl_var_copy					(jbl_var * this);													//复制一个var
 char		jbl_var_space_ship				(const jbl_var * this,const jbl_var * that);						//var的太空船操作符
+jbl_var *jbl_var_copy_as(void * that,const jbl_var_operators *ops);
 #if JBL_STREAM_ENABLE==1
-void		jbl_var_view_put				(const jbl_var * this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个var
-#define		jbl_var_view(x)					jbl_var_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,jbl_view_default_tabs_num),jbl_stream_push_char(jbl_stream_stdout,'\n')	//浏览一个var
+void		jbl_var_view_put				(const jbl_var * this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从out浏览一个var
+#define		jbl_var_view(x)					jbl_var_view_put(x,jbl_stream_stdout,__LINE__,#x " @ "__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\n')	//浏览一个var
 #if JBL_JSON_ENABLE==1
-void 		jbl_var_json_put				(const jbl_var * this,jbl_stream *output_stream,char format,jbl_int32 tabs);	//从从out JSON格式化一个var
+void 		jbl_var_json_put				(const jbl_var * this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var
 #endif
 #endif
 
@@ -114,15 +204,15 @@ jbl_string *	jbl_Vntf_json_encode		(const jbl_var* this,jbl_string *out,char for
 #endif
 #endif
 #if JBL_STREAM_ENABLE==1
-void 			jbl_Vuint_view_put			(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的uint
-void 			jbl_Vint_view_put			(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的int
-void 			jbl_Vdouble_view_put		(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的double
-void			jbl_Vntf_view_put			(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的null或true或false
+void 			jbl_Vuint_view_put			(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的uint
+void 			jbl_Vint_view_put			(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的int
+void 			jbl_Vdouble_view_put		(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的double
+void			jbl_Vntf_view_put			(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);	//从从out 浏览一个var格式的null或true或false
 #if JBL_JSON_ENABLE==1
-void 			jbl_Vuint_json_put			(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的uint
-void 			jbl_Vint_json_put			(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的int
-void 			jbl_Vdouble_json_put		(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的double
-void			jbl_Vntf_json_put			(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的null或true或false
+void 			jbl_Vuint_json_put			(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的uint
+void 			jbl_Vint_json_put			(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的int
+void 			jbl_Vdouble_json_put		(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的double
+void			jbl_Vntf_json_put			(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);	//从从out JSON格式化一个var格式的null或true或false
 #endif
 #endif
 

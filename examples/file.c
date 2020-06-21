@@ -17,6 +17,7 @@ int main()
 	
 	jbl_file_free(&test);
 	jbl_string_free(&dir);
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 
 	
 }

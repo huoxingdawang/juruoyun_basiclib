@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -49,7 +49,7 @@ void	jbl_file_copy					(jbl_file *this,jbl_file *that,jbl_copy_type cpt);
 #define	jbl_file_equal_light(x,y)		jbl_file_copy(x,y,light)
 #define	jbl_file_equal_light_copy(x,y)	jbl_file_copy(x,y,move)
 char	jbl_file_space_ship				(const jbl_file *this,const jbl_file *that);
-#define	jbl_file_view(x,y)			 	jbl_file_view_ex(x,y,#x " @ "__FILE__,__LINE__,jbl_view_default_tabs_num)
+#define	jbl_file_view(x,y)			 	jbl_file_view_ex(x,y,#x " @ "__FILE__,__LINE__,JBL_VIEW_DEFAULT_TABS)
 void 	jbl_file_view_ex					(const jbl_file *this,FILE * file,char*str,int a,int tabs);
 #define	jbl_file_open(x,y,z)				jbl_file_file_open_ex(x,NULL,y,z,-1)
 void	jbl_file_file_open_ex			(jbl_file *this,jbl_file *f,jbl_string *name,jbl_copy_type ncpt,jbl_uint32 recursive_time);

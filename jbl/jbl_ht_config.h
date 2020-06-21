@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -13,14 +13,15 @@
 #if JBL_HT_ENABLE==1
 #include "jbl_ying.h"
 #if __SIZEOF_POINTER__ == 8
-	typedef jbl_uint64 			jbl_ht_size_type;		
-	typedef jbl_int64 			__jbl_ht_size_type;		
+	typedef jbl_uint64 			jbl_ht_size_type;
+	typedef jbl_int64 			jbl_ht_size_type_signed;
 #else
-	typedef jbl_uint32 			jbl_ht_size_type;		
-	typedef jbl_int32 			__jbl_ht_size_type;		
+	typedef jbl_uint32 			jbl_ht_size_type;
+	typedef jbl_int32 			jbl_ht_size_type_signed;
 #endif
 
-#define JBL_HT_MIN_SIZE 8
+#define JBL_HT_MIN_SIZE			8
+#define JBL_HT_SYS_ENABLE		1
 
 #endif
 #endif

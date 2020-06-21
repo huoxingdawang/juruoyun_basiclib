@@ -12,8 +12,8 @@ int main()
 	jbl_var * v1=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"juruoyun"));
 	jbl_var * v2=jbl_V(jbl_string_add_chars(jbl_Vstring(jbl_Vstring_new()),UC"12345678"));
 	jbl_var * v3=jbl_Vuint_set(NULL,19260817);
+	jbl_var * v4=NULL;
 	jbl_string *s1=NULL;
-
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("插入\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");	
@@ -29,8 +29,10 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 pchars("复制\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");	
 	l2=jbl_ll_copy(l1);
+	v4=jbl_ll_copy_as_var(l1);
 	jbl_ll_view(l1);
 	jbl_ll_view(l2);
+	jbl_var_view(v4);
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("太空船操作符\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");	
@@ -45,8 +47,10 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 pchars("写时分离\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");	
 	l2=jbl_ll_add(l2,v3);
+	v4=jbl_V(jbl_ll_add(jbl_Vll(v4),v1));
 	jbl_ll_view(l1);
 	jbl_ll_view(l2);
+	jbl_var_view(v4);
 pchars("/////////////////////////////////////////////////////////////////////\n");
 pchars("合并\n");
 pchars("/////////////////////////////////////////////////////////////////////\n");	
@@ -92,6 +96,7 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	v1=jbl_var_free(v1);
 	v2=jbl_var_free(v2);
 	v3=jbl_var_free(v3);
+	v4=jbl_var_free(v4);
 	s1=jbl_string_free(s1);
 	vl1=jbl_var_free(vl1);
 	vl2=jbl_var_free(vl2);
@@ -132,7 +137,7 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	jbl_ll_view(&l2);
 	jbl_string_equal_chars(&s1,UC"12312312\n1231231");
 	jbl_string_cut(&s1,&l1,'\n');
-	jbl_ll_put(&l1,&jbl_stream_stdout,view,(jbl_view_default_tabs_num<<16)|(__LINE__<<1)|1,__FILE__);jbl_stream_do(&jbl_stream_stdout,1);
+	jbl_ll_put(&l1,&jbl_stream_stdout,view,(JBL_VIEW_DEFAULT_TABS<<16)|(__LINE__<<1)|1,__FILE__);jbl_stream_do(&jbl_stream_stdout,1);
 	
 	jbl_ll_to_json(&l1,&s2);
 	jbl_string_view(&s2);
@@ -144,5 +149,6 @@ pchars("/////////////////////////////////////////////////////////////////////\n"
 	jbl_ll_frees(2,&l1,&l2);
 
 */
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();	
 }

@@ -8,7 +8,7 @@
 		"jbl_Vdouble_copy":{
 			"name":"jbl_Vdouble_copy",
 			"file":"jbl/jbl_var.c",
-			"comment":"//复制一个var格式的double",
+			"comment":"复制一个var格式的double",
 			"type":"f"
 		},
 		"jbl_Vdouble_json_encode":{
@@ -20,37 +20,37 @@
 		"jbl_Vdouble_json_put":{
 			"name":"jbl_Vdouble_json_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out JSON格式化一个var格式的double",
+			"comment":"从从out JSON格式化一个var格式的double",
 			"type":"f"
 		},
 		"jbl_Vdouble_new":{
 			"name":"jbl_Vdouble_new",
 			"file":"jbl/jbl_var.c",
-			"comment":"//新建一个var格式的double",
+			"comment":"新建一个var格式的double",
 			"type":"f"
 		},
 		"jbl_Vdouble_set":{
 			"name":"jbl_Vdouble_set",
 			"file":"jbl/jbl_var.c",
-			"comment":"//设置一个var格式的double",
+			"comment":"设置一个var格式的double",
 			"type":"f"
 		},
 		"jbl_Vdouble_space_ship":{
 			"name":"jbl_Vdouble_space_ship",
 			"file":"jbl/jbl_var.c",
-			"comment":"//比较两个var格式的double",
+			"comment":"比较两个var格式的double",
 			"type":"f"
 		},
 		"jbl_Vdouble_view_put":{
 			"name":"jbl_Vdouble_view_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out 浏览一个var格式的double",
+			"comment":"从从out 浏览一个var格式的double",
 			"type":"f"
 		},
 		"jbl_Vfalse_new":{
 			"name":"jbl_Vfalse_new",
 			"file":"jbl/jbl_var.c",
-			"comment":"//新建一个var格式的false",
+			"comment":"新建一个var格式的false",
 			"type":"f"
 		},
 		"jbl_Vht":{
@@ -68,7 +68,7 @@
 		"jbl_Vint_copy":{
 			"name":"jbl_Vint_copy",
 			"file":"jbl/jbl_var.c",
-			"comment":"//复制一个var格式的int",
+			"comment":"复制一个var格式的int",
 			"type":"f"
 		},
 		"jbl_Vint_json_encode":{
@@ -80,31 +80,31 @@
 		"jbl_Vint_json_put":{
 			"name":"jbl_Vint_json_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out JSON格式化一个var格式的int",
+			"comment":"从从out JSON格式化一个var格式的int",
 			"type":"f"
 		},
 		"jbl_Vint_new":{
 			"name":"jbl_Vint_new",
 			"file":"jbl/jbl_var.c",
-			"comment":"//新建一个var格式的int",
+			"comment":"新建一个var格式的int",
 			"type":"f"
 		},
 		"jbl_Vint_set":{
 			"name":"jbl_Vint_set",
 			"file":"jbl/jbl_var.c",
-			"comment":"//设置一个var格式的int",
+			"comment":"设置一个var格式的int",
 			"type":"f"
 		},
 		"jbl_Vint_space_ship":{
 			"name":"jbl_Vint_space_ship",
 			"file":"jbl/jbl_var.c",
-			"comment":"//比较两个var格式的int",
+			"comment":"比较两个var格式的int",
 			"type":"f"
 		},
 		"jbl_Vint_view_put":{
 			"name":"jbl_Vint_view_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out 浏览一个var格式的int",
+			"comment":"从从out 浏览一个var格式的int",
 			"type":"f"
 		},
 		"jbl_Vll":{
@@ -122,7 +122,7 @@
 		"jbl_Vntf_copy":{
 			"name":"jbl_Vntf_copy",
 			"file":"jbl/jbl_var.c",
-			"comment":"//复制一个var格式的null或true或false",
+			"comment":"复制一个var格式的null或true或false",
 			"type":"f"
 		},
 		"jbl_Vntf_json_encode":{
@@ -134,25 +134,25 @@
 		"jbl_Vntf_json_put":{
 			"name":"jbl_Vntf_json_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out JSON格式化一个var格式的null或true或false",
+			"comment":"从从out JSON格式化一个var格式的null或true或false",
 			"type":"f"
 		},
 		"jbl_Vntf_space_ship":{
 			"name":"jbl_Vntf_space_ship",
 			"file":"jbl/jbl_var.c",
-			"comment":"//比较两个var格式的null或true或false (null<false<true)",
+			"comment":"比较两个var格式的null或true或false (null<false<true)",
 			"type":"f"
 		},
 		"jbl_Vntf_view_put":{
 			"name":"jbl_Vntf_view_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out 浏览一个var格式的null或true或false",
+			"comment":"从从out 浏览一个var格式的null或true或false",
 			"type":"f"
 		},
 		"jbl_Vnull_new":{
 			"name":"jbl_Vnull_new",
 			"file":"jbl/jbl_var.c",
-			"comment":"//新建一个var格式的null",
+			"comment":"新建一个var格式的null",
 			"type":"f"
 		},
 		"jbl_Vstream":{
@@ -200,13 +200,13 @@
 		"jbl_Vtrue_new":{
 			"name":"jbl_Vtrue_new",
 			"file":"jbl/jbl_var.c",
-			"comment":"//新建一个var格式的true",
+			"comment":"新建一个var格式的true",
 			"type":"f"
 		},
 		"jbl_Vuint_copy":{
 			"name":"jbl_Vuint_copy",
 			"file":"jbl/jbl_var.c",
-			"comment":"//复制一个var格式的uint",
+			"comment":"复制一个var格式的uint",
 			"type":"f"
 		},
 		"jbl_Vuint_json_encode":{
@@ -218,31 +218,31 @@
 		"jbl_Vuint_json_put":{
 			"name":"jbl_Vuint_json_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out JSON格式化一个var格式的uint",
+			"comment":"从从out JSON格式化一个var格式的uint",
 			"type":"f"
 		},
 		"jbl_Vuint_new":{
 			"name":"jbl_Vuint_new",
 			"file":"jbl/jbl_var.c",
-			"comment":"//新建一个var格式的uint",
+			"comment":"新建一个var格式的uint",
 			"type":"f"
 		},
 		"jbl_Vuint_set":{
 			"name":"jbl_Vuint_set",
 			"file":"jbl/jbl_var.c",
-			"comment":"//设置一个var格式的uint",
+			"comment":"设置一个var格式的uint",
 			"type":"f"
 		},
 		"jbl_Vuint_space_ship":{
 			"name":"jbl_Vuint_space_ship",
 			"file":"jbl/jbl_var.c",
-			"comment":"//比较两个var格式的uint",
+			"comment":"比较两个var格式的uint",
 			"type":"f"
 		},
 		"jbl_Vuint_view_put":{
 			"name":"jbl_Vuint_view_put",
 			"file":"jbl/jbl_var.c",
-			"comment":"//从从out 浏览一个var格式的uint",
+			"comment":"从从out 浏览一个var格式的uint",
 			"type":"f"
 		},
 		"jbl_aes_128_cbc_decode":{
@@ -255,6 +255,12 @@
 			"name":"jbl_aes_128_cbc_encode",
 			"file":"jbl/jbl_aes.c",
 			"comment":"进行AES128CBC加密",
+			"type":"f"
+		},
+		"jbl_aes_128_cbc_update_stream_buf":{
+			"name":"jbl_aes_128_cbc_update_stream_buf",
+			"file":"jbl/jbl_aes.c",
+			"comment":"",
 			"type":"f"
 		},
 		"jbl_aes_128_ecb_decode":{
@@ -383,11 +389,41 @@
 			"comment":"",
 			"type":"d"
 		},
+		"jbl_exception_add_exit_function":{
+			"name":"jbl_exception_add_exit_function",
+			"file":"jbl/jbl_exception.h",
+			"comment":"",
+			"type":"d"
+		},
+		"jbl_exception_exit_functions":{
+			"name":"jbl_exception_exit_functions",
+			"file":"jbl/jbl_exception.c",
+			"comment":"",
+			"type":"v"
+		},
+		"jbl_exception_exit_functions_cnt":{
+			"name":"jbl_exception_exit_functions_cnt",
+			"file":"jbl/jbl_exception.c",
+			"comment":"",
+			"type":"v"
+		},
+		"jbl_exception_on_error":{
+			"name":"jbl_exception_on_error",
+			"file":"jbl/jbl_exception.c",
+			"comment":"",
+			"type":"v"
+		},
 		"jbl_execute_cmd":{
 			"name":"jbl_execute_cmd",
 			"file":"jbl/jbl_cmd.c",
 			"comment":"执行一段cmd命令",
 			"type":"f"
+		},
+		"jbl_exit":{
+			"name":"jbl_exit",
+			"file":"jbl/jbl_exception.h",
+			"comment":"",
+			"type":"d"
 		},
 		"jbl_file":{
 			"name":"jbl_file",
@@ -503,6 +539,12 @@
 			"comment":"获取引用标记",
 			"type":"d"
 		},
+		"jbl_gc_is_user1":{
+			"name":"jbl_gc_is_user1",
+			"file":"jbl/jbl_gc.h",
+			"comment":"",
+			"type":"d"
+		},
 		"jbl_gc_is_var":{
 			"name":"jbl_gc_is_var",
 			"file":"jbl/jbl_gc.h",
@@ -521,8 +563,8 @@
 			"comment":"引用计数加一",
 			"type":"d"
 		},
-		"jbl_gc_reference_cnt":{
-			"name":"jbl_gc_reference_cnt",
+		"jbl_gc_refcnt":{
+			"name":"jbl_gc_refcnt",
 			"file":"jbl/jbl_gc.h",
 			"comment":"获取引用计数",
 			"type":"d"
@@ -531,6 +573,12 @@
 			"name":"jbl_gc_reset_ref",
 			"file":"jbl/jbl_gc.h",
 			"comment":"删除引用标记",
+			"type":"d"
+		},
+		"jbl_gc_reset_user1":{
+			"name":"jbl_gc_reset_user1",
+			"file":"jbl/jbl_gc.h",
+			"comment":"",
 			"type":"d"
 		},
 		"jbl_gc_reset_var":{
@@ -543,6 +591,12 @@
 			"name":"jbl_gc_set_ref",
 			"file":"jbl/jbl_gc.h",
 			"comment":"设置引用标记",
+			"type":"d"
+		},
+		"jbl_gc_set_user1":{
+			"name":"jbl_gc_set_user1",
+			"file":"jbl/jbl_gc.h",
+			"comment":"",
 			"type":"d"
 		},
 		"jbl_gc_set_var":{
@@ -614,7 +668,7 @@
 		"jbl_ht_foreach":{
 			"name":"jbl_ht_foreach",
 			"file":"jbl/jbl_ht.h",
-			"comment":"for(jbl_ht_data *i=&((jbl_ht *)jbl_refer_pull(this))->data[0],*____i=&(((jbl_ht *)jbl_refer_pull(this)))->data[((jbl_ht *)jbl_refer_pull(this))->nxt];i!=____i;i++)if(i->v!=NULL)//枚举一个hash table",
+			"comment":"for(jbl_ht_data *i=&((jbl_ht *)jbl_refer_pull(this))->data[0],*____i=&(((jbl_ht *)jbl_refer_pull(this)))->data[((jbl_ht *)jbl_refer_pull(this))->nxt];i!=____i;i++)if(i->v!=NULL)枚举一个hash table",
 			"type":"d"
 		},
 		"jbl_ht_free":{
@@ -627,19 +681,49 @@
 			"name":"jbl_ht_get",
 			"file":"jbl/jbl_ht.c",
 			"comment":"获取一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_var *",
+			"input":"(const jbl_ht *this,jbl_string *k);"
 		},
 		"jbl_ht_get_chars":{
 			"name":"jbl_ht_get_chars",
 			"file":"jbl/jbl_ht.c",
 			"comment":"以chars为key获取一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_var *",
+			"input":"(const jbl_ht *this,unsigned char *kk);"
+		},
+		"jbl_ht_get_ht_data":{
+			"name":"jbl_ht_get_ht_data",
+			"file":"jbl/jbl_ht.c",
+			"comment":"获取一个ht_data",
+			"type":"f",
+			"return":"jbl_ht_data *",
+			"input":"(const jbl_ht *this,jbl_string *k);"
+		},
+		"jbl_ht_get_ht_data_chars":{
+			"name":"jbl_ht_get_ht_data_chars",
+			"file":"jbl/jbl_ht.c",
+			"comment":"以chars为key获取一个ht_data",
+			"type":"f",
+			"return":"jbl_ht_data *",
+			"input":"(const jbl_ht *this,const jbl_uint8 *chars);"
+		},
+		"jbl_ht_get_ht_data_int":{
+			"name":"jbl_ht_get_ht_data_int",
+			"file":"jbl/jbl_ht.c",
+			"comment":"以int为key获取一个ht_data",
+			"type":"f",
+			"return":"jbl_ht_data *",
+			"input":"(const jbl_ht *this,jbl_string_hash_type h);"
 		},
 		"jbl_ht_get_int":{
 			"name":"jbl_ht_get_int",
 			"file":"jbl/jbl_ht.c",
 			"comment":"以chars为int获取一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_var *",
+			"input":"(const jbl_ht *this,jbl_string_hash_type h);"
 		},
 		"jbl_ht_get_length":{
 			"name":"jbl_ht_get_length",
@@ -693,30 +777,54 @@
 			"name":"jbl_ht_insert_chars",
 			"file":"jbl/jbl_ht.c",
 			"comment":"以chars为key插入一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_ht  *",
+			"input":"(jbl_ht *this,unsigned char *kk,jbl_var *v);"
+		},
+		"jbl_ht_insert_force":{
+			"name":"jbl_ht_insert_force",
+			"file":"jbl/jbl_ht.c",
+			"comment":"强制插入,忽略互斥性",
+			"type":"f",
+			"return":"jbl_ht *",
+			"input":"(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,jbl_var *v);"
 		},
 		"jbl_ht_insert_int":{
 			"name":"jbl_ht_insert_int",
 			"file":"jbl/jbl_ht.c",
 			"comment":"以int为key插入一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_ht  *",
+			"input":"(jbl_ht *this,jbl_string_hash_type h,jbl_var *v);"
+		},
+		"jbl_ht_is_sys":{
+			"name":"jbl_ht_is_sys",
+			"file":"jbl/jbl_ht.h",
+			"comment":"获取sys标记",
+			"type":"d"
+		},
+		"jbl_ht_is_sys_force":{
+			"name":"jbl_ht_is_sys_force",
+			"file":"jbl/jbl_ht.c",
+			"comment":"",
+			"type":"d"
 		},
 		"jbl_ht_json_decode":{
 			"name":"jbl_ht_json_decode",
 			"file":"jbl/jbl_ht.c",
-			"comment":"(jbl_ht *this,const jbl_string* in,jbl_string_size_type *start);//JSON 解码",
+			"comment":"(jbl_ht *this,const jbl_string* in,jbl_string_size_type *start);JSON 解码",
 			"type":"f"
 		},
 		"jbl_ht_json_encode":{
 			"name":"jbl_ht_json_encode",
 			"file":"jbl/jbl_ht.c",
-			"comment":"(const jbl_ht* this,jbl_string *out,char format,jbl_int32 tabs);//JSON 编码",
+			"comment":"(const jbl_ht* this,jbl_string *out,char format,jbl_int32 tabs);JSON 编码",
 			"type":"f"
 		},
 		"jbl_ht_json_put":{
 			"name":"jbl_ht_json_put",
 			"file":"jbl/jbl_ht.c",
-			"comment":"(const jbl_ht* this,jbl_stream *output_stream,char format,jbl_int32 tabs);//从output_stream JSON输出一个hash table",
+			"comment":"(const jbl_ht* this,jbl_stream *out,char format,jbl_int32 tabs);从out JSON输出一个hash table",
 			"type":"f"
 		},
 		"jbl_ht_merge":{
@@ -755,10 +863,28 @@
 			"comment":"重新hash一个hash table",
 			"type":"f"
 		},
+		"jbl_ht_reset_sys":{
+			"name":"jbl_ht_reset_sys",
+			"file":"jbl/jbl_ht.h",
+			"comment":"删除sys标记",
+			"type":"d"
+		},
+		"jbl_ht_set_sys":{
+			"name":"jbl_ht_set_sys",
+			"file":"jbl/jbl_ht.h",
+			"comment":"设置sys标记",
+			"type":"d"
+		},
 		"jbl_ht_size_type":{
 			"name":"jbl_ht_size_type",
 			"file":"jbl/jbl_ht_config.h",
 			"comment":"hash table尺寸类型",
+			"type":"t"
+		},
+		"jbl_ht_size_type_signed":{
+			"name":"jbl_ht_size_type_signed",
+			"file":"jbl/jbl_ht_config.h",
+			"comment":"",
 			"type":"t"
 		},
 		"jbl_ht_space_ship":{
@@ -771,30 +897,36 @@
 			"name":"jbl_ht_unset",
 			"file":"jbl/jbl_ht.c",
 			"comment":"删除一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_ht  *",
+			"input":"(jbl_ht *this,jbl_string *k);"
 		},
 		"jbl_ht_unset_chars":{
 			"name":"jbl_ht_unset_chars",
 			"file":"jbl/jbl_ht.c",
 			"comment":"以chars为key删除一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_ht  *",
+			"input":"(jbl_ht *this,unsigned char *kk);"
 		},
 		"jbl_ht_unset_int":{
 			"name":"jbl_ht_unset_int",
 			"file":"jbl/jbl_ht.c",
 			"comment":"以int为key获取一个var",
-			"type":"f"
+			"type":"f",
+			"return":"jbl_ht  *",
+			"input":"(jbl_ht *this,jbl_string_hash_type h);"
 		},
 		"jbl_ht_view":{
 			"name":"jbl_ht_view",
 			"file":"jbl/jbl_ht.h",
-			"comment":"jbl_ht_view_put(x,jbl_stream_stdout,__LINE__,#x \" @ \"__FILE__,jbl_view_default_tabs_num),jbl_stream_push_char(jbl_stream_stdout,'\\n')//浏览一个hash table",
+			"comment":"jbl_ht_view_put(x,jbl_stream_stdout,__LINE__,#x \" @ \"__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\\n')浏览一个hash table",
 			"type":"d"
 		},
 		"jbl_ht_view_put":{
 			"name":"jbl_ht_view_put",
 			"file":"jbl/jbl_ht.c",
-			"comment":"(const jbl_ht* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);//从output_stream浏览一个hash table",
+			"comment":"(const jbl_ht* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);从out浏览一个hash table",
 			"type":"f"
 		},
 		"jbl_hth":{
@@ -1148,7 +1280,7 @@
 		"jbl_max":{
 			"name":"jbl_max",
 			"file":"jbl/jbl_ying.h",
-			"comment":"",
+			"comment":"取最大值",
 			"type":"d"
 		},
 		"jbl_max_update":{
@@ -1247,6 +1379,12 @@
 			"comment":"设置随机种子",
 			"type":"f"
 		},
+		"jbl_rand_start":{
+			"name":"jbl_rand_start",
+			"file":"jbl/jbl_rand.h",
+			"comment":"",
+			"type":"d"
+		},
 		"jbl_rand_string":{
 			"name":"jbl_rand_string",
 			"file":"jbl/jbl_rand.c",
@@ -1289,17 +1427,23 @@
 			"comment":"",
 			"type":"f"
 		},
+		"jbl_signal_callback":{
+			"name":"jbl_signal_callback",
+			"file":"jbl/jbl_ying.c",
+			"comment":"",
+			"type":"f"
+		},
 		"jbl_start":{
 			"name":"jbl_start",
-			"file":"jbl/jbl_ying.h",
+			"file":"jbl/jbl_ying.c",
 			"comment":"",
-			"type":"d"
+			"type":"f"
 		},
 		"jbl_stop":{
 			"name":"jbl_stop",
-			"file":"jbl/jbl_ying.h",
+			"file":"jbl/jbl_ying.c",
 			"comment":"",
-			"type":"d"
+			"type":"f"
 		},
 		"jbl_stream":{
 			"name":"jbl_stream",
@@ -1385,12 +1529,6 @@
 			"comment":"",
 			"type":"d"
 		},
-		"jbl_stream_connect_ref":{
-			"name":"jbl_stream_connect_ref",
-			"file":"jbl/jbl_stream.h",
-			"comment":"",
-			"type":"d"
-		},
 		"jbl_stream_copy":{
 			"name":"jbl_stream_copy",
 			"file":"jbl/jbl_stream.c",
@@ -1411,9 +1549,9 @@
 		},
 		"jbl_stream_do":{
 			"name":"jbl_stream_do",
-			"file":"jbl/jbl_stream.h",
+			"file":"jbl/jbl_stream.c",
 			"comment":"",
-			"type":"d"
+			"type":"f"
 		},
 		"jbl_stream_file_copy":{
 			"name":"jbl_stream_file_copy",
@@ -1499,14 +1637,20 @@
 			"comment":"",
 			"type":"f"
 		},
+		"jbl_stream_push_hex":{
+			"name":"jbl_stream_push_hex",
+			"file":"jbl/jbl_stream.c",
+			"comment":"",
+			"type":"f"
+		},
 		"jbl_stream_push_hex_8bits":{
 			"name":"jbl_stream_push_hex_8bits",
 			"file":"jbl/jbl_stream.c",
 			"comment":"",
 			"type":"f"
 		},
-		"jbl_stream_push_int64":{
-			"name":"jbl_stream_push_int64",
+		"jbl_stream_push_int":{
+			"name":"jbl_stream_push_int",
 			"file":"jbl/jbl_stream.c",
 			"comment":"",
 			"type":"f"
@@ -1517,8 +1661,8 @@
 			"comment":"(jbl_stream *out,const jbl_string* this);",
 			"type":"f"
 		},
-		"jbl_stream_push_uint64":{
-			"name":"jbl_stream_push_uint64",
+		"jbl_stream_push_uint":{
+			"name":"jbl_stream_push_uint",
 			"file":"jbl/jbl_stream.c",
 			"comment":"",
 			"type":"f"
@@ -1565,10 +1709,16 @@
 			"comment":"",
 			"type":"f"
 		},
+		"jbl_strhash":{
+			"name":"jbl_strhash",
+			"file":"jbl/jbl_string.c",
+			"comment":"",
+			"type":"f"
+		},
 		"jbl_string":{
 			"name":"jbl_string",
 			"file":"jbl/jbl_time.h",
-			"comment":"",
+			"comment":"123123",
 			"type":"t"
 		},
 		"jbl_string_Vstream_new":{
@@ -1600,6 +1750,20 @@
 			"file":"jbl/jbl_string.c",
 			"comment":"添加一个长度已知的char*字符串",
 			"type":"f"
+		},
+		"jbl_string_add_const":{
+			"name":"jbl_string_add_const",
+			"file":"jbl/jbl_string.h",
+			"comment":"",
+			"type":"d"
+		},
+		"jbl_string_add_const_length":{
+			"name":"jbl_string_add_const_length",
+			"file":"jbl/jbl_string.c",
+			"comment":"添加一个长度已知常量char*字符串",
+			"type":"f",
+			"return":"jbl_string *",
+			"input":"(jbl_string *this,const unsigned char *in,jbl_string_size_type len);"
 		},
 		"jbl_string_add_double":{
 			"name":"jbl_string_add_double",
@@ -1667,6 +1831,18 @@
 			"comment":"把unicode转换成utf8并添加到字符串末尾",
 			"type":"f"
 		},
+		"jbl_string_cache_get":{
+			"name":"jbl_string_cache_get",
+			"file":"jbl/jbl_string.c",
+			"comment":"",
+			"type":"f"
+		},
+		"jbl_string_cache_replace":{
+			"name":"jbl_string_cache_replace",
+			"file":"jbl/jbl_string.c",
+			"comment":"",
+			"type":"f"
+		},
 		"jbl_string_clear":{
 			"name":"jbl_string_clear",
 			"file":"jbl/jbl_string.c",
@@ -1708,18 +1884,6 @@
 			"file":"jbl/jbl_string.c",
 			"comment":"从start开始用cut切割一个字符串",
 			"type":"f"
-		},
-		"jbl_string_delete_1":{
-			"name":"jbl_string_delete_1",
-			"file":"jbl/jbl_string.h",
-			"comment":"删除一个字符串的最后一位",
-			"type":"d"
-		},
-		"jbl_string_delete_1_force":{
-			"name":"jbl_string_delete_1_force",
-			"file":"jbl/jbl_string.h",
-			"comment":"强制删除一个字符串的最后一位，当字符串为NULL或引用类型时将直接导致RE",
-			"type":"d"
 		},
 		"jbl_string_equal":{
 			"name":"jbl_string_equal",
@@ -1967,18 +2131,6 @@
 			"comment":"(const jbl_string *this,FILE * file);",
 			"type":"f"
 		},
-		"jbl_string_set":{
-			"name":"jbl_string_set",
-			"file":"jbl/jbl_string.h",
-			"comment":"设置字符串a的第i位的内容(当越界时将自动扩容)",
-			"type":"d"
-		},
-		"jbl_string_set_force":{
-			"name":"jbl_string_set_force",
-			"file":"jbl/jbl_string.h",
-			"comment":"强制获取字符串a的第i位的内容，当字符串为NULL或引用类型或越界时将直接导致RE",
-			"type":"d"
-		},
 		"jbl_string_set_length":{
 			"name":"jbl_string_set_length",
 			"file":"jbl/jbl_string.h",
@@ -1989,12 +2141,6 @@
 			"name":"jbl_string_set_length_force",
 			"file":"jbl/jbl_string.h",
 			"comment":"强制获取一个字符串长度，当字符串为NULL或引用类型时将直接导致RE",
-			"type":"d"
-		},
-		"jbl_string_set_tail0":{
-			"name":"jbl_string_set_tail0",
-			"file":"jbl/jbl_string.h",
-			"comment":"设置字符串末尾0(当越界时将自动扩容)",
 			"type":"d"
 		},
 		"jbl_string_size_type":{
@@ -2015,6 +2161,18 @@
 			"comment":"和char*字符串的太空船操作符，参见php的太空船操作符",
 			"type":"f"
 		},
+		"jbl_string_start":{
+			"name":"jbl_string_start",
+			"file":"jbl/jbl_string.c",
+			"comment":"",
+			"type":"f"
+		},
+		"jbl_string_stop":{
+			"name":"jbl_string_stop",
+			"file":"jbl/jbl_string.c",
+			"comment":"",
+			"type":"f"
+		},
 		"jbl_string_stream_free":{
 			"name":"jbl_string_stream_free",
 			"file":"jbl/jbl_string.h",
@@ -2027,14 +2185,8 @@
 			"comment":"新建一个字符串流(不进行复制操作)",
 			"type":"f"
 		},
-		"jbl_string_stream_operater":{
-			"name":"jbl_string_stream_operater",
-			"file":"jbl/jbl_string.c",
-			"comment":"",
-			"type":"f"
-		},
-		"jbl_string_stream_update_buf":{
-			"name":"jbl_string_stream_update_buf",
+		"jbl_string_update_stream_buf":{
+			"name":"jbl_string_update_stream_buf",
 			"file":"jbl/jbl_string.c",
 			"comment":"",
 			"type":"f"
@@ -2281,9 +2433,9 @@
 		},
 		"jbl_var_get_operators":{
 			"name":"jbl_var_get_operators",
-			"file":"jbl/jbl_var.h",
+			"file":"jbl/jbl_var.c",
 			"comment":"获取一个var的操作器",
-			"type":"d"
+			"type":"f"
 		},
 		"jbl_var_json_decode":{
 			"name":"jbl_var_json_decode",
@@ -2317,9 +2469,9 @@
 		},
 		"jbl_var_set_operators":{
 			"name":"jbl_var_set_operators",
-			"file":"jbl/jbl_var.h",
+			"file":"jbl/jbl_var.c",
 			"comment":"设置一个var的操作器",
-			"type":"d"
+			"type":"f"
 		},
 		"jbl_var_space_ship":{
 			"name":"jbl_var_space_ship",
@@ -2338,12 +2490,6 @@
 			"file":"jbl/jbl_var.c",
 			"comment":"从out浏览一个var",
 			"type":"f"
-		},
-		"jbl_view_default_tabs_num":{
-			"name":"jbl_view_default_tabs_num",
-			"file":"jbl/jbl_ying.h",
-			"comment":"view时默认输出的tab个数",
-			"type":"d"
 		},
 		"jbl_vstream_aes_128_cbc_decode_new":{
 			"name":"jbl_vstream_aes_128_cbc_decode_new",

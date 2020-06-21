@@ -1,0 +1,21 @@
+        jbl_string    v1 @ examples\var.c 11:size:32    len:1   s:j
+        jbl_string    v1 @ examples\var.c 20:size:32    len:6   s:j45691
+        jbl_string    v2 @ examples\var.c 21:size:32    len:3   s:j78
+        jbl_string    v3 @ examples\var.c 22:size:32    len:6   s:j45691
+        jbl_string    v4 @ examples\var.c 23:size:32    len:6   s:j45691
+        double        v6 @ examples\var.c 24:-1926.08170
+1
+0
+0
+1
+4211984947      jbl_string    v2 @ examples\var.c 33:size:32    len:9   s:j78j45691
+        jbl_string    v2 @ examples\var.c 34:size:32    len:10  s:j78j45691j
+        jbl_string    s1 @ examples\var.c 35:size:32    len:7   s:jj45691
+        jbl_string    s2 @ examples\var.c 36:size:32    len:6   s:j45691
+        jbl_string    s2 @ examples\var.c 37:size:32    len:11  s:j4569167687
+        jbl_string    v5 @ examples\var.c 40:size:32    len:11  s:j4569167687
+        jbl_string    s2 @ examples\var.c 41:size:32    len:16  s:j456916768767687
+        jbl_string    v5 @ examples\var.c 42:size:32    len:16  s:j456916768767687
+        jbl_string    s4 @ examples\var.c 45:size:32    len:18  s:"j456916768767687"
+
+

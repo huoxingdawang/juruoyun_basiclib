@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -21,12 +21,14 @@
 #include "jbl_gc.h"
 #include "jbl_ht.h"
 #include "jbl_ll.h"
+#include "jbl_log.h"
 #include "jbl_malloc.h"
 #include "jbl_md5.h"
 #include "jbl_rand.h"
 #include "jbl_sha1.h"
 #include "jbl_stream.h"
 #include "jbl_string.h"
+#include "jbl_string_cc.h"
 #include "jbl_time.h"
 #include "jbl_var.h"
 #include "jbl_ying.h"

@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -22,11 +22,12 @@ typedef jbl_uint32 jbl_bitset_type;
 #define jbl_bitset_2bits		6
 typedef jbl_uint64 jbl_bitset_type;
 #endif
- 
 
-
+#ifdef __linux__
+#define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*llX ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
+#else
 #define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*I64X ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
-
+#endif
 jbl_uint8	jbl_highbit				(jbl_uint64 a);											//获取一个64位无符号整数最高的1的位置
 jbl_uint8	jbl_highbit0			(jbl_uint64 a);											//获取一个64位无符号整数最高的0的位置
 jbl_uint8	jbl_highbit32			(jbl_uint32 a);											//获取一个32位无符号整数最高的1的位置

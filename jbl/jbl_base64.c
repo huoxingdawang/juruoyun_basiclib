@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -9,50 +9,61 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_base64.h"
 #if JBL_BASE64_ENABLE==1
+/*******************************************************************************************/
+/*                            依赖jbl_ying jbl_exception                                   */
+/*******************************************************************************************/
 #include "jbl_exception.h"
-#include "jbl_malloc.h"
-#include "jbl_string.h"
 #include "jbl_ying.h"
+/*******************************************************************************************/
+/*                            联动jbl_stream jbl_string jbl_var                            */
+/*******************************************************************************************/
+#include "jbl_string.h"
+#include "jbl_stream.h"
+#include "jbl_var.h"
+
+/*******************************************************************************************/
+/*                            全局变量定义                                                */
+/*******************************************************************************************/
 static const char __jbl_base64_encode_table[]= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; 
 static const char __jbl_base64_decode_table[]={-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,62,-2,-2,-2,63,52,53,54,55,56,57,58,59,60,61,-2,-2,-2,-2,-2,-2,-2,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-2,-2,-2,-2,-2,-2,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2};
 #define det __jbl_base64_decode_table
 #define ent __jbl_base64_encode_table
+#if JBL_STRING_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函数实现字符串的base64编解码操作                      */
+/*******************************************************************************************/
 jbl_string * jbl_base64_encode(const jbl_string *this,jbl_string *result)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);	
-	const jbl_string *this_=jbl_refer_pull(this);		
-	jbl_string_size_type i=0,len=jbl_string_get_length_force(this_);
-	result=jbl_string_extend(result,len/3*4+4);
-	jbl_string *result_=jbl_refer_pull(result);
+	if(this==NULL)jbl_exception("NULL POINTER");	
+	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string_size_type i=0,len=jbl_string_get_length_force(thi);
+	jbl_string *res;result=jbl_string_extend_to(result,len*4/3+4,1,&res);jbl_string_hash_clear(res);
 	while(len>2)
-		jbl_string_add_char_force(result,ent[(unsigned char)jbl_string_get_force(this_,i)>>2]),jbl_string_add_char_force(result,ent[(((unsigned char)jbl_string_get_force(this_,i)&0x03)<<4)+((unsigned char)jbl_string_get_force(this_,i+1)>>4)]),jbl_string_add_char_force(result,ent[(((unsigned char)jbl_string_get_force(this_,i+1)&0x0f)<<2)+((unsigned char)jbl_string_get_force(this_,i+2)>>6)]),jbl_string_add_char_force(result,ent[(unsigned char)jbl_string_get_force(this_,i+2)&0x3f]),i+=3,len-=3;
+		jbl_string_add_char_force(result,ent[(unsigned char)jbl_string_get_force(thi,i)>>2]),jbl_string_add_char_force(result,ent[(((unsigned char)jbl_string_get_force(thi,i)&0x03)<<4)+((unsigned char)jbl_string_get_force(thi,i+1)>>4)]),jbl_string_add_char_force(result,ent[(((unsigned char)jbl_string_get_force(thi,i+1)&0x0f)<<2)+((unsigned char)jbl_string_get_force(thi,i+2)>>6)]),jbl_string_add_char_force(result,ent[(unsigned char)jbl_string_get_force(thi,i+2)&0x3f]),i+=3,len-=3;
 	if(len>0)
 	{
-		jbl_string_add_char_force(result_,ent[(unsigned char)jbl_string_get_force(this_,i)>>2]);
+		jbl_string_add_char_force(res,ent[(unsigned char)jbl_string_get_force(thi,i)>>2]);
 		if(len%3==1)
-			jbl_string_add_char_force(result_,ent[((unsigned char)jbl_string_get_force(this_,i)&0x03)<<4]),jbl_string_add_char_force(result_,'='),jbl_string_add_char_force(result_,'=');
+			jbl_string_add_char_force(res,ent[((unsigned char)jbl_string_get_force(thi,i)&0x03)<<4]),jbl_string_add_char_force(res,'='),jbl_string_add_char_force(res,'=');
 		else if(len%3==2)
-			jbl_string_add_char_force(result_,ent[(((unsigned char)jbl_string_get_force(this_,i)&0x03)<<4)+((unsigned char)jbl_string_get_force(this_,i+1)>>4)]),jbl_string_add_char_force(result_,ent[((unsigned char)jbl_string_get_force(this_,i+1)&0x0f)<<2]),jbl_string_add_char_force(result_,'=');
+			jbl_string_add_char_force(res,ent[(((unsigned char)jbl_string_get_force(thi,i)&0x03)<<4)+((unsigned char)jbl_string_get_force(thi,i+1)>>4)]),jbl_string_add_char_force(res,ent[((unsigned char)jbl_string_get_force(thi,i+1)&0x0f)<<2]),jbl_string_add_char_force(res,'=');
 	}
-	jbl_string_hash_clear(result);
 	return result;
 }
-
 jbl_string * jbl_base64_decode(const jbl_string *this,jbl_string *result)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);	
-	const jbl_string *this_=jbl_refer_pull(this);		
-	jbl_string_size_type i=0,len=jbl_string_get_length_force(this_);
+	if(this==NULL)jbl_exception("NULL POINTER");	
+	const jbl_string *thi=jbl_refer_pull(this);		
+	jbl_string_size_type i=0,len=jbl_string_get_length_force(thi);
 	jbl_uint8 bin=0,ch;
-	result=jbl_string_extend(result,len/4*3+3);	
-	jbl_string *result_=jbl_refer_pull(result);	
+	jbl_string *res;result=jbl_string_extend_to(result,len*3/4+3,1,&res);jbl_string_hash_clear(res);
 	while(len-->0)
 	{
-		ch=jbl_string_get_force(this_,i);
+		ch=jbl_string_get_force(thi,i);
 		if(ch=='=')
 		{
-			if(jbl_string_get_force(this_,i+1)!='='&&(i%4)==1)
-				return jbl_string_clear(result_);
+			if(jbl_string_get_force(thi,i+1)!='='&&(i%4)==1)
+				return jbl_string_clear(res);
 			continue;
 		}
 		ch=det[ch];
@@ -61,20 +72,22 @@ jbl_string * jbl_base64_decode(const jbl_string *this,jbl_string *result)
 		switch(i&3)
 		{
 			case 0:bin=ch<<2;break;
-			case 1:bin|=ch>>4,jbl_string_add_char_force(result_,bin),bin=(ch&0x0f)<<4;break;
-			case 2:bin|=ch>>2,jbl_string_add_char_force(result_,bin),bin=(ch&0x03)<<6;break;
-			case 3:bin|=ch,jbl_string_add_char_force(result_,bin);break;
+			case 1:bin|=ch>>4,jbl_string_add_char_force(res,bin),bin=(ch&0x0f)<<4;break;
+			case 2:bin|=ch>>2,jbl_string_add_char_force(res,bin),bin=(ch&0x03)<<6;break;
+			case 3:bin|=ch,jbl_string_add_char_force(res,bin);break;
 		}
 		++i;
 	}	
-	jbl_string_hash_clear(result);	
 	return result;
 }
+#endif
 #if JBL_STREAM_ENABLE==1
-#include "jbl_stream.h"
+/*******************************************************************************************/
+/*                            以下函数实现stream的编解码操作                       */
+/*******************************************************************************************/
 void __jbl_base64_seo(jbl_stream* this,jbl_uint8 flags)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);	
+	if(this==NULL)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);	
 	jbl_uint8 *s=this->buf;
@@ -105,7 +118,7 @@ void __jbl_base64_seo(jbl_stream* this,jbl_uint8 flags)
 }
 void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);	
+	if(this==NULL)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);
 	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);		
 	if(nxt!=NULL)
@@ -121,7 +134,7 @@ void __jbl_base64_sdo(jbl_stream* this,jbl_uint8 flags)
 				if(this->buf[i+1]!='='&&(i%4)==1)
 				{
 					if(i<len&&(flags&jbl_stream_force))
-						return jbl_exception(JBL_ERROR_STREAM_ERROR);
+						return jbl_exception("STREAM ERROR");
 					goto exit;
 				}
 				++i;
@@ -146,8 +159,7 @@ exit:
 			jbl_stream_do(nxt,flags);
 	}
 }
-const jbl_stream_operater jbl_stream_base64_encode_operators={__jbl_base64_seo,NULL,NULL,NULL};
-const jbl_stream_operater jbl_stream_base64_decode_operators={__jbl_base64_sdo,NULL,NULL,NULL};
-
+jbl_stream_operators_new(jbl_stream_base64_encode_operators,__jbl_base64_seo,NULL,NULL);
+jbl_stream_operators_new(jbl_stream_base64_decode_operators,__jbl_base64_sdo,NULL,NULL);
 #endif
 #endif

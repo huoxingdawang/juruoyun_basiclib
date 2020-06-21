@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -11,7 +11,7 @@
 #if JBL_FILE_ENABLE==1
 void jbl_file_init(jbl_file *this)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL)jbl_exception("NULL POINTER");
 	this->type=JBL_FILE_TYPE_UNKNOW;
 	this->f=NULL;
 	this->light_copy=0;
@@ -19,7 +19,7 @@ void jbl_file_init(jbl_file *this)
 }
 void jbl_file_init_as(jbl_file *this,jbl_uint8 type)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL)jbl_exception("NULL POINTER");
 	jbl_string_clear(&this->name);
 	this->f=NULL;
 	this->light_copy=0;
@@ -51,7 +51,7 @@ void jbl_file_init_as(jbl_file *this,jbl_uint8 type)
 }
 void jbl_file_clear(jbl_file *this)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL)jbl_exception("NULL POINTER");
 	if(this->f!=NULL)
 		return;
 	if(this->type==JBL_FILE_TYPE_FILE)
@@ -67,7 +67,7 @@ void jbl_file_clear(jbl_file *this)
 }
 void jbl_file_free(jbl_file *this)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL)jbl_exception("NULL POINTER");
 	if(this->type==JBL_FILE_TYPE_FILE)
 	{
 		if(this->file.handle!=NULL&&this->light_copy==0)
@@ -81,7 +81,7 @@ void jbl_file_free(jbl_file *this)
 }
 void jbl_file_copy(jbl_file *this,jbl_file *that,jbl_copy_type cpt)
 {
-	if(this==NULL||that==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL||that==NULL)jbl_exception("NULL POINTER");
 	jbl_file_clear(this);
 	jbl_file_init_as(this,that->type);
 	this->f=that->f;
@@ -98,12 +98,12 @@ void jbl_file_copy(jbl_file *this,jbl_file *that,jbl_copy_type cpt)
 }
 inline char jbl_file_space_ship(const jbl_file *this,const jbl_file *that)
 {
-	if(this==NULL||that==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL||that==NULL)jbl_exception("NULL POINTER");
 	return jbl_string_space_ship(&this->name,&that->name);
 }
 void jbl_file_view_ex(const jbl_file *this,FILE * file,char*str,int a,int tabs)
 {
-	if(this==NULL||file==NULL||str==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL||file==NULL||str==NULL)jbl_exception("NULL POINTER");
 	if(tabs>=0)
 		for(register int i=0;i<tabs;++i,putc('\t',file));
 	else
@@ -128,7 +128,7 @@ void jbl_file_view_ex(const jbl_file *this,FILE * file,char*str,int a,int tabs)
 }
 void jbl_file_file_open_ex(jbl_file *this,jbl_file *f,jbl_string *name,jbl_copy_type ncpt,jbl_uint32 recursive_time)
 {
-	if(this==NULL||name==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL||name==NULL)jbl_exception("NULL POINTER");
 	jbl_file_clear(this);
 	jbl_string_set(name,jbl_string_get_length(name),'\0');
 	FILE	*file	=fopen(jbl_string_get_chars(name),"rb+");
@@ -177,7 +177,7 @@ void jbl_file_file_open_ex(jbl_file *this,jbl_file *f,jbl_string *name,jbl_copy_
 		closedir(dir);
 	}
 	else
-		jbl_string_print(name,stderr),jbl_file_clear(this),jbl_exception(JBL_ERROR_FILE_NOT_EXIST);
+		jbl_string_print(name,stderr),jbl_file_clear(this)/*,jbl_exception(JBL_ERROR_FILE_NOT_EXIST)*/;
 }
 void jbl_file_file_cd(jbl_file *this,jbl_file *that,jbl_string *name,jbl_copy_type ncpt)
 {

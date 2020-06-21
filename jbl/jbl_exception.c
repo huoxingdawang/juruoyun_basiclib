@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -9,33 +9,51 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_exception.h"
 #if JBL_EXCEPTION_ENABLE==1
+#if JBL_STREAM_ENABLE ==1
+#include "jbl_stream.h"
+#endif
 #include <stdio.h>
 #include <stdlib.h>
-#include "jbl_include.h"
-void __jbl_exception(const char * funtion,const char * file,int line,int x)
+jbl_uint32	jbl_exception_exit_functions_cnt;
+jbl_uint8	jbl_exception_on_error;
+void(*jbl_exception_exit_functions[JBL_EXCEPTION_EXIT_FUNCTIONS_LENGTH])(void);
+void jbl_exception_add_exit_function(void (*func)(void))
 {
-	jbl_stop();
-	fprintf(stderr,"-------------------------------------------------------\n");
-	jbl_print_colorful(stderr,"ERROR!",JBL_PRINT_COLORFUL_BLACK,JBL_PRINT_COLORFUL_RED);
-	fprintf(stderr,"\nAT\tfile:");
-	jbl_print_colorful(stderr,file,JBL_PRINT_COLORFUL_BLACK,JBL_PRINT_COLORFUL_YELLOW);
-	fprintf(stderr,"\n\tfuntion:");
-	jbl_print_colorful(stderr,funtion,JBL_PRINT_COLORFUL_BLACK,JBL_PRINT_COLORFUL_YELLOW);
-	fprintf(stderr,"\n  \tline:");
-	char ss[40];
-	sprintf(ss,"%d",line);jbl_print_colorful(stderr,ss,JBL_PRINT_COLORFUL_BLACK,JBL_PRINT_COLORFUL_YELLOW);
-	fprintf(stderr,"\nBecause:");
-	sprintf(ss,"%d",x);jbl_print_colorful(stderr,ss,JBL_PRINT_COLORFUL_BLACK,JBL_PRINT_COLORFUL_YELLOW);
-	switch(x)
+	jbl_exception_exit_functions[jbl_exception_exit_functions_cnt++]=func;
+}
+void __jbl_exception(const char * function,const char * file,int line,char * x)
+{
+	if(jbl_exception_on_error)
+		printf("\n\n\nError occured ,when handling error\nFile%s\nLine %d\nFunction %s\n",file,line,function),exit(0);
+	jbl_exception_on_error=1;
+#if JBL_STREAM_ENABLE ==1
+	if((!jbl_stream_stdout)&&x)
+#endif
+		printf("\n\n\nError occured ,but stream can't work\nFile%s\nLine %d\nFunction %s\n",file,line,function);
+#if JBL_STREAM_ENABLE ==1
+	if(jbl_stream_stdout)
 	{
-		case JBL_ERROR_NO_ERROR			:fprintf(stderr,":JBL_ERROR_NO_ERROR")			;break;
-		case JBL_ERROR_NULL_POINTER		:fprintf(stderr,":JBL_ERROR_NULL_POINTER")		;break;
-		case JBL_ERROR_MEMORY_ERROR		:fprintf(stderr,":JBL_ERROR_MEMORY_ERROR")		;break;
-		case JBL_ERROR_FILE_NOT_EXIST	:fprintf(stderr,":JBL_ERROR_FILE_NOT_EXIST")	;break;
-		case JBL_ERROR_STREAM_ERROR		:fprintf(stderr,":JBL_ERROR_STREAM_ERROR")		;break;
-		case JBL_ERROR_VAR_TYPE_ERROR	:fprintf(stderr,":JBL_ERROR_VAR_TYPE_ERROR")	;break;
+		jbl_stream_push_chars(jbl_stream_stdout,UC"\n\n-------------------------------------------------------\n");
+		if(x)
+			jbl_stream_push_chars(jbl_stream_stdout,UC"ERROR!\n");
+		else
+			jbl_stream_push_chars(jbl_stream_stdout,UC"EXIT!\n");
+		jbl_stream_push_chars(jbl_stream_stdout,UC"At file:");
+		jbl_stream_push_chars(jbl_stream_stdout,UC file);
+		jbl_stream_push_chars(jbl_stream_stdout,UC"\nOn line:");
+		jbl_stream_push_uint (jbl_stream_stdout,line);
+		jbl_stream_push_chars(jbl_stream_stdout,UC"\nIn function:");
+		jbl_stream_push_chars(jbl_stream_stdout,UC function);
+		if(x)
+		{
+			jbl_stream_push_chars(jbl_stream_stdout,UC"\nMeeage:");
+			jbl_stream_push_chars(jbl_stream_stdout,UC x);
+		}
+		jbl_stream_push_chars(jbl_stream_stdout,UC"\n");
+		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	}
-	putc('\n',stderr);
+#endif
+	while(jbl_exception_exit_functions_cnt--)jbl_exception_exit_functions[jbl_exception_exit_functions_cnt]();
 	exit(0);
 }
 #endif

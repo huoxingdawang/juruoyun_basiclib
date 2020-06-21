@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -13,11 +13,14 @@
 #if JBL_STREAM_ENABLE==1
 #include "jbl_ying.h"
 
-#define JBL_STREAM_EXCEED_LENGTH 64
+#define JBL_STREAM_EXCEED_LENGTH	64
+#define JBL_VIEW_DEFAULT_TABS		1
 
 //#define JBL_STREAM_STDOUT	fopen("tmp/out.tmp","wb")
-#define JBL_STREAM_STDOUT	stdout
 #define JBL_STREAM_STDIN	stdin
+#ifndef JBL_STREAM_STDOUT
+	#define JBL_STREAM_STDOUT	stdout
+#endif
 
 #endif
 #endif

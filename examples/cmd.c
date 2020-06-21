@@ -9,5 +9,6 @@ int main()
 	jbl_string_view(s1);
 	
 	s1=jbl_string_free(s1);cmd=jbl_string_free(cmd);
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 	
 }

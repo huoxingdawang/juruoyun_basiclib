@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -13,7 +13,7 @@
 #include "jbl_string.h"
 jbl_string * jbl_execute_cmd(const jbl_string *cmd,jbl_string *result)
 {
-	if(cmd==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(cmd==NULL)jbl_exception("NULL POINTER");
 	char *buf=jbl_malloc(1024);
 	FILE *ptr;
 	if((ptr=popen((char*)jbl_string_get_chars(cmd),"r"))!=NULL)

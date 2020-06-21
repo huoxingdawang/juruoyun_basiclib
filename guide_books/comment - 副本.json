@@ -27,7 +27,7 @@
 			"comment":"//从从out JSON格式化一个var格式的double",
 			"type":"f",
 			"return":"void ",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);"
 		},
 		"jbl_Vdouble_new":{
 			"name":"jbl_Vdouble_new",
@@ -59,7 +59,7 @@
 			"comment":"//从从out 浏览一个var格式的double",
 			"type":"f",
 			"return":"void ",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);"
 		},
 		"jbl_Vfalse_new":{
 			"name":"jbl_Vfalse_new",
@@ -107,7 +107,7 @@
 			"comment":"//从从out JSON格式化一个var格式的int",
 			"type":"f",
 			"return":"void ",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);"
 		},
 		"jbl_Vint_new":{
 			"name":"jbl_Vint_new",
@@ -139,7 +139,7 @@
 			"comment":"//从从out 浏览一个var格式的int",
 			"type":"f",
 			"return":"void ",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);"
 		},
 		"jbl_Vll":{
 			"name":"jbl_Vll",
@@ -179,7 +179,7 @@
 			"comment":"//从从out JSON格式化一个var格式的null或true或false",
 			"type":"f",
 			"return":"void",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);"
 		},
 		"jbl_Vntf_space_ship":{
 			"name":"jbl_Vntf_space_ship",
@@ -195,7 +195,7 @@
 			"comment":"//从从out 浏览一个var格式的null或true或false",
 			"type":"f",
 			"return":"void",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);"
 		},
 		"jbl_Vnull_new":{
 			"name":"jbl_Vnull_new",
@@ -291,7 +291,7 @@
 			"comment":"//从从out JSON格式化一个var格式的uint",
 			"type":"f",
 			"return":"void ",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,char format,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,char format,jbl_int32 tabs);"
 		},
 		"jbl_Vuint_new":{
 			"name":"jbl_Vuint_new",
@@ -323,7 +323,7 @@
 			"comment":"//从从out 浏览一个var格式的uint",
 			"type":"f",
 			"return":"void ",
-			"input":"(const jbl_var* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);"
+			"input":"(const jbl_var* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);"
 		},
 		"jbl_aes_128_cbc_decode":{
 			"name":"jbl_aes_128_cbc_decode",
@@ -635,8 +635,8 @@
 			"comment":"引用计数加一",
 			"type":"d"
 		},
-		"jbl_gc_reference_cnt":{
-			"name":"jbl_gc_reference_cnt",
+		"jbl_gc_refcnt":{
+			"name":"jbl_gc_refcnt",
 			"file":"jbl/jbl_gc.h",
 			"comment":"获取引用计数",
 			"type":"d"
@@ -876,10 +876,10 @@
 		"jbl_ht_json_put":{
 			"name":"jbl_ht_json_put",
 			"file":"jbl/jbl_ht.c",
-			"comment":"(const jbl_ht* this,jbl_stream *output_stream,char format,jbl_int32 tabs);//从output_stream JSON输出一个hash table",
+			"comment":"(const jbl_ht* this,jbl_stream *out,char format,jbl_int32 tabs);//从out JSON输出一个hash table",
 			"type":"f",
 			"return":"void",
-			"input":"(const jbl_ht* this,jbl_stream *output_stream,char format,jbl_int32 tabs);//从output_stream JSON输出一个hash table"
+			"input":"(const jbl_ht* this,jbl_stream *out,char format,jbl_int32 tabs);//从out JSON输出一个hash table"
 		},
 		"jbl_ht_merge":{
 			"name":"jbl_ht_merge",
@@ -968,16 +968,16 @@
 		"jbl_ht_view":{
 			"name":"jbl_ht_view",
 			"file":"jbl/jbl_ht.h",
-			"comment":"jbl_ht_view_put(x,jbl_stream_stdout,__LINE__,#x \" @ \"__FILE__,jbl_view_default_tabs_num),jbl_stream_push_char(jbl_stream_stdout,'\\n')//浏览一个hash table",
+			"comment":"jbl_ht_view_put(x,jbl_stream_stdout,__LINE__,#x \" @ \"__FILE__,JBL_VIEW_DEFAULT_TABS),jbl_stream_push_char(jbl_stream_stdout,'\\n')//浏览一个hash table",
 			"type":"d"
 		},
 		"jbl_ht_view_put":{
 			"name":"jbl_ht_view_put",
 			"file":"jbl/jbl_ht.c",
-			"comment":"(const jbl_ht* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);//从output_stream浏览一个hash table",
+			"comment":"(const jbl_ht* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);//从out浏览一个hash table",
 			"type":"f",
 			"return":"void",
-			"input":"(const jbl_ht* this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);//从output_stream浏览一个hash table"
+			"input":"(const jbl_ht* this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);//从out浏览一个hash table"
 		},
 		"jbl_hth":{
 			"name":"jbl_hth",
@@ -1625,8 +1625,8 @@
 			"comment":"",
 			"type":"d"
 		},
-		"jbl_stream_connect_ref":{
-			"name":"jbl_stream_connect_ref",
+		"jbl_stream_connect":{
+			"name":"jbl_stream_connect",
 			"file":"jbl/jbl_stream.h",
 			"comment":"",
 			"type":"d"
@@ -1745,8 +1745,8 @@
 			"comment":"",
 			"type":"f"
 		},
-		"jbl_stream_push_int64":{
-			"name":"jbl_stream_push_int64",
+		"jbl_stream_push_int":{
+			"name":"jbl_stream_push_int",
 			"file":"jbl/jbl_stream.c",
 			"comment":"",
 			"type":"f"
@@ -1759,8 +1759,8 @@
 			"return":"void",
 			"input":"(jbl_stream *out,const jbl_string* this);"
 		},
-		"jbl_stream_push_uint64":{
-			"name":"jbl_stream_push_uint64",
+		"jbl_stream_push_uint":{
+			"name":"jbl_stream_push_uint",
 			"file":"jbl/jbl_stream.c",
 			"comment":"",
 			"type":"f"
@@ -2667,7 +2667,7 @@
 			"comment":"从从out JSON格式化一个var",
 			"type":"f",
 			"return":"void ",
-			"input":"(const jbl_var * this,jbl_stream *output_stream,char format,jbl_int32 tabs);"
+			"input":"(const jbl_var * this,jbl_stream *out,char format,jbl_int32 tabs);"
 		},
 		"jbl_var_move_from_string":{
 			"name":"jbl_var_move_from_string",
@@ -2725,10 +2725,10 @@
 			"comment":"从out浏览一个var",
 			"type":"f",
 			"return":"void",
-			"input":"(const jbl_var * this,jbl_stream *output_stream,jbl_int32 format,char*str,jbl_int32 tabs);"
+			"input":"(const jbl_var * this,jbl_stream *out,jbl_int32 format,char*str,jbl_int32 tabs);"
 		},
-		"jbl_view_default_tabs_num":{
-			"name":"jbl_view_default_tabs_num",
+		"JBL_VIEW_DEFAULT_TABS":{
+			"name":"JBL_VIEW_DEFAULT_TABS",
 			"file":"jbl/jbl_ying.h",
 			"comment":"view时默认输出的tab个数",
 			"type":"d"

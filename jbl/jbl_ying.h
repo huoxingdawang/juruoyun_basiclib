@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
    Juruoyun basic lib is licensed under the Mulan PSL v1.
    You can use this software according to the terms and conditions of the Mulan PSL v1.
    You may obtain a copy of Mulan PSL v1 at:
@@ -20,13 +20,8 @@
 #ifndef true
 	#define true 1
 #endif
-#define jbl_view_default_tabs_num		1
-#define jbl_start()		\
-	jbl_malloc_start();	\
-	jbl_stream_start()	
-#define jbl_stop()		\
-	jbl_stream_stop();	\
-	jbl_malloc_stop()	
+void		jbl_start();
+void		jbl_stop();
 typedef char				jbl_int8;
 typedef unsigned char		jbl_uint8;
 typedef short				jbl_int16;
@@ -55,6 +50,8 @@ typedef unsigned long long	jbl_uint64;
 #endif
 
 jbl_int64	jbl_ceil				(long double i);	//上取整
+jbl_uint64	jbl_min2pow				(jbl_uint64 i);
+
 //jbl_uint8	jbl_get_uint64_length	(jbl_uint64 tmp);
 //jbl_uint8	jbl_get_int64_length	(jbl_int64 tmp);
 //jbl_uint8	jbl_get_double_length	(double tmp);

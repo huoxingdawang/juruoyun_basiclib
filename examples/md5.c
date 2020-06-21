@@ -13,6 +13,7 @@ int main()
 	
 	s1=jbl_string_free(s1);s2=jbl_string_free(s2);
 	
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 
 	return 0;
 }

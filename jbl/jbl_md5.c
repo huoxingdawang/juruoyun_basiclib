@@ -1,4 +1,4 @@
-/* Copyright (c) [2019] juruoyun developer team
+/* Copyright (c) [2020] juruoyun developer team
 	 Juruoyun basic lib is licensed under the Mulan PSL v1.
 	 You can use this software according to the terms and conditions of the Mulan PSL v1.
 	 You may obtain a copy of Mulan PSL v1 at:
@@ -9,10 +9,15 @@
 	 See the Mulan PSL v1 for more details.*/
 #include "jbl_md5.h"
 #if JBL_MD5_ENABLE==1
+/*******************************************************************************************/
+/*                            依赖jbl_ying jbl_exception jbl_string                        */
+/*******************************************************************************************/
 #include "jbl_exception.h"
-#include "jbl_malloc.h"
-#include "jbl_string.h"
 #include "jbl_ying.h"
+#include "jbl_string.h"
+/*******************************************************************************************/
+/*                            以下函实现md5                                               */
+/*******************************************************************************************/
 #define F(x,y,z) (((x)&(y))|((~x)&(z)))
 #define G(x,y,z) (((x)&(z))|((y)&(~z)))
 #define H(x,y,z) ((x)^(y)^(z))
@@ -73,14 +78,13 @@ void __jbl_md5_init(const jbl_uint8* input,jbl_string_size_type len,jbl_uint32 s
 }
 jbl_string* jbl_md5(const jbl_string* this,jbl_string* out)
 {
-	if(this==NULL)jbl_exception(JBL_ERROR_NULL_POINTER);
+	if(this==NULL)jbl_exception("NULL POINTER");
 	jbl_uint32 state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
 	jbl_uint8  padding[64]={0x80};
 	jbl_uint8  buffer[64],digest[16];
-	const jbl_string *this_=jbl_refer_pull(this);
-	jbl_string_size_type len=jbl_string_get_length_force(this_);
-	out=jbl_string_extend(out,32);
-	__jbl_md5_init(jbl_string_get_chars_force(this_),len,state,count,buffer);
+	const jbl_string *		thi=jbl_refer_pull(this);
+	jbl_string_size_type	len=jbl_string_get_length_force(thi);
+	__jbl_md5_init(jbl_string_get_chars_force(thi),len,state,count,buffer);
 	jbl_uint8 bits[8];
 	jbl_uint32  index,padlen;
 	__jbl_md5_encode(count,bits,8);
@@ -89,6 +93,7 @@ jbl_string* jbl_md5(const jbl_string* this,jbl_string* out)
 	__jbl_md5_init(padding,padlen,state,count,buffer);
 	__jbl_md5_init(bits,8,state,count,buffer);
 	__jbl_md5_encode(state,digest,16);
+	out=jbl_string_extend(out,32);
 	for (jbl_string_size_type i=0;i<16;++i)
 		out=jbl_string_add_hex_8bits(out,digest[i]);
 	return out;
