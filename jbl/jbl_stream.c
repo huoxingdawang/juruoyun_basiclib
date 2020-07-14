@@ -18,9 +18,10 @@ void jbl_stream_start()
 {
 	jbl_stream_stdout=jbl_stream_new(&jbl_stream_file_operators,JBL_STREAM_STDOUT,JBL_STREAM_EXCEED_LENGTH,NULL,0);
 	jbl_stream_stdin =jbl_stream_new(&jbl_stream_file_operators,JBL_STREAM_STDIN ,0,NULL,0);
-	jbl_stream_stdin_link=jbl_stream_stdin;
 	
-#ifndef __linux__	
+#ifdef __linux__
+	jbl_stream_stdin_link=jbl_stream_copy(jbl_stream_stdin);
+#else
 	jbl_stream_stdin_link=jbl_stream_gb2312_to_utf8_new();
 	jbl_stream_connect(jbl_stream_stdin,jbl_stream_stdin_link);
 
