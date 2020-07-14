@@ -31,9 +31,10 @@ clean:
 	$(rm) tools$(H)*$(H)*.exe /s
 init:
 	mkdir tmp
-	mkdir tmp-linux
-	mkdir tmp-win
 	mkdir exes
+ifeq ($(shell uname),Linux)
+	sudo gcc tools/pause.c -o /bin/pause
+endif
 run:
 	exes$(H)aes         && pause
 #	exes$(H)array       && pause
@@ -54,12 +55,12 @@ run:
 	exes$(H)time        && pause
 	exes$(H)time2       && pause
 	exes$(H)time_var    && pause
-	exes$(H)var        && pause
-	exes$(H)var_refer   && pause
+	exes$(H)var         && pause
+	exes$(H)var_refer
 #examples
 aes:
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)aes.o       examples$(H)aes.c      $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)aes tmp$(H)$(pre)aes.o               tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)aes         tmp$(H)$(pre)aes.o       tmp$(H)$(pre)jbl.a
 #array:
 #	$(CC) $(BITS) -c -std=gnu99 -o tmp$(H)$(pre)array.o examples$(H)array.c $(EXLIB)
 #	$(CC) -o exes$(H)array tmp$(H)$(pre)array.o tmp$(H)$(pre)jbl.a
@@ -177,4 +178,3 @@ jbl/jbl_var            :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jbl_var.o        jbl$(H)jbl_var.c        $(JBL_EXLIB)
 jbl/jbl_ying           :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jbl_ying.o       jbl$(H)jbl_ying.c       $(JBL_EXLIB)
-
