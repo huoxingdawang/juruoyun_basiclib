@@ -449,6 +449,7 @@ char jbl_string_space_ship(const jbl_string *this,const jbl_string *that)
 }
 char jbl_string_space_ship_chars(const jbl_string *this,const char *that)
 {
+	if(this==(const jbl_string *)that){return 0;}if(!this){return -1;}if(!that){return 1;}
 	const jbl_string *thi=jbl_refer_pull(this);
 	for(register jbl_string_size_type i=0;i<thi->len;++i)
 		if(!that[i]||thi->s[i]<that[i])
