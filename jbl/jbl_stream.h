@@ -98,9 +98,6 @@ jbl_stream *	jbl_Vstream							(jbl_var * this);
 #define			Vis_jbl_stream(x)					(jbl_var_get_operators(x)==&jbl_stream_operators)
 jbl_var *		jbl_Vstream_new						(const jbl_stream_operater *op,void *data,jbl_uint16 size,unsigned char *buf,jbl_uint8 tmplen);
 
-#define			jbl_var_copy_from_stream(x)			((jbl_var*)jbl_stream_copy(jbl_Vstream(jbl_Vstream_new()),x))
-#define			jbl_stream_copy_from_var(x)			jbl_stream_copy(NULL,jbl_Vstream(x))
-
 
 
 #endif
