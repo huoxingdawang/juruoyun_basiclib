@@ -695,6 +695,7 @@ jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operate
 void jbl_stream_push_string(jbl_stream *out,const jbl_string* this)
 {
 	if(!out)jbl_exception("NULL POINTER");
+	if(!this)return;
 	out=jbl_refer_pull(out);
 	this=jbl_refer_pull(this);
 	for(jbl_string_size_type i=0;i<this->len;++i)
