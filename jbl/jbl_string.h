@@ -22,6 +22,7 @@
 /*                            联动 jbl_stream jbl_var jbl_ll jbl_ht                        */
 /*******************************************************************************************/
 #include "jbl_stream.h"
+#include "jbl_ht_config.h"
 #if JBL_VAR_ENABLE==1
 typedef	struct	__jbl_var_operators	jbl_var_operators;
 typedef	struct	__jbl_var 			jbl_var;
@@ -66,6 +67,9 @@ jbl_string *			jbl_string_clear						(jbl_string *this);														//清空�
 #if JBL_HT_ENABLE==1 && JBL_STRING_USE_CACHE==1 && JBL_HT_SYS_ENABLE==1
 jbl_string *			jbl_string_cache_get					(const unsigned char *in);
 jbl_string *			jbl_string_cache_replace				(jbl_string *str);
+#else
+#define					jbl_string_cache_get(x)					jbl_string_add_chars(NULL,(x))
+#define					jbl_string_cache_replace(x)				(x)
 #endif
 /*******************************************************************************************/
 /*                            以下函数实现字符串的增添类操作                             */
