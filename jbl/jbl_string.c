@@ -451,11 +451,16 @@ char jbl_string_space_ship_chars(const jbl_string *this,const char *that)
 {
 	if(this==(const jbl_string *)that){return 0;}if(!this){return -1;}if(!that){return 1;}
 	const jbl_string *thi=jbl_refer_pull(this);
-	for(register jbl_string_size_type i=0;i<thi->len;++i)
-		if(!that[i]||thi->s[i]<that[i])
+	register jbl_string_size_type i=0;
+	for(;i<thi->len;++i)
+	{
+		if(thi->s[i]<that[i])
 			return -1;
-		else if(thi->s[i]>that[i])
+		else if(!that[i]||thi->s[i]>that[i])
 			return 1;
+	}
+	if(that[i])
+		return -1;
 	return 0;
 }
 char jbl_string_if_equal(const jbl_string *thi,const jbl_string *that_)
