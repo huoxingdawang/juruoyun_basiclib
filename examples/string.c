@@ -43,6 +43,10 @@ int main()
 	
 	s1=jbl_string_read(s1,UC"input:");
 	jbl_string_view(s1);
+	s1=jbl_string_to_upper_case(s1);
+	jbl_string_view(s1);
+	s1=jbl_string_to_lower_case(s1);
+	jbl_string_view(s1);
 	
 	s4=jbl_string_json_encode(s1,NULL,0,0);
 	jbl_string_view(s4);

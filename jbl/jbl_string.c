@@ -493,6 +493,25 @@ jbl_string_hash_type jbl_string_hash(jbl_string *this)
 			this->h=(this->h<<5)+this->h+this->s[i];
 	return this->h;
 }
+/*******************************************************************************************/
+/*                            以下函数实现字符串的修改操作                               */
+/*******************************************************************************************/
+jbl_string * jbl_string_to_upper_case(jbl_string *this)
+{
+	jbl_string *thi;this=jbl_string_extend_to(this,0,1,&thi);jbl_string_hash_clear(thi);
+	for(jbl_string_size_type i=0;i<thi->len;++i)
+		if(thi->s[i]>='a'&&thi->s[i]<='z')
+			thi->s[i]=thi->s[i]-'a'+'A';
+	return  this;
+}
+jbl_string * jbl_string_to_lower_case(jbl_string *this)
+{
+	jbl_string *thi;this=jbl_string_extend_to(this,0,1,&thi);jbl_string_hash_clear(thi);
+	for(jbl_string_size_type i=0;i<thi->len;++i)
+		if(thi->s[i]>='A'&&thi->s[i]<='Z')
+			thi->s[i]=thi->s[i]-'A'+'a';
+	return  this;
+}
 #if JBL_JSON_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现字符串的JSON操作                               */
