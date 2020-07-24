@@ -39,8 +39,53 @@ typedef struct __jbl_time
 }jbl_time;										//蒟蒻云基础库时间结构
 typedef struct __jbl_time_decoded
 {
-	int year,month,day,hour,minute,second,ms;	//格式化的时间，各变量为字面含义
+	int year,ms;	//格式化的时间，各变量为字面含义
+	jbl_uint8 week,dom,day,hour,month,minute,second,isleap;
 }jbl_time_decoded;								//蒟蒻云基础库格式化时间结构
+typedef enum
+{
+	JBL_TIME_KEY_UNDEFINED,						//未定义
+	JBL_TIME_KEY_END,							//结束
+	JBL_TIME_KEY_ESCAPE,						//跳过下一个
+	
+	JBL_TIME_KEY_DOM,							//day of month
+	JBL_TIME_KEY_DOMWZ,							//day of month with 0
+	JBL_TIME_KEY_DOMS,							//day of month suffix
+	JBL_TIME_KEY_DOW3,							//day of week 3 word
+	JBL_TIME_KEY_DOWA,							//day of week all 
+	JBL_TIME_KEY_DOWN,							//day of week number
+	JBL_TIME_KEY_DOWNF0,						//day of week number from 0
+	JBL_TIME_KEY_DOY,							//day of year
+	
+	JBL_TIME_KEY_WOY,							//week of year
+	
+	JBL_TIME_KEY_M,								//month
+	JBL_TIME_KEY_MNWZ,							//month number with zero
+	JBL_TIME_KEY_M3,							//month
+	JBL_TIME_KEY_MN,							//month number
+	JBL_TIME_KEY_TDOM,							//total day of month
+	
+	JBL_TIME_KEY_YILY,							//year is leap year
+	JBL_TIME_KEY_YISO,							//year of ISO-8601
+	JBL_TIME_KEY_Y,								//year
+	JBL_TIME_KEY_Y2,							//year 2 number
+	
+	JBL_TIME_KEY_SA,							//am/pm
+	JBL_TIME_KEY_A,								//AM/PM
+	JBL_TIME_KEY_SWATCH,						//Swatch Internet 标准时
+	JBL_TIME_KEY_H12,							//12 hour
+	JBL_TIME_KEY_H12WZ,							//12 hour with zero
+	JBL_TIME_KEY_H24,							//24 hour
+	JBL_TIME_KEY_H24WZ,							//12 hour with zero
+	JBL_TIME_KEY_MWZ,							//minute with zero
+	JBL_TIME_KEY_SWZ,							//second with zero
+	JBL_TIME_KEY_MSWZ,							//micro second with zero
+	
+	
+	
+	
+
+}jbl_time_key;
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
@@ -86,6 +131,7 @@ jbl_uint8			jbl_time_if_dst					(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year);
 /*                            以下函实现时间对字符串操作                                */
 /*******************************************************************************************/
 jbl_string *		jbl_time_to_string				(const jbl_time *this,jbl_string *result);								//把time格式化成字符串时间戳
+jbl_string *		jbl_time_to_string_format		(const jbl_time *this,jbl_string *result,unsigned char * format);		//把time格式化成字符串时间戳
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/

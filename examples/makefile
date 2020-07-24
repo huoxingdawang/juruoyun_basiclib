@@ -10,15 +10,24 @@
 CC = gcc
 BITS =
 EXLIB = $(JBL_EXLIB)
+complain_re2c = jbl
 ifeq ($(shell uname),Linux)
+	system = linux
+else
+	system = windows
+endif
+
+ifeq ($(system),linux)
 	H = /
 	rm = rm -f
 	pre = linux_
-else
+endif
+ifeq ($(system),windows)
 	H = \\
 	rm = del
 	pre = win_
 endif
+
 # all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test2 var
 all:jbl aes base64 bitset cmd ht json ll malloc md5 rand sha1 stream string time test2 var
 clean:
@@ -32,7 +41,7 @@ clean:
 init:
 	mkdir tmp
 	mkdir exes
-ifeq ($(shell uname),Linux)
+ifeq ($(system),linux)
 	sudo gcc tools/pause.c -o /bin/pause
 endif
 run:

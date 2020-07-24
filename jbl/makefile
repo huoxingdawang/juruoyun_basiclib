@@ -8,9 +8,10 @@
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
 #jbl
-ifeq ($(shell uname),Linux)
+ifeq ($(system),linux)
 JBL_EXLIB = 
-else
+endif
+ifeq ($(system),windows)
 JBL_EXLIB = 
 endif
 jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_ll jbl/jbl_log jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
@@ -51,6 +52,11 @@ jbl/jbl_string         :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jbl_string.o     jbl$(H)jbl_string.c     $(JBL_EXLIB)
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jbl_string_cc.o  jbl$(H)jbl_string_cc.c  $(JBL_EXLIB)
 jbl/jbl_time           :
+ifeq ($(system),linux)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_time.c jbl$(H)jbl_time.l
+endif
+endif
 	$(CC) $(BITS) -c       -std=gnu99 -o tmp$(H)$(pre)jbl_time.o       jbl$(H)jbl_time.c       $(JBL_EXLIB)
 jbl/jbl_var            :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jbl_var.o        jbl$(H)jbl_var.c        $(JBL_EXLIB)
