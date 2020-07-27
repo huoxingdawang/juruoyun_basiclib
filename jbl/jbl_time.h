@@ -48,44 +48,49 @@ typedef enum
 	JBL_TIME_KEY_END,							//结束
 	JBL_TIME_KEY_ESCAPE,						//跳过下一个
 	
-	JBL_TIME_KEY_DOM,							//day of month
-	JBL_TIME_KEY_DOMWZ,							//day of month with 0
-	JBL_TIME_KEY_DOMS,							//day of month suffix
-	JBL_TIME_KEY_DOW3,							//day of week 3 word
-	JBL_TIME_KEY_DOWA,							//day of week all 
-	JBL_TIME_KEY_DOWN,							//day of week number
-	JBL_TIME_KEY_DOWNF0,						//day of week number from 0
-	JBL_TIME_KEY_DOY,							//day of year
+	JBL_TIME_KEY_DOM,							//j   day of month
+	JBL_TIME_KEY_DOMWZ,							//d   day of month with 0
+	JBL_TIME_KEY_DOW3,							//D   day of week 3 word
+	JBL_TIME_KEY_DOWA,							//l   day of week all 
+	JBL_TIME_KEY_DOWN,							//N   day of week number
+	JBL_TIME_KEY_DOMS,							//S   day of month suffix
+	JBL_TIME_KEY_DOWNF0,						//w   day of week number from 0
+	JBL_TIME_KEY_DOY,							//z   day of year(未实现)
 	
-	JBL_TIME_KEY_WOY,							//week of year
+	JBL_TIME_KEY_WOY,							//W   week of year(未实现)
 	
-	JBL_TIME_KEY_M,								//month
-	JBL_TIME_KEY_MNWZ,							//month number with zero
-	JBL_TIME_KEY_M3,							//month
-	JBL_TIME_KEY_MN,							//month number
-	JBL_TIME_KEY_TDOM,							//total day of month
+	JBL_TIME_KEY_M,								//F   month
+	JBL_TIME_KEY_MNWZ,							//m   month number with zero
+	JBL_TIME_KEY_M3,							//M   month
+	JBL_TIME_KEY_MN,							//n   month number
+	JBL_TIME_KEY_TDOM,							//t   total day of month
 	
-	JBL_TIME_KEY_YILY,							//year is leap year
-	JBL_TIME_KEY_YISO,							//year of ISO-8601
-	JBL_TIME_KEY_Y,								//year
-	JBL_TIME_KEY_Y2,							//year 2 number
+	JBL_TIME_KEY_YILY,							//L   year is leap year
+	JBL_TIME_KEY_YISO,							//o   year of ISO-8601(未实现)
+	JBL_TIME_KEY_Y,								//Y   year
+	JBL_TIME_KEY_Y2,							//y   year 2 number
 	
-	JBL_TIME_KEY_SA,							//am/pm
-	JBL_TIME_KEY_A,								//AM/PM
-	JBL_TIME_KEY_SWATCH,						//Swatch Internet 标准时
-	JBL_TIME_KEY_H12,							//12 hour
-	JBL_TIME_KEY_H12WZ,							//12 hour with zero
-	JBL_TIME_KEY_H24,							//24 hour
-	JBL_TIME_KEY_H24WZ,							//12 hour with zero
-	JBL_TIME_KEY_MWZ,							//minute with zero
-	JBL_TIME_KEY_SWZ,							//second with zero
-	JBL_TIME_KEY_MSWZ,							//micro second with zero
+	JBL_TIME_KEY_SA,							//a   am/pm
+	JBL_TIME_KEY_A,								//A   AM/PM
+	JBL_TIME_KEY_SWATCH,						//B   Swatch Internet 标准时(未实现)
+	JBL_TIME_KEY_H12,							//g   12 hour
+	JBL_TIME_KEY_H12WZ,							//G   12 hour with zero
+	JBL_TIME_KEY_H24,							//h   24 hour
+	JBL_TIME_KEY_H24WZ,							//H   12 hour with zero
+	JBL_TIME_KEY_MWZ,							//i   minute with zero
+	JBL_TIME_KEY_SWZ,							//s   second with zero
+	JBL_TIME_KEY_MSWZ,							//u   micro second with zero
 	
+	JBL_TIME_KEY_TZT,							//e   time zone type(未实现)
+	JBL_TIME_KEY_IDST,							//I   is daylight saving time(未实现)
+	JBL_TIME_KEY_HTG,							//O   hours to Greenwich time(未实现)
+	JBL_TIME_KEY_DWG,							//P   different with Greenwich time(未实现)
+	JBL_TIME_KEY_TZ,							//T   time zone	(未实现)
+	JBL_TIME_KEY_STG,							//Z   second to Greenwich time(未实现)
+	JBL_TIME_KEY_S,								//u   从 Unix 纪元（January 1 1970 00:00:00 GMT）开始至今的秒数
 	
-	
-	
-
 }jbl_time_key;
+#define				JBL_TIME_FORMAT_RFC1123			"D, j M Y H:i:s e"
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
@@ -108,6 +113,7 @@ void				jbl_time_decode					(const jbl_time *this,jbl_time_decoded *tt);							/
 /*******************************************************************************************/
 /*                            以下函实现时间差操作                                        */
 /*******************************************************************************************/
+jbl_time *			jbl_time_add_second				(jbl_time * this,jbl_uint64 second);									//加ys
 #define				jbl_time_minus(x,y)				(jbl_time_to_unix(x)-jbl_time_to_unix(y))								//计算两个时间的差
 /*******************************************************************************************/
 /*                            以下函实现时间比较操作                                      */

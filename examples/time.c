@@ -40,11 +40,23 @@ int main()
 		"%i\t:i\n"
 		"%s\t:s\n"
 		"%u\t:u\n"
+		"\n"
+		"%e\t:e\n"
+		"%I\t:I\n"
+		"%O\t:O\n"
+		"%P\t:P\n"
+		"%T\t:T\n"
+		"%Z\t:Z\n"
+		"%c\t:c\n"
+		"%r\t:r\n"
+		"%U\t:U\n"
 		"\n"	
 	);
 	
 	jbl_string_view(s1);s1=jbl_string_free(s1);
 	s1=jbl_time_to_string_format(t1,NULL,UC"%i%t %i%s %t%h%e jS %d%a%y.");
+	jbl_string_view(s1);s1=jbl_string_free(s1);
+	s1=jbl_time_to_string_format(t1,NULL,UC JBL_TIME_FORMAT_RFC1123);
 	jbl_string_view(s1);s1=jbl_string_free(s1);
 	
 	

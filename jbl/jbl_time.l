@@ -75,6 +75,12 @@ inline jbl_time * jbl_time_copy(jbl_time * that)
 #endif
 	return jbl_time_set(NULL,((jbl_time*)jbl_refer_pull(that))->t);
 }
+inline jbl_time * jbl_time_add_second(jbl_time * this,jbl_uint64 second)
+{
+	if(!this)this=jbl_time_new();
+	((jbl_time *)(jbl_refer_pull(this)))->t+=second*1000;
+	return this;
+}
 /*******************************************************************************************/
 /*                            以下函实现时间获取操作                                     */
 /*******************************************************************************************/
@@ -157,14 +163,13 @@ jbl_time_key __jbl_time_key_scaner(unsigned char * YYCURSOR,unsigned char * YYLI
 	#define YYCTYPE		unsigned char
 	#define YYFILL(n)	return JBL_TIME_KEY_END;
     /*!re2c
-		[^%jdDlLNSwzWFmMntLoYyaABgGhHisu]		{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_UNDEFINED;}	
+		[^%jdDlNSwzWFmMntLoYyaABgGhHisueIOPTZU]		{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_UNDEFINED;}	
 		"%"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_ESCAPE;}
 		
 		"j"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOM;}
 		"d"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOMWZ;}
 		"D"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOW3;}
 		"l"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOWA;}
-		"L"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOWA;}
 		"N"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOWN;}
 		"S"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOMS;}
 		"w"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DOWNF0;}
@@ -194,7 +199,17 @@ jbl_time_key __jbl_time_key_scaner(unsigned char * YYCURSOR,unsigned char * YYLI
 		"s"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_SWZ;}
 		"u"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_MSWZ;}
 		
+		"e"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_TZT;}
+		"I"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_IDST;}
+		"O"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_HTG;}
+		"P"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_DWG;}
+		"T"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_TZ;}
+		"Z"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_STG;}
+		"U"				{if(addr)*addr=YYCURSOR;return JBL_TIME_KEY_S;}
+		
 	 */
+	#undef YYCTYPE
+	#undef YYFILL
 }
 #if JBL_STRING_ENABLE==1
 /*******************************************************************************************/
@@ -257,6 +272,15 @@ jbl_string * jbl_time_to_string_format(const jbl_time *this,jbl_string *result,u
 			case JBL_TIME_KEY_MWZ		:result=jbl_string_add_uint64_length(result,tt.minute,2,'0')	;break;
 			case JBL_TIME_KEY_SWZ		:result=jbl_string_add_uint64_length(result,tt.second,2,'0')	;break;
 			case JBL_TIME_KEY_MSWZ		:result=jbl_string_add_uint64_length(result,tt.ms,2,'0')		;break;
+			
+			
+			case JBL_TIME_KEY_TZT		:result=jbl_string_add_chars(result,UC "GMT")					;break;
+			case JBL_TIME_KEY_IDST		:break;
+			case JBL_TIME_KEY_HTG		:break;
+			case JBL_TIME_KEY_DWG		:break;
+			case JBL_TIME_KEY_TZ		:break;
+			case JBL_TIME_KEY_STG		:break;
+			case JBL_TIME_KEY_S			:result=jbl_string_add_uint64(result,this->t/1000)				;break;
 
 			
 		}
