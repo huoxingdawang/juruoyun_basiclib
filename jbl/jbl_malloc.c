@@ -24,15 +24,29 @@
 /*                            系统文件包含                                                   */
 /*******************************************************************************************/
 #if JBL_MALLOC_FAST==1
-#ifdef __linux__	
-	#include <unistd.h>
-	#include <sys/mman.h>
-#else	
+#ifdef _WIN32
 	#include <windows.h>		
 	#include <wincrypt.h>
-#endif
+#elif __APPLE__
+
+#elif __linux__
+	#include <unistd.h>
+	#include <sys/mman.h>
 #else
-#include <malloc.h>	
+#endif
+
+
+#else
+
+#ifdef _WIN32
+#include <malloc.h>
+#elif __APPLE__
+#include <stdlib.h>
+#elif __linux__
+#include <malloc.h>
+#else
+#endif
+
 #endif
 
 
@@ -236,11 +250,14 @@ inline jbl_malloc_size_type jbl_malloc_size(void* ptr)
 #if JBL_MALLOC_FAST==1
 	return __jbl_malloc_size(ptr);
 #else
-#ifdef __linux__
+#ifdef _WIN32
+	return _msize(ptr);
+#elif __APPLE__
+	return malloc_size(ptr);
+#elif __linux__
 	return malloc_usable_size(ptr);
 #else
-	return _msize(ptr);
-#endif
+#endif	
 #endif
 }
 inline void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
@@ -250,7 +267,23 @@ inline void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 #if JBL_MALLOC_FAST==1
 	return __jbl_realloc(ptr,size);
 #else
-#ifdef __linux__	
+#ifdef _WIN32
+	void * ptr2=jbl_malloc(size);
+	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
+	jbl_malloc_size_type size_new=_msize(ptr);
+	jbl_min_update(size_new,size);
+	jbl_memory_copy(ptr2,ptr,size_new);
+	jbl_free(ptr);
+	return ptr2;
+#elif __APPLE__
+	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
+	void *ptr2=realloc(ptr,size);
+	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
+	jbl_malloc_heap.size+=jbl_malloc_size(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
+	if(ptr2==NULL)
+		jbl_exception("MEMORY ERROR");
+	return ptr2;
+#elif __linux__
 	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
 	void *ptr2=realloc(ptr,size);
 	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
@@ -259,13 +292,6 @@ inline void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 		jbl_exception("MEMORY ERROR");
 	return ptr2;
 #else
-	void * ptr2=jbl_malloc(size);
-	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
-	jbl_malloc_size_type size_new=_msize(ptr);
-	jbl_min_update(size_new,size);
-	jbl_memory_copy(ptr2,ptr,size_new);
-	jbl_free(ptr);
-	return ptr2;
 #endif
 #endif
 }

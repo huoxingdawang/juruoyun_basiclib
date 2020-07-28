@@ -14,7 +14,11 @@ complain_re2c = jbl
 ifeq ($(shell uname),Linux)
 	system = linux
 else
+ifeq ($(shell uname),Darwin)
+	system = macos
+else	
 	system = windows
+endif
 endif
 
 ifeq ($(system),linux)
@@ -27,7 +31,11 @@ ifeq ($(system),windows)
 	rm = del
 	pre = win_
 endif
-
+ifeq ($(system),macos)
+	H = /
+	rm = rm -f
+	pre = macos_
+endif
 # all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test2 var
 all:jbl aes base64 bitset cmd ht json ll malloc md5 rand sha1 stream string time test2 var
 clean:
@@ -193,4 +201,3 @@ jbl/jbl_var            :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jbl_var.o        jbl$(H)jbl_var.c        $(JBL_EXLIB)
 jbl/jbl_ying           :
 	$(CC) $(BITS) -c -Wall -std=gnu99 -o tmp$(H)$(pre)jbl_ying.o       jbl$(H)jbl_ying.c       $(JBL_EXLIB)
-

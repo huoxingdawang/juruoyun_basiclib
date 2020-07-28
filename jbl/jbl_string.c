@@ -330,7 +330,7 @@ inline jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
 jbl_string* jbl_string_add_file(jbl_string *this,FILE * file)
 {
 	if(!file)jbl_exception("NULL POINTER");
-#if __SIZEOF_POINTER__ == 8 && !defined __linux__
+#ifdef _WIN64
 	_fseeki64(file,0L,SEEK_END);
 	jbl_string_size_type size=_ftelli64(file);	
 	_fseeki64(file,0L,SEEK_SET);
