@@ -55,9 +55,10 @@ int main()
 	jbl_ll_view(l1);
 	l1=jbl_ll_free(l1);
 #endif
-	
 //exit:	
-	s1=jbl_string_free(s1);s2=jbl_string_free(s2);s3=jbl_string_free(s3);
+	s1=jbl_string_free(s1);
+	s2=jbl_string_free(s2);
+	s3=jbl_string_free(s3);
 	s4=jbl_string_free(s4);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();

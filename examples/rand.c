@@ -14,27 +14,27 @@ int main()
 	jbl_string *s1=NULL;
 	for(jbl_uint8 i=0;i<100;i++)
 	{
-		s1=jbl_rand_string(NULL,40,jbl_rand_dict_small);
+		s1=jbl_rand_string(NULL,40,UC jbl_rand_dict_small);
 		jbl_string_view(s1);s1=jbl_string_free(s1);
 	}
 	for(jbl_uint8 i=0;i<100;i++)
 	{
-		s1=jbl_rand_string(NULL,40,jbl_rand_dict_big);
+		s1=jbl_rand_string(NULL,40,UC jbl_rand_dict_big);
 		jbl_string_view(s1);s1=jbl_string_free(s1);
 	}
 	for(jbl_uint8 i=0;i<100;i++)
 	{
-		s1=jbl_rand_string(NULL,40,jbl_rand_dict_number);
+		s1=jbl_rand_string(NULL,40,UC jbl_rand_dict_number);
 		jbl_string_view(s1);s1=jbl_string_free(s1);
 	}
 	for(jbl_uint8 i=0;i<100;i++)
 	{
-		s1=jbl_rand_string(NULL,40,jbl_rand_dict_symbol);
+		s1=jbl_rand_string(NULL,40,UC jbl_rand_dict_symbol);
 		jbl_string_view(s1);s1=jbl_string_free(s1);
 	}
 	for(jbl_uint8 i=0;i<100;i++)
 	{
-		s1=jbl_rand_string(NULL,40,jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
+		s1=jbl_rand_string(NULL,40,UC jbl_rand_dict_small jbl_rand_dict_big  jbl_rand_dict_number jbl_rand_dict_symbol);
 		jbl_string_view(s1);s1=jbl_string_free(s1);
 	}
 #endif 	

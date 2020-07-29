@@ -41,6 +41,7 @@
 #ifdef _WIN32
 #include <malloc.h>
 #elif __APPLE__
+#include <malloc/malloc.h>
 #include <stdlib.h>
 #elif __linux__
 #include <malloc.h>
