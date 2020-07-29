@@ -35,7 +35,7 @@
 typedef struct __jbl_time
 {
 	jbl_gc gc;									//gc结构
-	jbl_uint64 t;								//时间戳，带3位毫秒
+	jbl_int64 t;								//时间戳，带3位毫秒
 }jbl_time;										//蒟蒻云基础库时间结构
 typedef struct __jbl_time_decoded
 {
@@ -137,7 +137,7 @@ jbl_uint8			jbl_time_if_dst					(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year);
 /*                            以下函实现时间对字符串操作                                */
 /*******************************************************************************************/
 jbl_string *		jbl_time_to_string				(const jbl_time *this,jbl_string *result);								//把time格式化成字符串时间戳
-jbl_string *		jbl_time_to_string_format		(const jbl_time *this,jbl_string *result,unsigned char * format);		//把time格式化成字符串时间戳
+jbl_string *		jbl_time_to_string_format		(const jbl_time *this,jbl_string *result,const unsigned char * format);		//把time格式化成字符串时间戳
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/

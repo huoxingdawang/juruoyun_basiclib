@@ -49,7 +49,7 @@ inline jbl_time * jbl_time_free(jbl_time *this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		((jbl_gc_is_ref(this))?jbl_time_free((jbl_time *)jbl_refer_pull(this)):0);
+		((jbl_gc_is_ref(this))?jbl_time_free((jbl_time*)(((jbl_reference*)this)->ptr)):0);
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));
@@ -138,7 +138,7 @@ void jbl_time_decode(const jbl_time *this,jbl_time_decoded *tt)
 /*******************************************************************************************/
 inline char jbl_time_space_ship(jbl_time *this,jbl_time *that)
 {
-	jbl_uint64 t=jbl_time_minus(this,that);
+	jbl_int64 t=jbl_time_minus(this,that);
 	return (t>0)?1:((t<0)?(-1):0);
 }
 /*******************************************************************************************/
@@ -155,11 +155,10 @@ jbl_uint8 jbl_time_if_dst(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year)
 		
 		
 	}
-	
+	return false;
 }
-jbl_time_key __jbl_time_key_scaner(unsigned char * YYCURSOR,unsigned char * YYLIMIT,unsigned char **addr)
+jbl_time_key __jbl_time_key_scaner(const unsigned char * YYCURSOR,const unsigned char * YYLIMIT,const unsigned char **addr)
 {
-	unsigned char *		YYMARKER;
 	#define YYCTYPE		unsigned char
 	#define YYFILL(n)	return JBL_TIME_KEY_END;
     /*!re2c
@@ -215,12 +214,12 @@ jbl_time_key __jbl_time_key_scaner(unsigned char * YYCURSOR,unsigned char * YYLI
 /*******************************************************************************************/
 /*                            以下函实现时间对字符串操作                                */
 /*******************************************************************************************/
-jbl_string * jbl_time_to_string_format(const jbl_time *this,jbl_string *result,unsigned char * format)
+jbl_string * jbl_time_to_string_format(const jbl_time *this,jbl_string *result,const unsigned char * format)
 {
 	jbl_time_decoded tt;
 	jbl_time_decode(this,&tt);
 	jbl_string_size_type n=jbl_strlen(format),i=0;
-	unsigned char * addr;
+	const unsigned char * addr;
 	jbl_time_key key;
 	const char * doms[]	={"th","st","nd","rd","th","th","th","th","th","th"};
 	const char * dowa[]	={"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
@@ -289,7 +288,7 @@ jbl_string * jbl_time_to_string_format(const jbl_time *this,jbl_string *result,u
 }
 jbl_string * jbl_time_to_string(const jbl_time *this,jbl_string *result)
 {
-	return jbl_time_to_string_format(this,result,"Y-m-d H:i:s D");
+	return jbl_time_to_string_format(this,result,UC "Y-m-d H:i:s D");
 }
 #endif
 #if JBL_JSON_ENABLE==1
@@ -299,7 +298,7 @@ jbl_string * jbl_time_to_string(const jbl_time *this,jbl_string *result)
 #if JBL_STRING_ENABLE==1
 inline jbl_string* jbl_time_json_encode(const jbl_time* this,jbl_string *out,char format,jbl_int32 tabs)
 {
-	jbl_string *s1=jbl_time_to_string_format(this,NULL,"Y-m-d H:i:s D");
+	jbl_string *s1=jbl_time_to_string_format(this,NULL,UC "Y-m-d H:i:s D");
 	out=jbl_string_json_encode(s1,out,format,tabs);
 	jbl_string_free(s1);
 	return out;
@@ -309,7 +308,7 @@ inline jbl_string* jbl_time_json_encode(const jbl_time* this,jbl_string *out,cha
 void jbl_time_json_put(const jbl_time* this,jbl_stream *out,char format,jbl_int32 tabs)
 {
 #if JBL_STRING_ENABLE==1
-	jbl_string *s1=jbl_time_to_string_format(this,NULL,"Y-m-d H:i:s D");
+	jbl_string *s1=jbl_time_to_string_format(this,NULL,UC "Y-m-d H:i:s D");
 	jbl_string_json_put(s1,out,format,tabs);
 	jbl_string_free(s1);	
 #else
@@ -359,6 +358,7 @@ jbl_var * jbl_time_copy_as_var(jbl_time *that)
 	if(jbl_gc_is_ref(that))
 	{
 		void *data=that;
+		jbl_gc_plus((jbl_reference*)that);//出来的data ref_cnt一定是2
 		jbl_refer_as_var(&data,&jbl_time_operators);
 		jbl_gc_minus((jbl_reference*)data);//出来的data ref_cnt一定是2
 		return jbl_V(data);

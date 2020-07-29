@@ -8,6 +8,7 @@ int main()
 	jbl_var  *	v1=jbl_time_copy_as_var(t1);
 	jbl_time *	t2=jbl_refer(&t1);
 	jbl_var  *	v2=jbl_time_copy_as_var(t2);
+	
 	jbl_time_view(t1);
 	jbl_time_view(t2);
 	jbl_var_view(v1);
