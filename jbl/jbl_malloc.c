@@ -274,15 +274,7 @@ inline void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 	jbl_memory_copy(ptr2,ptr,size_new);
 	jbl_free(ptr);
 	return ptr2;
-#elif __APPLE__
-	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
-	void *ptr2=realloc(ptr,size);
-	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
-	jbl_malloc_heap.size+=jbl_malloc_size(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
-	if(ptr2==NULL)
-		jbl_exception("MEMORY ERROR");
-	return ptr2;
-#elif __linux__
+#elif defined(__APPLE__) || defined(__linux__)
 	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
 	void *ptr2=realloc(ptr,size);
 	if(ptr2==NULL)jbl_exception("MEMORY ERROR");
@@ -415,7 +407,6 @@ void __jbl_malloc_munmap(void *ptr, jbl_malloc_size_type size)
 #ifdef _WIN32
 	if(VirtualFree(ptr,0,MEM_RELEASE)==0)	jbl_exception("MEMORY ERROR");
 #elif defined(__APPLE__) || defined(__linux__)
-	if(munmap(ptr,size)!=0)					jbl_exception("MEMORY ERROR");
 	if(munmap(ptr,size)!=0)					jbl_exception("MEMORY ERROR");
 #endif
 }
