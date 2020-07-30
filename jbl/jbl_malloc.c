@@ -28,11 +28,10 @@
 	#include <windows.h>		
 	#include <wincrypt.h>
 #elif __APPLE__
-
+  #include <sys/mman.h>
 #elif __linux__
 	#include <unistd.h>
 	#include <sys/mman.h>
-#else
 #endif
 
 
@@ -257,7 +256,6 @@ inline jbl_malloc_size_type jbl_malloc_size(void* ptr)
 	return malloc_size(ptr);
 #elif __linux__
 	return malloc_usable_size(ptr);
-#else
 #endif	
 #endif
 }
@@ -292,7 +290,6 @@ inline void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 	if(ptr2==NULL)
 		jbl_exception("MEMORY ERROR");
 	return ptr2;
-#else
 #endif
 #endif
 }
@@ -401,44 +398,31 @@ void __jbl_free(void * p)
 //申请一段mmap
 void* __jbl_malloc_mmap(jbl_malloc_size_type size)
 {
-#ifdef __linux__
-	void* ptr=mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON,-1,0);
-	if(ptr==MAP_FAILED)jbl_exception("MEMORY ERROR");
-	return ptr;		
-#else
+#ifdef _WIN32
 	void* ptr=VirtualAlloc(NULL,size,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);
 	if(!ptr)jbl_exception("MEMORY ERROR");
 	return ptr;
+#elif defined(__APPLE__) || defined(__linux__)
+	void* ptr=mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON,-1,0);
+	if(ptr==MAP_FAILED)jbl_exception("MEMORY ERROR");
+	return ptr;		
 #endif
 }
 //释放指定尺寸的一部分mmap
 void __jbl_malloc_munmap(void *ptr, jbl_malloc_size_type size)
 {
 	if(!ptr)jbl_exception("NULL POINTER");	
-#ifdef __linux__
-	if(munmap(ptr,size)!=0)
-		jbl_exception("MEMORY ERROR");
-#else
-	if(VirtualFree(ptr,0,MEM_RELEASE)==0)
-		jbl_exception("MEMORY ERROR");
+#ifdef _WIN32
+	if(VirtualFree(ptr,0,MEM_RELEASE)==0)	jbl_exception("MEMORY ERROR");
+#elif defined(__APPLE__) || defined(__linux__)
+	if(munmap(ptr,size)!=0)					jbl_exception("MEMORY ERROR");
+	if(munmap(ptr,size)!=0)					jbl_exception("MEMORY ERROR");
 #endif
 }
 //对齐方式申请mmap
 void *__jbl_malloc_aligned(jbl_malloc_size_type size,jbl_malloc_size_type alignment)
 {
-#ifdef __linux__
-	void *ptr=__jbl_malloc_mmap(size+alignment-1);
-	jbl_malloc_size_type offset=(((jbl_malloc_size_type)(ptr))&((alignment)-1));
-	if(offset!=0)
-	{
-		offset=alignment-offset;
-		__jbl_malloc_munmap(ptr,offset);
-		ptr=(char*)ptr+offset;
-		alignment-=offset;
-	}
-	if(alignment>0)
-		__jbl_malloc_munmap(ptr+size,alignment-1);
-#else
+#ifdef _WIN32
 	void *ptr=__jbl_malloc_mmap(size+alignment-1);
 	jbl_malloc_size_type offset=(((jbl_malloc_size_type)(ptr))&((alignment)-1));
 	VirtualFree(ptr,0,MEM_RELEASE);		
@@ -450,6 +434,18 @@ void *__jbl_malloc_aligned(jbl_malloc_size_type size,jbl_malloc_size_type alignm
 	else
 		ptr=VirtualAlloc(ptr,size,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);
 	if(!ptr)jbl_exception("MEMORY ERROR");	
+#elif defined(__APPLE__) || defined(__linux__)
+	void *ptr=__jbl_malloc_mmap(size+alignment-1);
+	jbl_malloc_size_type offset=(((jbl_malloc_size_type)(ptr))&((alignment)-1));
+	if(offset!=0)
+	{
+		offset=alignment-offset;
+		__jbl_malloc_munmap(ptr,offset);
+		ptr=(char*)ptr+offset;
+		alignment-=offset;
+	}
+	if(alignment>0)
+		__jbl_malloc_munmap(ptr+size,alignment-1);
 #endif
 	return ptr;
 }
