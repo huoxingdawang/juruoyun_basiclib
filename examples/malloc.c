@@ -6,10 +6,10 @@ int main()
 	jbl_rand_srand(0);
 	jbl_time *t1=NULL,*t2=NULL;
 	
-	int slot=1024,base=16;
-	int small=90;
-	int large=9;
-	int huge=1;
+	int slot=1024,base=21;
+	int small=180;
+	int large=10;
+	int huge=10;
 //	pchars("Input slot and base\n");pf();
 //	scanf("%d %d",&slot,&base);
 	pchars("Slot:");pint(slot);pt();pchars("Base:");pint(base);pn();pf();
@@ -27,13 +27,13 @@ int main()
 			if(r<=small)			size=(jbl_rand()%3072)+1;
 			else if(r<=small+large)	size=((jbl_rand())%2093056)+1;
 			else					size=2093056+((jbl_rand())%2093056);
-			//printf("M %d\t%s %d\n",pos,(size)<=3072?"small":(size<=2093056?"large":"huge "),size);
 			a[pos]=jbl_malloc(size);
-			while(size--)a[pos][size]='c';
+//			printf("M %d\t%s %d %X\n",pos,(size)<=3072?"small":(size<=2093056?"large":"huge "),size,a[pos]);
+//			while(size--)a[pos][size]='c';
 		}
 		else
 		{
-			//printf("F %d\n",pos);
+//			printf("F %d %X\n",pos,a[pos]);
 			jbl_free(a[pos]),a[pos]=NULL;	
 		}			
 	}
