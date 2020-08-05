@@ -4,6 +4,7 @@ int main()
 {
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
+#if JBL_VAR_ENABLE==1
 	jbl_string *	s1=jbl_string_add_chars(NULL,UC"j");
 	jbl_var    *	v1=jbl_string_copy_as_var(s1);
 	jbl_string *	s2=jbl_refer(&s1);
@@ -55,7 +56,7 @@ pl();
 	v1=jbl_var_free(v1);
 	v2=jbl_var_free(v2);
 	v3=jbl_var_free(v3);
-	
+#endif	
 	
 	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");

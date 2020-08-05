@@ -4,6 +4,7 @@ int main()
 {
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
+#if JBL_VAR_ENABLE==1
 	jbl_time *	t1=jbl_time_now(NULL);
 	jbl_var  *	v1=jbl_time_copy_as_var(t1);
 	jbl_time *	t2=jbl_refer(&t1);
@@ -42,7 +43,7 @@ pl();
 	t2=jbl_time_free(t2);
 	v1=jbl_var_free(v1);
 	v2=jbl_var_free(v2);
-	
+#endif	
 	
 	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");

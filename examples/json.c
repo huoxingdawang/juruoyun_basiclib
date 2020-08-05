@@ -17,10 +17,10 @@ int main(int argc,char** argv)
 
 	jbl_var_view(v1);
 pf();
+	jbl_var_json_put(v1,jbl_stream_stdout,1,1);
+	pn();
+	jbl_var_json_put(v1,jbl_stream_stdout,0,0);
 /*
-//	jbl_var_json_put(v1,jbl_stream_stdout,1,1);
-//	pn();
-//	jbl_var_json_put(v1,jbl_stream_stdout,0,0);
 */
 
 
