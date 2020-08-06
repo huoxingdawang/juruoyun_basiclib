@@ -143,7 +143,7 @@ jbl_string *		jbl_time_to_string_format		(jbl_time *this,jbl_string *result,cons
 /*******************************************************************************************/
 /*                            以下函数实现时间的浏览操作                                 */
 /*******************************************************************************************/
-jbl_time*				jbl_time_view_put			(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_int32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个时间
+jbl_time*				jbl_time_view_put			(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个时间
 #define					jbl_time_view(x)			jbl_time_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个时间
 #endif
 #if JBL_JSON_ENABLE==1
@@ -151,10 +151,10 @@ jbl_time*				jbl_time_view_put			(jbl_time* this,jbl_stream *out,jbl_uint8 forma
 /*                            以下函实现时间JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-jbl_string *		jbl_time_json_encode			(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_int32 tabs);		//把time格式化成JSON
+jbl_string *		jbl_time_json_encode			(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);		//把time格式化成JSON
 #endif
 #if JBL_STREAM_ENABLE==1
-void				jbl_time_json_put				(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_int32 tabs);
+void				jbl_time_json_put				(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
 #endif
 #endif
 #if JBL_VAR_ENABLE==1

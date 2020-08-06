@@ -296,7 +296,7 @@ jbl_string * jbl_time_to_string(jbl_time *this,jbl_string *result)
 /*                            以下函实现时间JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-inline jbl_string* jbl_time_json_encode(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_int32 tabs)
+inline jbl_string* jbl_time_json_encode(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	jbl_string *s1=jbl_time_to_string_format(this,NULL,UC "Y-m-d H:i:s D");
 	out=jbl_string_json_encode(s1,out,format,tabs);
@@ -305,7 +305,7 @@ inline jbl_string* jbl_time_json_encode(jbl_time* this,jbl_string *out,jbl_uint8
 }
 #endif
 #if JBL_STREAM_ENABLE==1
-void jbl_time_json_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_int32 tabs)
+void jbl_time_json_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 #if JBL_STRING_ENABLE==1
 	jbl_string *s1=jbl_time_to_string_format(this,NULL,UC "Y-m-d H:i:s D");
@@ -323,7 +323,7 @@ void jbl_time_json_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_int32
 /*******************************************************************************************/
 /*                            以下函数实现时间的浏览操作                                 */
 /*******************************************************************************************/
-jbl_time* jbl_time_view_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_int32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
+jbl_time* jbl_time_view_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
 	jbl_time * thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_time",line,varname,func,file))return this;
 	jbl_stream_push_chars(out,UC"\ttime stamp:");

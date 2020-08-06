@@ -151,18 +151,18 @@ jbl_string *			jbl_string_to_lower_case				(jbl_string *this);														//�
 /*******************************************************************************************/
 /*                            以下函数实现字符串的JSON操作                               */
 /*******************************************************************************************/
-jbl_string*				jbl_string_json_encode					(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_int32 tabs);			//JSON编码
-jbl_string*				jbl_string_json_put_format				(const void* this,jbl_string *out,jbl_uint8 format,jbl_int32 *tabs);			//输出JSON格式头
-jbl_string*				jbl_string_json_decode					(jbl_string *this,jbl_string* in,jbl_string_size_type *start);			//JSON解码
+jbl_string*				jbl_string_json_encode					(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);			//JSON编码
+jbl_string*				jbl_string_json_put_format				(const void* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);			//输出JSON格式头
+jbl_string*				jbl_string_json_decode					(jbl_string *this,jbl_string* in,jbl_string_size_type *start);				//JSON解码
 #if JBL_STREAM_ENABLE==1
-void					jbl_string_json_put						(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_int32 tabs);			//从从out JSON格式化一个字符串
+void					jbl_string_json_put						(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);			//从从out JSON格式化一个字符串
 #endif
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现字符串的浏览操作                               */
 /*******************************************************************************************/
-jbl_string*				jbl_string_view_put						(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_int32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个字符串
+jbl_string*				jbl_string_view_put						(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个字符串
 #define					jbl_string_view(x)						jbl_string_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个字符串
 #endif
 #if JBL_STREAM_ENABLE==1

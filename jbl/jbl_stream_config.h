@@ -22,7 +22,7 @@
 #define JBL_VIEW_DISPLAY_LINE		1
 
 
-#define JBL_STREAM_STDOUT	fopen("tmp/out.tmp","wb")
+//#define JBL_STREAM_STDOUT	fopen("tmp/out.tmp","wb")
 #define JBL_STREAM_STDIN	stdin
 #ifndef JBL_STREAM_STDOUT
 	#define JBL_STREAM_STDOUT	stdout

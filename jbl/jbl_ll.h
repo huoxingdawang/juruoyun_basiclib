@@ -99,18 +99,18 @@ char			jbl_ll_space_ship			(const jbl_ll *this,const jbl_ll *that);						//太�
 /*                            以下函实现链表JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-jbl_string*		jbl_ll_json_encode			(const jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_int32 tabs);	//JSON编码
+jbl_string*		jbl_ll_json_encode			(const jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码
 jbl_ll*			jbl_ll_json_decode			(jbl_ll *this,jbl_string* in,jbl_string_size_type *start);	//JSON解码
 #endif
 #if JBL_STREAM_ENABLE==1
-void			jbl_ll_json_put				(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_int32 tabs);	//从out JSON输出一个link list
+void			jbl_ll_json_put				(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个link list
 #endif
 #endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函实现链表插看操作                                      */
 /*******************************************************************************************/
-jbl_ll*			jbl_ll_view_put						(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_int32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个link list
+jbl_ll*			jbl_ll_view_put						(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);	//从out浏览一个link list
 #define			jbl_ll_view(x)						jbl_ll_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览link list
 #endif
 

@@ -205,9 +205,9 @@ inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint
 	return this?0:1;
 }
 #if JBL_JSON_ENABLE==1
-inline char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_int32 tabs)
+inline char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	if(out==NULL)jbl_exception("NULL POINTER");
+	if(!out)jbl_exception("NULL POINTER");
 	if(format&1)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
 	if(!this)return jbl_stream_push_chars(out,UC"null"),1;
 	return 0;

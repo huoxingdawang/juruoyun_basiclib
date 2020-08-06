@@ -521,9 +521,9 @@ jbl_string * jbl_string_to_lower_case(jbl_string *this)
 /*******************************************************************************************/
 /*                            以下函数实现字符串的JSON操作                               */
 /*******************************************************************************************/
-jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_int32 tabs)
+jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,&tabs);if(!this)return out;
+	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
 	out=jbl_string_add_char(out,'"');
 	for(jbl_string_size_type i=0;i<this->len;++i)
 	{
@@ -547,14 +547,14 @@ jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 fo
 		}				
 	}
 	out=jbl_string_add_char(out,'"');
+	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;
 }
-jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,jbl_uint8 format,jbl_int32 *tabs)
+jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	if(!out)out=jbl_string_new();
-	if(format&&*tabs>=0)for(jbl_int16 i=0;i<*tabs;out=jbl_string_add_char(out,'\t'),++i);else *tabs=-*tabs;	
-	++*tabs;
-	if(!this)out=jbl_string_add_chars_length(out,(unsigned char *)"null",4);
+	if(format&1)for(jbl_uint32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);
+	if(!this)out=jbl_string_add_chars_length(out,UC"null",4);
 	return out;
 }
 jbl_string* jbl_string_json_decode(jbl_string *this,jbl_string* in,jbl_string_size_type *start)
@@ -621,7 +621,7 @@ fail:;
 	return NULL;
 }
 #if JBL_STREAM_ENABLE==1
-void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_int32 tabs)
+void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
 	jbl_stream_push_char(out,'"');
@@ -655,7 +655,7 @@ void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_i
 /*******************************************************************************************/
 /*                            以下函数实现字符串的浏览操作                               */
 /*******************************************************************************************/
-jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_int32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
+jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
 	jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file))return this;
 	jbl_stream_push_chars(out,UC" size:");
