@@ -115,7 +115,6 @@ unsigned char			jbl_string_get							(jbl_string *this,jbl_string_size_type i);	
 jbl_int64				jbl_string_get_int_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个64位整数
 #define					jbl_string_get_uint(this)				jbl_string_get_uint_start(this,0)										//获取一个64位无符号整数
 jbl_uint64				jbl_string_get_uint_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个64位无符号整数
-jbl_uint64				jbl_string_get_uint_start_end			(jbl_string *this,jbl_string_size_type *start,unsigned char end);
 #define					jbl_string_get_double(this)				jbl_string_get_double_start(this,0)										//获取一个浮点数
 double					jbl_string_get_double_start				(jbl_string *this,jbl_string_size_type *start);							//从start位置开始获取一个浮点数
 #define					jbl_string_get_hex(this)				jbl_string_get_hex_start(this,0)										//获取一个16进制表示的64位无符号整数
@@ -176,7 +175,8 @@ jbl_stream *			jbl_string_stream_new					(jbl_string *str);														//新�
 #if JBL_VAR_ENABLE==1
 jbl_var * 				jbl_string_Vstream_new					(jbl_string *str);														//新建一个var格式的字符串流(不进行复制操作)
 #endif
-void					jbl_stream_push_string					(jbl_stream *out,jbl_string* this);										//向out推出一个字符串
+#define					jbl_stream_push_string(out,this)		jbl_stream_push_string_start_end(out,this,0,-1)							//向out推出一个字符串
+void					jbl_stream_push_string_start_end		(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end);
 jbl_string *			jbl_string_read							(jbl_string *this,const unsigned char *c);
 
 #endif

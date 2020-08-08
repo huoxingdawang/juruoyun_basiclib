@@ -374,18 +374,14 @@ jbl_int64 jbl_string_get_int_start(jbl_string *this,jbl_string_size_type *start)
 }
 jbl_uint64 jbl_string_get_uint_start(jbl_string *this,jbl_string_size_type *start)
 {
-	return jbl_string_get_uint_start_end(this,start,0);	
-}
-jbl_uint64 jbl_string_get_uint_start_end(jbl_string *this,jbl_string_size_type *start,unsigned char end)
-{
 	if(!this)jbl_exception("NULL POINTER");	
 	jbl_string *thi=jbl_refer_pull(this);		
 	jbl_string_size_type i=start?(*start):0; 	
 	if(i>=thi->len)
 		return 0;
 	unsigned char c;jbl_uint64 x=0;
-	for(;((c=thi->s[i])<'0'||c>'9')&&c!=end&&i<thi->len;++i);
-	for(x=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&c!=end&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
+	for(;((c=thi->s[i])<'0'||c>'9')&&i<thi->len;++i);
+	for(x=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	start?(*start=i):0;
 	return x;	
 }
@@ -723,15 +719,15 @@ void jbl_string_update_stream_buf(jbl_stream* this)
 	this->buf=st->s+st->len;
 }
 jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operater,jbl_string_free,jbl_string_update_stream_buf);
-void jbl_stream_push_string(jbl_stream *out,jbl_string* this)
+void jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end)
 {
 	if(!out)jbl_exception("NULL POINTER");
 	if(!this)return;
 	out=jbl_refer_pull(out);
 	this=jbl_refer_pull(this);
-	for(jbl_string_size_type i=0;i<this->len;)
+	for(jbl_min_update(end,this->len);i<end;)
 	{
-		jbl_stream_buf_size_type len=jbl_min((this->len-i),(out->size-out->en));	
+		jbl_stream_buf_size_type len=jbl_min((end-i),(out->size-out->en));	
 		jbl_memory_copy(out->buf+out->en,this->s+i,len);
 		i+=len;
 		out->en+=len;
