@@ -265,14 +265,14 @@ inline jbl_string *jbl_string_add_char(jbl_string *this,const char c)
 	thi->s[thi->len]=c,++thi->len;
 	return this;
 }
-inline jbl_string * jbl_string_add_int64_length(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c)
+inline jbl_string * jbl_string_add_int_length(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c)
 {
 	jbl_string *thi;this=jbl_string_extend_to(this,22,1,&thi);
 	if(in<0)
 		jbl_string_add_char_force(thi,'-'),in=-in;
-	return jbl_string_add_uint64_length(this,in,len,c);
+	return jbl_string_add_uint_length(this,in,len,c);
 }
-jbl_string * jbl_string_add_uint64_length(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c)
+jbl_string * jbl_string_add_uint_length(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c)
 {
 	jbl_string *thi;this=jbl_string_extend_to(this,jbl_max(len,21),1,&thi);jbl_string_hash_clear(thi);
 	if(!in)
@@ -290,7 +290,7 @@ jbl_string * jbl_string_add_uint64_length(jbl_string *this,jbl_uint64 in,jbl_uin
 jbl_string * jbl_string_add_double_length(jbl_string *this,double in,unsigned char len)
 {
 	this=jbl_string_extend(this,jbl_max(len,40));
-	this=jbl_string_add_int64(this,in);
+	this=jbl_string_add_int(this,in);
 	this=jbl_string_add_char(this,'.');
 	if(in<0)in=-in;
 	in-=(jbl_uint64)in;

@@ -78,13 +78,13 @@ jbl_string *			jbl_string_cache_replace				(jbl_string *str);
 jbl_string *			jbl_string_add_const_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知常量char*字符串
 #define					jbl_string_add_chars(x,y)				jbl_string_add_chars_length(x,y,jbl_strlen(y))							//添加一个char*字符串
 jbl_string *			jbl_string_add_chars_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知的char*字符串
-jbl_string *			jbl_string_add_string					(jbl_string *this,jbl_string *in);								//添加一个string
+jbl_string *			jbl_string_add_string					(jbl_string *this,jbl_string *in);										//添加一个string
 jbl_string *			jbl_string_add_char						(jbl_string *this,const char c);										//添加一个char
 #define					jbl_string_add_char_force(this,in)		(this->s[this->len++]=(in))												//强制添加一个char，当字符串为NULL或引用类型时将直接导致RE
-#define					jbl_string_add_int64(this,in)			jbl_string_add_int64_length(this,in,0,0)								//添加一个64位整数
-jbl_string *			jbl_string_add_int64_length				(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c);					//添加一个length位的64位整数，不足用c补齐	
-#define					jbl_string_add_uint64(this,in)			jbl_string_add_uint64_length(this,in,0,0)								//添加一个64位无符号整数
-jbl_string *			jbl_string_add_uint64_length			(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c);					//添加一个length位64位无符号整数，不足用c补齐
+#define					jbl_string_add_int(this,in)			jbl_string_add_int_length(this,in,0,0)										//添加一个64位整数
+jbl_string *			jbl_string_add_int_length				(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c);					//添加一个length位的64位整数，不足用c补齐	
+#define					jbl_string_add_uint(this,in)			jbl_string_add_uint_length(this,in,0,0)									//添加一个64位无符号整数
+jbl_string *			jbl_string_add_uint_length			(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c);						//添加一个length位64位无符号整数，不足用c补齐
 #define					jbl_string_add_double(this,in)			jbl_string_add_double_length(this,in,5)									//添加一个浮点数
 jbl_string *			jbl_string_add_double_length			(jbl_string *this,double in,unsigned char len);							//添加一个浮点数，保留len位小数
 jbl_string *			jbl_string_add_hex						(jbl_string *this,jbl_uint64 in);										//把一个64位无符号整数以16进制形式添加(无前导0)

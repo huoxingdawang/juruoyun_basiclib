@@ -12,7 +12,7 @@ int main()
 		jbl_int64 t=jbl_rand()/1000*1000;
 		jbl_time * t1=jbl_time_set(NULL,t);
 		jbl_string *s1=jbl_time_to_string(t1,NULL);
-		jbl_string *cmd=jbl_string_add_uint64(jbl_string_add_chars(NULL,UC "php testfiles/time.php "),t);
+		jbl_string *cmd=jbl_string_add_uint(jbl_string_add_chars(NULL,UC "php testfiles/time.php "),t);
 		jbl_string *s2=jbl_execute_cmd(cmd,NULL);
 		jbl_string_view(s1);
 		jbl_string_view(s2);
