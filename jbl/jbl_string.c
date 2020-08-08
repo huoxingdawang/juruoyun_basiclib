@@ -698,7 +698,7 @@ void __jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)
 	{
 		while(this->tmp[0].u<str->len)
 		{
-			jbl_uint16 len=jbl_min((str->len-this->tmp[0].u),(nxt->size-nxt->en));	
+			jbl_stream_buf_size_type len=jbl_min((str->len-this->tmp[0].u),(nxt->size-nxt->en));	
 			jbl_memory_copy(nxt->buf+nxt->en,str->s+this->tmp[0].u,len);
 			this->tmp[0].u+=len;
 			nxt->en+=len;
@@ -725,8 +725,14 @@ void jbl_stream_push_string(jbl_stream *out,jbl_string* this)
 	if(!this)return;
 	out=jbl_refer_pull(out);
 	this=jbl_refer_pull(this);
-	for(jbl_string_size_type i=0;i<this->len;++i)
-		jbl_stream_push_char(out,this->s[i]);
+	for(jbl_string_size_type i=0;i<this->len;)
+	{
+		jbl_stream_buf_size_type len=jbl_min((this->len-i),(out->size-out->en));	
+		jbl_memory_copy(out->buf+out->en,this->s+i,len);
+		i+=len;
+		out->en+=len;
+		jbl_stream_do(out,0);
+	}
 }
 jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
 {
