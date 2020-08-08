@@ -360,7 +360,7 @@ inline unsigned char jbl_string_get(jbl_string *this,jbl_string_size_type i)
 	this=jbl_refer_pull(this);		
 	return (i<this->len)?this->s[i]:0;
 }
-jbl_int64 jbl_string_get_int64_start(jbl_string *this,jbl_string_size_type *start)
+jbl_int64 jbl_string_get_int_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	this=jbl_refer_pull(this);		
@@ -372,7 +372,11 @@ jbl_int64 jbl_string_get_int64_start(jbl_string *this,jbl_string_size_type *star
 	start?(*start=i):0;
 	return f?-x:x;	
 }
-jbl_uint64 jbl_string_get_uint64_start(jbl_string *this,jbl_string_size_type *start)
+jbl_uint64 jbl_string_get_uint_start(jbl_string *this,jbl_string_size_type *start)
+{
+	return jbl_string_get_uint_start_end(this,start,0);	
+}
+jbl_uint64 jbl_string_get_uint_start_end(jbl_string *this,jbl_string_size_type *start,unsigned char end)
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	jbl_string *thi=jbl_refer_pull(this);		
@@ -380,8 +384,8 @@ jbl_uint64 jbl_string_get_uint64_start(jbl_string *this,jbl_string_size_type *st
 	if(i>=thi->len)
 		return 0;
 	unsigned char c;jbl_uint64 x=0;
-	for(;((c=thi->s[i])<'0'||c>'9')&&i<thi->len;++i);
-	for(x=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
+	for(;((c=thi->s[i])<'0'||c>'9')&&c!=end&&i<thi->len;++i);
+	for(x=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&c!=end&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	start?(*start=i):0;
 	return x;	
 }
@@ -785,7 +789,7 @@ jbl_var * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *sta
 		goto e;
 	return jbl_Vdouble_set(NULL,f?(-(((double)y/ji)+x)):(((double)y/ji)+x));
 e:;
-	jbl_uint64 e=jbl_string_get_uint64_start(this,start),ji2=1;
+	jbl_uint64 e=jbl_string_get_uint_start(this,start),ji2=1;
 	while(e--)ji2=(ji2<<3)+(ji2<<1);
 	return jbl_Vdouble_set(NULL,(f?(-(((double)y/ji)+x)):(((double)y/ji)+x))*ji2);
 }

@@ -34,8 +34,8 @@ int main()
 	jbl_string_view(s2);
 	jbl_string_view(s3);
 	
-	jbl_stream_push_uint(jbl_stream_stdout,jbl_string_get_uint64(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
-	jbl_stream_push_int(jbl_stream_stdout,jbl_string_get_int64(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
+	jbl_stream_push_uint(jbl_stream_stdout,jbl_string_get_uint(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
+	jbl_stream_push_int(jbl_stream_stdout,jbl_string_get_int(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
 	jbl_stream_push_double(jbl_stream_stdout,jbl_string_get_double(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
 	jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	
