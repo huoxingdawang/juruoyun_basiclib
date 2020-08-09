@@ -37,7 +37,7 @@ ifeq ($(system),macos)
 	pre = macos_
 endif
 # all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test2 var
-all:jbl aes base64 bitset cmd ht json ll malloc md5 rand sha1 stream string time test2 var
+all:jbl aes base64 bitset cmd ht json ll log malloc md5 rand sha1 stream string time test2 var
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
@@ -65,6 +65,7 @@ run:
 	exes$(H)ht          && pause
 	exes$(H)json        && pause
 	exes$(H)ll          && pause
+	exes$(H)log         && pause
 	exes$(H)malloc      && pause
 	exes$(H)md5         && pause
 	exes$(H)rand        && pause
@@ -105,6 +106,9 @@ ht:
 ll:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ll.o         examples$(H)ll.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)ll          tmp$(H)$(pre)ll.o         tmp$(H)$(pre)jbl.a
+log:
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)log.o        examples$(H)log.c    $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)log         tmp$(H)$(pre)log.o        tmp$(H)$(pre)jbl.a
 malloc:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)malloc.o     examples$(H)malloc.c $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)malloc      tmp$(H)$(pre)malloc.o     tmp$(H)$(pre)jbl.a
