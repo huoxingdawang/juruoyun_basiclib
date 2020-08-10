@@ -93,7 +93,7 @@ jbl_ht* jbl_ht_free(jbl_ht *this)
 	if(!jbl_gc_refcnt(this))
 	{
 		if(jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))
-			jbl_ht_free((jbl_ht *)jbl_refer_pull(this));
+			jbl_ht_free((jbl_ht*)(((jbl_reference*)this)->ptr));
 		else
 			if(this->size!=0)
 			{

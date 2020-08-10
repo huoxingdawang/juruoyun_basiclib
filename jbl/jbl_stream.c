@@ -64,7 +64,7 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		((jbl_gc_is_ref(this))?jbl_stream_free((jbl_stream *)jbl_refer_pull(this)):((((this->op->free)?(this->op->free(this->data)):0)),jbl_stream_free(((jbl_stream *)jbl_refer_pull(this))->nxt)));
+		((jbl_gc_is_ref(this))?jbl_stream_free((jbl_stream*)(((jbl_reference*)this)->ptr)):((((this->op->free)?(this->op->free(this->data)):0)),jbl_stream_free(((jbl_stream *)jbl_refer_pull(this))->nxt)));
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));

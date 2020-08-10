@@ -111,7 +111,7 @@ jbl_ll* jbl_ll_free(jbl_ll *this)
 	if(!jbl_gc_refcnt(this))
 	{
 		if(jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))
-			jbl_ll_free((jbl_ll *)jbl_refer_pull(this));
+			jbl_ll_free((jbl_ll*)(((jbl_reference*)this)->ptr));
 		else
 			jbl_ll_foreach_del(this,i,j)
 				jbl_ll_node_delete(this,i);	

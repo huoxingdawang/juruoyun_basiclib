@@ -17,7 +17,7 @@ jbl_var * __jbl_var_data_free(jbl_var *this)
 	jbl_gc_minus(((jbl_var_data*)this));
 	if(!jbl_gc_refcnt(((jbl_var_data*)this)))
 	{
-		((jbl_gc_is_ref(((jbl_var_data*)this)))?__jbl_var_data_free((jbl_var *)jbl_refer_pull(this)):0);
+		((jbl_gc_is_ref(((jbl_var_data*)this)))?__jbl_var_data_free((jbl_var*)(((jbl_reference*)this)->ptr)):0);
 		jbl_free((char*)this-sizeof(jbl_var));
 	}
 	return NULL;
