@@ -671,7 +671,7 @@ void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_u
 /*******************************************************************************************/
 jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file))return this;
+	jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_chars(out,UC" size:");
 	jbl_stream_push_uint(out,this->size);
 	jbl_stream_push_chars(out,UC"\tlen:");

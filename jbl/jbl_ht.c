@@ -595,7 +595,7 @@ void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uin
 /*******************************************************************************************/
 jbl_ht* jbl_ht_view_put(jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_ht* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_ht",line,varname,func,file))return this;
+	jbl_ht* thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_ht",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_chars(out,UC"\tlen:");
 	jbl_stream_push_uint(out,thi->len);
 	jbl_stream_push_chars(out,UC"\tnxt:");

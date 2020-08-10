@@ -325,7 +325,7 @@ void jbl_time_json_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint3
 /*******************************************************************************************/
 jbl_time* jbl_time_view_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_time * thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_time",line,varname,func,file))return this;
+	jbl_time * thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_time",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
 	jbl_stream_push_chars(out,UC"\ttime stamp:");
 	jbl_stream_push_int(out,thi->t);
 #if JBL_STRING_ENABLE==1
