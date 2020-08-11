@@ -62,7 +62,8 @@ void			jbl_stream_do						(jbl_stream* this,jbl_uint8 flag);
 
 jbl_stream *	jbl_stream_push_char				(jbl_stream* this,unsigned char c);
 jbl_stream *	jbl_stream_push_chars				(jbl_stream* this,const unsigned char *str);
-jbl_stream *	jbl_stream_push_uint				(jbl_stream* this,jbl_uint64 in);
+#define			jbl_stream_push_uint(this,in)		jbl_stream_push_uint_length(this,in,0,0)
+jbl_stream *	jbl_stream_push_uint_length			(jbl_stream *this,jbl_uint64 in,jbl_uint8 len,char c);
 jbl_stream *	jbl_stream_push_int					(jbl_stream* this,jbl_int64 in);
 jbl_stream *	jbl_stream_push_double				(jbl_stream* this,double in);
 jbl_stream *	jbl_stream_push_hex					(jbl_stream *this,jbl_uint64 in);

@@ -130,7 +130,7 @@ jbl_stream* jbl_stream_push_chars(jbl_stream* this,const unsigned char *str)
 	for(;*str;jbl_stream_do(thi,0))for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en);
 	return this;
 }
-jbl_stream* jbl_stream_push_uint(jbl_stream* this,jbl_uint64 in)
+jbl_stream * jbl_stream_push_uint_length(jbl_stream *this,jbl_uint64 in,jbl_uint8 len,char c)
 {
 	if(in==0)return jbl_stream_push_char(this,'0');
 	jbl_stream*thi=jbl_refer_pull(this);
@@ -138,8 +138,9 @@ jbl_stream* jbl_stream_push_uint(jbl_stream* this,jbl_uint64 in)
 	unsigned char b[21];
 	b[cnt--]=0;
 	while(in)b[cnt--]=in%10+'0',in/=10;
+	for(jbl_uint8 i=19-cnt;i<len;jbl_stream_push_char(thi,c),++i);
 	jbl_stream_push_chars(thi,b+cnt+1);	
-	return this;
+	return this;	
 }
 jbl_stream* jbl_stream_push_int(jbl_stream* this,jbl_int64 in)
 {
