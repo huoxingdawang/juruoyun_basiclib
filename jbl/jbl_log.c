@@ -87,6 +87,7 @@ void jbl_log_save()
 	jbl_log(UC "Saving logs");
 #if JBL_STREAM_ENABLE==1
 	jbl_stream*out=jbl_stream_new(&jbl_stream_file_operators,fopen(JBL_LOG_DIR,"ab"),8192-jbl_stream_caculate_size(0),NULL,0);	
+	jbl_uint32 j=0;
 	for(jbl_uint32 i=0;i<__jbl_logs_cnt;++i)
 	{
 #if JBL_TIME_ENABLE==1
@@ -106,7 +107,6 @@ void jbl_log_save()
 		jbl_stream_push_chars(out,UC "Line:");jbl_stream_push_uint (out,   __jbl_logs[i].line);jbl_stream_push_char(out,'\t');
 		jbl_stream_push_chars(out,UC "Func:");jbl_stream_push_chars(out,UC __jbl_logs[i].func);jbl_stream_push_char(out,'\t');
 		
-		jbl_uint32 j=0;
 		for(jbl_string_size_type k=0,len=jbl_strlen(__jbl_logs[i].chars);k<len;++k)
 		{
 			unsigned char * addr;		
