@@ -1,4 +1,13 @@
 #include "main.h"
+jbl_uint32 get_size(int small,int large,int huge)
+{
+	register jbl_uint32 size;
+	jbl_uint32 r=jbl_rand_between(0,small+large+huge);
+	if(r<=small)			size=(jbl_rand()%3072)+1;
+	else if(r<=small+large)	size=((jbl_rand())%2093056)+1;
+	else					size=2093056+((jbl_rand())%2093056);
+	return size;
+}
 int main()
 {
 	jbl_start();
@@ -19,23 +28,14 @@ int main()
 	t1=jbl_time_now(t1);
 	for(jbl_uint64 i=0,n=(1LL<<base);i<n;++i)
 	{
-		register jbl_uint32 size;
 		register jbl_uint32 pos=jbl_rand()%slot;
 		if(a[pos]==NULL)
-		{
-			jbl_uint32 r=jbl_rand_between(0,small+large+huge);
-			if(r<=small)			size=(jbl_rand()%3072)+1;
-			else if(r<=small+large)	size=((jbl_rand())%2093056)+1;
-			else					size=2093056+((jbl_rand())%2093056);
-			a[pos]=jbl_malloc(size);
-//			printf("M %d\t%s %d %X\n",pos,(size)<=3072?"small":(size<=2093056?"large":"huge "),size,a[pos]);
-//			while(size--)a[pos][size]='c';
-		}
+			a[pos]=jbl_malloc(get_size(small,large,huge)),a[pos][0]='j';
 		else
-		{
-//			printf("F %d %X\n",pos,a[pos]);
-			jbl_free(a[pos]),a[pos]=NULL;	
-		}			
+			if(jbl_rand()%2)
+				jbl_free(a[pos]),a[pos]=NULL;				
+			else
+				a[pos]=jbl_realloc(a[pos],get_size(small,large,huge));				
 	}
 	pchars("\nmalloc used time:");puint(jbl_time_minus((t2=jbl_time_now(t2)),t1));pchars("ms\n");
 	for(int i=0;i<slot;++i)if(a[i]!=NULL)jbl_free(a[i]);
