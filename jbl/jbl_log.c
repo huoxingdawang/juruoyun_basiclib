@@ -80,6 +80,8 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 		jbl_log_save();
 }
 #include <stdio.h>
+
+
 void jbl_log_save()
 {
 	if((__jbl_logs_start&0x02))return;
@@ -91,16 +93,9 @@ void jbl_log_save()
 	for(jbl_uint32 i=0;i<__jbl_logs_cnt;++i)
 	{
 #if JBL_TIME_ENABLE==1
-		jbl_time_decoded tt;
-		jbl_time_decode(&__jbl_logs[i].t,&tt);
 		jbl_stream_push_char(out,'[');
-		jbl_stream_push_uint(out,tt.year)	;jbl_stream_push_char(out,'-');
-		jbl_stream_push_uint(out,tt.month)	;jbl_stream_push_char(out,'-');
-		jbl_stream_push_uint(out,tt.day)	;jbl_stream_push_char(out,' ');
-		jbl_stream_push_uint(out,tt.hour)	;jbl_stream_push_char(out,':');
-		jbl_stream_push_uint(out,tt.minute)	;jbl_stream_push_char(out,':');
-		jbl_stream_push_uint(out,tt.second)	;jbl_stream_push_char(out,'.');
-		jbl_stream_push_uint(out,tt.ms)		;jbl_stream_push_char(out,']');
+		jbl_stream_push_time(out,&__jbl_logs[i].t,UC"Y-m-d H:i:s.u");
+		jbl_stream_push_char(out,']');
 		jbl_stream_push_char(out,'\t');
 #endif	
 		jbl_stream_push_chars(out,UC "At:"  );jbl_stream_push_chars(out,UC __jbl_logs[i].file);jbl_stream_push_char(out,'\t');
