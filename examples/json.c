@@ -14,12 +14,16 @@ int main(int argc,char** argv)
 	jbl_string *s2=jbl_var_json_encode(v1,NULL,1,0);
 	jbl_string_print(s2,fp=fopen("tmp/json.out","wb"));fclose(fp);
 	s2=jbl_string_free(s2);
+	
 
 	jbl_var_view(v1);
 pf();
 	jbl_var_json_put(v1,jbl_stream_stdout,1,1);
 	pn();
 	jbl_var_json_put(v1,jbl_stream_stdout,0,0);
+
+	jbl_log(UC "test %d%d%d %s %X %c juruoyun %v",1,123,456,"123123123121",0XFE,'a',v1);
+	
 /*
 */
 
