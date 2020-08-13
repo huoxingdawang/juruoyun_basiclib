@@ -50,11 +50,9 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 	__jbl_logs[__jbl_logs_cnt].chars=s;
 	va_list arg_ptr;
 	va_start(arg_ptr,s);
-	for(jbl_string_size_type i=0,len=jbl_strlen(s);i<len;++i)
+	for(;*s;)
 	{
-		unsigned char * addr;
-		const jbl_var_operators *key=jbl_var_scanner(s+i,s+len,&addr);
-		i=addr-s-1;
+		const jbl_var_operators *key=jbl_var_scanner(s,&s);
 		switch((jbl_pointer_int)key)
 		{
 			case JBL_VAR_SCANNER_KEY_UNDEFINED				:							;break;
@@ -102,14 +100,12 @@ void jbl_log_save()
 		jbl_stream_push_chars(out,UC "Line:");jbl_stream_push_uint (out,   __jbl_logs[i].line);jbl_stream_push_char(out,'\t');
 		jbl_stream_push_chars(out,UC "Func:");jbl_stream_push_chars(out,UC __jbl_logs[i].func);jbl_stream_push_char(out,'\t');
 		
-		for(jbl_string_size_type k=0,len=jbl_strlen(__jbl_logs[i].chars);k<len;++k)
+		for(unsigned char *s=__jbl_logs[i].chars;*s;)
 		{
-			unsigned char * addr;		
-			const jbl_var_operators *key=jbl_var_scanner(__jbl_logs[i].chars+k,__jbl_logs[i].chars+len,&addr);
-			k=addr-__jbl_logs[i].chars-1;
+			const jbl_var_operators *key=jbl_var_scanner(s,&s);
 			switch((jbl_pointer_int)key)
 			{
-				case JBL_VAR_SCANNER_KEY_UNDEFINED				:jbl_stream_push_char(out,__jbl_logs[i].chars[k])						;break;
+				case JBL_VAR_SCANNER_KEY_UNDEFINED				:jbl_stream_push_char(out,*(s-1))										;break;
 				case JBL_VAR_SCANNER_KEY_END					:goto finish															;break;
 				case JBL_VAR_SCANNER_KEY_INT					:jbl_stream_push_int(out,__jbl_log_parameter[j].i)				;++j	;break;
 				case JBL_VAR_SCANNER_KEY_UINT					:jbl_stream_push_uint(out,__jbl_log_parameter[j].u)				;++j	;break;

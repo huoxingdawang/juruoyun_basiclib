@@ -161,7 +161,7 @@ typedef enum
 	JBL_VAR_SCANNER_KEY_CHARS		=(jbl_pointer_int)-7,
 	JBL_VAR_SCANNER_KEY_HEX			=(jbl_pointer_int)-8,
 }jbl_var_scanner_key;
-const jbl_var_operators * jbl_var_scanner	(unsigned char * YYCURSOR,unsigned char *YYLIMIT,unsigned char **addr);
+const jbl_var_operators * jbl_var_scanner	(unsigned char * YYCURSOR,unsigned char **addr);
 
 
 #endif
