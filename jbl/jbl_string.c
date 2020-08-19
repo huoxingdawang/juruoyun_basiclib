@@ -351,6 +351,14 @@ inline void jbl_string_print(jbl_string *this,FILE * file)
 	fwrite(this->s,1,this->len,file);
 }
 //TODO END
+inline jbl_string* jbl_string_set_tail(jbl_string *this)
+{
+	if(!this)return NULL;
+	jbl_string* thi=jbl_refer_pull(this);
+	if(thi->s&&thi->size&&thi->len<thi->size)
+		thi->s[thi->len]=0;
+	return this;
+}
 /*******************************************************************************************/
 /*                            以下函数实现字符串的获取类操作                             */
 /*******************************************************************************************/
