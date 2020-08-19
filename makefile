@@ -37,7 +37,7 @@ ifeq ($(system),macos)
 	pre = macos_
 endif
 # all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test2 var
-all:jbl aes base64 bitset cmd ht json ll log malloc md5 rand sha1 stream string time test2 var
+all:jbl aes base64 bitset cmd file ht json ll log malloc md5 rand sha1 stream string time test2 var
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
@@ -177,7 +177,7 @@ jbl/jbl_endian         :
 jbl/jbl_exception      :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_exception.o   jbl$(H)jbl_exception.c   $(JBL_EXLIB)
 jbl/jbl_file           :
-	$(CC) $(BITS) -c       -o tmp$(H)$(pre)jbl_file.o        jbl$(H)jbl_file.c        $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_file.o        jbl$(H)jbl_file.c        $(JBL_EXLIB)
 jbl/jbl_gc             :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_gc.o          jbl$(H)jbl_gc.c          $(JBL_EXLIB)
 jbl/jbl_ht             :

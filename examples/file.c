@@ -4,19 +4,11 @@ int main()
 {
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	printf("jbl_file size:%lld\n",(long long)(sizeof (jbl_file)));	
-	jbl_string	dir;jbl_string_init(&dir);
-	jbl_file		test;jbl_file_init(&test);
-	jbl_string_equal_chars(&dir,"testfiles");
-	
-	
-	jbl_file_open(&test,&dir,move);
-	jbl_file_view(&test,stderr);
-	
-	
-	
-	jbl_file_free(&test);
-	jbl_string_free(&dir);
+	jbl_file * f1=jbl_file_new();
+	f1=jbl_file_open_chars(f1,UC"testfiles//test.txt",JBL_FILE_CLOSE);
+	jbl_file_view(f1);
+
+	f1=jbl_file_free(f1);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 
 	

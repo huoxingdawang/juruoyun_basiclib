@@ -37,7 +37,7 @@ ifeq ($(system),macos)
 	pre = macos_
 endif
 # all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test2 var
-all:jbl aes base64 bitset cmd ht json ll log malloc md5 rand sha1 stream string time test2 var
+all:jbl aes base64 bitset cmd file ht json ll log malloc md5 rand sha1 stream string time test2 var
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
