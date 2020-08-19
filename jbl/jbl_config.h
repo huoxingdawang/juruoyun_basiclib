@@ -10,8 +10,6 @@
 #ifndef __JBL_CONFIG_H
 #define __JBL_CONFIG_H
 
-#define JBL_USE_STDARG	1								//是否依赖<stdarg.h>
-
 
 
 #define JBL_AES_128_ENABLE		1	//need ying bitset malloc string
