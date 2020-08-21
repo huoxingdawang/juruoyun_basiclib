@@ -254,6 +254,7 @@ jbl_string *jbl_string_add_string(jbl_string *this,jbl_string *in)
 {
 	if(!in)return this;
 	in=jbl_refer_pull(in);
+	if(!this)return jbl_string_copy(in);
 	jbl_string *thi;this=jbl_string_extend_to(this,in->len,1,&thi);jbl_string_hash_clear(thi);
 	jbl_memory_copy(thi->s+thi->len,in->s,in->len);
 	thi->len=(thi->len+in->len);
