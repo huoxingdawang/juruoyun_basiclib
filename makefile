@@ -8,7 +8,7 @@
 #   PURPOSE.
 #   See the Mulan PSL v1 for more details.
 CC = gcc
-BITS = -g
+BITS = -O4
 EXLIB = $(JBL_EXLIB)
 complain_re2c = jbl
 ifeq ($(shell uname),Linux)
