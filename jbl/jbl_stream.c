@@ -31,8 +31,6 @@ void jbl_stream_start()
 	jbl_stream_stdin_link=jbl_stream_copy(jbl_stream_stdin);
 #elif __linux__
 	jbl_stream_stdin_link=jbl_stream_copy(jbl_stream_stdin);
-#else
-	jbl_stream_stdin_link=jbl_stream_copy(jbl_stream_stdin);
 #endif
 }
 void jbl_stream_stop()
@@ -53,6 +51,7 @@ jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void
 	this->data	=data;
 	this->size	=size;
 	this->en	=0;
+	this->stop	=0;
 	this->buf	=((buf)?buf:(((jbl_uint8*)this)+(sizeof(jbl_uint64)*tmplen)+(sizeof(jbl_stream))));
 	this->nxt	=NULL;
 	while(tmplen--)this->extra[tmplen].u=0;
@@ -113,6 +112,20 @@ void jbl_stream_do(jbl_stream* this,jbl_uint8 flag)
 	if(!op)return;
 	op(this,flag);
 }
+jbl_stream * jbl_stream_connect(jbl_stream* this,jbl_stream* next)
+{
+	this=jbl_stream_disconnect(this);
+	jbl_stream* thi=jbl_refer_pull(this);
+	thi->nxt=jbl_stream_copy(next);
+	return this;
+}
+inline jbl_stream * jbl_stream_disconnect(jbl_stream* this)
+{
+	jbl_stream* thi=jbl_refer_pull(this);
+	thi->nxt=jbl_stream_free(thi->nxt);
+	return this;
+}
+
 void jbl_stream_push_char(jbl_stream* this,unsigned char c)
 {
 	if(!this)jbl_exception("NULL POINTER");
@@ -126,8 +139,7 @@ void jbl_stream_push_chars(jbl_stream* this,const unsigned char *str)
 	if(!str)return;
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull(this);
-	thi=jbl_refer_pull(thi);
-	for(;*str;jbl_stream_do(thi,0))for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en);
+	for(;*str;){for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en);jbl_stream_do(this,0);if(1==thi->stop)return;}
 }
 void jbl_stream_push_uint_length(jbl_stream *this,jbl_uint64 in,jbl_uint8 len,char c)
 {
@@ -182,7 +194,7 @@ inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint
 	if(format)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
 	if(!this)typename=UC"null";
 	jbl_uint8 i=0;
-	for(;typename[i];jbl_stream_do(out,0))for(;typename[i]&&out->en<out->size;out->buf[out->en]=typename[i],++out->en,++i);
+	for(;typename[i];){for(;typename[i]&&out->en<out->size;out->buf[out->en]=typename[i],++out->en,++i);jbl_stream_do(out,0);if(out->stop)return 1;}
 	if(i<JBL_VIEW_NAME_LENGTH)
 		for(;i<JBL_VIEW_NAME_LENGTH;++i,jbl_stream_push_char(out,' '));
 #if JBL_VIEW_DISPLAY_VARNAME == 1
@@ -215,7 +227,7 @@ void jbl_stream_file_operator(jbl_stream* this,jbl_uint8 flags)
 	if(nxt)
 		for(;;)
 		{
-			if((nxt->en+1)>nxt->size)jbl_stream_do(nxt,0);
+			if((nxt->en+1)>nxt->size){jbl_stream_do(nxt,0);if(nxt->stop)return;}
 			jbl_int8 c=fgetc(this->data);
 			if(c==EOF||(c=='\n'&&this->data==stdin))
 				return jbl_stream_do(nxt,flags);
