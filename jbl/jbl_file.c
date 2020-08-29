@@ -181,17 +181,26 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 }
 jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_uint64 end)
 {
+	jbl_string *re;res=jbl_string_extend_to(res,end-start,1,&re);jbl_string_hash_clear(re);
+	re->len+=jbl_file_read_chars(this,re->s+re->len,start,end);
+	return res;
+}
+jbl_uint64 jbl_file_read_chars(jbl_file * this,void *res,jbl_uint64 start,jbl_uint64 end)
+{
 	if(!this)jbl_exception("NULL POINTER");
 	this=jbl_file_change_handle(this,JBL_FILE_READ);
 	jbl_file *thi=jbl_refer_pull(this);
 	if(thi->type==JBL_FILE_WRITE||thi->type==JBL_FILE_CLOSE)jbl_exception("Unread able file");
 	jbl_min_update(end,thi->status.size);
-	jbl_max_update(end,start);
-	jbl_min_update(start,end);
-	thi=jbl_file_set_offset(thi,start);
-	jbl_string *re;res=jbl_string_extend_to(res,end-start,1,&re);jbl_string_hash_clear(re);
-	re->len+=fread(re->s+re->len,1,end-start,thi->handle);
-	return res;
+	if(start==-1)
+		start=0;
+	else
+	{
+		jbl_max_update(end,start);
+		jbl_min_update(start,end);
+		thi=jbl_file_set_offset(thi,start);
+	}
+	return fread(res,1,end-start,thi->handle);
 }
 jbl_file * jbl_file_write(jbl_file * this,jbl_string*out)
 {
@@ -275,7 +284,7 @@ void __jbl_file_stream_operator(jbl_stream* this,jbl_uint8 flags)
 		while(this->extra[0].u<this->extra[1].u)
 		{
 			jbl_stream_buf_size_type len=jbl_min((this->extra[1].u-this->extra[0].u),(nxt->size-nxt->en));
-			fread((char*)nxt->buf+nxt->en,len,1,file->handle);
+			len=fread((char*)nxt->buf+nxt->en,1,len,file->handle);
 			nxt->en+=len;this->extra[0].u+=len;
 			jbl_stream_do(nxt,0);
 			if(nxt->stop)return;

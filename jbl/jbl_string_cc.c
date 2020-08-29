@@ -13,12 +13,11 @@
 //下面这两张表(__jbl_string_gtu_table,__jbl_string_gtu_table)来自fatfs cc936.c
 //需要注意的是,在二分计算有效长度的时候,需要/4,unicode 和 gb2312各占两个字节
 #if JBL_STRING_CODE_CHANGE_INNER_TABLE_ENABLE==0
-jbl_uint16 * __jbl_string_utg_table=NULL; 
-jbl_uint16 * __jbl_string_gtu_table=NULL; 
-jbl_uint32 __jbl_string_utg_table_len=0;
-jbl_uint32 __jbl_string_gtu_table_len=0;
-
-#include <stdio.h>
+static jbl_uint16 * __jbl_string_utg_table=NULL; 
+static jbl_uint16 * __jbl_string_gtu_table=NULL; 
+static jbl_uint32 __jbl_string_utg_table_len=0;
+static jbl_uint32 __jbl_string_gtu_table_len=0;
+#include "jbl_file.h"
 #else
 #include "jbl_string_cc_table.c"
 static const jbl_uint32 __jbl_string_utg_table_len=(const jbl_uint32)((sizeof __jbl_string_utg_table)>>2)-1;//unicode 和 gb2312各占两个字节
@@ -30,13 +29,12 @@ static const jbl_uint32 __jbl_string_gtu_table_len=(const jbl_uint32)((sizeof __
 void jbl_string_cc_start()
 {
 #if JBL_STRING_CODE_CHANGE_INNER_TABLE_ENABLE==0
-	FILE *file=fopen(JBL_STRING_CODE_CHANGE_OUT_TABLE_DIR,"rb");
-	if(!file)jbl_exception("GB2312 UNICODE TABLE ERROR");
-	fseek(file,0L,SEEK_END);jbl_uint32 size=ftell(file);fseek(file,0L,SEEK_SET);
-	__jbl_string_utg_table_len=(fread(__jbl_string_utg_table=jbl_malloc(size>>1),1,size>>1,file)>>2)-1;
-	__jbl_string_gtu_table_len=(fread(__jbl_string_gtu_table=jbl_malloc(size>>1),1,size>>1,file)>>2)-1;
+	jbl_file * f1=jbl_file_open_chars(NULL,UC JBL_STRING_CODE_CHANGE_OUT_TABLE_DIR,JBL_FILE_READ);
+	jbl_uint64 size=jbl_file_get_size(f1);
+	__jbl_string_utg_table_len=(jbl_file_read_chars(f1,__jbl_string_utg_table=jbl_malloc(size>>1),-1,size>>1)>>2)-1;
+	__jbl_string_gtu_table_len=(jbl_file_read_chars(f1,__jbl_string_gtu_table=jbl_malloc(size>>1),-1,size>>1)>>2)-1;
+	f1=jbl_file_free(f1);
 	if(__jbl_string_utg_table_len!=__jbl_string_gtu_table_len)jbl_exception("GB2312 UNICODE TABLE ERROR");
-	
 //	printf("utg:\n");for(jbl_uint32 i=0;i<10;++i)printf("0x%X 0x%X\n",__jbl_string_utg_table[(i<<1)],__jbl_string_utg_table[(i<<2)+1]);
 //	printf("gtu:\n");for(jbl_uint32 i=0;i<10;++i)printf("0x%X 0x%X\n",__jbl_string_gtu_table[(i<<1)],__jbl_string_gtu_table[(i<<2)+1]);
 	

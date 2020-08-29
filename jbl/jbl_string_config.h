@@ -30,7 +30,7 @@
 
 #define JBL_STRING_CODE_CHANGE_ENABLE				1		//jbl_string_cc.c
 #define JBL_STRING_CODE_CHANGE_DEBUG				1		//jbl_string_cc.c
-#define JBL_STRING_CODE_CHANGE_INNER_TABLE_ENABLE	1		//使用内联表
+#define JBL_STRING_CODE_CHANGE_INNER_TABLE_ENABLE	0		//使用内联表
 #define JBL_STRING_CODE_CHANGE_OUT_TABLE_DIR		"tools/gb2312_utf8_table/jbl_string_code_change_gb2312_utf8_table.bin"		//加载表的地址
 
 #endif
