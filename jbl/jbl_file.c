@@ -181,12 +181,6 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 }
 jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_uint64 end)
 {
-	jbl_string *re;res=jbl_string_extend_to(res,end-start,1,&re);jbl_string_hash_clear(re);
-	re->len+=jbl_file_read_chars(this,re->s+re->len,start,end);
-	return res;
-}
-jbl_uint64 jbl_file_read_chars(jbl_file * this,void *res,jbl_uint64 start,jbl_uint64 end)
-{
 	if(!this)jbl_exception("NULL POINTER");
 	this=jbl_file_change_handle(this,JBL_FILE_READ);
 	jbl_file *thi=jbl_refer_pull(this);
@@ -200,7 +194,9 @@ jbl_uint64 jbl_file_read_chars(jbl_file * this,void *res,jbl_uint64 start,jbl_ui
 		jbl_min_update(start,end);
 		thi=jbl_file_set_offset(thi,start);
 	}
-	return fread(res,1,end-start,thi->handle);
+	jbl_string *re;res=jbl_string_extend_to(res,end-start,1,&re);jbl_string_hash_clear(re);
+	re->len+=fread(re->s+re->len,1,end-start,thi->handle);
+	return res;
 }
 jbl_file * jbl_file_write(jbl_file * this,jbl_string*out)
 {
