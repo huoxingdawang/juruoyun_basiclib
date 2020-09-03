@@ -11,6 +11,9 @@
 #define __JBL_AES_H
 #include "jbl_aes_config.h"
 #if JBL_AES_128_ENABLE==1
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*******************************************************************************************/
 /*                            依赖jbl_malloc jbl_ying jbl_exception jbl_gc                  */
 /*******************************************************************************************/
@@ -28,7 +31,8 @@
 /*                            结构体定义                                                  */
 /*******************************************************************************************/
 #if JBL_AES_128_AESNI_ENABLE ==1
-typedef long long __m128i __attribute__ ((__vector_size__ (16), __may_alias__));
+#include <wmmintrin.h>
+//typedef long long __m128i __attribute__ ((__vector_size__ (16), __may_alias__));
 typedef __m128i __jbl_aes_128_ex_key[20];		//aes128扩展完毕的key
 #else
 typedef unsigned char __jbl_aes_128_ex_key[11][4][4];		//aes128扩展完毕的key
@@ -104,5 +108,8 @@ jbl_var * jbl_Vstream_aes_128_cbc_decode_new(jbl_aes_128_key *w,const unsigned c
 #endif
 
 #endif
+#endif
+#ifdef __cplusplus
+}
 #endif
 #endif

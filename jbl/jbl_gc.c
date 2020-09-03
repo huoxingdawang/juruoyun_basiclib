@@ -14,8 +14,8 @@
 #endif
 
 
-inline void* jbl_gc_plus	(void *this){if(this)((jbl_reference*)this)->gc+=16;return this;};
-inline void* jbl_gc_minus	(void *this){if(this)((jbl_reference*)this)->gc-=16;return this;};
+JBL_INLINE void* jbl_gc_plus	(void *this){if(this)((jbl_reference*)this)->gc+=16;return this;};
+JBL_INLINE void* jbl_gc_minus	(void *this){if(this)((jbl_reference*)this)->gc-=16;return this;};
 
 
 #if JBL_VAR_ENABLE==1
@@ -30,7 +30,7 @@ void * jbl_refer(void *ptr)
 	jbl_reference *this;
 #if JBL_VAR_ENABLE==1
 	if(jbl_gc_is_var(pptr)||ops)
-		this=(jbl_reference*)((char*)(jbl_malloc((sizeof(jbl_reference))+(sizeof(jbl_var)))+(sizeof(jbl_var))));	
+		this = (jbl_reference*)(((char*)(jbl_malloc((sizeof(jbl_reference)) + (sizeof(jbl_var)))) + (sizeof(jbl_var))));
 	else
 #endif	
 		this=jbl_malloc((sizeof(jbl_reference)));
@@ -80,12 +80,12 @@ void * jbl_derefer(void *ptr)
 //	jbl_gc_plus((jbl_reference*)ptr);
 	return ptr;
 }
-inline void *jbl_refer_pull(const void *ptr)
+JBL_INLINE void *jbl_refer_pull(const void *ptr)
 {
 	while(ptr&&(jbl_gc_is_ref((const jbl_reference*)ptr)||jbl_gc_is_pvar((const jbl_reference*)ptr)))ptr=((const jbl_reference*)ptr)->ptr;
 	return (void*)ptr;
 }
-inline void * jbl_refer_pull_keep_father(const void *ptr,jbl_reference** ref)
+JBL_INLINE void * jbl_refer_pull_keep_father(const void *ptr,jbl_reference** ref)
 {
 	if(!ptr)return NULL;
 	jbl_reference* reff=NULL;

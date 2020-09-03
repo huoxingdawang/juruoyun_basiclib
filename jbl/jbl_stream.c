@@ -39,7 +39,7 @@ void jbl_stream_stop()
 	jbl_stream_stdin		=jbl_stream_free(jbl_stream_stdin);	
 	jbl_stream_stdin_link	=jbl_stream_free(jbl_stream_stdin_link);	
 }
-inline jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
+JBL_INLINE jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
 {
 	return jbl_stream_init(jbl_malloc(jbl_stream_caculate_size(tmplen)+((buf)?0:size)),op,data,size,buf,tmplen);
 }
@@ -105,7 +105,7 @@ jbl_stream * jbl_stream_copy(jbl_stream* this)
 	return that;
 */
 }
-inline const jbl_stream_operater *jbl_stream_get_ops(jbl_stream* this)
+JBL_INLINE const jbl_stream_operater *jbl_stream_get_ops(jbl_stream* this)
 {
 	if(!this)return NULL;
 	return ((jbl_stream*)jbl_refer_pull(this))->op;
@@ -123,7 +123,7 @@ jbl_stream * jbl_stream_connect(jbl_stream* this,jbl_stream* next)
 	thi->nxt=jbl_stream_copy(next);
 	return this;
 }
-inline jbl_stream * jbl_stream_disconnect(jbl_stream* this)
+JBL_INLINE jbl_stream * jbl_stream_disconnect(jbl_stream* this)
 {
 	jbl_stream* thi=jbl_refer_pull(this);
 	thi->nxt=jbl_stream_free(thi->nxt);
@@ -192,7 +192,7 @@ void jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)
 	const char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 	jbl_stream_push_char(this,hex[(in>>4)&15]),jbl_stream_push_char(this,hex[in&15]);	
 }
-inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
+JBL_INLINE char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
 	if(!out)jbl_exception("NULL POINTER");
 	if(format)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
@@ -216,7 +216,7 @@ inline char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint
 	return this?0:1;
 }
 #if JBL_JSON_ENABLE==1
-inline char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
+JBL_INLINE char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	if(!out)jbl_exception("NULL POINTER");
 	if(format&1)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
@@ -249,10 +249,10 @@ jbl_stream *jbl_stream_stdin;
 jbl_stream *jbl_stream_stdin_link;
 #if JBL_VAR_ENABLE==1
 jbl_var_operators_new(jbl_stream_operators,jbl_stream_free,jbl_stream_copy,NULL,NULL,NULL,NULL);
-inline jbl_stream * jbl_Vstream(jbl_var * this){if(this&&!Vis_jbl_stream(this))jbl_exception("VAR TYPE ERROR");return((jbl_stream*)this);}
-inline jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
+JBL_INLINE jbl_stream * jbl_Vstream(jbl_var * this){if(this&&!Vis_jbl_stream(this))jbl_exception("VAR TYPE ERROR");return((jbl_stream*)this);}
+JBL_INLINE jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
 {
-	jbl_var *this=(jbl_var*)((char*)(jbl_malloc(jbl_stream_caculate_size(tmplen)+(sizeof(jbl_var))+((buf)?0:size))+(sizeof(jbl_var))));	
+	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc(jbl_stream_caculate_size(tmplen)+(sizeof(jbl_var))+((buf)?0:size)))+(sizeof(jbl_var))));	
 	jbl_stream_init((jbl_stream*)this,op,data,size,buf,tmplen);
 	jbl_gc_set_var((jbl_stream*)this);
 	jbl_var_set_operators(this,&jbl_stream_operators);

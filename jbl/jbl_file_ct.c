@@ -219,10 +219,10 @@ jbl_file_ct jbl_file_get_ctid_by_ct(jbl_string *ct)
 #endif
 	return JBL_FILE_CT_UNKNOW;
 }
-inline unsigned char *	jbl_file_get_ct_chars_by_ctid		(jbl_file_ct ctid)	{return ctd.d[ctid].ct;}
-inline unsigned char *	jbl_file_get_suffix_chars_by_ctid	(jbl_file_ct ctid)	{return ctd.d[ctid].su;}
-inline jbl_string    *	jbl_file_get_ct_by_ctid				(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd.d[ctid].ct);}
-inline jbl_string    *	jbl_file_get_suffix_by_ctid			(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd.d[ctid].su);}
+JBL_INLINE unsigned char *	jbl_file_get_ct_chars_by_ctid		(jbl_file_ct ctid)	{return ctd.d[ctid].ct;}
+JBL_INLINE unsigned char *	jbl_file_get_suffix_chars_by_ctid	(jbl_file_ct ctid)	{return ctd.d[ctid].su;}
+JBL_INLINE jbl_string    *	jbl_file_get_ct_by_ctid				(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd.d[ctid].ct);}
+JBL_INLINE jbl_string    *	jbl_file_get_suffix_by_ctid			(jbl_file_ct ctid)	{return jbl_string_cache_get(ctd.d[ctid].su);}
 jbl_uint8 jbl_file_is_video(jbl_file_ct ctid)
 {
 	if(	(ctid==JBL_FILE_CT_FLV	)||

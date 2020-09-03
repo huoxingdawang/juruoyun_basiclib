@@ -24,25 +24,25 @@ jbl_var * __jbl_var_data_free(jbl_var *this)
 }
 jbl_var * __jbl_var_data_new(const jbl_var_operators *ops)
 {
-	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_var_data))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
+	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc((sizeof(jbl_var_data))+(sizeof(jbl_var))))+(sizeof(jbl_var))));
 	jbl_gc_init(((jbl_var_data*)this));
 	jbl_gc_plus(((jbl_var_data*)this));//增加引用计数
 	jbl_gc_set_var(((jbl_var_data*)this));
 	jbl_var_set_operators(this,ops);
 	return this;
 }
-inline jbl_var * jbl_Vuint_new(){return __jbl_var_data_new(&jbl_uint_operators);}
-inline jbl_var * jbl_Vuint_set(jbl_var * this,jbl_uint64 data)
+JBL_INLINE jbl_var * jbl_Vuint_new(){return __jbl_var_data_new(&jbl_uint_operators);}
+JBL_INLINE jbl_var * jbl_Vuint_set(jbl_var * this,jbl_uint64 data)
 {
 	if(!this)this=jbl_Vuint_new();
 	((jbl_var_data*)jbl_refer_pull(this))->u=data;
 	return this;
 }
-inline jbl_var * jbl_Vuint_copy(jbl_var * that)
+JBL_INLINE jbl_var * jbl_Vuint_copy(jbl_var * that)
 {
 	return jbl_Vuint_set(NULL,((jbl_var_data*)jbl_refer_pull(that))->u);
 }
-inline char jbl_Vuint_space_ship(jbl_var * this,jbl_var * that)
+JBL_INLINE char jbl_Vuint_space_ship(jbl_var * this,jbl_var * that)
 {
 	jbl_uint64 a=((jbl_var_data*)jbl_refer_pull(this))->u,b=((jbl_var_data*)jbl_refer_pull(that))->u;
 	return (a>b?1:(a<b?-1:0));
@@ -76,18 +76,18 @@ void jbl_Vuint_json_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint3
 #endif
 #endif
 jbl_var_operators_new(jbl_uint_operators,__jbl_var_data_free,jbl_Vuint_copy,jbl_Vuint_space_ship,jbl_Vuint_json_encode,jbl_Vuint_view_put,jbl_Vuint_json_put);
-inline jbl_var * jbl_Vint_new(){return __jbl_var_data_new(&jbl_int_operators);}
-inline jbl_var * jbl_Vint_set(jbl_var * this,jbl_int64 data)
+JBL_INLINE jbl_var * jbl_Vint_new(){return __jbl_var_data_new(&jbl_int_operators);}
+JBL_INLINE jbl_var * jbl_Vint_set(jbl_var * this,jbl_int64 data)
 {
 	if(!this)this=jbl_Vint_new();
 	((jbl_var_data*)jbl_refer_pull(this))->i=data;
 	return this;
 }
-inline jbl_var * jbl_Vint_copy(jbl_var * that)
+JBL_INLINE jbl_var * jbl_Vint_copy(jbl_var * that)
 {
 	return jbl_Vint_set(NULL,((jbl_var_data*)jbl_refer_pull(that))->i);
 }
-inline char jbl_Vint_space_ship(jbl_var * this,jbl_var * that)
+JBL_INLINE char jbl_Vint_space_ship(jbl_var * this,jbl_var * that)
 {
 	jbl_int64 a=((jbl_var_data*)jbl_refer_pull(this))->i,b=((jbl_var_data*)jbl_refer_pull(that))->i;
 	return (a>b?1:(a<b?-1:0));
@@ -121,18 +121,18 @@ void jbl_Vint_json_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uint32
 #endif
 #endif
 jbl_var_operators_new(jbl_int_operators,__jbl_var_data_free,jbl_Vint_copy,jbl_Vint_space_ship,jbl_Vint_json_encode,jbl_Vint_view_put,jbl_Vint_json_put);
-inline jbl_var * jbl_Vdouble_new(){return __jbl_var_data_new(&jbl_double_operators);}
-inline jbl_var * jbl_Vdouble_set(jbl_var * this,double data)
+JBL_INLINE jbl_var * jbl_Vdouble_new(){return __jbl_var_data_new(&jbl_double_operators);}
+JBL_INLINE jbl_var * jbl_Vdouble_set(jbl_var * this,double data)
 {
 	if(!this)this=jbl_Vdouble_new();
 	((jbl_var_data*)jbl_refer_pull(this))->d=data;
 	return this;
 }
-inline jbl_var * jbl_Vdouble_copy(jbl_var * that)
+JBL_INLINE jbl_var * jbl_Vdouble_copy(jbl_var * that)
 {
 	return jbl_Vdouble_set(NULL,((jbl_var_data*)jbl_refer_pull(that))->d);
 }
-inline char jbl_Vdouble_space_ship(jbl_var * this,jbl_var * that)
+JBL_INLINE char jbl_Vdouble_space_ship(jbl_var * this,jbl_var * that)
 {
 	double a=((jbl_var_data*)jbl_refer_pull(this))->d,b=((jbl_var_data*)jbl_refer_pull(that))->d;
 	return (a>b?1:(a<b?-1:0));
@@ -166,18 +166,18 @@ void jbl_Vdouble_json_put(jbl_var* this,jbl_stream *out,jbl_uint8 format,jbl_uin
 #endif
 #endif
 jbl_var_operators_new(jbl_double_operators,__jbl_var_data_free,jbl_Vdouble_copy,jbl_Vdouble_space_ship,jbl_Vdouble_json_encode,jbl_Vdouble_view_put,jbl_Vdouble_json_put);
-inline jbl_var * jbl_Vnull_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=0;return this;}
-inline jbl_var * jbl_Vtrue_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=2;return this;}
-inline jbl_var * jbl_Vfalse_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=1;return this;}
+JBL_INLINE jbl_var * jbl_Vnull_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=0;return this;}
+JBL_INLINE jbl_var * jbl_Vtrue_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=2;return this;}
+JBL_INLINE jbl_var * jbl_Vfalse_new(){jbl_var *this=__jbl_var_data_new(&jbl_ntf_operators);((jbl_var_data*)this)->u=1;return this;}
 
 // NULL true 和 false类型共享同一组操作符,合称ntf,具体类型由u中值确定,0为NULL,1为false,2为true
-inline jbl_var * jbl_Vntf_copy(jbl_var * that)
+JBL_INLINE jbl_var * jbl_Vntf_copy(jbl_var * that)
 {
 	jbl_var *this=jbl_Vnull_new();
 	((jbl_var_data*)jbl_refer_pull(this))->u=((jbl_var_data*)jbl_refer_pull(that))->u;
 	return this;
 }
-inline char jbl_Vntf_space_ship(jbl_var * this,jbl_var * that)
+JBL_INLINE char jbl_Vntf_space_ship(jbl_var * this,jbl_var * that)
 {
 	jbl_uint64 a=((jbl_var_data*)jbl_refer_pull(this))->u,b=((jbl_var_data*)jbl_refer_pull(that))->u;
 	return (a>b?1:(a<b?-1:0));

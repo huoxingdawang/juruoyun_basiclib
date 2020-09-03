@@ -12,7 +12,7 @@
 #include "jbl_config.h"
 #if JBL_YING_ENABLE==1
 #define JBL_DOUBLE_PRECISION 0.00001
-
+#define JBL_INLINE
 
 
 

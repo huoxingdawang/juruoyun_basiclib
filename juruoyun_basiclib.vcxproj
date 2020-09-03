@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f5a7242d-d081-4f03-bf74-ae4d6b745ed4}</ProjectGuid>
+    <RootNamespace>juruoyunbasiclib</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996;4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996;4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996;4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996;4146</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="examples\aes.c" />
+    <ClCompile Include="jbl\jbl_aes.c" />
+    <ClCompile Include="jbl\jbl_aes_hard.c" />
+    <ClCompile Include="jbl\jbl_aes_soft.c" />
+    <ClCompile Include="jbl\jbl_array.c" />
+    <ClCompile Include="jbl\jbl_base64.c" />
+    <ClCompile Include="jbl\jbl_bitset.c" />
+    <ClCompile Include="jbl\jbl_cmd.c" />
+    <ClCompile Include="jbl\jbl_endian.c" />
+    <ClCompile Include="jbl\jbl_exception.c" />
+    <ClCompile Include="jbl\jbl_file.c" />
+    <ClCompile Include="jbl\jbl_file_ct.c" />
+    <ClCompile Include="jbl\jbl_gc.c" />
+    <ClCompile Include="jbl\jbl_ht.c" />
+    <ClCompile Include="jbl\jbl_ll.c" />
+    <ClCompile Include="jbl\jbl_log.c" />
+    <ClCompile Include="jbl\jbl_malloc.c" />
+    <ClCompile Include="jbl\jbl_malloc_fast.c" />
+    <ClCompile Include="jbl\jbl_md5.c" />
+    <ClCompile Include="jbl\jbl_rand.c" />
+    <ClCompile Include="jbl\jbl_sha1.c" />
+    <ClCompile Include="jbl\jbl_stream.c" />
+    <ClCompile Include="jbl\jbl_string.c" />
+    <ClCompile Include="jbl\jbl_string_cc.c" />
+    <ClCompile Include="jbl\jbl_time.c" />
+    <ClCompile Include="jbl\jbl_var.c" />
+    <ClCompile Include="jbl\jbl_var_data.c" />
+    <ClCompile Include="jbl\jbl_ying.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="examples\include.h" />
+    <ClInclude Include="examples\main.h" />
+    <ClInclude Include="jbl\jbl_aes.h" />
+    <ClInclude Include="jbl\jbl_aes_config.h" />
+    <ClInclude Include="jbl\jbl_array.h" />
+    <ClInclude Include="jbl\jbl_array_config.h" />
+    <ClInclude Include="jbl\jbl_base64.h" />
+    <ClInclude Include="jbl\jbl_base64_config.h" />
+    <ClInclude Include="jbl\jbl_bitset.h" />
+    <ClInclude Include="jbl\jbl_bitset_config.h" />
+    <ClInclude Include="jbl\jbl_cmd.h" />
+    <ClInclude Include="jbl\jbl_cmd_config.h" />
+    <ClInclude Include="jbl\jbl_config.h" />
+    <ClInclude Include="jbl\jbl_endian.h" />
+    <ClInclude Include="jbl\jbl_endian_config.h" />
+    <ClInclude Include="jbl\jbl_exception.h" />
+    <ClInclude Include="jbl\jbl_exception_config.h" />
+    <ClInclude Include="jbl\jbl_file.h" />
+    <ClInclude Include="jbl\jbl_file_config.h" />
+    <ClInclude Include="jbl\jbl_file_ct.h" />
+    <ClInclude Include="jbl\jbl_gc.h" />
+    <ClInclude Include="jbl\jbl_gc_config.h" />
+    <ClInclude Include="jbl\jbl_ht.h" />
+    <ClInclude Include="jbl\jbl_ht_config.h" />
+    <ClInclude Include="jbl\jbl_include.h" />
+    <ClInclude Include="jbl\jbl_ll.h" />
+    <ClInclude Include="jbl\jbl_ll_config.h" />
+    <ClInclude Include="jbl\jbl_log.h" />
+    <ClInclude Include="jbl\jbl_log_config.h" />
+    <ClInclude Include="jbl\jbl_malloc.h" />
+    <ClInclude Include="jbl\jbl_malloc_config.h" />
+    <ClInclude Include="jbl\jbl_md5.h" />
+    <ClInclude Include="jbl\jbl_md5_config.h" />
+    <ClInclude Include="jbl\jbl_rand.h" />
+    <ClInclude Include="jbl\jbl_rand_config.h" />
+    <ClInclude Include="jbl\jbl_sha1.h" />
+    <ClInclude Include="jbl\jbl_sha1_config.h" />
+    <ClInclude Include="jbl\jbl_stream.h" />
+    <ClInclude Include="jbl\jbl_stream_config.h" />
+    <ClInclude Include="jbl\jbl_string.h" />
+    <ClInclude Include="jbl\jbl_string_cc.h" />
+    <ClInclude Include="jbl\jbl_string_cc_table.h" />
+    <ClInclude Include="jbl\jbl_string_config.h" />
+    <ClInclude Include="jbl\jbl_time.h" />
+    <ClInclude Include="jbl\jbl_time_config.h" />
+    <ClInclude Include="jbl\jbl_var.h" />
+    <ClInclude Include="jbl\jbl_var_config.h" />
+    <ClInclude Include="jbl\jbl_var_data.h" />
+    <ClInclude Include="jbl\jbl_ying.h" />
+    <ClInclude Include="jbl\jbl_ying_config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="jbl\jbl_file_ct.js" />
+    <None Include="jbl\jbl_string_cc_table.db" />
+    <None Include="jbl\jbl_time.l" />
+    <None Include="jbl\jbl_var.l" />
+    <None Include="jbl\makefile" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

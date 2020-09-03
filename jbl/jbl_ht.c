@@ -31,14 +31,14 @@
 /*******************************************************************************************/
 void __jbl_ht_data_init(jbl_ht_data *this);
 void __jbl_ht_data_free(jbl_ht_data *this);
-inline void __jbl_ht_data_init(jbl_ht_data *this)
+JBL_INLINE void __jbl_ht_data_init(jbl_ht_data *this)
 {
 	this->k=NULL;
 	this->v=NULL;
 	this->h=0;
 	this->nxt=((jbl_ht_size_type)-1);
 }
-inline void __jbl_ht_data_free(jbl_ht_data *this)
+JBL_INLINE void __jbl_ht_data_free(jbl_ht_data *this)
 {
 	this->k=jbl_string_free(this->k);
 	this->v=jbl_var_free(this->v);
@@ -50,14 +50,14 @@ void __jbl_ht_data_free2(jbl_ht_data *this);
 jbl_var* __jbl_ht_sys_var_copy(jbl_var *this);
 jbl_var* __jbl_ht_sys_var_free(jbl_var *this);
 #define jbl_ht_is_sys_force(x) (jbl_gc_is_user1(x))		//获取sys标记
-inline void __jbl_ht_data_free2(jbl_ht_data *this)
+JBL_INLINE void __jbl_ht_data_free2(jbl_ht_data *this)
 {
 	this->k=jbl_string_free(this->k);
 	this->h=0;
 	this->nxt=((jbl_ht_size_type)-1);
 }
-inline jbl_var* __jbl_ht_sys_var_free(jbl_var *this){return NULL;}
-inline jbl_var* __jbl_ht_sys_var_copy(jbl_var *this){return this;}
+JBL_INLINE jbl_var* __jbl_ht_sys_var_free(jbl_var *this){return NULL;}
+JBL_INLINE jbl_var* __jbl_ht_sys_var_copy(jbl_var *this){return this;}
 #endif
 /*******************************************************************************************/
 /*                            以下函实现哈希表基本操作                                   */
@@ -65,20 +65,20 @@ inline jbl_var* __jbl_ht_sys_var_copy(jbl_var *this){return this;}
 #define htvh(x) for(jbl_ht_size_type i=0;i<(x)->size;jbl_stream_push_char(jbl_stream_stdout,' '),jbl_stream_push_int(jbl_stream_stdout,(jbl_ht_size_type_signed)((jbl_ht_size_type*)(x)->data)[-i-1]),++i);jbl_stream_push_char(jbl_stream_stdout,'\n')		//查看hash值
 #define gh2(x,y) ((jbl_ht_size_type_signed)(((jbl_ht_size_type)(y))|(-(jbl_ht_size_type)(x)->size)))
 jbl_var_operators_new(jbl_ht_operators,jbl_ht_free,jbl_ht_copy,jbl_ht_space_ship,jbl_ht_json_encode,jbl_ht_view_put,jbl_ht_json_put);
-inline jbl_ht* jbl_Vht(jbl_var * this){if(this&&!Vis_jbl_ht(this))jbl_exception("VAR TYPE ERROR");return((jbl_ht*)this);}
-inline jbl_ht * jbl_ht_new()
+JBL_INLINE jbl_ht* jbl_Vht(jbl_var * this){if(this&&!Vis_jbl_ht(this))jbl_exception("VAR TYPE ERROR");return((jbl_ht*)this);}
+JBL_INLINE jbl_ht * jbl_ht_new()
 {
 	return jbl_ht_init(jbl_malloc((sizeof(jbl_ht))));	
 }
 jbl_var * jbl_Vht_new()
 {
-	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_ht))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
+	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc((sizeof(jbl_ht))+(sizeof(jbl_var))))+(sizeof(jbl_var))));
 	jbl_ht_init((jbl_ht*)this);
 	jbl_gc_set_var((jbl_ht*)this);
 	jbl_var_set_operators(this,&jbl_ht_operators);
 	return this;		
 }
-inline jbl_ht * jbl_ht_init(jbl_ht *this)
+JBL_INLINE jbl_ht * jbl_ht_init(jbl_ht *this)
 {
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
@@ -109,7 +109,7 @@ jbl_ht* jbl_ht_free(jbl_ht *this)
 	}
 	return NULL;
 }
-inline jbl_ht *jbl_ht_copy(jbl_ht *that)
+JBL_INLINE jbl_ht *jbl_ht_copy(jbl_ht *that)
 {
 	if(that==NULL)return NULL;
 	jbl_gc_plus(that);
@@ -278,9 +278,9 @@ jbl_ht * jbl_ht_insert_force(jbl_ht *this,jbl_string_hash_type h,jbl_string *k,j
 	++thi->nxt;
 	return this;
 }
-inline jbl_ht  * jbl_ht_insert		(jbl_ht *this,jbl_string *k,jbl_var *v)		{return __jbl_ht_insert(this,jbl_string_hash(k),k,v);}
-inline jbl_ht  * jbl_ht_insert_chars(jbl_ht *this,unsigned char *kk,jbl_var *v)	{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_insert(this,k,v);jbl_string_free(k);return this;}
-inline jbl_ht  * jbl_ht_insert_int	(jbl_ht *this,jbl_string_hash_type h,jbl_var *v)				{return __jbl_ht_insert(this,h,NULL,v);}
+JBL_INLINE jbl_ht  * jbl_ht_insert		(jbl_ht *this,jbl_string *k,jbl_var *v)		{return __jbl_ht_insert(this,jbl_string_hash(k),k,v);}
+JBL_INLINE jbl_ht  * jbl_ht_insert_chars(jbl_ht *this,unsigned char *kk,jbl_var *v)	{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_insert(this,k,v);jbl_string_free(k);return this;}
+JBL_INLINE jbl_ht  * jbl_ht_insert_int	(jbl_ht *this,jbl_string_hash_type h,jbl_var *v)				{return __jbl_ht_insert(this,h,NULL,v);}
 /*******************************************************************************************/
 /*                            以下函实现哈希表删除操作                                   */
 /*******************************************************************************************/
@@ -309,15 +309,15 @@ jbl_ht * __jbl_ht_unset(jbl_ht *this,jbl_string_hash_type h,jbl_string *k)
 	}
 	return this;
 }
-inline jbl_ht  * jbl_ht_unset		(jbl_ht *this,jbl_string *k)				{return __jbl_ht_unset(this,jbl_string_hash(k),k);}
-inline jbl_ht  * jbl_ht_unset_chars	(jbl_ht *this,unsigned char *kk)			{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_unset(this,k);jbl_string_free(k);return this;}
-inline jbl_ht  * jbl_ht_unset_int	(jbl_ht *this,jbl_string_hash_type h)							{return __jbl_ht_unset(this,h,NULL);}
+JBL_INLINE jbl_ht  * jbl_ht_unset		(jbl_ht *this,jbl_string *k)				{return __jbl_ht_unset(this,jbl_string_hash(k),k);}
+JBL_INLINE jbl_ht  * jbl_ht_unset_chars	(jbl_ht *this,unsigned char *kk)			{jbl_string * k=jbl_string_add_chars(NULL,kk);this=jbl_ht_unset(this,k);jbl_string_free(k);return this;}
+JBL_INLINE jbl_ht  * jbl_ht_unset_int	(jbl_ht *this,jbl_string_hash_type h)							{return __jbl_ht_unset(this,h,NULL);}
 /*******************************************************************************************/
 /*                            以下函实现哈希表获取操作                                   */
 /*******************************************************************************************/
-inline jbl_var * jbl_htv(jbl_ht_data *node){return node->v;}
-inline jbl_string * jbl_htk(jbl_ht_data *node){return node->k;}
-inline jbl_string_hash_type jbl_hth(jbl_ht_data *node){return node->h;}
+JBL_INLINE jbl_var * jbl_htv(jbl_ht_data *node){return node->v;}
+JBL_INLINE jbl_string * jbl_htk(jbl_ht_data *node){return node->k;}
+JBL_INLINE jbl_string_hash_type jbl_hth(jbl_ht_data *node){return node->h;}
 jbl_ht_data * jbl_ht_get_ht_data(const jbl_ht *this,jbl_string *k)
 {
 	this=jbl_refer_pull(this);
@@ -356,7 +356,7 @@ jbl_ht_data * jbl_ht_get_ht_data_int(const jbl_ht *this,jbl_string_hash_type h)
 	}
 	return NULL;
 }
-inline jbl_var * jbl_ht_get(const jbl_ht *this,jbl_string *k)
+JBL_INLINE jbl_var * jbl_ht_get(const jbl_ht *this,jbl_string *k)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data(this,k);
 	if(!data)return NULL;
@@ -367,7 +367,7 @@ inline jbl_var * jbl_ht_get(const jbl_ht *this,jbl_string *k)
 #endif
 	return jbl_var_copy(data->v);
 }
-inline jbl_var * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
+JBL_INLINE jbl_var * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data_chars(this,kk);
 	if(!data)return NULL;
@@ -378,7 +378,7 @@ inline jbl_var * jbl_ht_get_chars(const jbl_ht *this,unsigned char *kk)
 #endif
 	return jbl_var_copy(data->v);
 }
-inline jbl_var * jbl_ht_get_int(const jbl_ht *this,jbl_string_hash_type h)
+JBL_INLINE jbl_var * jbl_ht_get_int(const jbl_ht *this,jbl_string_hash_type h)
 {
 	jbl_ht_data *data=jbl_ht_get_ht_data_int(this,h);
 	if(!data)return NULL;

@@ -3,3 +3,7 @@ exes
 *.log
 *.ans
 *.out
+.git
+.vs
+Debug
+x64

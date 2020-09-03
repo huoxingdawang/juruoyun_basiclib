@@ -83,20 +83,20 @@ void jbl_ll_node_delete(jbl_ll *this,jbl_ll_node *node)
 /*                            以下函实现链表基本操作                                      */
 /*******************************************************************************************/
 jbl_var_operators_new(jbl_ll_operators,jbl_ll_free,jbl_ll_copy,jbl_ll_space_ship,jbl_ll_json_encode,jbl_ll_view_put,jbl_ll_json_put);
-inline jbl_ll* jbl_Vll(jbl_var * this){if(this&&!Vis_jbl_ll(this))jbl_exception("VAR TYPE ERROR");return((jbl_ll*)this);}
-inline jbl_ll * jbl_ll_new()
+JBL_INLINE jbl_ll* jbl_Vll(jbl_var * this){if(this&&!Vis_jbl_ll(this))jbl_exception("VAR TYPE ERROR");return((jbl_ll*)this);}
+JBL_INLINE jbl_ll * jbl_ll_new()
 {
 	return jbl_ll_init(jbl_malloc((sizeof(jbl_ll))));	
 }
 jbl_var * jbl_Vll_new()
 {
-	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_ll))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
+	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc((sizeof(jbl_ll))+(sizeof(jbl_var))))+(sizeof(jbl_var))));
 	jbl_ll_init((jbl_ll*)this);
 	jbl_gc_set_var((jbl_ll*)this);
 	jbl_var_set_operators(this,&jbl_ll_operators);
 	return this;		
 }
-inline jbl_ll* jbl_ll_init(jbl_ll *this)
+JBL_INLINE jbl_ll* jbl_ll_init(jbl_ll *this)
 {
 	jbl_gc_init(this);
 	jbl_gc_plus(this);	
@@ -119,7 +119,7 @@ jbl_ll* jbl_ll_free(jbl_ll *this)
 	}
 	return NULL;	
 }
-inline jbl_ll *jbl_ll_copy(jbl_ll *that)
+JBL_INLINE jbl_ll *jbl_ll_copy(jbl_ll *that)
 {
 	if(that==NULL)return NULL;
 	jbl_gc_plus(that);
@@ -201,7 +201,7 @@ jbl_ll * jbl_ll_delete(jbl_ll *this,jbl_ll_node *node)
 /*******************************************************************************************/
 /*                            以下函实现链表获取操作                                      */
 /*******************************************************************************************/
-inline jbl_var* jbl_llv(jbl_ll_node *node){return node->v;}
+JBL_INLINE jbl_var* jbl_llv(jbl_ll_node *node){return node->v;}
 /*******************************************************************************************/
 /*                            以下函实现链表交换操作                                     */
 /*******************************************************************************************/

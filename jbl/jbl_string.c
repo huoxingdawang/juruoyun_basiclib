@@ -48,7 +48,7 @@ jbl_string_hash_type jbl_strhash(const unsigned char *s,jbl_string_size_type len
 /*******************************************************************************************/
 /*                            以下函数完成字符串组件启动和停止                           */
 /*******************************************************************************************/
-inline void jbl_string_start()
+JBL_INLINE void jbl_string_start()
 {
 #if JBL_HT_ENABLE==1 && JBL_STRING_USE_CACHE==1 && JBL_HT_SYS_ENABLE==1
 	__jbl_string_cache=jbl_ht_new();
@@ -56,7 +56,7 @@ inline void jbl_string_start()
 #endif
 	jbl_string_cc_start();
 }
-inline void jbl_string_stop()
+JBL_INLINE void jbl_string_stop()
 {
 #if JBL_HT_ENABLE==1 && JBL_STRING_USE_CACHE==1 && JBL_HT_SYS_ENABLE==1
 #if JBL_STRING_CACHE_DEBUG==1
@@ -69,7 +69,7 @@ inline void jbl_string_stop()
 /*******************************************************************************************/
 /*                            以下函实现字符串基本操作                                   */
 /*******************************************************************************************/
-inline jbl_string * jbl_string_new()
+JBL_INLINE jbl_string * jbl_string_new()
 {
 	return jbl_string_init(jbl_malloc((sizeof(jbl_string))));
 }
@@ -91,7 +91,10 @@ jbl_string* jbl_string_free(jbl_string *this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		((jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))?jbl_string_free((jbl_string*)(((jbl_reference*)this)->ptr)):(this->size?jbl_free(this->s):0));
+		if (jbl_gc_is_ref(this) || jbl_gc_is_pvar(this))
+			jbl_string_free((jbl_string*)(((jbl_reference*)this)->ptr));
+		else if (this->size)
+			jbl_free(this->s);
 #if JBL_VAR_ENABLE==1
 		if(jbl_gc_is_var(this))
 			jbl_free((char*)this-sizeof(jbl_var));
@@ -101,7 +104,7 @@ jbl_string* jbl_string_free(jbl_string *this)
 	}
 	return NULL;
 }
-inline jbl_string *jbl_string_copy(jbl_string *that)
+JBL_INLINE jbl_string *jbl_string_copy(jbl_string *that)
 {
 	if(that==NULL)return NULL;
 	jbl_gc_plus(that);
@@ -260,13 +263,13 @@ jbl_string *jbl_string_add_string(jbl_string *this,jbl_string *in)
 	thi->len=(thi->len+in->len);
 	return this;
 }
-inline jbl_string *jbl_string_add_char(jbl_string *this,const char c)
+JBL_INLINE jbl_string *jbl_string_add_char(jbl_string *this,const char c)
 {
 	jbl_string *thi;this=jbl_string_extend_to(this,1,1,&thi);jbl_string_hash_clear(thi);
 	thi->s[thi->len]=c,++thi->len;
 	return this;
 }
-inline jbl_string * jbl_string_add_int_length(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c)
+JBL_INLINE jbl_string * jbl_string_add_int_length(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c)
 {
 	jbl_string *thi;this=jbl_string_extend_to(this,22,1,&thi);
 	if(in<0)
@@ -318,7 +321,7 @@ jbl_string * jbl_string_add_hex(jbl_string *this,jbl_uint64 in)
 	for(;n--;thi->s[thi->len]=(hex[(in>>(n<<2))&15]),++thi->len);
 	return this;
 }
-inline jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
+JBL_INLINE jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
 {
 	const char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 	jbl_string *thi;this=jbl_string_extend_to(this,2,1,&thi);jbl_string_hash_clear(thi);
@@ -326,7 +329,7 @@ inline jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
 	thi->s[thi->len]=(hex[in&15])		,++thi->len;	
 	return this;
 }
-inline jbl_string* jbl_string_set_tail(jbl_string *this)
+JBL_INLINE jbl_string* jbl_string_set_tail(jbl_string *this)
 {
 	if(!this)return NULL;
 	jbl_string* thi=jbl_refer_pull(this);
@@ -337,7 +340,7 @@ inline jbl_string* jbl_string_set_tail(jbl_string *this)
 /*******************************************************************************************/
 /*                            以下函数实现字符串的获取类操作                             */
 /*******************************************************************************************/
-inline unsigned char jbl_string_get(jbl_string *this,jbl_string_size_type i)
+JBL_INLINE unsigned char jbl_string_get(jbl_string *this,jbl_string_size_type i)
 {
 	if(!this)return 0;
 	this=jbl_refer_pull(this);		
@@ -754,13 +757,13 @@ jbl_var_operators_new(jbl_string_operators,jbl_string_free,jbl_string_copy,jbl_s
 
 jbl_var * jbl_Vstring_new()
 {
-	jbl_var *this=(jbl_var*)((char*)(jbl_malloc((sizeof(jbl_string))+(sizeof(jbl_var)))+(sizeof(jbl_var))));
+	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc((sizeof(jbl_string))+(sizeof(jbl_var))))+(sizeof(jbl_var))));
 	jbl_string_init((jbl_string*)this);
 	jbl_gc_set_var((jbl_string*)this);
 	jbl_var_set_operators(this,&jbl_string_operators);
 	return this;
 }
-inline jbl_string * jbl_Vstring(jbl_var * this){if(this&&!Vis_jbl_string(this))jbl_exception("VAR TYPE ERROR");return((jbl_string*)this);}
+JBL_INLINE jbl_string * jbl_Vstring(jbl_var * this){if(this&&!Vis_jbl_string(this))jbl_exception("VAR TYPE ERROR");return((jbl_string*)this);}
 jbl_var * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this||!start)jbl_exception("NULL POINTER");	
