@@ -48,8 +48,10 @@ int main()
 	s1=jbl_string_to_lower_case(s1);
 	jbl_string_view(s1);
 	
+#if JBL_JSON_ENABLE==1
 	s4=jbl_string_json_encode(s1,NULL,0,0);
 	jbl_string_view(s4);
+#endif
 #if JBL_LL_ENABLE==1
 	jbl_ll *l1=jbl_string_cut(s4,NULL,'3');
 	jbl_ll_view(l1);

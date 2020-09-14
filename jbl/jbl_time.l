@@ -29,6 +29,7 @@
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
 jbl_int8		jbl_time_time_zone=JBL_TIME_DEFAULT_TIME_ZONE;
+jbl_var_operators_new(jbl_time_operators,jbl_time_free,jbl_time_copy,jbl_time_space_ship,jbl_time_json_encode,jbl_time_view_put,jbl_time_json_put);
 /*******************************************************************************************/
 /*                            以下函实现时间基本操作                                     */
 /*******************************************************************************************/
@@ -40,6 +41,7 @@ JBL_INLINE jbl_time * jbl_time_init(jbl_time *this)
 {
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jbl_time_operators);
 	this->t=0;
 	return this;
 }
@@ -50,12 +52,7 @@ JBL_INLINE jbl_time * jbl_time_free(jbl_time *this)
 	if(!jbl_gc_refcnt(this))
 	{
 		((jbl_gc_is_ref(this))?jbl_time_free((jbl_time*)(((jbl_reference*)this)->ptr)):0);
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;
 }
@@ -67,12 +64,7 @@ JBL_INLINE jbl_time * jbl_time_set(jbl_time * this,jbl_uint64 time)
 }
 JBL_INLINE jbl_time * jbl_time_copy(jbl_time * that)
 {
-	if(that==NULL)return NULL;
-#if JBL_VAR_ENABLE==1
-	if(jbl_gc_is_var(that))
-		return jbl_time_set(jbl_Vtime(jbl_Vtime_new()),((jbl_time*)jbl_refer_pull(that))->t);
-	else
-#endif
+	if(!that)return NULL;
 	return jbl_time_set(NULL,((jbl_time*)jbl_refer_pull(that))->t);
 }
 JBL_INLINE jbl_time * jbl_time_add_second(jbl_time * this,jbl_uint64 second)
@@ -410,34 +402,4 @@ jbl_time* jbl_time_view_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_
 }
 #endif
 
-#if JBL_VAR_ENABLE==1
-/*******************************************************************************************/
-/*                            以下函实现时间的var操作                                    */
-/*******************************************************************************************/
-jbl_var_operators_new(jbl_time_operators,jbl_time_free,jbl_time_copy,jbl_time_space_ship,jbl_time_json_encode,jbl_time_view_put,jbl_time_json_put);
-JBL_INLINE jbl_time* jbl_Vtime(jbl_var * this){if(this&&!Vis_jbl_time(this))jbl_exception("VAR TYPE ERROR");return((jbl_time*)this);}
-jbl_var * jbl_Vtime_new()
-{
-	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc((sizeof(jbl_time))+(sizeof(jbl_var))))+(sizeof(jbl_var))));
-	jbl_time_init((jbl_time*)this);
-	jbl_gc_set_var((jbl_time*)this);
-	jbl_var_set_operators(this,&jbl_time_operators);
-	return this;
-}
-jbl_var * jbl_time_copy_as_var(jbl_time *that)
-{
-	if(that==NULL)return NULL;
-	if(jbl_gc_is_var(that))
-		return jbl_V(jbl_time_copy(that));
-	if(jbl_gc_is_ref(that))
-	{
-		void *data=that;
-		jbl_gc_plus((jbl_reference*)that);//出来的data ref_cnt一定是2
-		jbl_refer_as_var(&data,&jbl_time_operators);
-		jbl_gc_minus((jbl_reference*)data);//出来的data ref_cnt一定是2
-		return jbl_V(data);
-	}	
-	return jbl_V(jbl_time_set(jbl_Vtime(jbl_Vtime_new()),((jbl_time*)jbl_refer_pull(that))->t));
-}
-#endif
 #endif

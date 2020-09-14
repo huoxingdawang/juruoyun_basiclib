@@ -195,7 +195,7 @@ jbl_file_ct jbl_file_get_ctid_by_name(jbl_string *name)
 		failed:;
 	}
 #if JBL_FILE_CT_DEBUG ==1 && JBL_VAR_ENABLE==1
-	jbl_log(UC "unknow content type%j",jbl_gc_minus(jbl_string_copy_as_var(name)));
+	jbl_log(UC "unknow content type%j",name);
 #endif
 	return JBL_FILE_CT_UNKNOW;
 }
@@ -215,7 +215,7 @@ jbl_file_ct jbl_file_get_ctid_by_ct(jbl_string *ct)
 		failed:;
 	}
 #if JBL_FILE_CT_DEBUG ==1 && JBL_VAR_ENABLE==1
-	jbl_log(UC "unknow content type%j",jbl_gc_minus(jbl_string_copy_as_var(ct)));
+	jbl_log(UC "unknow content type%j",ct);
 #endif
 	return JBL_FILE_CT_UNKNOW;
 }

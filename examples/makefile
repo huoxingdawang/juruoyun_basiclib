@@ -57,11 +57,13 @@ ifeq ($(system),macos)
 endif
 run:
 	exes$(H)aes         && pause
+	exes$(H)aes_big     && pause
+	exes$(H)aes_stream  && pause
 #	exes$(H)array       && pause
 	exes$(H)base64      && pause
 	exes$(H)bitset      && pause
 	exes$(H)cmd         && pause
-#	exes$(H)file        && pause
+	exes$(H)file        && pause
 	exes$(H)ht          && pause
 	exes$(H)json        && pause
 	exes$(H)ll          && pause
@@ -72,12 +74,9 @@ run:
 	exes$(H)sha1        && pause
 	exes$(H)stream      && pause
 	exes$(H)string      && pause
-	exes$(H)string_var  && pause
 	exes$(H)time        && pause
 	exes$(H)time2       && pause
-	exes$(H)time_var    && pause
-	exes$(H)var         && pause
-	exes$(H)var_refer
+	exes$(H)var         
 #examples
 aes:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)aes.o          examples$(H)aes.c         $(EXLIB)
@@ -124,24 +123,18 @@ stream:
 	$(CC) $(BITS) -o exes$(H)stream      tmp$(H)$(pre)stream.o     tmp$(H)$(pre)jbl.a
 string:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)string.o        examples$(H)string.c         $(EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)string_var.o    examples$(H)string_var.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)string      tmp$(H)$(pre)string.o     tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)string_var  tmp$(H)$(pre)string_var.o tmp$(H)$(pre)jbl.a
 sha1:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)sha1.o          examples$(H)sha1.c       $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)sha1        tmp$(H)$(pre)sha1.o       tmp$(H)$(pre)jbl.a
 time:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time.o          examples$(H)time.c       $(EXLIB)
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time2.o         examples$(H)time2.c      $(EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time_var.o      examples$(H)time_var.c       $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)time        tmp$(H)$(pre)time.o       tmp$(H)$(pre)jbl.a
 	$(CC) $(BITS) -o exes$(H)time2       tmp$(H)$(pre)time2.o      tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)time_var    tmp$(H)$(pre)time_var.o   tmp$(H)$(pre)jbl.a
 test2:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)test2.o          examples$(H)test2.c       $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)test2        tmp$(H)$(pre)test2.o       tmp$(H)$(pre)jbl.a
 var:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)var.o           examples$(H)var.c        $(EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)var_refer.o     examples$(H)var_refer.c        $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)var         tmp$(H)$(pre)var.o        tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)var_refer   tmp$(H)$(pre)var_refer.o  tmp$(H)$(pre)jbl.a

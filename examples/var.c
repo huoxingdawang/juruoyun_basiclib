@@ -4,12 +4,12 @@ int main()
 {
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_var *v1=jbl_Vuint_set(NULL,100);
-	jbl_var *v2=jbl_Vint_set(NULL,-1024);
-	jbl_var *v3=jbl_Vdouble_set(NULL,1926.0817);
-	jbl_var *v4=jbl_Vnull_new();
-	jbl_var *v5=jbl_Vtrue_new();
-	jbl_var *v6=jbl_Vfalse_new();
+	jbl_var_data *v1=jbl_Vuint_set(NULL,100);
+	jbl_var_data *v2=jbl_Vint_set(NULL,-1024);
+	jbl_var_data *v3=jbl_Vdouble_set(NULL,1926.0817);
+	jbl_var_data *v4=jbl_Vnull_new();
+	jbl_var_data *v5=jbl_Vtrue_new();
+	jbl_var_data *v6=jbl_Vfalse_new();
 	
 	jbl_var_view(v1);
 	jbl_var_view(v2);

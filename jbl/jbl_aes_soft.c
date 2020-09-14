@@ -55,20 +55,10 @@ jbl_aes_128_key* jbl_aes_128_key_set(jbl_aes_128_key *this,unsigned char* key)
 {
 	if(!this)this=jbl_aes_128_key_new();
 	jbl_reference *ref=NULL;jbl_aes_128_key *thi=jbl_refer_pull_keep_father(this,&ref);
-	jbl_uint8 is_multiple=(jbl_gc_refcnt(thi)!=1);
-#if JBL_VAR_ENABLE==1
-	jbl_uint8 is_var=jbl_gc_is_var(thi);
-	if(jbl_gc_is_pvar(thi))thi=((jbl_reference*)thi)->ptr,is_multiple|=(jbl_gc_refcnt(thi)!=1);
-#endif
-	if(is_multiple)
+	if(jbl_gc_refcnt(thi)!=1)
 	{
 		jbl_aes_128_key_free(thi);
-#if JBL_VAR_ENABLE==1
-		if(is_var)
-			jbl_aes_128_key_free(this),thi=jbl_Vaes_128_key(jbl_Vaes_128_key_new());
-		else
-#endif
-			jbl_aes_128_key_free(this),thi=jbl_aes_128_key_new();
+		jbl_aes_128_key_free(this),thi=jbl_aes_128_key_new();
 	}
 	jbl_uint8 rc[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36};
 	for(jbl_uint8 r=0;r<4;r++)

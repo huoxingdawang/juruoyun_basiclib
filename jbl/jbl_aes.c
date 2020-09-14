@@ -21,6 +21,7 @@
 #include "jbl_string.h"
 #include "jbl_stream.h"
 #include "jbl_var.h"
+jbl_var_operators_new(jbl_aes_128_key_operators,jbl_aes_128_key_free,jbl_aes_128_key_copy,NULL,NULL,NULL,NULL);
 
 
 extern void	__jbl_aes_128_encode_16		(__jbl_aes_128_ex_key w,jbl_uint8* a,jbl_uint8* b);
@@ -34,7 +35,8 @@ JBL_INLINE jbl_aes_128_key* jbl_aes_128_key_new()
 JBL_INLINE jbl_aes_128_key* jbl_aes_128_key_init(jbl_aes_128_key *this)
 {
 	jbl_gc_init(this);
-	jbl_gc_plus(this);	
+	jbl_gc_plus(this);
+	jbl_var_set_operators(this,&jbl_aes_128_key_operators);
 	return this;
 }
 
@@ -50,30 +52,11 @@ JBL_INLINE jbl_aes_128_key* jbl_aes_128_key_free(jbl_aes_128_key* this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		((jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))?jbl_aes_128_key_free((jbl_aes_128_key*)(((jbl_reference*)this)->ptr)):0);
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif
-			jbl_free(this);		
+		(jbl_gc_is_ref(this)?jbl_aes_128_key_free((jbl_aes_128_key*)(((jbl_reference*)this)->ptr)):0);
+		jbl_free(this);
 	}
 	return NULL;
 }
-#if JBL_VAR_ENABLE==1
-jbl_var_operators_new(jbl_aes_128_key_operators,jbl_aes_128_key_free,jbl_aes_128_key_copy,NULL,NULL,NULL,NULL);
-JBL_INLINE jbl_aes_128_key * jbl_Vaes_128_key(jbl_var * this){if(this&&!Vis_jbl_aes_128_key(this))jbl_exception("VAR TYPE ERROR");return((jbl_aes_128_key*)this);}
-jbl_var * jbl_Vaes_128_key_new()
-{
-	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc((sizeof(jbl_aes_128_key))+(sizeof(jbl_var))))+(sizeof(jbl_var))));
-	jbl_aes_128_key_init((jbl_aes_128_key*)this);
-	jbl_gc_set_var((jbl_aes_128_key*)this);
-	jbl_var_set_operators(this,&jbl_aes_128_key_operators);
-	return this;
-}
-#endif
-
-
 #if JBL_AES_128_ECB_ENABLE==1
 #if JBL_STRING_ENABLE==1
 /*******************************************************************************************/
@@ -306,21 +289,7 @@ JBL_INLINE jbl_stream * jbl_stream_aes_128_cbc_decode_new(jbl_aes_128_key *w,con
 	this->extra[0].p=v;
 	return this;
 }
-#if JBL_VAR_ENABLE == 1
-JBL_INLINE jbl_var * jbl_Vstream_aes_128_cbc_encode_new(jbl_aes_128_key *w,const unsigned char * v)
-{
-	jbl_var *this=jbl_Vstream_new(&jbl_stream_aes_128_cbc_encode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,1);
-	((jbl_stream*)this)->extra[0].p=v;
-	return this;
-}
-JBL_INLINE jbl_var * jbl_Vstream_aes_128_cbc_decode_new(jbl_aes_128_key *w,const unsigned char * v)
-{
-	jbl_var *this=jbl_Vstream_new(&jbl_stream_aes_128_cbc_decode_operators,jbl_aes_128_key_copy(w),JBL_STREAM_EXCEED_LENGTH+32,NULL,1);
-	((jbl_stream*)this)->extra[0].p=v;
-	return this;
-}
+
 #endif
 #endif
-#endif
-#undef ffmul
 #endif

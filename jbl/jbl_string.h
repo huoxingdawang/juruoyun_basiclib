@@ -23,10 +23,8 @@
 /*******************************************************************************************/
 #include "jbl_stream.h"
 #include "jbl_ht_config.h"
-#if JBL_VAR_ENABLE==1
-typedef	struct	__jbl_var_operators	jbl_var_operators;
-typedef	struct	__jbl_var 			jbl_var;
-#endif
+#include "jbl_var.h"
+jbl_var_operators_extern(jbl_string_operators);
 #if JBL_LL_ENABLE==1
 typedef	struct	__jbl_ll			jbl_ll;
 #endif
@@ -36,6 +34,9 @@ typedef	struct	__jbl_ll			jbl_ll;
 typedef struct __jbl_string
 {
 	jbl_gc 					gc;		//gc结构
+#if JBL_VAR_ENABLE==1
+	jbl_var_operators *		var_ops;
+#endif
 	jbl_string_size_type	len;	//当前字符串长度
 	jbl_string_size_type	size;	//当前已申请内存长度,如果size<len则该字符串是const,应及时扩容
 	jbl_string_hash_type	h;		//hash值缓冲
@@ -171,9 +172,6 @@ void jbl_string_update_stream_buf(jbl_stream* this);
 extern const 			jbl_stream_operater						jbl_stream_string_operators;											//string的流处理器
 jbl_stream *			jbl_string_stream_new					(jbl_string *str);														//新建一个字符串流(不进行复制操作)
 #define					jbl_string_stream_free(a)				jbl_stream_free(a)														//释放一个字符串流
-#if JBL_VAR_ENABLE==1
-jbl_var * 				jbl_string_Vstream_new					(jbl_string *str);														//新建一个var格式的字符串流(不进行复制操作)
-#endif
 #define					jbl_stream_push_string(out,this)		jbl_stream_push_string_start_end(out,this,0,-1)							//向out推出一个字符串
 jbl_string * 			jbl_stream_push_string_start_end		(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end);
 jbl_string *			jbl_string_read							(jbl_string *this,const unsigned char *c);
@@ -183,12 +181,7 @@ jbl_string *			jbl_string_read							(jbl_string *this,const unsigned char *c);
 /*******************************************************************************************/
 /*                            以下函数实现字符串的var操作                                */
 /*******************************************************************************************/
-extern	const		jbl_var_operators							jbl_string_operators;													//string 操作器
-jbl_string *		jbl_Vstring									(jbl_var * this);														//以string的格式使用var
-#define				Vis_jbl_string(x)							(jbl_var_get_operators(x)==&jbl_string_operators)						//判断一个var是不是string
-jbl_var *			jbl_Vstring_new								();																		//新建一个字符串类型的var
-jbl_var *			jbl_string_get_number_start					(jbl_string *this,jbl_string_size_type *start);					//获取一个数字，支持无符号整数，有符号整数，浮点数，e表示的浮点数
-#define				jbl_string_copy_as_var(x)					jbl_var_copy_as(x,&jbl_string_operators)								//复制为一个var
+jbl_var_data *		jbl_string_get_number_start					(jbl_string *this,jbl_string_size_type *start);					//获取一个数字，支持无符号整数，有符号整数，浮点数，e表示的浮点数
 #endif
 /*******************************************************************************************/
 /*                            以下函数实现字符串的切割操作                               */

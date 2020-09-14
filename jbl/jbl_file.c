@@ -46,16 +46,11 @@ jbl_file* jbl_file_free(jbl_file *this)
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
-		if(jbl_gc_is_ref(this)||jbl_gc_is_pvar(this))
+		if(jbl_gc_is_ref(this))
 			jbl_file_free((jbl_file*)(((jbl_reference*)this)->ptr));
 		else
 			this=jbl_file_close(this);
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;
 }
@@ -139,7 +134,7 @@ jbl_file* jbl_file_change_handle(jbl_file *this,jbl_file_handle_type type)
 		thi=jbl_file_update_status(thi);
 	else
 	{
-		jbl_log(UC"open file %j failed",jbl_gc_minus(jbl_string_copy_as_var(thi->dir)));		
+		jbl_log(UC"open file %j failed",thi->dir);		
 		thi=jbl_file_close(thi);
 	}
 	return this;
@@ -160,7 +155,7 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 	{
 		thi->dir=jbl_string_free(thi->dir);
 		gb2312name=jbl_string_free(gb2312name);	
-		jbl_log(UC"open file %j failed with errno %d",jbl_gc_minus(jbl_string_copy_as_var(thi->dir)),errno);
+		jbl_log(UC"open file %j failed with errno %d",thi->dir,errno);
 		return this;
 	}
 	gb2312name=jbl_string_free(gb2312name);	
@@ -168,15 +163,17 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 	struct stat buf;
 	if(stat((char*)jbl_string_get_chars(thi->dir),&buf))
 	{
-		jbl_log(UC"open file %j failed with errno %d",jbl_gc_minus(jbl_string_copy_as_var(thi->dir)),errno);
+		jbl_log(UC"open file %j failed with errno %d",thi->dir,errno);
 		thi->dir=jbl_string_free(thi->dir);
 		return this;
 	}
 #endif
 	thi->status.size		=buf.st_size;
+#if JBL_TIME_ENABLE==1
 	thi->status.time_access	=jbl_time_set(thi->status.time_access,buf.st_atime*1000);
 	thi->status.time_modify	=jbl_time_set(thi->status.time_modify,buf.st_mtime*1000);
 	thi->status.time_creat	=jbl_time_set(thi->status.time_creat ,buf.st_ctime*1000);
+#endif
 	return this;
 }
 jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_uint64 end)
@@ -250,16 +247,6 @@ jbl_stream * jbl_file_stream_new(jbl_file *file)
 	this->extra[1].u=-1;
 	return this;
 }
-#if JBL_VAR_ENABLE==1
-jbl_var * jbl_file_Vstream_new(jbl_file *file)
-{
-	jbl_stream* this=jbl_Vstream(jbl_Vstream_new(&jbl_file_stream_operators,(file),JBL_FILE_STREAM_BUF_LENGTH,NULL,2));
-	this->extra[0].u=0;
-	this->extra[1].u=-1;
-	return jbl_V(this);
-}
-#endif
-
 
 void __jbl_file_stream_operator(jbl_stream* this,jbl_uint8 flags)
 {

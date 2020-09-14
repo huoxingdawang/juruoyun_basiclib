@@ -57,11 +57,13 @@ ifeq ($(system),macos)
 endif
 run:
 	exes$(H)aes         && pause
+	exes$(H)aes_big     && pause
+	exes$(H)aes_stream  && pause
 #	exes$(H)array       && pause
 	exes$(H)base64      && pause
 	exes$(H)bitset      && pause
 	exes$(H)cmd         && pause
-#	exes$(H)file        && pause
+	exes$(H)file        && pause
 	exes$(H)ht          && pause
 	exes$(H)json        && pause
 	exes$(H)ll          && pause
@@ -72,12 +74,9 @@ run:
 	exes$(H)sha1        && pause
 	exes$(H)stream      && pause
 	exes$(H)string      && pause
-	exes$(H)string_var  && pause
 	exes$(H)time        && pause
 	exes$(H)time2       && pause
-	exes$(H)time_var    && pause
-	exes$(H)var         && pause
-	exes$(H)var_refer
+	exes$(H)var         
 #examples
 aes:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)aes.o          examples$(H)aes.c         $(EXLIB)
@@ -124,27 +123,21 @@ stream:
 	$(CC) $(BITS) -o exes$(H)stream      tmp$(H)$(pre)stream.o     tmp$(H)$(pre)jbl.a
 string:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)string.o        examples$(H)string.c         $(EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)string_var.o    examples$(H)string_var.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)string      tmp$(H)$(pre)string.o     tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)string_var  tmp$(H)$(pre)string_var.o tmp$(H)$(pre)jbl.a
 sha1:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)sha1.o          examples$(H)sha1.c       $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)sha1        tmp$(H)$(pre)sha1.o       tmp$(H)$(pre)jbl.a
 time:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time.o          examples$(H)time.c       $(EXLIB)
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time2.o         examples$(H)time2.c      $(EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time_var.o      examples$(H)time_var.c       $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)time        tmp$(H)$(pre)time.o       tmp$(H)$(pre)jbl.a
 	$(CC) $(BITS) -o exes$(H)time2       tmp$(H)$(pre)time2.o      tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)time_var    tmp$(H)$(pre)time_var.o   tmp$(H)$(pre)jbl.a
 test2:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)test2.o          examples$(H)test2.c       $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)test2        tmp$(H)$(pre)test2.o       tmp$(H)$(pre)jbl.a
 var:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)var.o           examples$(H)var.c        $(EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)var_refer.o     examples$(H)var_refer.c        $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)var         tmp$(H)$(pre)var.o        tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)var_refer   tmp$(H)$(pre)var_refer.o  tmp$(H)$(pre)jbl.a
 #   Copyright (c) [2020] juruoyun developer team
 #   Juruoyun basic lib is licensed under the Mulan PSL v1.
 #   You can use this software according to the terms and conditions of the Mulan PSL v1.
@@ -161,7 +154,7 @@ endif
 ifeq ($(system),windows)
 JBL_EXLIB = 
 endif
-jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_endian jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_ll jbl/jbl_log jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
+jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_endian jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_ll jbl/jbl_log jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_rand jbl/jbl_scanner jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
 	ar  rc tmp$(H)$(pre)jbl.a tmp$(H)$(pre)jbl_*.o
 jbl/jbl_aes            :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes.o         jbl$(H)jbl_aes.c         $(JBL_EXLIB)
@@ -197,6 +190,18 @@ jbl/jbl_md5            :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_md5.o         jbl$(H)jbl_md5.c         $(JBL_EXLIB)
 jbl/jbl_rand           :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_rand.o        jbl$(H)jbl_rand.c        $(JBL_EXLIB)
+jbl/jbl_scanner           :
+ifeq ($(system),linux)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_scanner.c jbl$(H)jbl_scanner.l
+endif
+endif
+ifeq ($(system),macos)
+ifeq ($(findstring jbl,$(complain_re2c)),jbl)
+	re2c -o jbl$(H)jbl_scanner.c jbl$(H)jbl_scanner.l
+endif
+endif
+	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_scanner.o     jbl$(H)jbl_scanner.c     $(JBL_EXLIB)  
 jbl/jbl_sha1           :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_sha1.o        jbl$(H)jbl_sha1.c        $(JBL_EXLIB)    
 jbl/jbl_stream         :
@@ -217,16 +222,6 @@ endif
 endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_time.o       jbl$(H)jbl_time.c        $(JBL_EXLIB)
 jbl/jbl_var            :
-ifeq ($(system),linux)
-ifeq ($(findstring jbl,$(complain_re2c)),jbl)
-	re2c -o jbl$(H)jbl_var.c jbl$(H)jbl_var.l
-endif
-endif
-ifeq ($(system),macos)
-ifeq ($(findstring jbl,$(complain_re2c)),jbl)
-	re2c -o jbl$(H)jbl_var.c jbl$(H)jbl_var.l
-endif
-endif
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_var.o        jbl$(H)jbl_var.c         $(JBL_EXLIB)
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_var_data.o   jbl$(H)jbl_var_data.c    $(JBL_EXLIB)
 jbl/jbl_ying           :

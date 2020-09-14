@@ -6,7 +6,9 @@ int main()
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_aes_128_key *key=jbl_aes_128_key_set(NULL,UC"0CoJUm6Qyw8W8jud");
 	jbl_file *f1=jbl_file_open_chars(NULL,UC"tmp/bigfile.tmp",JBL_FILE_READ);
-	jbl_stream* fs1=jbl_file_stream_new(jbl_refer(&f1));
+	jbl_stream* fs1=NULL;
+pl();
+	if(!(fs1=jbl_file_stream_new(jbl_refer(&f1))))jbl_exception("NULL POINTER");
 	
 	
 	
@@ -83,7 +85,7 @@ int main()
 
 
 	f1=jbl_file_open_chars(NULL,UC"tmp/bigfile.tmp",JBL_FILE_READ);
-	fs1=jbl_file_stream_new(jbl_refer(&f1));
+	if(!(fs1=jbl_file_stream_new(jbl_refer(&f1))))jbl_exception("NULL POINTER");
 	
 	s4=jbl_string_extend(NULL,jbl_file_get_size(f1)/3*4+4);
 	ss4=jbl_string_stream_new(jbl_refer(&s4));

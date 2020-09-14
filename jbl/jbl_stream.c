@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include "jbl_string_cc.h"
 extern			const jbl_stream_operater			jbl_stream_file_operators;
+jbl_var_operators_new(jbl_stream_operators,jbl_stream_free,jbl_stream_copy,NULL,NULL,NULL,NULL);
 void jbl_stream_start()
 {
 	jbl_stream_stdout=jbl_stream_new(&jbl_stream_file_operators,JBL_STREAM_STDOUT,JBL_STREAM_EXCEED_LENGTH,NULL,0);
@@ -54,6 +55,7 @@ jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void
 	this->stop	=0;
 	this->buf	=((buf)?buf:(((jbl_uint8*)this)+(sizeof(jbl_uint64)*tmplen)+(sizeof(jbl_stream))));
 	this->nxt	=NULL;
+	jbl_var_set_operators(this,&jbl_stream_operators);
 	while(tmplen--)this->extra[tmplen].u=0;
 	if(this->op->usb)this->op->usb(this);
 	return this;
@@ -65,12 +67,7 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 	if(!jbl_gc_refcnt(this))
 	{
 		((jbl_gc_is_ref(this))?jbl_stream_free((jbl_stream*)(((jbl_reference*)this)->ptr)):((((this->op->free)?(this->op->free(this->data)):0)),jbl_stream_free(((jbl_stream *)jbl_refer_pull(this))->nxt)));
-#if JBL_VAR_ENABLE==1
-		if(jbl_gc_is_var(this))
-			jbl_free((char*)this-sizeof(jbl_var));
-		else
-#endif		
-			jbl_free(this);
+		jbl_free(this);
 	}
 	return NULL;
 }
@@ -247,18 +244,5 @@ jbl_stream_operators_new(jbl_stream_file_operators,jbl_stream_file_operator,fclo
 jbl_stream *jbl_stream_stdout;
 jbl_stream *jbl_stream_stdin;
 jbl_stream *jbl_stream_stdin_link;
-#if JBL_VAR_ENABLE==1
-jbl_var_operators_new(jbl_stream_operators,jbl_stream_free,jbl_stream_copy,NULL,NULL,NULL,NULL);
-JBL_INLINE jbl_stream * jbl_Vstream(jbl_var * this){if(this&&!Vis_jbl_stream(this))jbl_exception("VAR TYPE ERROR");return((jbl_stream*)this);}
-JBL_INLINE jbl_var * jbl_Vstream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
-{
-	jbl_var *this=(jbl_var*)(((char*)(jbl_malloc(jbl_stream_caculate_size(tmplen)+(sizeof(jbl_var))+((buf)?0:size)))+(sizeof(jbl_var))));	
-	jbl_stream_init((jbl_stream*)this,op,data,size,buf,tmplen);
-	jbl_gc_set_var((jbl_stream*)this);
-	jbl_var_set_operators(this,&jbl_stream_operators);
-	return this;	
-}
-
-#endif
 
 #endif

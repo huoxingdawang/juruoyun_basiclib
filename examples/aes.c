@@ -4,15 +4,13 @@ int main()
 {
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_aes_128_key *key2=jbl_aes_128_key_set(NULL,UC"0CoJUm6Qyw8W8jud");
-	jbl_var *key=jbl_aes_128_key_copy_as_var(key2);
-	key2=jbl_aes_128_key_free(key2);
+	jbl_aes_128_key *key=jbl_aes_128_key_set(NULL,UC"0CoJUm6Qyw8W8jud");
 
 	jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL,*s4=NULL;
 	s1=jbl_string_add_chars(s1,UC"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
-	s2=jbl_aes_128_ecb_encode(jbl_Vaes_128_key(key),s1,NULL);
+	s2=jbl_aes_128_ecb_encode(key,s1,NULL);
 	s4=jbl_base64_encode(s2,NULL);	
-	s3=jbl_aes_128_ecb_decode(jbl_Vaes_128_key(key),s2,NULL);
+	s3=jbl_aes_128_ecb_decode(key,s2,NULL);
 	jbl_string_view(s4);
 	jbl_string_view(s3);
 #if JBL_STREAM_ENABLE==1
@@ -27,8 +25,8 @@ int main()
 	ss4=jbl_string_stream_new(jbl_refer(&s4));
 	b64en=jbl_stream_base64_encode_new();
 	b64de=jbl_stream_base64_decode_new();
-	jbl_stream *ecben=jbl_stream_aes_128_ecb_encode_new(jbl_Vaes_128_key(key));
-	jbl_stream *ecbde=jbl_stream_aes_128_ecb_decode_new(jbl_Vaes_128_key(key));
+	jbl_stream *ecben=jbl_stream_aes_128_ecb_encode_new(key);
+	jbl_stream *ecbde=jbl_stream_aes_128_ecb_decode_new(key);
 
 	jbl_stream_connect(b64en,jbl_stream_stdout);
 	jbl_stream_connect(ecben,b64en);
@@ -54,9 +52,9 @@ int main()
 	
 	
 	
-	s2=jbl_aes_128_cbc_encode(jbl_Vaes_128_key(key),UC"0CoJUm6Qyw8W8jud",s1,NULL);
+	s2=jbl_aes_128_cbc_encode(key,UC"0CoJUm6Qyw8W8jud",s1,NULL);
 	s4=jbl_base64_encode(s2,NULL);	
-	s3=jbl_aes_128_cbc_decode(jbl_Vaes_128_key(key),UC"0CoJUm6Qyw8W8jud",s2,NULL);
+	s3=jbl_aes_128_cbc_decode(key,UC"0CoJUm6Qyw8W8jud",s2,NULL);
 	jbl_string_view(s4);
 	jbl_string_view(s3);
 
@@ -65,8 +63,8 @@ int main()
 	ss4=jbl_string_stream_new(jbl_refer(&s4));
 	b64en=jbl_stream_base64_encode_new();
 	b64de=jbl_stream_base64_decode_new();
-	jbl_stream *cbcen=jbl_stream_aes_128_cbc_encode_new(jbl_Vaes_128_key(key),UC"0CoJUm6Qyw8W8jud");
-	jbl_stream *cbcde=jbl_stream_aes_128_cbc_decode_new(jbl_Vaes_128_key(key),UC"0CoJUm6Qyw8W8jud");
+	jbl_stream *cbcen=jbl_stream_aes_128_cbc_encode_new(key,UC"0CoJUm6Qyw8W8jud");
+	jbl_stream *cbcde=jbl_stream_aes_128_cbc_decode_new(key,UC"0CoJUm6Qyw8W8jud");
 
 	jbl_stream_connect(b64en,jbl_stream_stdout);
 	jbl_stream_connect(cbcen,b64en);
