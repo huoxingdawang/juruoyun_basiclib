@@ -48,6 +48,7 @@ typedef struct __jbl_file
 	}status;
 }jbl_file;
 typedef struct __jbl_file jbl_file;
+jbl_var_operators_extern(jbl_file_operators);
 jbl_file *			jbl_file_new						();
 jbl_file *			jbl_file_init						(jbl_file* this);
 jbl_file *			jbl_file_free						(jbl_file *this);

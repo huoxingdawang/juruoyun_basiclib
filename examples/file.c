@@ -6,7 +6,7 @@ int main()
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_file * f1=jbl_file_new();
 	f1=jbl_file_open_chars(f1,UC"testfiles/test.txt",JBL_FILE_RW);
-	jbl_file_view(f1);
+	jbl_var_view(f1);
 	
 	
 	jbl_string *s1=jbl_file_read(f1,NULL,2,16);
