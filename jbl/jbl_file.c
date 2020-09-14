@@ -181,7 +181,7 @@ jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_u
 	if(!this)jbl_exception("NULL POINTER");
 	this=jbl_file_change_handle(this,JBL_FILE_READ);
 	jbl_file *thi=jbl_refer_pull(this);
-	if(thi->type==JBL_FILE_WRITE||thi->type==JBL_FILE_CLOSE)jbl_exception("Unread able file");
+	if(thi->type==JBL_FILE_WRITE||thi->type==JBL_FILE_CLOSE)jbl_exception("Unreadable file");
 	jbl_min_update(end,thi->status.size);
 	if(start==-1)
 		start=0;
@@ -200,7 +200,7 @@ jbl_file * jbl_file_write(jbl_file * this,jbl_string*out)
 	if(!this)jbl_exception("NULL POINTER");
 	this=jbl_file_change_handle(this,JBL_FILE_WRITE);
 	jbl_file *thi=jbl_refer_pull(this);
-	if(thi->type==JBL_FILE_READ||thi->type==JBL_FILE_CLOSE)jbl_exception("Unread able file");
+	if(thi->type==JBL_FILE_READ||thi->type==JBL_FILE_CLOSE)jbl_exception("Unwriteable file");
 	out=jbl_refer_pull(out);
 	fwrite(out->s,1,out->len,this->handle);
 	return this;
@@ -256,12 +256,14 @@ void __jbl_file_stream_operator(jbl_stream* this,jbl_uint8 flags)
 	if(this->en)
 	{
 		file=jbl_file_change_handle(file,JBL_FILE_WRITE);
+		if(file->type==JBL_FILE_READ||file->type==JBL_FILE_CLOSE)jbl_exception("Unwriteable file");
 		fwrite(this->buf,1,this->en,file->handle);
 		this->en=0;
 	}
 	else if(nxt)
 	{
 		file=jbl_file_change_handle(file,JBL_FILE_READ);
+		if(file->type==JBL_FILE_WRITE||file->type==JBL_FILE_CLOSE)jbl_exception("Unreadable file");
 		file=jbl_file_set_offset(file,this->extra[0].u);
 		jbl_min_update(this->extra[1].u,file->status.size);
 		while(this->extra[0].u<this->extra[1].u)
