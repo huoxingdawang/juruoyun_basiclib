@@ -40,12 +40,9 @@ void jbl_stream_stop()
 	jbl_stream_stdin		=jbl_stream_free(jbl_stream_stdin);	
 	jbl_stream_stdin_link	=jbl_stream_free(jbl_stream_stdin_link);	
 }
-JBL_INLINE jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
+jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
 {
-	return jbl_stream_init(jbl_malloc(jbl_stream_caculate_size(tmplen)+((buf)?0:size)),op,data,size,buf,tmplen);
-}
-jbl_stream * jbl_stream_init(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen)
-{
+	jbl_stream* this=jbl_malloc(jbl_stream_caculate_size(tmplen)+((buf)?0:size));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数		
 	this->op	=op;
@@ -156,15 +153,14 @@ void jbl_stream_push_uint_length(jbl_stream *this,jbl_uint64 in,jbl_uint8 len,ch
 void jbl_stream_push_int(jbl_stream* this,jbl_int64 in)
 {
 	jbl_stream*thi=jbl_refer_pull(this);
-	if(in<0)
-		jbl_stream_push_char(thi,'-'),in=-in;
+	if(in<0)jbl_stream_push_char(thi,'-'),in=-in;
 	jbl_stream_push_uint(thi,in);
 }
 void jbl_stream_push_double(jbl_stream* this,double in)
 {
 	jbl_stream*thi=jbl_refer_pull(this);
-	jbl_stream_push_int(thi,in);
-	if(in<0)in=-in;
+	if(in<0)jbl_stream_push_char(thi,'-'),in=-in;
+	jbl_stream_push_uint(thi,in);
 	in-=(jbl_uint64)in;
 	jbl_stream_push_char(thi,'.');
 	jbl_uint64 t=(in*1000000+0.5)/10;
