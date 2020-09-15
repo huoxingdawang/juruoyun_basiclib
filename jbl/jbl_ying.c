@@ -43,6 +43,12 @@ JBL_INLINE jbl_uint64 jbl_min2pow(jbl_uint64 i)
 	for(;j<i;j<<=1);
 	return j;
 }
+JBL_INLINE double jbl_pow(double a,jbl_uint8 b)
+{
+	double ans=1;
+	while(b--)ans*=a;
+	return ans;
+}
 JBL_INLINE jbl_uint32 jbl_getuint64(jbl_uint8 *s)
 {
 	jbl_uint8 c,i=0;
