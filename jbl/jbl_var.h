@@ -137,7 +137,6 @@ void 						jbl_var_json_put			(void * this,jbl_stream *out,jbl_uint8 format,jbl_
 
 #if JBL_STRING_ENABLE==1 && JBL_JSON_ENABLE==1
 jbl_string *				jbl_var_json_encode			(void * this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码一个var
-//jbl_var    *				jbl_var_json_decode			(jbl_var *this,jbl_string* in,jbl_string_size_type *start);	//JSON解码一个var
 #endif
 
 

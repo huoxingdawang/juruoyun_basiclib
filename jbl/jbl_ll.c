@@ -233,38 +233,6 @@ jbl_string* jbl_ll_json_encode(const jbl_ll* this,jbl_string *out,jbl_uint8 form
 	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;
 }
-/*
-jbl_ll* jbl_ll_json_decode(jbl_ll *this,jbl_string* in,jbl_string_size_type *start)
-{
-	char flag=0;
-	if(!this)this=jbl_ll_new(),flag=1;
-	in=jbl_refer_pull(in);	
-	jbl_string_size_type i=start?(*start):0,n=in->len;
-	for(;i<n&&in->s[i]<=32;++i);
-//	pchar(in->s[i]);pn();
-	if(in->s[i]!='[')goto fail;
-	++i;
-	for(;i<n;)
-	{
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]==']'){++i;goto success;}
-		void *v=jbl_var_json_decode(NULL,in,&i);
-		if(v==NULL)goto fail;
-		this=jbl_ll_add(this,v);
-		v=jbl_var_free(v);	
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]==']'){++i;goto success;}
-		if(in->s[i]!=',')goto fail;
-		++i;
-	}
-	goto fail;
-success:;
-	start?(*start=i):0;
-	return this;
-fail:;
-	if(flag)this=jbl_ll_free(this);
-	return NULL;
-}*/
 #endif
 #if JBL_STREAM_ENABLE==1
 void jbl_ll_json_put(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)

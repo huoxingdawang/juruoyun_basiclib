@@ -123,7 +123,6 @@ jbl_ht *				jbl_ht_merge_ll				(jbl_ht *this,jbl_ll *that);						//合并一个l
 /*******************************************************************************************/
 #if JBL_JSON_ENABLE==1
 jbl_string *			jbl_ht_json_encode			(const jbl_ht* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON 编码
-jbl_ht*					jbl_ht_json_decode			(jbl_ht *this,jbl_string* in,jbl_string_size_type *start);	//JSON 解码
 #if JBL_STREAM_ENABLE==1
 void					jbl_ht_json_put				(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个hash table
 #endif

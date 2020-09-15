@@ -98,7 +98,6 @@ char			jbl_ll_space_ship			(const jbl_ll *this,const jbl_ll *that);						//太�
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
 jbl_string*		jbl_ll_json_encode			(const jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);	//JSON编码
-//jbl_ll*			jbl_ll_json_decode			(jbl_ll *this,jbl_string* in,jbl_string_size_type *start);	//JSON解码
 #endif
 #if JBL_STREAM_ENABLE==1
 void			jbl_ll_json_put				(const jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);	//从out JSON输出一个link list

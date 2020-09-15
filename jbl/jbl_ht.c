@@ -486,49 +486,6 @@ jbl_string* jbl_ht_json_encode(const jbl_ht* this,jbl_string *out,jbl_uint8 form
 	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
 	return out;
 }
-/*
-jbl_ht* jbl_ht_json_decode(jbl_ht *this,jbl_string* in,jbl_string_size_type *start)
-{
-#if JBL_HT_SYS_ENABLE==1
-	if(this&&jbl_ht_is_sys_force(this))return this;
-#endif
-	char flag=0;
-	if(!this)this=jbl_ht_new(),flag=1;
-	in=jbl_refer_pull(in);
-	if(!in)jbl_exception("NULL POINTER");
-	jbl_string_size_type i=start?(*start):0,n=in->len;
-	for(;i<n&&in->s[i]<=32;++i);
-//	pchar(in->s[i]);pn();
-	if(in->s[i]!='{')goto fail;
-	++i;
-	for(;i<n;)
-	{
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]=='}'){++i;goto success;}
-		jbl_string * k=jbl_string_json_decode(NULL,in,&i);
-		if(!k)goto fail;
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]!=':'){k=jbl_string_free(k);goto fail;}
-		++i;
-		void *v=jbl_var_json_decode(NULL,in,&i);
-		if(v==NULL)goto fail;
-		this=jbl_ht_insert(this,k,v);
-		v=jbl_var_free(v);
-		k=jbl_string_free(k);
-		for(;i<n&&in->s[i]<=32;++i);
-		if(in->s[i]=='}'){++i;goto success;}
-		if(in->s[i]!=',')goto fail;
-		++i;
-	}
-	goto fail;
-success:;
-	start?(*start=i):0;
-	return this;
-fail:;
-	if(flag)this=jbl_ht_free(this);
-	return NULL;
-}
-*/
 #if JBL_STREAM_ENABLE==1
 void jbl_ht_json_put(const jbl_ht* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
