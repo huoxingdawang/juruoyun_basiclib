@@ -14,6 +14,11 @@
 #include "jbl_stream.h"
 #include "jbl_ll.h"
 #include "jbl_ht.h"
+#include "jbl_log.h"
+#if JBL_JSON_DEBUG ==0
+	#undef jbl_log
+	#define jbl_log(x,...)
+#endif
 struct __jbl_json_decode_yy
 {
 	jbl_uint8		cond;
@@ -85,7 +90,6 @@ start:;
 	re2c:define:YYFILL:naked				=1;
 	re2c:define:YYFILL						="{upd;return yy;}";
 	re2c:variable:yych						=yy->ch;
-
 	<> :=> start
 	<start>			[\x01-\x20]									{upd																						;goto yyc_start;}
 	<start>			"\""						=>string		{upd;yy->v=jbl_var_free(yy->v);yy->v=jbl_string_new(yy->v)									;goto yyc_string;}
@@ -97,7 +101,7 @@ start:;
 	<start>			"true"										{upd;yy->v=jbl_var_free(yy->v);yy->v=jbl_Vtrue_new()										;goto yyc_start;}
 	<start>			"null"										{upd;yy->v=jbl_var_free(yy->v);yy->v=jbl_Vnull_new()										;goto yyc_start;}
 	<start>			"false"										{upd;yy->v=jbl_var_free(yy->v);yy->v=jbl_Vfalse_new()										;goto yyc_start;}
-	<start>			[]											{yy->cond=-2;return yy;}	
+	<start>			[]											{																							;return yy;}	
 	
 	
 	
@@ -116,6 +120,7 @@ start:;
 	<string_u>		[0-9]										{upd;yy->tmp.u=(yy->tmp.u<<4)+*(YYCURSOR-1)-'0'												;goto yyc_string_u;}
 	<string_u>		[a-f]										{upd;yy->tmp.u=(yy->tmp.u<<4)+*(YYCURSOR-1)-'a'+10											;goto yyc_string_u;}
 	<string_u>		[A-F]										{upd;yy->tmp.u=(yy->tmp.u<<4)+*(YYCURSOR-1)-'A'+10											;goto yyc_string_u;}
+	<string_u>		[\x00]										{																							;return yy;}	
 	<string_u>		[]							=>string		{upd;yy->v=jbl_string_add_utf8_from_unicode(yy->v,yy->tmp.u)								;goto yyc_string;}
 
 	<hex>			[0-9]										{upd;yy->tmp.u=(yy->tmp.u<<4)+*(YYCURSOR-1)-'0'												;goto yyc_hex;}
@@ -164,6 +169,7 @@ start:;
 																	else
 																	{
 																		yy->cond=-2;
+																		jbl_log(UC"JSON decode error %d %j %s",yy->type,yy->v,in);
 																		return yy;
 																	}
 																}
@@ -189,6 +195,7 @@ start:;
 																	}
 																	else
 																	{
+																		jbl_log(UC"JSON decode error %d %j %j %s",yy->type,yy->htk,yy->v,in);
 																		yy->cond=-2;
 																		return yy;
 																	}
@@ -204,6 +211,7 @@ start:;
 																	}
 																	else
 																	{
+																		jbl_log(UC"JSON decode error %s",in);
 																		yy->cond=-2;
 																		return yy;
 																	}
@@ -217,6 +225,7 @@ start:;
 																			yy2->v=jbl_ll_add(yy2->v,yy->v);
 																		else
 																		{
+																			jbl_log(UC"JSON decode error %s",in);
 																			yy->cond=-2;
 																			return yy;
 																		}
@@ -231,6 +240,7 @@ start:;
 																			yy2->v=jbl_ht_insert(yy2->v,yy->htk,yy->v);
 																		else
 																		{
+																			jbl_log(UC"JSON decode error %s",in);
 																			yy->cond=-2;
 																			return yy;
 																		}
@@ -241,13 +251,14 @@ start:;
 																	}
 																	else
 																	{
+																		jbl_log(UC"JSON decode error %s",in);
 																		yy->cond=-2;
 																		return yy;
 																	}
 																}
 
 
-	<*>				[\x00]										{yy->cond=-3;return yy;}	
+	<*>				[\x00]										{yy->cond=-1;return yy;}	
  */
 	#undef YYCTYPE	
 
@@ -274,12 +285,13 @@ static void __jbl_json_decode_stream_operater(jbl_stream* this,jbl_uint8 flags)
 		this->data=__jbl_json_decode(this->data,this->buf,this->buf+this->size,&i);
 		if((((struct __jbl_json_decode_yy*)this->data)->cond==(jbl_uint8)-2))
 		{
+			jbl_log(UC"%v",((struct __jbl_json_decode_yy*)this->extra[0].p)->v);
 			this->extra[0].p=__jbl_json_decode_yy_free((struct __jbl_json_decode_yy*)this->extra[0].p);
 			this->extra[0].p=this->data=__jbl_json_decode_yy_new();
 			this->stop=1;
 			return;
 		}
-		if(((struct __jbl_json_decode_yy*)this->data)->cond==(jbl_uint8)-1){this->stop=1;return;}
+		if((((struct __jbl_json_decode_yy*)this->data)->cond==(jbl_uint8)-1)&&(this->extra[0].p==this->data)){this->stop=1;return;}
 	}
 	jbl_memory_copy(this->buf,this->buf+i,this->en-=i);
 }

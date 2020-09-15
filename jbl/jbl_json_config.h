@@ -13,7 +13,8 @@
 #if JBL_JSON_ENABLE==1
 #include "jbl_ying.h"
 
-#define JBL_JSON_DECODE_STREAM_BUF_LENGTH 15
+#define JBL_JSON_DECODE_STREAM_BUF_LENGTH 1024
+#define JBL_JSON_DEBUG 1
 
 #endif
 #endif
