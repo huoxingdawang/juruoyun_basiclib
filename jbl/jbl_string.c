@@ -71,13 +71,9 @@ JBL_INLINE void jbl_string_stop()
 /*******************************************************************************************/
 /*                            以下函实现字符串基本操作                                   */
 /*******************************************************************************************/
-JBL_INLINE jbl_string * jbl_string_new()
+jbl_string * jbl_string_new()
 {
-	return jbl_string_init(jbl_malloc((sizeof(jbl_string))));
-}
-jbl_string * jbl_string_init(jbl_string *this)
-{
-	if(!this)jbl_exception("NULL POINTER");	
+	jbl_string * this=jbl_malloc(sizeof(jbl_string));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数
 	this->len=0;
@@ -509,69 +505,6 @@ jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,jbl_uint
 	if(format&1)for(jbl_uint32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);
 	if(!this)out=jbl_string_add_chars_length(out,UC"null",4);
 	return out;
-}
-jbl_string* jbl_string_json_decode(jbl_string *this,jbl_string* in,jbl_string_size_type *start)
-{
-	in=jbl_refer_pull(in);
-	if(!in)jbl_exception("NULL POINTER");
-	jbl_string_size_type i=start?(*start):0,n=in->len;
-	for(;i<n&&in->s[i]<=32;++i);
-//	pchar(in->s[i]);pn();
-	if(in->s[i]!='"')
-		goto fail;
-	for(++i;i<n;)
-	{
-		switch(in->s[i])
-		{
-			case '"':
-				{++i;goto success;}
-				break;
-			case '\\':
-				switch(in->s[i+1])
-				{
-					case '\\':
-						i+=2;this=jbl_string_add_char(this,'\\');
-						break;
-					case '"':
-						i+=2;this=jbl_string_add_char(this,'"');
-						break;
-					case 'b':
-						i+=2;this=jbl_string_add_char(this,'\b');
-						break;
-					case 'f':
-						i+=2;this=jbl_string_add_char(this,'\f');
-						break;
-					case 'n':
-						i+=2;this=jbl_string_add_char(this,'\n');
-						break;
-					case 'r':
-						i+=2;this=jbl_string_add_char(this,'\r');
-						break;
-					case 't':
-						i+=2;this=jbl_string_add_char(this,'\t');
-						break;
-					case 'u':
-						i+=2;this=jbl_string_add_utf8_from_unicode(this,jbl_string_get_hex_start_len(in,&i,4));
-						break;
-					default:
-						i+=2;this=jbl_string_add_char(this,'\\');
-						break;
-				}
-				break;
-			default :
-				this=jbl_string_add_char(this,in->s[i]),++i;
-		}
-	}
-	goto fail;
-success:;
-	if(!this)this=jbl_string_new();
-#if JBL_HT_ENABLE==1 && JBL_STRING_USE_CACHE==1 && JBL_HT_SYS_ENABLE==1 && JBL_STRING_USE_CACHE_WHEN_JSON_DECODE==1
-	this=jbl_string_cache_replace(this);
-#endif
-	start?(*start=i):0;
-	return this;
-fail:;
-	return NULL;
 }
 #if JBL_STREAM_ENABLE==1
 void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)

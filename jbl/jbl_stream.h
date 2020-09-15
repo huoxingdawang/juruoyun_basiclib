@@ -58,7 +58,6 @@ typedef struct __jbl_stream_operater
 void			jbl_stream_start					();
 void			jbl_stream_stop						();
 jbl_stream *	jbl_stream_new						(const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
-jbl_stream * 	jbl_stream_init						(jbl_stream *this,const jbl_stream_operater *op,void *data,jbl_stream_buf_size_type size,unsigned char *buf,jbl_uint8 tmplen);
 jbl_stream * 	jbl_stream_copy						(jbl_stream* this);
 jbl_stream * 	jbl_stream_free						(jbl_stream* this);
 const jbl_stream_operater * jbl_stream_get_ops(jbl_stream* this);

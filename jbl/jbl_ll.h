@@ -51,7 +51,6 @@ typedef struct __jbl_ll
 /*******************************************************************************************/
 jbl_var_operators_extern(jbl_ll_operators);
 jbl_ll  *		jbl_ll_new					();																//新建一个link list
-jbl_ll  *		jbl_ll_init					(jbl_ll *this);													//初始化一个link list
 jbl_ll  *		jbl_ll_free					(jbl_ll *this);													//释放一个link list
 jbl_ll  *		jbl_ll_copy					(jbl_ll *that);													//复制一个link list
 jbl_ll  *		jbl_ll_extend				(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi);	//分离一个link list

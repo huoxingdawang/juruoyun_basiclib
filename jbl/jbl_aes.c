@@ -28,18 +28,14 @@ extern void	__jbl_aes_128_encode_16		(__jbl_aes_128_ex_key w,jbl_uint8* a,jbl_ui
 extern void	__jbl_aes_128_decode_16		(__jbl_aes_128_ex_key w,jbl_uint8* a,jbl_uint8 *b);
 extern jbl_aes_128_key* jbl_aes_128_key_set(jbl_aes_128_key *this,unsigned char* key);
 
-JBL_INLINE jbl_aes_128_key* jbl_aes_128_key_new()
+jbl_aes_128_key* jbl_aes_128_key_new()
 {
-	return jbl_aes_128_key_init(jbl_malloc(sizeof(jbl_aes_128_key)));
-}
-JBL_INLINE jbl_aes_128_key* jbl_aes_128_key_init(jbl_aes_128_key *this)
-{
+	jbl_aes_128_key * this=jbl_malloc(sizeof(jbl_aes_128_key));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	jbl_var_set_operators(this,&jbl_aes_128_key_operators);
 	return this;
 }
-
 JBL_INLINE jbl_aes_128_key *jbl_aes_128_key_copy(jbl_aes_128_key *that)
 {
 	if(!that)return NULL;

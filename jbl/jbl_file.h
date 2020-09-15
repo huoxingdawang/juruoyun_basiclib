@@ -50,7 +50,6 @@ typedef struct __jbl_file
 typedef struct __jbl_file jbl_file;
 jbl_var_operators_extern(jbl_file_operators);
 jbl_file *			jbl_file_new						();
-jbl_file *			jbl_file_init						(jbl_file* this);
 jbl_file *			jbl_file_free						(jbl_file *this);
 jbl_file *			jbl_file_copy						(jbl_file *that);
 jbl_file *			jbl_file_open						(jbl_file *this,jbl_string * dir,jbl_file_handle_type type);

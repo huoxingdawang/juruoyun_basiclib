@@ -56,7 +56,6 @@ void					jbl_string_stop							();																		//关闭string
 /*                            以下函实现字符串基本操作                                   */
 /*******************************************************************************************/
 jbl_string *			jbl_string_new							();																		//新建一个字符串
-jbl_string * 			jbl_string_init							(jbl_string *this);														//初始化一个字符串
 jbl_string *			jbl_string_free							(jbl_string *this);														//释放一个字符串
 jbl_string *			jbl_string_copy							(jbl_string *that);														//复制一个字符串
 #define					jbl_string_extend(a,b)					jbl_string_extend_to((a),(b),1,NULL)				//扩展字符串ab字节
@@ -152,7 +151,6 @@ jbl_string *			jbl_string_to_lower_case				(jbl_string *this);														//�
 /*******************************************************************************************/
 jbl_string*				jbl_string_json_encode					(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);			//JSON编码
 jbl_string*				jbl_string_json_put_format				(const void* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs);			//输出JSON格式头
-jbl_string*				jbl_string_json_decode					(jbl_string *this,jbl_string* in,jbl_string_size_type *start);				//JSON解码
 #if JBL_STREAM_ENABLE==1
 void					jbl_string_json_put						(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);			//从从out JSON格式化一个字符串
 #endif

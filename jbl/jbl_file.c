@@ -19,11 +19,7 @@
 jbl_var_operators_new(jbl_file_operators,jbl_file_free,jbl_file_copy,NULL,NULL,jbl_file_view_put,NULL);
 jbl_file * jbl_file_new()
 {
-	return jbl_file_init(jbl_malloc(sizeof(jbl_file)));
-}
-jbl_file * jbl_file_init(jbl_file* this)
-{
-	if(!this)jbl_exception("NULL POINTER");
+	jbl_file * this=jbl_malloc(sizeof(jbl_file));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	jbl_var_set_operators(this,&jbl_file_operators);

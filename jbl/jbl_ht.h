@@ -58,7 +58,6 @@ typedef struct __jbl_ht
 /*******************************************************************************************/
 jbl_var_operators_extern(jbl_ht_operators);																//hash table 操作器
 jbl_ht  *				jbl_ht_new					();													//新建一个hash table
-jbl_ht  *				jbl_ht_init					(jbl_ht *this);										//初始化一个hash table
 jbl_ht  *				jbl_ht_free					(jbl_ht *this);										//释放一个hash table
 jbl_ht  *				jbl_ht_copy					(jbl_ht *that);										//复制一个hash table
 #define					jbl_ht_extend(x,y)			jbl_ht_extend_to(x,y,1,NULL)

@@ -83,12 +83,9 @@ void jbl_ll_node_delete(jbl_ll *this,jbl_ll_node *node)
 /*                            以下函实现链表基本操作                                      */
 /*******************************************************************************************/
 jbl_var_operators_new(jbl_ll_operators,jbl_ll_free,jbl_ll_copy,jbl_ll_space_ship,jbl_ll_json_encode,jbl_ll_view_put,jbl_ll_json_put);
-JBL_INLINE jbl_ll * jbl_ll_new()
+jbl_ll * jbl_ll_new()
 {
-	return jbl_ll_init(jbl_malloc((sizeof(jbl_ll))));	
-}
-JBL_INLINE jbl_ll* jbl_ll_init(jbl_ll *this)
-{
+	jbl_ll *this=jbl_malloc(sizeof(jbl_ll));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);	
 	jbl_var_set_operators(this,&jbl_ll_operators);

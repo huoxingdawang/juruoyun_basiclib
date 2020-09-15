@@ -33,12 +33,13 @@ jbl_var_operators_new(jbl_time_operators,jbl_time_free,jbl_time_copy,jbl_time_sp
 /*******************************************************************************************/
 /*                            以下函实现时间基本操作                                     */
 /*******************************************************************************************/
-JBL_INLINE jbl_time * jbl_time_new()
+jbl_time * jbl_time_new()
 {
 	return jbl_time_init(jbl_malloc(sizeof(jbl_time)));
 }
 JBL_INLINE jbl_time * jbl_time_init(jbl_time *this)
 {
+	if(!this)jbl_exception("NULL POINTER");
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	jbl_var_set_operators(this,&jbl_time_operators);

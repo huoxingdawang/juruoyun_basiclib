@@ -65,12 +65,9 @@ JBL_INLINE void* __jbl_ht_sys_var_copy(void *this){return this;}
 #define htvh(x) for(jbl_ht_size_type i=0;i<(x)->size;jbl_stream_push_char(jbl_stream_stdout,' '),jbl_stream_push_int(jbl_stream_stdout,(jbl_ht_size_type_signed)((jbl_ht_size_type*)(x)->data)[-i-1]),++i);jbl_stream_push_char(jbl_stream_stdout,'\n')		//查看hash值
 #define gh2(x,y) ((jbl_ht_size_type_signed)(((jbl_ht_size_type)(y))|(-(jbl_ht_size_type)(x)->size)))
 jbl_var_operators_new(jbl_ht_operators,jbl_ht_free,jbl_ht_copy,jbl_ht_space_ship,jbl_ht_json_encode,jbl_ht_view_put,jbl_ht_json_put);
-JBL_INLINE jbl_ht * jbl_ht_new()
+jbl_ht * jbl_ht_new()
 {
-	return jbl_ht_init(jbl_malloc((sizeof(jbl_ht))));	
-}
-JBL_INLINE jbl_ht * jbl_ht_init(jbl_ht *this)
-{
+	jbl_ht * this=jbl_malloc(sizeof(jbl_ht));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
 	jbl_var_set_operators(this,&jbl_ht_operators);
