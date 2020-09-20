@@ -15,6 +15,7 @@
 #include "jbl_ying.h"
 #include "jbl_bitset.h"
 #include "jbl_exception.h"
+#include "jbl_pthread.h"
 /*******************************************************************************************/
 /*                            联动 jbl_stream                                               */
 /*******************************************************************************************/
@@ -60,6 +61,7 @@ start:;
 /*******************************************************************************************/
 typedef struct __jbl_malloc_heap_struct
 {
+	jbl_pthread_lock_define;
 	jbl_malloc_size_type size;
 	jbl_malloc_size_type peak;
 }jbl_malloc_heap_struct;
@@ -72,11 +74,16 @@ typedef struct __jbl_malloc_heap_struct
 #if JBL_MALLOC_COUNT==1
 jbl_malloc_size_type	jbl_malloc_used_size	(){return jbl_malloc_heap.size;}
 #endif
+#if JBL_MALLOC_LOG ==0
+#undef jbl_log
+#define jbl_log(x,...)
+#endif
 /*******************************************************************************************/
 /*                            以下函数完成内存管理组件启动和停止                           */
 /*******************************************************************************************/
 void jbl_malloc_start()
 {
+	jbl_pthread_lock_init(&jbl_malloc_heap);
 #if JBL_MALLOC_COUNT==1
 	jbl_malloc_heap.size=0;
 	jbl_malloc_heap.peak=0;
@@ -108,11 +115,11 @@ JBL_INLINE void* jbl_malloc(jbl_malloc_size_type size)
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("MEMORY ERROR");
 #endif
-#if JBL_MALLOC_LOG ==1
 	jbl_log(UC "addr:0X%X\tsize:%d",ptr,jbl_malloc_size(ptr));
-#endif
 #if JBL_MALLOC_COUNT ==1
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size+=jbl_malloc_size(ptr),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 #endif
 	return ptr;
 }
@@ -142,30 +149,32 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 #endif
 	jbl_malloc_size_type size_old=_msize(ptr);
 #if JBL_MALLOC_COUNT ==1
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size-=size_old;
 	jbl_malloc_heap.size+=_msize(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);	
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 #endif
 	jbl_min_update(size_old,size);
 	jbl_memory_copy(ptr2,ptr,size_old);
 	free(ptr);
-#if JBL_MALLOC_LOG ==1
 	jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr2,_msize(ptr2));
-#endif
 	return ptr2;
 #elif defined(__APPLE__) || defined(__linux__)
 #if JBL_MALLOC_COUNT ==1
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 #endif
 	void *ptr2=realloc(ptr,size);
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr2)jbl_exception("MEMORY ERROR");
 #endif
 #if JBL_MALLOC_COUNT ==1
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size+=jbl_malloc_size(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 #endif
-#if JBL_MALLOC_LOG ==1
 	jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr2,jbl_malloc_size(ptr2));
-#endif
 	return ptr2;
 #endif
 }
@@ -174,11 +183,11 @@ JBL_INLINE void jbl_free(void * ptr)
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
 	if(!ptr)jbl_exception("NULL POINTER");	
 #endif
-#if JBL_MALLOC_LOG ==1
 	jbl_log(UC "addr:0X%X",ptr);
-#endif
 #if JBL_MALLOC_COUNT ==1
+	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
+	jbl_pthread_lock_unlock(&jbl_malloc_heap);
 #endif
 	free(ptr);
 }
