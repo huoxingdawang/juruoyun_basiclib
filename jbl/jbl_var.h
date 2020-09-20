@@ -146,7 +146,7 @@ jbl_string *				jbl_var_json_encode			(void * this,jbl_string *out,jbl_uint8 for
 #include "jbl_var_data.h"
 #else
 #define						jbl_var_set_operators(x,y)	
-#define						jbl_var_get_operators(x,y)	(NULL)
+#define						jbl_var_get_operators(x)	(NULL)
 #define						jbl_var_is(x,y)				(1)
 #define						jbl_var_operators_new(name,free,copy,space_ship,json_encode,view_put,json_put)
 #define						jbl_var_operators_extern(name)

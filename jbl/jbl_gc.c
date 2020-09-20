@@ -9,9 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_gc.h"
 #if JBL_GC_ENABLE==1
-#if JBL_VAR_ENABLE==1
 #include "jbl_var.h"
-#endif
 
 
 JBL_INLINE void* jbl_gc_plus	(void *this){if(this)((jbl_reference*)this)->gc+=16;return this;};

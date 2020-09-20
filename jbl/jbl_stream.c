@@ -9,9 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_stream.h"
 #if JBL_STREAM_ENABLE==1
-#if JBL_VAR_ENABLE==1
 #include "jbl_var.h"
-#endif
 #include <stdio.h>
 #include "jbl_string_cc.h"
 extern			const jbl_stream_operater			jbl_stream_file_operators;
