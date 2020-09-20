@@ -82,59 +82,59 @@ aes:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)aes.o          examples$(H)aes.c         $(EXLIB)
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)aes_big.o   	  examples$(H)aes_big.c     $(EXLIB)
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)aes_stream.o   examples$(H)aes_stream.c  $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)aes         tmp$(H)$(pre)aes.o        tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)aes_big     tmp$(H)$(pre)aes_big.o    tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)aes_stream  tmp$(H)$(pre)aes_stream.o tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)aes         tmp$(H)$(pre)aes.o        tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)aes_big     tmp$(H)$(pre)aes_big.o    tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)aes_stream  tmp$(H)$(pre)aes_stream.o tmp$(H)$(pre)jbl.a $(EXLIB)
 base64:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)base64.o        examples$(H)base64.c     $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)base64      tmp$(H)$(pre)base64.o     tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)base64      tmp$(H)$(pre)base64.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 bitset:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)bitset.o        examples$(H)bitset.c     $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)bitset      tmp$(H)$(pre)bitset.o     tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)bitset      tmp$(H)$(pre)bitset.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 cmd:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)cmd.o           examples$(H)cmd.c        $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)cmd         tmp$(H)$(pre)cmd.o        tmp$(H)$(pre)jbl.a	
+	$(CC) $(BITS) -o exes$(H)cmd         tmp$(H)$(pre)cmd.o        tmp$(H)$(pre)jbl.a $(EXLIB)
 file:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)file.o          examples$(H)file.c       $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)file        tmp$(H)$(pre)file.o       tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)file        tmp$(H)$(pre)file.o       tmp$(H)$(pre)jbl.a $(EXLIB)
 json:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)json.o          examples$(H)json.c	    $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)json        tmp$(H)$(pre)json.o       tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)json        tmp$(H)$(pre)json.o       tmp$(H)$(pre)jbl.a $(EXLIB)
 ht:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ht.o            examples$(H)ht.c         $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)ht          tmp$(H)$(pre)ht.o         tmp$(H)$(pre)jbl.a	
+	$(CC) $(BITS) -o exes$(H)ht          tmp$(H)$(pre)ht.o         tmp$(H)$(pre)jbl.a $(EXLIB)
 ll:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)ll.o            examples$(H)ll.c         $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)ll          tmp$(H)$(pre)ll.o         tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)ll          tmp$(H)$(pre)ll.o         tmp$(H)$(pre)jbl.a $(EXLIB)
 log:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)log.o           examples$(H)log.c        $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)log         tmp$(H)$(pre)log.o        tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)log         tmp$(H)$(pre)log.o        tmp$(H)$(pre)jbl.a $(EXLIB)
 malloc:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)malloc.o        examples$(H)malloc.c     $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)malloc      tmp$(H)$(pre)malloc.o     tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)malloc      tmp$(H)$(pre)malloc.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 md5:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)md5.o           examples$(H)md5.c        $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)md5         tmp$(H)$(pre)md5.o        tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)md5         tmp$(H)$(pre)md5.o        tmp$(H)$(pre)jbl.a $(EXLIB)
 rand:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)rand.o          examples$(H)rand.c       $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)rand        tmp$(H)$(pre)rand.o       tmp$(H)$(pre)jbl.a	
+	$(CC) $(BITS) -o exes$(H)rand        tmp$(H)$(pre)rand.o       tmp$(H)$(pre)jbl.a $(EXLIB)
 stream:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)stream.o        examples$(H)stream.c     $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)stream      tmp$(H)$(pre)stream.o     tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)stream      tmp$(H)$(pre)stream.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 string:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)string.o        examples$(H)string.c         $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)string      tmp$(H)$(pre)string.o     tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)string      tmp$(H)$(pre)string.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 sha1:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)sha1.o          examples$(H)sha1.c       $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)sha1        tmp$(H)$(pre)sha1.o       tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)sha1        tmp$(H)$(pre)sha1.o       tmp$(H)$(pre)jbl.a $(EXLIB)
 time:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time.o          examples$(H)time.c       $(EXLIB)
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)time2.o         examples$(H)time2.c      $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)time        tmp$(H)$(pre)time.o       tmp$(H)$(pre)jbl.a
-	$(CC) $(BITS) -o exes$(H)time2       tmp$(H)$(pre)time2.o      tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)time        tmp$(H)$(pre)time.o       tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)time2       tmp$(H)$(pre)time2.o      tmp$(H)$(pre)jbl.a $(EXLIB)
 test2:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)test2.o          examples$(H)test2.c       $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)test2        tmp$(H)$(pre)test2.o       tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)test2        tmp$(H)$(pre)test2.o       tmp$(H)$(pre)jbl.a $(EXLIB)
 var:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)var.o           examples$(H)var.c        $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)var         tmp$(H)$(pre)var.o        tmp$(H)$(pre)jbl.a
+	$(CC) $(BITS) -o exes$(H)var         tmp$(H)$(pre)var.o        tmp$(H)$(pre)jbl.a $(EXLIB)
