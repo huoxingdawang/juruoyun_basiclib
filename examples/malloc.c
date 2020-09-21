@@ -8,10 +8,10 @@ jbl_uint32 get_size(int small,int large,int huge)
 	else					size=2093056+((jbl_rand())%2093056);
 	return size;
 }
-int slot=1024,base=17;
-int small=98;
-int large=1;
-int huge=1;
+int slot=2048,base=17;
+int small=90;
+int large=5;
+int huge=5;
 int thread=4;
 void do_malloc(jbl_uint64 slot,jbl_uint64 n,jbl_uint64 small,jbl_uint64 large,jbl_uint64 huge)
 {

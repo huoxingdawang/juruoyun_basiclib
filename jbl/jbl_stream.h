@@ -14,10 +14,8 @@
 #include "jbl_ying.h"
 #include "jbl_malloc.h"
 #include "jbl_gc.h"
+#include "jbl_var.h"
 #include "jbl_exception.h"
-#if JBL_VAR_ENABLE==1
-typedef	struct	__jbl_var_operators					jbl_var_operators;
-#endif
 typedef struct __jbl_stream_operater jbl_stream_operater;
 typedef union
 {
@@ -28,9 +26,8 @@ typedef union
 typedef struct __jbl_stream
 {
 	jbl_gc						gc;
-#if JBL_VAR_ENABLE==1
-	jbl_var_operators *			var_ops;
-#endif
+	jbl_var_ops_define			;
+	jbl_pthread_lock_define		;
 	const jbl_stream_operater *	op;
 	struct __jbl_stream *		nxt;
 	jbl_stream_buf_size_type	en;
