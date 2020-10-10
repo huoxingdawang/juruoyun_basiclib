@@ -63,11 +63,8 @@ jbl_stream * jbl_stream_new(const jbl_stream_operater *op,void *data,jbl_stream_
 jbl_stream * jbl_stream_free(jbl_stream* this)
 {
 	if(!this)return NULL;
-	jbl_pthread_lock_wrlock(this);
 	jbl_gc_minus(this);
-	if(jbl_gc_refcnt(this))
-		jbl_pthread_lock_unlock(this);
-	else
+	if(!jbl_gc_refcnt(this))
 	{
 		if(jbl_gc_is_ref(this))
 			jbl_stream_free((jbl_stream*)(((jbl_reference*)this)->ptr));
@@ -84,9 +81,7 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 jbl_stream * jbl_stream_copy(jbl_stream* this)
 {
 	if(!this)return NULL;
-	jbl_pthread_lock_wrlock(this);
 	jbl_gc_plus(this);
-	jbl_pthread_lock_unlock(this);
 	return this;
 /*	
 	if(jbl_gc_is_ref(this))
@@ -117,48 +112,48 @@ jbl_stream * jbl_stream_copy(jbl_stream* this)
 JBL_INLINE const jbl_stream_operater *jbl_stream_get_ops(jbl_stream* this)
 {
 	if(!this)return NULL;
-	const jbl_stream_operater *ops=((jbl_stream*)jbl_refer_pull_rdlock(this))->op;
-	jbl_refer_pull_unlock(this);
+	const jbl_stream_operater *ops=((jbl_stream*)jbl_refer_pull(this))->op;
 	return ops;
 }
 void jbl_stream_do(jbl_stream* this,jbl_uint8 flag)
 {
-	void  (*op)(jbl_stream*,jbl_uint8)=jbl_stream_get_ops(this)->op;
-	if(!op)return;
-	op(this,flag);
+	const jbl_stream_operater *ops=jbl_stream_get_ops(this);
+	if(ops&&ops->op)ops->op(this,flag);
 }
 jbl_stream * jbl_stream_connect(jbl_stream* this,jbl_stream* next)
 {
 	this=jbl_stream_disconnect(this);
-	jbl_stream* thi=jbl_refer_pull_wrlock(this);
+	jbl_stream* thi=jbl_refer_pull(this);
 	thi->nxt=jbl_stream_copy(next);
-	jbl_refer_pull_unlock(this);
 	return this;
 }
 JBL_INLINE jbl_stream * jbl_stream_disconnect(jbl_stream* this)
 {
-	jbl_stream* thi=jbl_refer_pull_wrlock(this);
+	jbl_stream* thi=jbl_refer_pull(this);
 	thi->nxt=jbl_stream_free(thi->nxt);
-	jbl_refer_pull_unlock(this);
 	return this;
 }
 
 void jbl_stream_push_char(jbl_stream* this,unsigned char c)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	jbl_stream*thi=jbl_refer_pull_wrlock(this);
-	((thi->en)>=thi->size)?(jbl_pthread_lock_unlock(thi),jbl_stream_do(thi,0),jbl_pthread_lock_wrlock(thi)):0;
+	jbl_stream*thi=jbl_refer_pull(this);
+	if(thi->stop)return;
 	thi->buf[thi->en]=c;
 	++thi->en;
-	jbl_refer_pull_unlock(this);
+	if(thi->en>=thi->size)jbl_stream_do(thi,0);
 }
 void jbl_stream_push_chars(jbl_stream* this,const unsigned char *str)
 {
 	if(!str)return;
 	if(!this)jbl_exception("NULL POINTER");
-	jbl_stream*thi=jbl_refer_pull_wrlock(this);
-	for(;*str;){for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en){}jbl_pthread_lock_unlock(thi);jbl_stream_do(thi,0);jbl_pthread_lock_wrlock(thi);if(1==thi->stop)break;}
-	jbl_refer_pull_unlock(this);
+	jbl_stream*thi=jbl_refer_pull(this);
+	if(thi->stop)return;
+	for(;*str;)
+	{
+		for(;*str&&thi->en<thi->size;thi->buf[thi->en]=*str,++str,++thi->en);
+		jbl_stream_do(thi,0);if(thi->stop)return;
+	}
 }
 void jbl_stream_push_uint_length(jbl_stream *this,jbl_uint64 in,jbl_uint8 len,char c)
 {
@@ -209,7 +204,7 @@ JBL_INLINE char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_
 	if(format)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
 	if(!this)typename=UC"null";
 	jbl_stream_push_chars(out,typename);
-	int i;while(typename[i])++i;
+	int i=0;while(typename[i])++i;
 	if(i<JBL_VIEW_NAME_LENGTH)
 		for(;i<JBL_VIEW_NAME_LENGTH;++i,jbl_stream_push_char(out,' '));
 #if JBL_VIEW_DISPLAY_VARNAME == 1
@@ -237,8 +232,8 @@ JBL_INLINE char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_
 #endif
 void jbl_stream_file_operator(jbl_stream* this,jbl_uint8 flags)
 {
-	jbl_stream* thi=jbl_refer_pull_wrlock(this);
-	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
+	jbl_stream* thi=jbl_refer_pull(this);
+	jbl_stream* nxt=jbl_refer_pull(thi->nxt);
 	if(nxt)
 		for(;;)
 		{
@@ -252,8 +247,6 @@ void jbl_stream_file_operator(jbl_stream* this,jbl_uint8 flags)
 		fwrite(thi->buf,1,thi->en,thi->data);
 		thi->en=0;
 	}
-	jbl_refer_pull_unlock(thi->nxt);
-	jbl_refer_pull_unlock(this);
 }
 jbl_stream_operators_new(jbl_stream_file_operators,jbl_stream_file_operator,fclose,NULL);
 jbl_stream *jbl_stream_stdout;

@@ -15,7 +15,9 @@
 #include "jbl_malloc.h"
 #include "jbl_gc.h"
 #include "jbl_var.h"
+#include "jbl_pthread.h"
 #include "jbl_exception.h"
+#include "jbl_pthread.h"
 typedef struct __jbl_stream_operater jbl_stream_operater;
 typedef union
 {
@@ -85,6 +87,10 @@ void			jbl_stream_push_hex_8bits			(jbl_stream * this,jbl_uint8 in);
 #define			pt()								pchar('\t')
 #define			pf()								jbl_stream_do(jbl_stream_stdout,jbl_stream_force)
 #define			pl()								puint(__LINE__),pchars(" @ "__FILE__),pn(),pf()
+#define			louts()								jbl_refer_pull_wrlock(jbl_stream_stdout)
+#define			ulouts()							jbl_refer_pull_unlock(jbl_stream_stdout)
+#define			lins()								jbl_refer_pull_wrlock(jbl_stream_stdin)
+#define			ulins()								jbl_refer_pull_unlock(jbl_stream_stdin)
 
 char			jbl_stream_view_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);
 #if JBL_JSON_ENABLE==1

@@ -23,7 +23,7 @@
 /*******************************************************************************************/
 /*                            以下函数完成内存复制操作                                    */
 /*******************************************************************************************/
-void jbl_memory_copy(void *to,const void * from,jbl_malloc_size_type len){for(register jbl_malloc_size_type i=0;i<len;((unsigned char*)to)[i]=((unsigned char*)from)[i],++i);}
+inline void jbl_memory_copy(void *to,const void * from,jbl_malloc_size_type len){for(register jbl_malloc_size_type i=0;i<len;((unsigned char*)to)[i]=((unsigned char*)from)[i],++i);}
 void jbl_memory_copy_reverse(void *to,const void * from,jbl_malloc_size_type len,jbl_malloc_size_type size){for(register jbl_malloc_size_type i=0;i<len;i+=size)for(register jbl_malloc_size_type j=0;j<size;++j)((char*)to)[i+j]=((char*)from)[len-i-size+j];}
 jbl_uint64 __jbl_malloc_get_ignore_size()//该函数获取了输出流所占空间,用于程序结束时统计内存占用时忽略
 {

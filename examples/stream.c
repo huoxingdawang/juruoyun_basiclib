@@ -2,17 +2,13 @@
 #if JBL_PTHREAD_ENABLE==1
 void * do_thread(void * a)
 {
-	for(int i=0;i<100;++i)pchars("juruoyun\n");
+	for(int i=0;i<100;++i){louts();pchars("juruoyun\n");ulouts();}
 	return NULL;
 }
 void * do_thread2(void * a)
 {
-	for(int i=0;i<100;++i)pchar('1');pchar('\n');
-	for(int i=0;i<100;++i)pchar('1');pchar('\n');
-	for(int i=0;i<100;++i)pchar('1');pchar('\n');
-	for(int i=0;i<100;++i)pchar('1');pchar('\n');
-	for(int i=0;i<100;++i)pchar('1');pchar('\n');
-	for(int i=0;i<100;++i)pchar('1');pchar('\n');
+	for(int i=0;i<100;++i){louts();pchar('1');pchar('\n');ulouts();}
+
 	return NULL;
 }
 #define thread 100

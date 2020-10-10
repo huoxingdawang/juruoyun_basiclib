@@ -13,9 +13,7 @@
 #if JBL_VAR_ENABLE==1
 #include "jbl_ying.h"
 typedef struct __jbl_string jbl_string;
-#define						jbl_var_ops_define			jbl_var_operators * var_ops
 typedef struct __jbl_stream jbl_stream;
-#include "jbl_stream.h"	
 typedef struct __jbl_var_operators
 {
 	void*	(*free)(void*);
@@ -33,6 +31,7 @@ typedef struct __jbl_var_operators
 #endif
 #endif
 }jbl_var_operators;
+#define						jbl_var_ops_define			jbl_var_operators * var_ops
 
 #if JBL_STRING_ENABLE==1
 	#if JBL_STREAM_ENABLE==1

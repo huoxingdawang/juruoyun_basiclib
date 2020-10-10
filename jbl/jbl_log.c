@@ -13,26 +13,45 @@
 #include "jbl_var.h"
 #include "jbl_string.h"
 #include "jbl_file.h"
+#include "jbl_pthread.h"
 #include <stdarg.h>
-struct
+static struct
 {
 	jbl_uint32 cnt;
 	jbl_uint32 pcnt;
 	jbl_uint8 start;	
-	jbl_log_struct d[JBL_LOG_MAX_LENGTH];
-	jbl_log_parameter_struct p[JBL_LOG_MAX_LENGTH*4];
-	
-	
-	
+	struct
+	{
+		const char * file;
+		const char * func;
+		jbl_uint32 line;
+	#if JBL_TIME_ENABLE==1
+		jbl_time t;
+	#endif
+		unsigned char * chars;
+	}d[JBL_LOG_MAX_LENGTH];
+	union
+	{
+		jbl_uint64 u;
+		jbl_uint32 i;
+		double d;
+		char c;
+		char* s;
+		void *v;
+	}p[JBL_LOG_MAX_LENGTH*4];
+#if JBL_STREAM_ENABLE==1 && JBL_FILE_ENABLE ==1
 	jbl_stream* fs;
+#endif
+	jbl_pthread_lock_define		;
 }__jbl_logs;
 
-
+static void __jbl_log_save(jbl_uint8 lock);
 void jbl_log_start()
 {
 	__jbl_logs.cnt=0;
 	__jbl_logs.start=1;
 	__jbl_logs.pcnt=0;
+	jbl_pthread_lock_init(&__jbl_logs);
 #if JBL_TIME_ENABLE==1
 	for(jbl_uint32 i=0;i<JBL_LOG_MAX_LENGTH;++i)
 		jbl_time_init(&__jbl_logs.d[i].t);
@@ -40,14 +59,17 @@ void jbl_log_start()
 }
 void jbl_log_stop()
 {
-	jbl_log_save();
+	__jbl_log_save(1);
+#if JBL_STREAM_ENABLE==1 && JBL_FILE_ENABLE ==1
 	jbl_stream_do(__jbl_logs.fs,jbl_stream_force);
 	__jbl_logs.fs=jbl_stream_free(__jbl_logs.fs);
+#endif
 }
 
 void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigned char *s,...)
 {
 	if(!__jbl_logs.start)return;
+	jbl_pthread_lock_wrlock(&__jbl_logs);
 	__jbl_logs.d[__jbl_logs.cnt].file=file;
 	__jbl_logs.d[__jbl_logs.cnt].func=func;
 	__jbl_logs.d[__jbl_logs.cnt].line=line;
@@ -80,21 +102,20 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 	jbl_time_now(&__jbl_logs.d[__jbl_logs.cnt].t);
 #endif
 	++__jbl_logs.cnt;
-	if((__jbl_logs.cnt+10)>=JBL_LOG_MAX_LENGTH)
-		jbl_log_save();
-	else if((__jbl_logs.pcnt+40)>=JBL_LOG_MAX_LENGTH*4)
-		jbl_log_save();
+	if((__jbl_logs.cnt+10)>=JBL_LOG_MAX_LENGTH||(__jbl_logs.pcnt+40)>=JBL_LOG_MAX_LENGTH*4)
+		__jbl_log_save(0);
+	jbl_pthread_lock_unlock(&__jbl_logs);
 }
 #include <stdio.h>
 
 
-void jbl_log_save()
-{	
+static void __jbl_log_save(jbl_uint8 lock)
+{
+	if(lock)jbl_pthread_lock_wrlock(&__jbl_logs);
 	if((__jbl_logs.start&0x02))return;
 	__jbl_logs.start|=0x02;
-	jbl_log(UC "Saving logs");
+#if JBL_STREAM_ENABLE==1 && JBL_FILE_ENABLE ==1
 	if(!__jbl_logs.fs)__jbl_logs.fs=jbl_file_stream_new(jbl_file_open_chars(NULL,UC JBL_LOG_DIR,JBL_FILE_WRITE));
-#if JBL_STREAM_ENABLE==1
 	jbl_uint32 j=0;
 	for(jbl_uint32 i=0;i<__jbl_logs.cnt;++i)
 	{
@@ -144,6 +165,7 @@ void jbl_log_save()
 	__jbl_logs.start&=(~0x02);
 	__jbl_logs.cnt=0;
 	__jbl_logs.pcnt=0;
+	if(lock)jbl_pthread_lock_unlock(&__jbl_logs);
 }
 
 #endif
