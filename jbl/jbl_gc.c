@@ -10,6 +10,7 @@
 #include "jbl_gc.h"
 #if JBL_GC_ENABLE==1
 #include "jbl_pthread.h"
+#include "jbl_malloc.h"
 
 
 JBL_INLINE void* jbl_gc_plus	(void *this){if(this)((jbl_reference*)this)->gc+=16;return this;};
@@ -18,9 +19,9 @@ JBL_INLINE void* jbl_gc_minus	(void *this){if(this)((jbl_reference*)this)->gc-=1
 
 void * jbl_refer(void *ptr)
 {
-	if(ptr==NULL)jbl_exception("NULL POINTER");
+	if(!ptr)jbl_exception("NULL POINTER");
 	jbl_reference *pptr=*((jbl_reference**)(ptr));
-	if(pptr==NULL)jbl_exception("NULL POINTER");
+	if(!pptr)jbl_exception("NULL POINTER");
 	jbl_reference *this;
 	this=jbl_malloc((sizeof(jbl_reference)));
 	jbl_gc_init(this);
@@ -34,7 +35,7 @@ void * jbl_refer(void *ptr)
 }
 void * jbl_derefer(void *ptr)
 {
-	if(ptr==NULL)jbl_exception("NULL POINTER");
+	if(!ptr)jbl_exception("NULL POINTER");
 	if(!jbl_gc_is_ref((jbl_reference*)ptr))
 		return ptr;
 	char flag=1;
