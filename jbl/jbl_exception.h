@@ -25,6 +25,6 @@ void	jbl_exit							(int x);
 #include<stdlib.h>
 #define	jbl_exception_add_exit_function(x)
 #define	jbl_exception(x)					exit(0)
-#define	jbl_exit(x)							exit(0)
+#define	jbl_exit(x)							exit(x)
 #endif
 #endif

@@ -41,8 +41,8 @@ typedef unsigned long long	jbl_uint64;
 
 jbl_int64	jbl_ceil				(long double i);	//上取整
 jbl_uint64	jbl_min2pow				(jbl_uint64 i);
-jbl_uint32 jbl_getuint64(jbl_uint8 *s);
-double jbl_pow(double a,jbl_uint32 b);
+jbl_uint64  jbl_getuint64           (jbl_uint8 *s);
+double      jbl_pow                 (double a,jbl_uint32 b);
 
 
 #define	jbl_max(a,b)		(((a)>(b))?(a):(b))
