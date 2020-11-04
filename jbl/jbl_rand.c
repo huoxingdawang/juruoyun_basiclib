@@ -26,9 +26,28 @@
 static struct
 {
 	jbl_pthread_lock_define;
-	jbl_uint16 index;
+	jbl_uint32 index;
 	jbl_uint32 buf[624];
 }__jbl_rand_data;
+/*
+·(w, n, m, r) = (32, 624, 397, 31)
+·a = 9908B0DF（16）
+·f = 1812433253
+·(u, d) = (11, FFFFFFFF16)
+·(s, b) = (7, 9D2C568016)
+·(t, c) = (15, EFC6000016)
+·l = 18
+MT19937-64的参数列表如下：
+·(w, n, m, r) = (64, 312, 156, 31)
+·a = B5026F5AA96619E9（16）
+·f = 6364136223846793005
+·(u, d) = (29, 555555555555555516)
+·(s, b) = (17, 71D67FFFEDA6000016)
+·(t, c) = (37, FFF7EEE00000000016)
+·l = 43
+*/
+
+
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
@@ -42,7 +61,7 @@ void jbl_rand_srand(jbl_uint32 seed)
 	jbl_pthread_lock_wrlock(&__jbl_rand_data);
 	__jbl_rand_data.buf[__jbl_rand_data.index=0]=seed;
 	for(jbl_uint16 i=1;i<624;++i)
-		__jbl_rand_data.buf[i]=(1812433253*(__jbl_rand_data.buf[i-1]^(__jbl_rand_data.buf[i-1]>>30))+i)&0xffffffff;
+		__jbl_rand_data.buf[i]=(0X6C078965*(__jbl_rand_data.buf[i-1]^(__jbl_rand_data.buf[i-1]>>30))+i)&0xffffffff;
 	jbl_pthread_lock_unlock(&__jbl_rand_data);
 }
 void __jbl_rand_generate()
@@ -52,7 +71,7 @@ void __jbl_rand_generate()
 	{
 		jbl_uint32 y=(__jbl_rand_data.buf[i]&0x80000000)+(__jbl_rand_data.buf[(i+1)%624]&0x7fffffff);
 		__jbl_rand_data.buf[i]=__jbl_rand_data.buf[(i+397)%624]^(y>>1);
-		if(y&1)__jbl_rand_data.buf[i]^=2567483615;
+		if(y&1)__jbl_rand_data.buf[i]^=0x9908B0DF;
 	}
 	jbl_pthread_lock_unlock(&__jbl_rand_data);
 }
@@ -64,8 +83,8 @@ jbl_uint32 jbl_rand()
 	__jbl_rand_data.index=(__jbl_rand_data.index+1)%624;
 	jbl_pthread_lock_unlock(&__jbl_rand_data);
 	y=y^(y>>11);
-	y=y^((y<<7)&2636928640);
-	y=y^((y<<15)&4022730752);
+	y=y^((y<<7)&0x9D2C5680);
+	y=y^((y<<15)&0xEFC60000);
 	y=y^(y>>18);
 	return y;
 }
@@ -75,7 +94,7 @@ jbl_uint32 jbl_rand()
 /*******************************************************************************************/
 #include <stdlib.h>
 JBL_INLINE void jbl_rand_srand(jbl_uint32 seed){srand(seed);}
-JBL_INLINE jbl_uint32 jbl_rand(){return rand();}
+JBL_INLINE jbl_uint32 jbl_rand(){return (jbl_uint32)rand();}
 #else
 /*******************************************************************************************/
 /*                            全局变量定义                                                */

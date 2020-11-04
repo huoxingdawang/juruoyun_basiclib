@@ -63,7 +63,7 @@ jbl/jbl_md5            :
 jbl/jbl_pthread        :
 	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_pthread.o     jbl$(H)jbl_pthread.c     $(JBL_EXLIB)
 jbl/jbl_rand           :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_rand.o        jbl$(H)jbl_rand.c        $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_rand.o        jbl$(H)jbl_rand.c        $(JBL_EXLIB)
 jbl/jbl_scanner           :
 ifeq ($(system),linux)
 ifeq ($(findstring jbl,$(complain_re2c)),jbl)
