@@ -42,7 +42,7 @@ void __jbl_exception(const char * function,const char * file,int line,char * x)
 #if JBL_STREAM_ENABLE ==1
 	if((!jbl_stream_stdout)&&x)
 #endif
-		printf("\n\n\nError occured ,but stream can't work\nFile%s\nLine %d\nFunction %s\n",file,line,function);
+		printf("\n\n\nError %s occured ,but stream can't work\nFile%s\nLine %d\nFunction %s\n",x,file,line,function);
 #if JBL_STREAM_ENABLE ==1
 	if(jbl_stream_stdout)
 	{
