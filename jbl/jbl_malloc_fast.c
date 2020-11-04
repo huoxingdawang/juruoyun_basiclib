@@ -40,9 +40,9 @@ jbl_uint64 __jbl_malloc_get_ignore_size();
 /*                            结构体定义                                                   */
 /*******************************************************************************************/
 #if  jbl_bitset_bits==32
-	#define jbl_malloc_fmap_len		16	//(512/jbl_bitset_bits)
+	#define jbl_malloc_fmap_len		16U	//(512/jbl_bitset_bits)
 #else
-	#define jbl_malloc_fmap_len		8	//(512/jbl_bitset_bits)
+	#define jbl_malloc_fmap_len		8U	//(512/jbl_bitset_bits)
 #endif
 typedef struct __jbl_malloc_free_slot		jbl_malloc_free_slot;
 typedef struct __jbl_malloc_heap_struct		jbl_malloc_heap_struct;
@@ -82,9 +82,9 @@ typedef struct __jbl_malloc_chunk_struct
 {
 	struct __jbl_malloc_chunk_struct	*next;
 	struct __jbl_malloc_chunk_struct	*pre;
-	jbl_uint16						free_pages;		
-	jbl_uint32						map[512];					//2KB=512*4
-	jbl_bitset_type					fmap[jbl_malloc_fmap_len];	//16*32bit
+	jbl_uint16						    free_pages;		
+	jbl_uint32						    map[512];					//2KB=512*4
+	jbl_bitset_type					    fmap[jbl_malloc_fmap_len];	//16*32bit
 }jbl_malloc_chunk_struct;
 static const struct
 {
@@ -112,17 +112,17 @@ void					__jbl_free_cached_chunks	();											//该函数不会操作size     
 void*					__jbl_malloc_page			(jbl_uint16 nums,jbl_uint8 type);			//该函数不会操作size和applied_size
 jbl_uint16				__jbl_free_page				(void *ptr);								//该函数不会操作size和applied_size
 void*					__jbl_malloc_large			(jbl_malloc_size_type size);				//该函数  会操作size              但不会操作applied_size
-extern JBL_INLINE void		__jbl_free_large			(void *ptr);								//该函数  会操作size              但不会操作applied_size
+extern JBL_INLINE void	__jbl_free_large			(void *ptr);								//该函数  会操作size              但不会操作applied_size
 void*					__jbl_malloc_small			(jbl_uint16 size);							//该函数  会操作size              但不会操作applied_size
 void					__jbl_free_small			(void* ptr);								//该函数  会操作size              但不会操作applied_size
 void					__jbl_free_smalls			();											//该函数不会操作size和applied_size
 void*					__jbl_malloc_huge			(jbl_malloc_size_type size);				//该函数  会操作size和applied_size
 jbl_uint8				__jbl_free_huge				(void* ptr);								//该函数  会操作size和applied_size
-#define					is_aligned_2M(ptr)			((((jbl_malloc_size_type)(ptr))&0X1fffff)==0)
-#define					aligned_to_2M(ptr)			((void*)(((jbl_malloc_size_type)(ptr))&(~0X1fffff)))
-#define					is_aligned_4K(ptr)			((((jbl_malloc_size_type)(ptr))&(0XFFF))==0)
-#define					aligned_to_4K(ptr)			((void*)(((jbl_malloc_size_type)(ptr))&(~0XFFF)))
-#define					get_page_i(page,chunk)		(((jbl_malloc_size_type)((char*)page-(char*)chunk))>>12)
+#define					is_aligned_2M(ptr)			((((jbl_pointer_int)(ptr))&0X1fffffULL)==0)
+#define					aligned_to_2M(ptr)			((void*)(((jbl_pointer_int)(ptr))&(~0X1fffffULL)))
+#define					is_aligned_4K(ptr)			((((jbl_pointer_int)(ptr))&(0XFFFULL))==0)
+#define					aligned_to_4K(ptr)			((void*)(((jbl_pointer_int)(ptr))&(~0XFFFULL)))
+#define					get_page_i(page,chunk)		(((jbl_uint16)((char*)page-(char*)chunk))>>12)
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
@@ -202,7 +202,7 @@ void* jbl_malloc(jbl_malloc_size_type size)
 #endif
 	void *ptr;
 	if(size<=3072)//small
-		ptr=__jbl_malloc_small(size);
+		ptr=__jbl_malloc_small((jbl_uint16)size);
 	else if(size<=2093056)//large 2*1024*1024-4*1024(2M-4K)
 		ptr=__jbl_malloc_large(size);
 	else//huge
@@ -254,17 +254,17 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 		jbl_malloc_chunk_struct *chunk=aligned_to_2M(ptr);
 		jbl_uint16 i=get_page_i(ptr,chunk);
 		jbl_uint16 n=chunk->map[i]&(0X1FF);				//有的
-		jbl_uint16 page=((size&(0X1FF))!=0)+(size>>12);	//现在需要page个page
-		if(jbl_bitset_find1(chunk->fmap,i+n,jbl_malloc_fmap_len)>=i+page)
+		jbl_uint16 page=(jbl_uint16)(((size&(0X1FF))!=0)+(size>>12));	//现在需要page个page
+		if(jbl_bitset_find1(chunk->fmap,(jbl_uint16)(i+n),jbl_malloc_fmap_len)>=i+page)
 		{
 #if JBL_MALLOC_COUNT ==1
-			jbl_malloc_heap.size+=((page-n)<<12);/*新增page-n个page*/jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
+			jbl_malloc_heap.size+=(((jbl_malloc_size_type)page-n)<<12);/*新增page-n个page*/jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
 #endif
 			//在chunk第i个位置标记page个large类型的内存块
-			jbl_uint32 tmp=(0X40000000)|page;
-			jbl_bitset_set(chunk->fmap,i+n,page-n);
+			jbl_uint32 tmp=(0X40000000U)|page;
+			jbl_bitset_set(chunk->fmap,(jbl_uint32)i+n,(jbl_uint32)page-n);
 			for(jbl_uint16 j=0;j<page;++j)
-				chunk->map[i+j]=tmp|(j<<10);//[30,29]U[19,10]U[9,0]
+				chunk->map[i+j]=tmp|((jbl_uint32)(j<<10));//[30,29]U[19,10]U[9,0]
 			jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr,jbl_malloc_size(ptr));
 			jbl_pthread_lock_unlock(&jbl_malloc_heap);
 			return ptr;
@@ -336,7 +336,7 @@ void __jbl_malloc_munmap(void *ptr, jbl_malloc_size_type size)
 	if(!ptr)jbl_exception("NULL POINTER");	
 #endif
 #ifdef _WIN32
-	if(VirtualFree(ptr,0,MEM_RELEASE)==0)	jbl_exception("MEMORY ERROR");
+	if(size&&VirtualFree(ptr,0,MEM_RELEASE)==0)	jbl_exception("MEMORY ERROR");
 #elif defined(__APPLE__) || defined(__linux__)
 	if(munmap(ptr,size)!=0)					jbl_exception("MEMORY ERROR");
 #endif
@@ -397,7 +397,7 @@ void *__jbl_malloc_chunk()
 	{
 		ptr=__jbl_malloc_aligned(0X200000,0X200000);					//对齐申请2M
 #if JBL_MALLOC_COUNT ==1
-		jbl_malloc_heap.applied_size+=0X200000;jbl_max_update(jbl_malloc_heap.applied_peak,jbl_malloc_heap.applied_size);//更新申请内存
+		jbl_malloc_heap.applied_size+=((jbl_malloc_size_type)0X200000);jbl_max_update(jbl_malloc_heap.applied_peak,jbl_malloc_heap.applied_size);//更新申请内存
 #endif
 		chunk=ptr;														//保存为chunk结构
 	}
@@ -448,7 +448,7 @@ void __jbl_free_cached_chunks()
 {
 	for(void*ptr;jbl_malloc_heap.cached_chunk;ptr=jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(jbl_malloc_heap.cached_chunk,0X200000),jbl_malloc_heap.cached_chunk=ptr)//遍历,释放更新申请内存
 #if JBL_MALLOC_COUNT ==1
-		jbl_malloc_heap.applied_size-=0X200000;
+		jbl_malloc_heap.applied_size-=((jbl_malloc_size_type)0X200000);
 #endif
 	;
 	jbl_malloc_heap.cached_chunk_count=0;//更新计数
@@ -457,20 +457,20 @@ void __jbl_free_cached_chunks()
 void *__jbl_malloc_page(jbl_uint16 nums,jbl_uint8 type)//type为0XFF用于large，type为其他用于small
 {
 	void * ptr=NULL;
-	jbl_uint16 cnt0=-1,i0=0;
+	jbl_uint16 cnt0=((jbl_uint16)-1),i0=0;
 	jbl_malloc_chunk_struct *chunk0=NULL;
 	for(jbl_malloc_chunk_struct *chunk=jbl_malloc_heap.main_chunk;chunk;chunk=chunk->next)//遍历表
 		if(chunk->free_pages>=nums)										//剩余页足够
  			for(jbl_uint16 i=0,cnt1=0,j=0;i<512;++i)					//遍历所有页
 			{
-				j=jbl_bitset_find0(chunk->fmap,i,jbl_malloc_fmap_len);	//找到第一个0
-				i=jbl_bitset_find1(chunk->fmap,j,jbl_malloc_fmap_len);	//找到0后的第一个1
-				cnt1=i-j;												//两者做差是这一段空区间的长度
+				j=(jbl_uint16)jbl_bitset_find0(chunk->fmap,i,jbl_malloc_fmap_len);	//找到第一个0
+				i=(jbl_uint16)jbl_bitset_find1(chunk->fmap,j,jbl_malloc_fmap_len);	//找到0后的第一个1
+				cnt1=(jbl_uint16)(i-j);												//两者做差是这一段空区间的长度
 				if(cnt1>=nums&&cnt1<cnt0)								//够了，并且比已有的较小
 					cnt0=cnt1,i0=j,chunk0=chunk;						//更新
 			}
 	if(!chunk0)chunk0=__jbl_malloc_chunk(),i0=1;						//chunk为空说明未找到，申请一个chunk，并从第1个page开始分配
-	chunk0->free_pages-=nums;											//更新剩余的page
+	chunk0->free_pages=(jbl_uint16)(chunk0->free_pages-nums);		    //更新剩余的page
 	//在chunk0第i0个位置标记nums个type类型的内存块
 	jbl_bitset_set(chunk0->fmap,i0,nums);								//标记占用
 	jbl_uint32 tmp;
@@ -480,12 +480,12 @@ void *__jbl_malloc_page(jbl_uint16 nums,jbl_uint8 type)//type为0XFF用于large�
 	//[29,20]用于回收small时计数
 	//[31,30]表示page类型 10b是large 01b是第一个small 11b是其余的small
 	if(type==0XFF)
-		chunk0->map[i0]=tmp=(0X40000000)|nums;							//标记[31,30]U[9,0] 10b<<29
+		chunk0->map[i0]=tmp=(0X40000000U)|nums;							//标记[31,30]U[9,0] 10b<<29
 	else
-		chunk0->map[i0]=(0X20000000)|(type),							//标记[31,30]U[9,0] 01b<<29
-		tmp=(0X60000000)|(type);										//                  11b<<29
+		chunk0->map[i0]=(0X20000000U)|(type),							//标记[31,30]U[9,0] 01b<<29
+		tmp=(0X60000000U)|(type);										//                  11b<<29
 	for(jbl_uint16 i=1;i<nums;++i)
-		chunk0->map[i+i0]=tmp|(i<<10);									//标记[31,30]U[19,10]U[9,0]
+		chunk0->map[i+i0]=tmp|(jbl_uint32)(i<<10);						//标记[31,30]U[19,10]U[9,0]
 	
 	ptr=chunk0;															//获取chunk基址
 	ptr=(char*)ptr+(i0<<12);											//偏移
@@ -497,7 +497,7 @@ jbl_uint16 __jbl_free_page(void *ptr)
 	jbl_malloc_chunk_struct *chunk=aligned_to_2M(ptr);	//因为chunk按照2M对齐，这样可以直接获得chunk头所在位置
 	jbl_uint16 i=get_page_i(ptr,chunk);						//计算page编号
 	jbl_uint16 n=chunk->map[i]&(0X1FF);													//获取连续page数量
-	chunk->free_pages+=n;																//标记以释放
+	chunk->free_pages=(jbl_uint16)(n+chunk->free_pages);							    //标记以释放
 	if(chunk->map[i]&0X20000000)n=jbl_malloc_small_bins[n].pages;						//如果是small n指的是type，取到num	
 	jbl_bitset_reset(chunk->fmap,i,n);													//维护二进制表
 	return n;
@@ -505,10 +505,10 @@ jbl_uint16 __jbl_free_page(void *ptr)
 //申请一个large内存
 void* __jbl_malloc_large(jbl_malloc_size_type size)
 {
-	jbl_uint16 page=((size&(0XFFF))!=0)+(size>>12);												//4K对齐并计算所需page个数
+	jbl_uint16 page=(jbl_uint16)(((size&(0XFFF))!=0)+(size>>12));								//4K对齐并计算所需page个数
 #if JBL_MALLOC_COUNT ==1
 	++__jbl_malloc_count[1];																	//计数
-	jbl_malloc_heap.size+=(page<<12);jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);	//更新内存占用
+	jbl_malloc_heap.size+=(((jbl_malloc_size_type)page)<<12);jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);	//更新内存占用
 #endif
 	return __jbl_malloc_page(page,0XFF);														//申请，返回
 }
@@ -516,7 +516,7 @@ void* __jbl_malloc_large(jbl_malloc_size_type size)
 JBL_INLINE void __jbl_free_large(void *ptr)
 {
 #if JBL_MALLOC_COUNT ==1
-	jbl_malloc_heap.size-=(__jbl_free_page(ptr)<<12);
+	jbl_malloc_heap.size-=(jbl_malloc_size_type)(__jbl_free_page(ptr)<<12);
 #else
 	__jbl_free_page(ptr);
 #endif
@@ -574,19 +574,19 @@ void __jbl_free_smalls()
 			void *page=aligned_to_4K(ptr);			//计算page地址
 			jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);//计算chunk地址
 			jbl_uint16 i=get_page_i(page,chunk);		//计算page编号
-			jbl_uint16 fi=i-(jbl_uint32)((chunk->map[i]>>10)&0X1FF);			//计算father page编号
-			jbl_uint16 cnt=(jbl_uint32)((chunk->map[fi]>>20)&0X1FF);			//获取已经释放的small类型数量
-			++cnt;																//加一释放当前
+			jbl_uint16 fi=(jbl_uint16)(i-(jbl_uint32)((chunk->map[i]>>10)&0X1FF));	//计算father page编号
+			jbl_uint16 cnt=(jbl_uint32)((chunk->map[fi]>>20)&0X1FF);			    //获取已经释放的small类型数量
+			++cnt;																    //加一释放当前
 			//printf("0X%X 0X%X 0X%X %d %d %d %d\n",ptr,page,chunk,i,fi,type,cnt);
-			if(cnt==jbl_malloc_small_bins[type].count)							//如果small都闲置，把father page所属的small全部移出slot，并标记释放所有page
+			if(cnt==jbl_malloc_small_bins[type].count)							    //如果small都闲置，把father page所属的small全部移出slot，并标记释放所有page
 			{
 				//printf("FREE 0X%X 0X%X 0X%X %d %d %d\n",ptr,page,chunk,i,fi,type);
 				for(jbl_malloc_free_slot *ptr2=jbl_malloc_heap.slot[type].next,*ptr3=NULL;ptr2;)	//遍历每一个small
 				{
-					void *page2=(void*)(((jbl_malloc_size_type)ptr2)&(~0XFFF));						//计算page
-					jbl_malloc_chunk_struct *chunk2=(void*)(((jbl_malloc_size_type)page2)&(~0X1fffff));	//计算chunk地址
-					jbl_uint16 i2=((jbl_malloc_size_type)((char*)page2-(char*)chunk2))>>12;				//计算page编号
-					jbl_uint16 fi2=i2-(jbl_uint32)((chunk2->map[i2]>>10)&0X1FF);					//计算father page编号
+					void *page2=(void*)(((jbl_malloc_size_type)ptr2)&(~0XFFFULL));						//计算page
+					jbl_malloc_chunk_struct *chunk2=(void*)(((jbl_malloc_size_type)page2)&(~0X1fffffULL));	//计算chunk地址
+					jbl_uint16 i2=get_page_i(page2,chunk2);				//计算page编号
+					jbl_uint16 fi2=(jbl_uint16)(i2-(jbl_uint32)((chunk2->map[i2]>>10)&0X1FF));			//计算father page编号
 					//printf("\t0X%X 0X%X 0X%X %d %d\n",ptr2,page2,chunk2,i2,fi2);
 					jbl_uint8 flag=0;
 					if(ptr2==ptr)ptr=ptr2->next,flag=1;												//在当前情况下,所有属于当前father page的small都在ptr之前，遍历到ptr说明都放完了，标记flag退出
@@ -603,7 +603,7 @@ void __jbl_free_smalls()
 				continue;																			//因为上面维护了ptr，直接continue
 			}
 			//因为上面continue了,运行至此，一定是槽没全释放
-			chunk->map[fi]=0X20000000|type|(cnt<<20);												//维护fi的计数
+			chunk->map[fi]=0X20000000U|type|((jbl_uint32)(cnt<<20));								//维护fi的计数
 			ptr=ptr->next;																			//下移ptr
 		}
 		for(jbl_malloc_free_slot *ptr=jbl_malloc_heap.slot[type].next;ptr;ptr=ptr->next)			//这些small没释放，充值father page的计数
@@ -611,8 +611,8 @@ void __jbl_free_smalls()
 			void *page=aligned_to_4K(ptr);															//计算page地址
 			jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);										//计算chunk地址
 			jbl_uint16 i=get_page_i(page,chunk);													//计算page编号
-			jbl_uint16 fi=i-(jbl_uint32)((chunk->map[i]>>10)&0X1FF);								//计算father page编号
-			chunk->map[fi]=0X20000000|type;															//重置
+			jbl_uint16 fi=(jbl_uint16)(i-(jbl_uint32)((chunk->map[i]>>10)&0X1FF));					//计算father page编号
+			chunk->map[fi]=0X20000000U|type;														//重置
 		}
 	}
 }
@@ -624,7 +624,7 @@ void *__jbl_malloc_huge(jbl_malloc_size_type size)
 #endif
 	jbl_malloc_huge_struct* this=__jbl_malloc_small((sizeof (jbl_malloc_huge_struct)));	//申请huge链表头
 	this->size=size=(((size&(0XFFF))!=0)+(size>>12))<<12;								//4K对齐
-	this->ptr=__jbl_malloc_aligned(size,0X200000);										//申请内存
+	this->ptr=__jbl_malloc_aligned(size,0X20000000U);									//申请内存
 	this->next=jbl_malloc_heap.huge_list,jbl_malloc_heap.huge_list=this;				//插入链表
 #if JBL_MALLOC_COUNT ==1
 	jbl_malloc_heap.size+=size;jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);							//更新内存占用
