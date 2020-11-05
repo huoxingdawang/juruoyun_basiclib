@@ -194,9 +194,9 @@ void jbl_malloc_stop()
 //输出内存统计
     printf("\n\n");
 #if JBL_MALLOC_COUNT==1
-    printf("Memory            :%lldB\n"       ,jbl_malloc_heap.size-__jbl_malloc_get_ignore_size());    
-    printf("Max memory        :%lldB(%lf)M)\n",jbl_malloc_heap.peak,(double)jbl_malloc_heap.peak/1048576);    
-    printf("Applied max memory:%lldM\n"       ,jbl_malloc_heap.applied_peak>>20);    
+    printf("Memory            :%dB\n"       ,(int)(jbl_malloc_heap.size-__jbl_malloc_get_ignore_size()));    
+    printf("Max memory        :%dB(%lf)M)\n",(int)(jbl_malloc_heap.peak),(double)jbl_malloc_heap.peak/1048576);    
+    printf("Applied max memory:%dM\n"       ,(int)(jbl_malloc_heap.applied_peak>>20));    
 #endif
 
 #endif
@@ -586,7 +586,7 @@ void __jbl_free_smalls()
             jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);//计算chunk地址
             jbl_uint16 i=get_page_i(page,chunk);        //计算page编号
             jbl_uint16 fi=(jbl_uint16)(i-(jbl_uint32)((chunk->map[i]>>10)&0X1FFULL));        //计算father page编号
-            jbl_uint16 cnt=(jbl_uint32)((chunk->map[fi]>>20)&0X1FFULL);            //获取已经释放的small类型数量
+            jbl_uint16 cnt=(jbl_uint16)((chunk->map[fi]>>20)&0X1FFULL);            //获取已经释放的small类型数量
             ++cnt;                                                                //加一释放当前
             //printf("0X%X 0X%X 0X%X %d %d %d %d\n",ptr,page,chunk,i,fi,type,cnt);
             if(cnt==jbl_malloc_small_bins[type].count)                            //如果small都闲置，把father page所属的small全部移出slot，并标记释放所有page
