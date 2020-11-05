@@ -13,17 +13,17 @@
 #if JBL_EXCEPTION_ENABLE==1
 #include "jbl_ying.h"
 void	jbl_exception_add_exit_function		(void (*func)(void));	//注册一个异常处理函数
-extern	jbl_uint8							jbl_exception_on_error;
 
 
 #define	jbl_exception(x)					__jbl_exception(__FUNCTION__,__FILE__,__LINE__,x)	//抛出一个异常
 void	__jbl_exception						(const char * function,const char * file,int line,char * x);
 void	jbl_exit							(int x);
-
+void    jbl_exception_start                 ();
 
 #else
 #include<stdlib.h>
 #define	jbl_exception_add_exit_function(x)
+#define	jbl_exception_start(x)				
 #define	jbl_exception(x)					exit(0)
 #define	jbl_exit(x)							exit(x)
 #endif

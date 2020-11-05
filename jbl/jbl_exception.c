@@ -14,12 +14,17 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-jbl_uint32	jbl_exception_exit_functions_cnt;
-jbl_uint8	jbl_exception_on_error;
-void(*jbl_exception_exit_functions[JBL_EXCEPTION_EXIT_FUNCTIONS_LENGTH])(void);
+static jbl_uint32	__jbl_exefc;
+static jbl_uint8	__jbl_exoe;
+static void(*jbl_exef[JBL_EXCEPTION_EXIT_FUNCTIONS_LENGTH])(void);
+void jbl_exception_start()
+{
+    __jbl_exefc=0;
+    __jbl_exoe=0;
+}
 void jbl_exception_add_exit_function(void (*func)(void))
 {
-	jbl_exception_exit_functions[jbl_exception_exit_functions_cnt++]=func;
+	jbl_exef[__jbl_exefc++]=func;
 }
 void jbl_exit(int x)
 {
@@ -31,14 +36,14 @@ void jbl_exit(int x)
 		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	}
 #endif
-	while(jbl_exception_exit_functions_cnt--)jbl_exception_exit_functions[jbl_exception_exit_functions_cnt]();
+	while(__jbl_exefc--)jbl_exef[__jbl_exefc]();
 	exit(x);
 }
 void __jbl_exception(const char * function,const char * file,int line,char * x)
 {
-	if(jbl_exception_on_error)
+	if(__jbl_exoe)
 		printf("\n\n\nError occured ,when handling error\nFile%s\nLine %d\nFunction %s\n",file,line,function),exit(0);
-	jbl_exception_on_error=1;
+	__jbl_exoe=1;
 #if JBL_STREAM_ENABLE ==1
 	if((!jbl_stream_stdout)&&x)
 #endif
@@ -66,7 +71,7 @@ void __jbl_exception(const char * function,const char * file,int line,char * x)
 		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	}
 #endif
-	while(jbl_exception_exit_functions_cnt--)jbl_exception_exit_functions[jbl_exception_exit_functions_cnt]();
+	while(__jbl_exefc--)jbl_exef[__jbl_exefc]();
 	exit(0);
 }
 #endif
