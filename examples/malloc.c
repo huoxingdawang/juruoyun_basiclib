@@ -1,4 +1,5 @@
 #include "main.h"
+#include <time.h>
 jbl_uint32 get_size(int small,int large,int huge)
 {
 	register jbl_uint32 size;
@@ -8,7 +9,7 @@ jbl_uint32 get_size(int small,int large,int huge)
 	else					size=2093057+((jbl_rand())%2093056);
 	return size;
 }
-int slot=2048,base=17;
+int slot=2048,base=19;
 int small=90;
 int large=5;
 int huge=5;
@@ -45,12 +46,13 @@ void * do_thread(void * a)
 	do_malloc(slot/thread,(1<<base)/thread,small,large,huge);
 	return NULL;
 }
-int main()
+int mainn()
 {
 	jbl_start();
 //	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_rand_srand(0);
-	
+	int seed=time(0);
+    jbl_rand_srand(seed);
+	printf("seed=%d\n",seed);
 //	pchars("Input slot and base\n");pf();
 //	scanf("%d %d",&slot,&base);
 //	pchars("Slot:");pint(slot);pt();pchars("Base:");pint(base);pn();pf();
@@ -76,4 +78,9 @@ int main()
 //	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
 	return 0;
+}
+int main()
+{
+    for(int i=0;i<10;++i)
+        mainn();
 }
