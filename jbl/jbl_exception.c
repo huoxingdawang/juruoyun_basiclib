@@ -9,25 +9,32 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_exception.h"
 #if JBL_EXCEPTION_ENABLE==1
-#if JBL_STREAM_ENABLE ==1
 #include "jbl_stream.h"
-#endif
+#include "jbl_pthread.h"
 #include <stdio.h>
 #include <stdlib.h>
-static jbl_uint32	__jbl_exefc;
-static jbl_uint8	__jbl_exoe;
-static void(*jbl_exef[JBL_EXCEPTION_EXIT_FUNCTIONS_LENGTH])(void);
+static struct
+{
+    jbl_pthread_lock_define;
+    jbl_uint32   fc;
+    jbl_uint32   oe;
+    void(*ef[JBL_EXCEPTION_EXIT_FUNCTIONS_LENGTH])(void);
+}__jbl_exdata;
 void jbl_exception_start()
 {
-    __jbl_exefc=0;
-    __jbl_exoe=0;
+    jbl_pthread_lock_init(&__jbl_exdata);
+    __jbl_exdata.fc=0;
+    __jbl_exdata.oe=0;
 }
 void jbl_exception_add_exit_function(void (*func)(void))
 {
-	jbl_exef[__jbl_exefc++]=func;
+    jbl_pthread_lock_wrlock(&__jbl_exdata);
+	__jbl_exdata.ef[__jbl_exdata.fc++]=func;
+    jbl_pthread_lock_unlock(&__jbl_exdata);
 }
 void jbl_exit(int x)
 {
+    jbl_pthread_lock_wrlock(&__jbl_exdata);
 #if JBL_STREAM_ENABLE ==1
 	if(jbl_stream_stdout)
 	{
@@ -36,14 +43,15 @@ void jbl_exit(int x)
 		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	}
 #endif
-	while(__jbl_exefc--)jbl_exef[__jbl_exefc]();
+	while(__jbl_exdata.fc--)__jbl_exdata.ef[__jbl_exdata.fc]();
 	exit(x);
 }
 void __jbl_exception(const char * function,const char * file,int line,char * x)
 {
-	if(__jbl_exoe)
+    jbl_pthread_lock_wrlock(&__jbl_exdata);
+	if(__jbl_exdata.oe)
 		printf("\n\n\nError occured ,when handling error\nFile%s\nLine %d\nFunction %s\n",file,line,function),exit(0);
-	__jbl_exoe=1;
+	__jbl_exdata.oe=1;
 #if JBL_STREAM_ENABLE ==1
 	if((!jbl_stream_stdout)&&x)
 #endif
@@ -71,7 +79,7 @@ void __jbl_exception(const char * function,const char * file,int line,char * x)
 		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	}
 #endif
-	while(__jbl_exefc--)jbl_exef[__jbl_exefc]();
+	while(__jbl_exdata.fc--)__jbl_exdata.ef[__jbl_exdata.fc]();
 	exit(0);
 }
 #endif
