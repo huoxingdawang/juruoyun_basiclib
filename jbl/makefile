@@ -81,8 +81,8 @@ jbl/jbl_sha1           :
 jbl/jbl_stream         :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_stream.o      jbl$(H)jbl_stream.c      $(JBL_EXLIB)
 jbl/jbl_string         :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_string.o      jbl$(H)jbl_string.c      $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_string_cc.o   jbl$(H)jbl_string_cc.c   $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string.o      jbl$(H)jbl_string.c      $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string_cc.o   jbl$(H)jbl_string_cc.c   $(JBL_EXLIB)
 jbl/jbl_time           :
 ifeq ($(system),linux)
 ifeq ($(findstring jbl,$(complain_re2c)),jbl)

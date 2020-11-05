@@ -24,14 +24,7 @@ typedef jbl_uint64 jbl_bitset_type;
 #endif
 
 
-#ifdef _WIN32
-#define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*I64X ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
-#elif __APPLE__
-#define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*llX ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
-#elif __linux__
-#define			jbl_bitset_view(bitset,len)	for(int i=0;i<(len);printf("%0*llX ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);putchar('\n')	//查看一个bitset
-#else
-#endif
+
 jbl_uint32	jbl_highbit				(jbl_uint64 a);											//获取一个64位无符号整数最高的1的位置
 jbl_uint32	jbl_highbit0			(jbl_uint64 a);											//获取一个64位无符号整数最高的0的位置
 jbl_uint32	jbl_highbit32			(jbl_uint32 a);											//获取一个32位无符号整数最高的1的位置
@@ -41,6 +34,7 @@ void		jbl_bitset_set			(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 cnt);	//
 void		jbl_bitset_reset		(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 cnt);	//把bitset从i开始的cnt位设成0
 jbl_uint32	jbl_bitset_find0		(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 len);	//从bitset第i位开始找连续cnt个1
 jbl_uint32	jbl_bitset_find1		(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 len);	//从bitset第i位开始找连续cnt个0
+void		jbl_bitset_view			(jbl_bitset_type *bitset,jbl_uint32 len);				//查看一个bitset,len是jbl_bitset_type的个数
 
 
 #endif

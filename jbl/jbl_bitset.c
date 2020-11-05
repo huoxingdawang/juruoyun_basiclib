@@ -9,6 +9,7 @@
    See the Mulan PSL v1 for more details.*/
 #include "jbl_bitset.h"
 #if JBL_BITSET_ENABLE==1
+#include <stdio.h>
 jbl_uint32 jbl_highbit(jbl_uint64 a)
 {
 	jbl_uint32 b=-1U;
@@ -130,6 +131,18 @@ jbl_uint32 jbl_bitset_find1(jbl_bitset_type *bitset,jbl_uint32 i,jbl_uint32 len)
 	if(p>=(len))
 		return (len<<jbl_bitset_2bits);
 	return ((jbl_uint32)p<<jbl_bitset_2bits)+jbl_bitset_bits-hb(bitset[p])-1;
+}
+void jbl_bitset_view(jbl_bitset_type *bitset,jbl_uint32 len)
+{
+#ifdef _WIN32
+    for(jbl_uint32 i=0;i<(len);printf("%0*I64X ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);
+#elif __APPLE__
+    for(jbl_uint32 i=0;i<(len);printf("%0*llX ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);
+#elif __linux__
+    for(jbl_uint32 i=0;i<(len);printf("%0*llX ",jbl_bitset_bits/4,(jbl_uint64)bitset[i]),++i);
+#endif   
+    putchar('\n');
+    
 }
 #undef slm
 #undef hb

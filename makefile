@@ -122,7 +122,7 @@ stream:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)stream.o        examples$(H)stream.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)stream      tmp$(H)$(pre)stream.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 string:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)string.o        examples$(H)string.c         $(EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)string.o        examples$(H)string.c         $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)string      tmp$(H)$(pre)string.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 sha1:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)sha1.o          examples$(H)sha1.c       $(EXLIB)
@@ -221,8 +221,8 @@ jbl/jbl_sha1           :
 jbl/jbl_stream         :
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_stream.o      jbl$(H)jbl_stream.c      $(JBL_EXLIB)
 jbl/jbl_string         :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_string.o      jbl$(H)jbl_string.c      $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_string_cc.o   jbl$(H)jbl_string_cc.c   $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string.o      jbl$(H)jbl_string.c      $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string_cc.o   jbl$(H)jbl_string_cc.c   $(JBL_EXLIB)
 jbl/jbl_time           :
 ifeq ($(system),linux)
 ifeq ($(findstring jbl,$(complain_re2c)),jbl)

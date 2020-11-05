@@ -13,7 +13,7 @@
 #if JBL_BITSET_ENABLE==1
 #include "jbl_ying.h"
 #ifdef __x86_64__
-	#define jbl_bitset_bits		32
+	#define jbl_bitset_bits		64
 #else
 	#define jbl_bitset_bits		32
 #endif

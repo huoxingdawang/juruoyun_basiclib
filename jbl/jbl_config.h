@@ -20,7 +20,7 @@
 #define JBL_ENDIAN_ENABLE		1	//need ying 
 #define JBL_EXCEPTION_ENABLE	1	//need ying 
 #define JBL_FILE_ENABLE			0	//developing N/A
-#define JBL_GC_ENABLE			1	//need ying 
+#define JBL_GC_ENABLE			0	//need ying 
 #define JBL_HT_ENABLE			0	//need ying bitset malloc string var
 #define JBL_LL_ENABLE			0	//need ying bitset malloc        var					/////////////
 #define JBL_LOG_ENABLE			0	//
