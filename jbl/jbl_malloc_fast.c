@@ -36,9 +36,6 @@ jbl_uint64 __jbl_malloc_get_ignore_size();
     #include <unistd.h>
     #include <sys/mman.h>
 #endif
-#if JBL_STREAM_ENABLE==0
-    #include <stdio.h>
-#endif
 /*******************************************************************************************/
 /*                            结构体定义                                                   */
 /*******************************************************************************************/
@@ -74,6 +71,10 @@ typedef struct __jbl_malloc_heap_struct
     jbl_malloc_free_slot        slot[30];
     
     jbl_uint32    cached_chunk_count;
+#if JBL_MALLOC_COUNT==1
+    jbl_uint64 count[3];
+    jbl_uint64 small_count[30];
+#endif
 }jbl_malloc_heap_struct;
 typedef struct __jbl_malloc_huge_struct
 {
@@ -129,13 +130,9 @@ jbl_uint8               __jbl_free_huge             (void* ptr);                
 /*******************************************************************************************/
 /*                            全局变量定义                                                */
 /*******************************************************************************************/
+static jbl_malloc_heap_struct __jbl_malloc_heap;
 #if JBL_MALLOC_COUNT==1
-    jbl_uint64 __jbl_malloc_count[3];
-    jbl_uint64 __jbl_malloc_small_count[30];
-#endif
-jbl_malloc_heap_struct jbl_malloc_heap;
-#if JBL_MALLOC_COUNT==1
-jbl_malloc_size_type    jbl_malloc_used_size    (){return jbl_malloc_heap.size;}
+jbl_malloc_size_type    jbl_malloc_used_size    (){return __jbl_malloc_heap.size;}
 #endif
 #if JBL_MALLOC_LOG ==0
 #undef jbl_log
@@ -146,79 +143,70 @@ jbl_malloc_size_type    jbl_malloc_used_size    (){return jbl_malloc_heap.size;}
 /*******************************************************************************************/
 void jbl_malloc_start()
 {
-    jbl_pthread_lock_init(&jbl_malloc_heap);
-    jbl_malloc_heap.cached_chunk_count=0;
-    jbl_malloc_heap.huge_list=NULL;
-    jbl_malloc_heap.main_chunk=NULL;
-    jbl_malloc_heap.cached_chunk=NULL;
-    for(unsigned char i=0;i<30;jbl_malloc_heap.slot[i].next=NULL,++i);
+    jbl_pthread_lock_init(&__jbl_malloc_heap);
+    __jbl_malloc_heap.cached_chunk_count=0;
+    __jbl_malloc_heap.huge_list=NULL;
+    __jbl_malloc_heap.main_chunk=NULL;
+    __jbl_malloc_heap.cached_chunk=NULL;
+    for(unsigned char i=0;i<30;__jbl_malloc_heap.slot[i].next=NULL,++i);
 #if JBL_MALLOC_COUNT==1
-    jbl_malloc_heap.size=0;
-    jbl_malloc_heap.peak=0;
-    jbl_malloc_heap.applied_size=0;
-    jbl_malloc_heap.applied_peak=0;
-    __jbl_malloc_count[0]=0;
-    __jbl_malloc_count[1]=0;
-    __jbl_malloc_count[2]=0;
-    for(unsigned char i=0;i<30;__jbl_malloc_small_count[i]=0,++i);
+    __jbl_malloc_heap.size=0;
+    __jbl_malloc_heap.peak=0;
+    __jbl_malloc_heap.applied_size=0;
+    __jbl_malloc_heap.applied_peak=0;
+    __jbl_malloc_heap.count[0]=0;
+    __jbl_malloc_heap.count[1]=0;
+    __jbl_malloc_heap.count[2]=0;
+    for(unsigned char i=0;i<30;__jbl_malloc_heap.small_count[i]=0,++i);
 #endif
 }
 void jbl_malloc_stop()
 {
-#if JBL_STREAM_ENABLE==1
+    jbl_pthread_lock_wrlock(&__jbl_malloc_heap);
 //输出内存统计
-    jbl_stream_push_chars(jbl_stream_stdout,UC"\n\n");
+    pchars(UC"\n\n");
 #if JBL_MALLOC_COUNT==1
-    jbl_stream_push_chars(jbl_stream_stdout,UC"Memory            :");jbl_stream_push_uint(jbl_stream_stdout,jbl_malloc_heap.size-__jbl_malloc_get_ignore_size());jbl_stream_push_chars(jbl_stream_stdout,UC"B\n");    
-    jbl_stream_push_chars(jbl_stream_stdout,UC"Max memory        :");jbl_stream_push_uint(jbl_stream_stdout,jbl_malloc_heap.peak);jbl_stream_push_chars(jbl_stream_stdout,UC"B(");jbl_stream_push_double(jbl_stream_stdout,(double)jbl_malloc_heap.peak/1048576);jbl_stream_push_chars(jbl_stream_stdout,UC"M)\n");    
-    jbl_stream_push_chars(jbl_stream_stdout,UC"Applied max memory:");jbl_stream_push_uint(jbl_stream_stdout,jbl_malloc_heap.applied_peak>>20);jbl_stream_push_chars(jbl_stream_stdout,UC"M\n");    
-    jbl_uint64 n=__jbl_malloc_count[0]+__jbl_malloc_count[1]+__jbl_malloc_count[2];
-    jbl_stream_push_chars(jbl_stream_stdout,UC"Small             :");jbl_stream_push_uint(jbl_stream_stdout,__jbl_malloc_count[0]);jbl_stream_push_chars(jbl_stream_stdout,UC" (");jbl_stream_push_double(jbl_stream_stdout,(double)__jbl_malloc_count[0]*100/n);jbl_stream_push_chars(jbl_stream_stdout,UC"%)\n");    
-    jbl_stream_push_chars(jbl_stream_stdout,UC"Large             :");jbl_stream_push_uint(jbl_stream_stdout,__jbl_malloc_count[1]);jbl_stream_push_chars(jbl_stream_stdout,UC" (");jbl_stream_push_double(jbl_stream_stdout,(double)__jbl_malloc_count[1]*100/n);jbl_stream_push_chars(jbl_stream_stdout,UC"%)\n");    
-    jbl_stream_push_chars(jbl_stream_stdout,UC"Huge              :");jbl_stream_push_uint(jbl_stream_stdout,__jbl_malloc_count[2]);jbl_stream_push_chars(jbl_stream_stdout,UC" (");jbl_stream_push_double(jbl_stream_stdout,(double)__jbl_malloc_count[2]*100/n);jbl_stream_push_chars(jbl_stream_stdout,UC"%)\n");    
+    pchars(UC"Memory            :");puint(__jbl_malloc_heap.size-__jbl_malloc_get_ignore_size());pchars(UC"B\n");    
+    pchars(UC"Max memory        :");puint(__jbl_malloc_heap.peak);pchars(UC"B(");pdouble(((double)__jbl_malloc_heap.peak)/1048576);pchars(UC"M)\n");    
+    pchars(UC"Applied max memory:");puint(__jbl_malloc_heap.applied_peak>>20);pchars(UC"M\n");    
+    jbl_uint64 n=__jbl_malloc_heap.count[0]+__jbl_malloc_heap.count[1]+__jbl_malloc_heap.count[2];
+    pchars(UC"Small             :");puint(__jbl_malloc_heap.count[0]);pchars(UC" (");pdouble(((double)__jbl_malloc_heap.count[0]*100)/((double)n));pchars(UC"%)\n");    
+    pchars(UC"Large             :");puint(__jbl_malloc_heap.count[1]);pchars(UC" (");pdouble(((double)__jbl_malloc_heap.count[1]*100)/((double)n));pchars(UC"%)\n");    
+    pchars(UC"Huge              :");puint(__jbl_malloc_heap.count[2]);pchars(UC" (");pdouble(((double)__jbl_malloc_heap.count[2]*100)/((double)n));pchars(UC"%)\n");    
     for(jbl_uint8 i=0;i<30;++i)
     {
-        if(!__jbl_malloc_small_count[i])
+        if(!__jbl_malloc_heap.small_count[i])
             continue;
-        jbl_stream_push_char(jbl_stream_stdout,'\t');
-        jbl_stream_push_uint(jbl_stream_stdout,jbl_malloc_small_bins[i].size);
-        jbl_stream_push_chars(jbl_stream_stdout,UC"B\t:");
-        jbl_stream_push_uint(jbl_stream_stdout,__jbl_malloc_small_count[i]);
-        jbl_stream_push_char(jbl_stream_stdout,'\n');
+        pchar('\t');
+        puint(jbl_malloc_small_bins[i].size);
+        pchars(UC"B\t:");
+        puint(__jbl_malloc_heap.small_count[i]);
+        pchar('\n');
     }
 #endif
+#if JBL_STREAM_ENABLE==1
 //统计完成关流
     jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
     jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
-#else
-//输出内存统计
-    printf("\n\n");
-#if JBL_MALLOC_COUNT==1
-    printf("Memory            :%dB\n"       ,(int)(jbl_malloc_heap.size-__jbl_malloc_get_ignore_size()));    
-    printf("Max memory        :%dB(%lf)M)\n",(int)(jbl_malloc_heap.peak),(double)jbl_malloc_heap.peak/1048576);    
-    printf("Applied max memory:%dM\n"       ,(int)(jbl_malloc_heap.applied_peak>>20));    
-#endif
-
-#endif
-    
-    for(;jbl_malloc_heap.huge_list;__jbl_free_huge(jbl_malloc_heap.huge_list->ptr));
-    for(void*ptr;jbl_malloc_heap.main_chunk;ptr=jbl_malloc_heap.main_chunk->next,__jbl_free_aligned(jbl_malloc_heap.main_chunk,0X200000),jbl_malloc_heap.main_chunk=ptr/*,jbl_malloc_heap.applied_size-=0X200000*/);
-    for(void*ptr;jbl_malloc_heap.cached_chunk;ptr=jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(jbl_malloc_heap.cached_chunk,0X200000),jbl_malloc_heap.cached_chunk=ptr/*,jbl_malloc_heap.applied_size-=0X200000*/);
+#endif    
+    for(;__jbl_malloc_heap.huge_list;__jbl_free_huge(__jbl_malloc_heap.huge_list->ptr));
+    for(void*ptr;__jbl_malloc_heap.main_chunk;ptr=__jbl_malloc_heap.main_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.main_chunk,0X200000),__jbl_malloc_heap.main_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/);
+    for(void*ptr;__jbl_malloc_heap.cached_chunk;ptr=__jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.cached_chunk,0X200000),__jbl_malloc_heap.cached_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/);
 }
 /*******************************************************************************************/
 /*                            fast内存管理实现                                                   */
 /*******************************************************************************************/
 void* jbl_malloc(jbl_malloc_size_type size)
 {
-    jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
     if(!size)jbl_exception("MEMORY ERROR");
 #endif
+    jbl_pthread_lock_wrlock(&__jbl_malloc_heap);
     void *ptr;
     if(size<=3072)                       ptr=__jbl_malloc_small((jbl_uint16)size);   //small
     else if(size<=(2*1024*1024-4*1024))  ptr=__jbl_malloc_large(size);               //large (2M-4K)
     else                                 ptr=__jbl_malloc_huge(size);                //huge
-    jbl_pthread_lock_unlock(&jbl_malloc_heap);
+    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
 //printf("%d\t0X%llX\n",__LINE__,ptr);
     jbl_log(UC "addr:0X%X\twant:%d\tsize:%d",ptr,size,jbl_malloc_size(ptr));
     return ptr;
@@ -228,10 +216,10 @@ jbl_malloc_size_type jbl_malloc_size(void* ptr)
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
     if(!ptr)jbl_exception("NULL POINTER");    
 #endif
+    jbl_pthread_lock_rdlock(&__jbl_malloc_heap);
     jbl_malloc_size_type size=0;
-    jbl_pthread_lock_rdlock(&jbl_malloc_heap);
     if(is_aligned_2M(ptr))//按照2M对齐，huge
-        for(jbl_malloc_huge_struct *huge=jbl_malloc_heap.huge_list;huge;huge=huge->next)
+        for(jbl_malloc_huge_struct *huge=__jbl_malloc_heap.huge_list;huge;huge=huge->next)
             if(ptr==huge->ptr)
             {
                 size=huge->size;
@@ -245,7 +233,7 @@ jbl_malloc_size_type jbl_malloc_size(void* ptr)
     else 
         size=(chunk->map[i]&0X1FFU)<<12;
 exit:;
-    jbl_pthread_lock_unlock(&jbl_malloc_heap);
+    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
     return size;//large
 }
 void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
@@ -259,9 +247,9 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
     if(size_now>size)return ptr;
     if(3072<size_now&&size_now<=2093056&&3072<size&&size<=2093056)//全在large
     {
-        jbl_pthread_lock_wrlock(&jbl_malloc_heap);
+        jbl_pthread_lock_wrlock(&__jbl_malloc_heap);
 #if JBL_MALLOC_COUNT==1        
-        ++__jbl_malloc_count[1];
+        ++__jbl_malloc_heap.count[1];
 #endif
         jbl_malloc_chunk_struct *chunk=aligned_to_2M(ptr);
         jbl_uint16 i=get_page_i(ptr,chunk);
@@ -270,7 +258,7 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
         if(jbl_bitset_find1(chunk->fmap,(jbl_uint16)(i+n),jbl_malloc_fmap_len)>=i+page)
         {
 #if JBL_MALLOC_COUNT ==1
-            jbl_malloc_heap.size+=(((jbl_malloc_size_type)page-n)<<12);/*新增page-n个page*/jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
+            __jbl_malloc_heap.size+=(((jbl_malloc_size_type)page-n)<<12);/*新增page-n个page*/jbl_max_update(__jbl_malloc_heap.peak,__jbl_malloc_heap.size);
 #endif
             //在chunk第i个位置标记page个large类型的内存块
             jbl_uint32 tmp=(0X40000000U)|page;
@@ -278,17 +266,17 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
             for(jbl_uint16 j=0;j<page;++j)
                 chunk->map[i+j]=tmp|((jbl_uint32)(j<<10));//[30,29]U[19,10]U[9,0]
             jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr,jbl_malloc_size(ptr));
-            jbl_pthread_lock_unlock(&jbl_malloc_heap);
+            jbl_pthread_lock_unlock(&__jbl_malloc_heap);
             return ptr;
         }
-        jbl_pthread_lock_unlock(&jbl_malloc_heap);
+        jbl_pthread_lock_unlock(&__jbl_malloc_heap);
     }    
     void * ptr2=jbl_malloc(size);
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
     if(!ptr2)jbl_exception("MEMORY ERROR");    
 #endif
     jbl_malloc_size_type size_new=jbl_malloc_size(ptr2);
-    jbl_pthread_lock_wrlock(&jbl_malloc_heap);
+    jbl_pthread_lock_wrlock(&__jbl_malloc_heap);
     jbl_min_update(size_new,size_now);
     jbl_memory_copy(ptr2,ptr,size_new);
     jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr2,jbl_malloc_size(ptr2));
@@ -298,7 +286,7 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
         __jbl_free_large(ptr);
     else//huge
         __jbl_free_huge(ptr);
-    jbl_pthread_lock_unlock(&jbl_malloc_heap);
+    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
     return ptr2;    
 }
 void jbl_free(void * ptr)
@@ -308,7 +296,7 @@ void jbl_free(void * ptr)
     if(!ptr)jbl_exception("NULL POINTER");
 #endif
     jbl_log(UC "addr:0X%X",ptr);
-    jbl_pthread_lock_wrlock(&jbl_malloc_heap);
+    jbl_pthread_lock_wrlock(&__jbl_malloc_heap);
     if(!is_aligned_4K(ptr))//没有4k，small
         __jbl_free_small(ptr);
     else
@@ -323,7 +311,7 @@ void jbl_free(void * ptr)
         else                                __jbl_free_large(ptr);
     }
 exit:;
-    jbl_pthread_lock_unlock(&jbl_malloc_heap);
+    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
 }
 //申请一段mmap
 void* __jbl_malloc_mmap(jbl_malloc_size_type size)
@@ -396,21 +384,21 @@ void *__jbl_malloc_chunk()
 {
     void *ptr;
     jbl_malloc_chunk_struct *chunk;
-    if(jbl_malloc_heap.cached_chunk)                                    //有缓冲chunk
+    if(__jbl_malloc_heap.cached_chunk)                                    //有缓冲chunk
     {
-        --jbl_malloc_heap.cached_chunk_count;                           //更新计数
-        ptr=jbl_malloc_heap.cached_chunk;                               //获取
+        --__jbl_malloc_heap.cached_chunk_count;                           //更新计数
+        ptr=__jbl_malloc_heap.cached_chunk;                               //获取
         chunk=ptr;                                                      //保存为chunk结构
         if(chunk->next)chunk->next->pre=chunk->pre;                     //从缓冲chunk链表中移除
         if(chunk->pre) chunk->pre->next=chunk->next;                    //从缓冲chunk链表中移除
-        else           jbl_malloc_heap.cached_chunk=chunk->next;        //从缓冲chunk链表中移除
+        else           __jbl_malloc_heap.cached_chunk=chunk->next;        //从缓冲chunk链表中移除
         chunk->next=chunk->pre=NULL;                                    //清空链表指针
     }
     else
     {
         ptr=__jbl_malloc_aligned(0X200000,0X200000);                    //对齐申请2M
 #if JBL_MALLOC_COUNT ==1
-        jbl_malloc_heap.applied_size+=((jbl_malloc_size_type)0X200000);jbl_max_update(jbl_malloc_heap.applied_peak,jbl_malloc_heap.applied_size);//更新申请内存
+        __jbl_malloc_heap.applied_size+=((jbl_malloc_size_type)0X200000);jbl_max_update(__jbl_malloc_heap.applied_peak,__jbl_malloc_heap.applied_size);//更新申请内存
 #endif
         chunk=ptr;                                                        //保存为chunk结构
     }
@@ -419,8 +407,8 @@ void *__jbl_malloc_chunk()
     chunk->free_pages=511;                                                //第一个page保存chunk_struct
     chunk->map[0]=0X40000000U|0X01U;                                      //维护map标记
     jbl_bitset_set(chunk->fmap,0,1);                                      //维护map标记
-    if(jbl_malloc_heap.main_chunk)jbl_malloc_heap.main_chunk->pre=ptr;    //插入链表
-    chunk->next=jbl_malloc_heap.main_chunk;chunk->pre=NULL;jbl_malloc_heap.main_chunk=chunk;//插入链表
+    if(__jbl_malloc_heap.main_chunk)__jbl_malloc_heap.main_chunk->pre=ptr;    //插入链表
+    chunk->next=__jbl_malloc_heap.main_chunk;chunk->pre=NULL;__jbl_malloc_heap.main_chunk=chunk;//插入链表
     return ptr;
 }
 //释放一个chunk
@@ -429,24 +417,24 @@ void __jbl_free_chunk(void *ptr)
     jbl_malloc_chunk_struct *chunk=ptr;                        //保存为chunk结构
     if(chunk->next)chunk->next->pre=chunk->pre;                //从主chunk链表中移除
     if(chunk->pre) chunk->pre->next=chunk->next;               //从主chunk链表中移除
-    else           jbl_malloc_heap.main_chunk=chunk->next;     //从主chunk链表中移除
+    else           __jbl_malloc_heap.main_chunk=chunk->next;     //从主chunk链表中移除
 /*TODO:自动决策是否放进缓存 */
 //    if(false)
 //    {//不用缓存,直接释放
 //        __jbl_free_aligned(ptr,0X200000);
-//    jbl_malloc_heap.applied_size-=0X200000;
+//    __jbl_malloc_heap.applied_size-=0X200000;
 //    }
 //    else
 //    {
-        ++jbl_malloc_heap.cached_chunk_count;                                                        //增加缓冲统计
-        if(jbl_malloc_heap.cached_chunk)jbl_malloc_heap.cached_chunk->pre=ptr;                        //插入缓冲chunk链表
-        chunk->next=jbl_malloc_heap.cached_chunk;chunk->pre=NULL;jbl_malloc_heap.cached_chunk=ptr;    //插入缓冲chunk链表
+        ++__jbl_malloc_heap.cached_chunk_count;                                                        //增加缓冲统计
+        if(__jbl_malloc_heap.cached_chunk)__jbl_malloc_heap.cached_chunk->pre=ptr;                        //插入缓冲chunk链表
+        chunk->next=__jbl_malloc_heap.cached_chunk;chunk->pre=NULL;__jbl_malloc_heap.cached_chunk=ptr;    //插入缓冲chunk链表
 //    }
 }
 //回收可以回收的chunk
 void __jbl_free_chunks()
 {
-    for(jbl_malloc_chunk_struct *chunk=jbl_malloc_heap.main_chunk,*chunk2;chunk;)    //遍历表
+    for(jbl_malloc_chunk_struct *chunk=__jbl_malloc_heap.main_chunk,*chunk2;chunk;)    //遍历表
     {
         if(chunk->fmap[0]!=(1ULL<<(jbl_bitset_bits-1)))goto not_free;                //第一个块除系统标记page有其他块在被占用
         for(jbl_uint8 i=1;i<jbl_malloc_fmap_len;++i)if(chunk->fmap[i])goto not_free; //其他块有占用
@@ -459,19 +447,19 @@ not_free:;
 //释放缓冲的chunk
 void __jbl_free_cached_chunks()
 {
-    for(void*ptr;jbl_malloc_heap.cached_chunk;ptr=jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(jbl_malloc_heap.cached_chunk,0X200000),jbl_malloc_heap.cached_chunk=ptr)//遍历,释放更新申请内存
+    for(void*ptr;__jbl_malloc_heap.cached_chunk;ptr=__jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.cached_chunk,0X200000),__jbl_malloc_heap.cached_chunk=ptr)//遍历,释放更新申请内存
 #if JBL_MALLOC_COUNT ==1
-        jbl_malloc_heap.applied_size-=((jbl_malloc_size_type)0X200000);
+        __jbl_malloc_heap.applied_size-=((jbl_malloc_size_type)0X200000);
 #endif
     ;
-    jbl_malloc_heap.cached_chunk_count=0;//更新计数
+    __jbl_malloc_heap.cached_chunk_count=0;//更新计数
 }
 //申请一个page(从chunk中找)
 void *__jbl_malloc_page(jbl_uint16 nums,jbl_uint8 type)//type为0XFF用于large，type为其他用于small
 {
     jbl_uint16 cnt0=((jbl_uint16)-1),i0=0;
     jbl_malloc_chunk_struct *chunk0=NULL;
-    for(jbl_malloc_chunk_struct *chunk=jbl_malloc_heap.main_chunk;chunk;chunk=chunk->next)//遍历表
+    for(jbl_malloc_chunk_struct *chunk=__jbl_malloc_heap.main_chunk;chunk;chunk=chunk->next)//遍历表
         if(chunk->free_pages>=nums)                                        //剩余页足够
              for(jbl_uint16 i=0,cnt1=0,j=0;i<512;++i)                    //遍历所有页
             {
@@ -518,8 +506,8 @@ void* __jbl_malloc_large(jbl_malloc_size_type size)
 {
     jbl_uint16 page=(jbl_uint16)(((size&(0XFFFLL))!=0)+(size>>12));                                //4K对齐并计算所需page个数
 #if JBL_MALLOC_COUNT ==1
-    ++__jbl_malloc_count[1];                                                                    //计数
-    jbl_malloc_heap.size+=(((jbl_malloc_size_type)page)<<12);jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);    //更新内存占用
+    ++__jbl_malloc_heap.count[1];                                                                    //计数
+    __jbl_malloc_heap.size+=(((jbl_malloc_size_type)page)<<12);jbl_max_update(__jbl_malloc_heap.peak,__jbl_malloc_heap.size);    //更新内存占用
 #endif
     return __jbl_malloc_page(page,0XFF);                                                        //申请，返回
 }
@@ -527,7 +515,7 @@ void* __jbl_malloc_large(jbl_malloc_size_type size)
 JBL_INLINE void __jbl_free_large(void *ptr)
 {
 #if JBL_MALLOC_COUNT ==1
-    jbl_malloc_heap.size-=(jbl_malloc_size_type)(__jbl_free_page(ptr)<<12);
+    __jbl_malloc_heap.size-=(jbl_malloc_size_type)(__jbl_free_page(ptr)<<12);
 #else
     __jbl_free_page(ptr);
 #endif
@@ -540,22 +528,22 @@ void* __jbl_malloc_small(jbl_uint16 size)
         if(jbl_malloc_small_bins[i].size>=size)    //最小尺寸
             {type=i;break;}                        //找到了
 #if JBL_MALLOC_COUNT==1
-    ++__jbl_malloc_count[0];
-    ++__jbl_malloc_small_count[type];            //计数
-    jbl_malloc_heap.size+=jbl_malloc_small_bins[type].size;jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);    //更新内存占用
+    ++__jbl_malloc_heap.count[0];
+    ++__jbl_malloc_heap.small_count[type];            //计数
+    __jbl_malloc_heap.size+=jbl_malloc_small_bins[type].size;jbl_max_update(__jbl_malloc_heap.peak,__jbl_malloc_heap.size);    //更新内存占用
 #endif
     jbl_uint8 num=jbl_malloc_small_bins[type].num;                                //获取占用的缓冲槽编号
-    if(jbl_malloc_heap.slot[num].next)                                            //有缓冲
+    if(__jbl_malloc_heap.slot[num].next)                                            //有缓冲
     {
-        void *ptr=jbl_malloc_heap.slot[num].next;                                //取出
-        jbl_malloc_heap.slot[num].next=jbl_malloc_heap.slot[num].next->next;    //断开链表
+        void *ptr=__jbl_malloc_heap.slot[num].next;                                //取出
+        __jbl_malloc_heap.slot[num].next=__jbl_malloc_heap.slot[num].next->next;    //断开链表
         return ptr;                                                                //返回
     }
     void *ptr=__jbl_malloc_page(jbl_malloc_small_bins[type].pages,type);        //没有缓冲就申请一个新的页
     for(jbl_uint16 i=1,n=jbl_malloc_small_bins[type].count;i<n;++i)                //除了最后一个逐一加入
     {
-        ((jbl_malloc_free_slot*)ptr)->next=jbl_malloc_heap.slot[num].next;        //头插法插入
-        jbl_malloc_heap.slot[num].next=ptr;                                        //头插法插入
+        ((jbl_malloc_free_slot*)ptr)->next=__jbl_malloc_heap.slot[num].next;        //头插法插入
+        __jbl_malloc_heap.slot[num].next=ptr;                                        //头插法插入
         ptr=((char*)ptr)+jbl_malloc_small_bins[type].size;                        //计算偏移
     }
     return ptr;                                                                    //返回最后一个
@@ -569,10 +557,10 @@ void __jbl_free_small(void* ptr)
     jbl_uint8 type=chunk->map[i]&0X1F;                                            //获取类型
     jbl_uint8 num=jbl_malloc_small_bins[type].num;                                //获取槽编号
 #if JBL_MALLOC_COUNT ==1
-    jbl_malloc_heap.size-=jbl_malloc_small_bins[type].size;                        //更新内存占用
+    __jbl_malloc_heap.size-=jbl_malloc_small_bins[type].size;                        //更新内存占用
 #endif
-    ((jbl_malloc_free_slot*)ptr)->next=jbl_malloc_heap.slot[num].next;            //头插法插入
-    jbl_malloc_heap.slot[num].next=ptr;                                            //头插法插入
+    ((jbl_malloc_free_slot*)ptr)->next=__jbl_malloc_heap.slot[num].next;            //头插法插入
+    __jbl_malloc_heap.slot[num].next=ptr;                                            //头插法插入
 //    __jbl_free_smalls();                                                        //极为激进的释放策略
 }
 //释放缓冲的small
@@ -580,7 +568,7 @@ void __jbl_free_smalls()
 {
     for(jbl_uint8 type=0;type<30;++type)                                        //遍历30个槽
     {
-        for(jbl_malloc_free_slot *ptr=jbl_malloc_heap.slot[type].next;ptr;)        //遍历每一个small
+        for(jbl_malloc_free_slot *ptr=__jbl_malloc_heap.slot[type].next;ptr;)        //遍历每一个small
         {
             void *page=aligned_to_4K(ptr);            //计算page地址
             jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);//计算chunk地址
@@ -592,7 +580,7 @@ void __jbl_free_smalls()
             if(cnt==jbl_malloc_small_bins[type].count)                            //如果small都闲置，把father page所属的small全部移出slot，并标记释放所有page
             {
                 //printf("FREE 0X%X 0X%X 0X%X %d %d %d\n",ptr,page,chunk,i,fi,type);
-                for(jbl_malloc_free_slot *ptr2=jbl_malloc_heap.slot[type].next,*ptr3=NULL;ptr2;)    //遍历每一个small
+                for(jbl_malloc_free_slot *ptr2=__jbl_malloc_heap.slot[type].next,*ptr3=NULL;ptr2;)    //遍历每一个small
                 {
                     void *page2=(void*)(((jbl_malloc_size_type)ptr2)&(~(((jbl_malloc_size_type)0XFFFLL))));        //计算page
                     jbl_malloc_chunk_struct *chunk2=(void*)(((jbl_malloc_size_type)page2)&(~0X1FFFFFU));        //计算chunk地址
@@ -605,7 +593,7 @@ void __jbl_free_smalls()
                         if(ptr3)                                                                    //前面有small
                             (ptr3)->next=ptr2->next,ptr2=ptr2->next;                                //从slot中删除ptr2，ptr3不动，ptr2下移
                         else
-                            jbl_malloc_heap.slot[type].next=ptr2->next,ptr2=ptr2->next;                //从slot中删除ptr2，ptr3不动，ptr2下移
+                            __jbl_malloc_heap.slot[type].next=ptr2->next,ptr2=ptr2->next;                //从slot中删除ptr2，ptr3不动，ptr2下移
                     else
                         ptr3=ptr2,ptr2=ptr2->next;                                                    //ptr2,ptr3下移
                     if(flag)break;                                                                    //有标记就退出
@@ -617,7 +605,7 @@ void __jbl_free_smalls()
             chunk->map[fi]=0X20000000U|type|((jbl_uint32)(cnt<<20));                                //维护fi的计数
             ptr=ptr->next;                                                                            //下移ptr
         }
-        for(jbl_malloc_free_slot *ptr=jbl_malloc_heap.slot[type].next;ptr;ptr=ptr->next)            //这些small没释放，充值father page的计数
+        for(jbl_malloc_free_slot *ptr=__jbl_malloc_heap.slot[type].next;ptr;ptr=ptr->next)            //这些small没释放，充值father page的计数
         {
             void *page=aligned_to_4K(ptr);                                                            //计算page地址
             jbl_malloc_chunk_struct *chunk=aligned_to_2M(page);                                        //计算chunk地址
@@ -631,36 +619,37 @@ void __jbl_free_smalls()
 void *__jbl_malloc_huge(jbl_malloc_size_type size)
 {
 #if JBL_MALLOC_COUNT==1        
-    ++__jbl_malloc_count[2];                                                            //计数
+    ++__jbl_malloc_heap.count[2];                                                            //计数
 #endif
     jbl_malloc_huge_struct* this=__jbl_malloc_small((sizeof (jbl_malloc_huge_struct)));    //申请huge链表头
     this->size=size=(((size&(0X1FFFFFU))!=0)+(size>>21))<<21;                            //2M对齐
     this->ptr=__jbl_malloc_aligned(size,0X200000U);                                        //申请内存
-    this->next=jbl_malloc_heap.huge_list,jbl_malloc_heap.huge_list=this;                //插入链表
+    this->next=__jbl_malloc_heap.huge_list;                                          //插入链表
+    __jbl_malloc_heap.huge_list=this;                                                 //插入链表
 #if JBL_MALLOC_COUNT ==1
-    jbl_malloc_heap.size+=size;jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);                            //更新内存占用
-    jbl_malloc_heap.applied_size+=size;jbl_max_update(jbl_malloc_heap.applied_peak,jbl_malloc_heap.applied_size);    //更新内存申请
+    __jbl_malloc_heap.size+=size;jbl_max_update(__jbl_malloc_heap.peak,__jbl_malloc_heap.size);                            //更新内存占用
+    __jbl_malloc_heap.applied_size+=size;jbl_max_update(__jbl_malloc_heap.applied_peak,__jbl_malloc_heap.applied_size);    //更新内存申请
 #endif
-//    printf("M %0 16llX\n",this->ptr);
     return this->ptr;
 }
 //释放一段huge内存
 jbl_uint8 __jbl_free_huge(void* ptr)
 {
-    for(jbl_malloc_huge_struct *huge=jbl_malloc_heap.huge_list,*pre=NULL;huge;pre=huge,huge=huge->next)//查找整个链表
+    for(jbl_malloc_huge_struct *huge=__jbl_malloc_heap.huge_list,*pre=NULL;huge;huge=huge->next)//查找整个链表
         if(ptr==huge->ptr)//找到
         {
-//            printf("F %0 16llX\n",huge->ptr);
-            if(pre)pre->next=huge->next;                    //链表删除
-            else   jbl_malloc_heap.huge_list=huge->next;    //链表删除
+            if(pre) pre->next=huge->next;                    //链表删除
+            else    __jbl_malloc_heap.huge_list=huge->next;    //链表删除
             __jbl_free_aligned(huge->ptr,huge->size);        //释放
 #if JBL_MALLOC_COUNT ==1
-            jbl_malloc_heap.applied_size-=huge->size;        //更新内存占用
-            jbl_malloc_heap.size-=huge->size;                //更新内存申请
+            __jbl_malloc_heap.applied_size-=huge->size;        //更新内存占用
+            __jbl_malloc_heap.size-=huge->size;                //更新内存申请
 #endif
             __jbl_free_small(huge);                            //释放huge链表头
             return true;
         }
+        else
+            pre=huge;
     jbl_log(UC "HUGE ERROR");
     return false;
 }

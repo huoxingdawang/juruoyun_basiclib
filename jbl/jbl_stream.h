@@ -87,6 +87,7 @@ void			jbl_stream_push_hex_8bits			(jbl_stream * this,jbl_uint8 in);
 #define			pt()								pchar('\t')
 #define			pf()								jbl_stream_do(jbl_stream_stdout,jbl_stream_force)
 #define			pl()								puint(__LINE__),pchars(" @ "__FILE__),pn(),pf()
+
 #define			louts()								jbl_refer_pull_wrlock(jbl_stream_stdout)
 #define			ulouts()							jbl_refer_pull_unlock(jbl_stream_stdout)
 #define			lins()								jbl_refer_pull_wrlock(jbl_stream_stdin)
@@ -105,5 +106,19 @@ extern			jbl_stream *						jbl_stream_stdin_link;
 #else
 #define			jbl_stream_start()
 #define			jbl_stream_stop()
+#include <stdio.h>
+#define			pchars(x)							printf("%s",(x))
+#define			pint(x)								printf("%lld",(long long)(x))
+#define			puint(x)							printf("%lld",(unsigned long long)(x))
+#define			pchar(x)							printf("%c",(x))
+#define			pdouble(x)							printf("%lf",(x))
+#define			phex(x)								printf("%llX",(x))
+#define			phex8(x)							printf("%2X",(x))
+#define			pn()								pchar('\n')
+#define			pt()								pchar('\t')
+#define			pf()								printf("%s","")
+#define			pl()								puint(__LINE__),pchars(" @ "__FILE__),pn(),pf()
+
+
 #endif
 #endif
