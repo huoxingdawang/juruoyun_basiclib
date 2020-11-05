@@ -89,7 +89,7 @@ base64:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)base64.o        examples$(H)base64.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)base64      tmp$(H)$(pre)base64.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 bitset:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)bitset.o        examples$(H)bitset.c     $(EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)bitset.o        examples$(H)bitset.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)bitset      tmp$(H)$(pre)bitset.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 cmd:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)cmd.o           examples$(H)cmd.c        $(EXLIB)
@@ -110,7 +110,7 @@ log:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)log.o           examples$(H)log.c        $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)log         tmp$(H)$(pre)log.o        tmp$(H)$(pre)jbl.a $(EXLIB)
 malloc:
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)malloc.o        examples$(H)malloc.c     $(EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)malloc.o        examples$(H)malloc.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)malloc      tmp$(H)$(pre)malloc.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 md5:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)md5.o           examples$(H)md5.c        $(EXLIB)
