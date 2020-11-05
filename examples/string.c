@@ -4,8 +4,10 @@
 int main()
 {
 	jbl_start();
-	pchars("--------------------------------" __FILE__ "--------------------------------\n");
+//	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL,*s4=NULL;
+    s1=jbl_string_add_char(s1,'c');
+/*
 //	jbl_string *s4=jbl_refer(&s1);
 	s1=jbl_string_add_const(s1,UC"-123");
 	jbl_string_view(s1);
@@ -58,11 +60,14 @@ int main()
 	l1=jbl_ll_free(l1);
 #endif
 //exit:	
+*/
 	s1=jbl_string_free(s1);
+/*
 	s2=jbl_string_free(s2);
 	s3=jbl_string_free(s3);
 	s4=jbl_string_free(s4);
-	pchars("--------------------------------" __FILE__ "--------------------------------\n");
+*/
+//	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
 	return 0;
 }
