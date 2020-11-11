@@ -4,7 +4,7 @@ jbl_uint32 slot=2048,base=19;
 jbl_uint32 small=90;
 jbl_uint32 large=5;
 jbl_uint32 huge=5;
-#define thread_cnt 4
+#define thread_cnt 8
 typedef struct
 {
     jbl_uint32 slot;jbl_uint64 n;
@@ -51,8 +51,9 @@ void * do_malloc(do_malloc_data *data)
 jbl_pthreads * threads;
 void exit_malloc()
 {
- 	threads=jbl_pthreads_stop(threads); 
+#if defined(__APPLE__) || defined(__linux__)
     threads=jbl_pthreads_free(threads);
+#endif
 }
 #endif
 

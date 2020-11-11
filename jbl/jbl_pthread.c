@@ -32,25 +32,29 @@ jbl_pthreads * jbl_pthreads_new(jbl_pthreads_size_type size)
 jbl_pthreads* jbl_pthreads_free(jbl_pthreads *this)
 {
 	if(!this)return NULL;
-    jbl_pthread_lock_init(this);
+    jbl_pthread_lock_wrlock(this);
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
 		if(jbl_gc_is_ref(this))
 			jbl_pthreads_free((jbl_pthreads*)(((jbl_reference*)this)->ptr));
-		jbl_free(this);
+        else
+        {
+            for(jbl_pthreads_size_type i=0;i<this->len;++i)
+                pthread_cancel(this->threads[i].thread),pthread_join(this->threads[i].thread,NULL);            
+		}
+        jbl_free(this);
 	}
 	return NULL;
 }
 JBL_INLINE jbl_pthreads *jbl_pthreads_copy(jbl_pthreads *that)
 {
 	if(!that)return NULL;
-    jbl_pthread_lock_init(that);
+    jbl_pthread_lock_wrlock(that);
 	jbl_gc_plus(that);
     jbl_pthread_lock_unlock(that);    
 	return that;
 }
-/*
 jbl_pthreads *jbl_pthreads_extend_to(jbl_pthreads *this,jbl_pthreads_size_type size,jbl_uint8 add,jbl_pthreads **pthi)
 {
 	if(!this)
@@ -77,8 +81,8 @@ jbl_pthreads *jbl_pthreads_extend_to(jbl_pthreads *this,jbl_pthreads_size_type s
     if(pthi)	*pthi=thi;
     else         jbl_refer_pull_unlock(this);
     return this;
-}*/
-void * __jbl_pthread_child_init(jbl_pthread *thread)
+}
+static void * __jbl_pthread_child_start(jbl_pthread *thread)
 {
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);  
@@ -86,14 +90,14 @@ void * __jbl_pthread_child_init(jbl_pthread *thread)
 }
 jbl_pthreads * __jbl_pthreads_creat_thread(jbl_pthreads *this,void *(*func)(void *),jbl_pthreads_size_type n,const char * name,void * data)
 {
-    jbl_pthreads *thi=jbl_refer_pull_wrlock(this);
+    jbl_pthreads *thi;this=jbl_pthreads_extend_to(this,1,1,&thi);
     for(jbl_pthreads_size_type i=0;i<n;++i)
     {
         thi->threads[thi->len].func=func;
         thi->threads[thi->len].data=data;
         thi->threads[thi->len].i=i;
         thi->threads[thi->len].name=name;
-        pthread_create(&thi->threads[thi->len].thread,NULL,(void*(*)(void*))__jbl_pthread_child_init,&thi->threads[thi->len]);
+        pthread_create(&thi->threads[thi->len].thread,NULL,(void*(*)(void*))__jbl_pthread_child_start,&thi->threads[thi->len]);
         ++thi->len;
     }
     jbl_refer_pull_unlock(this);
@@ -101,7 +105,8 @@ jbl_pthreads * __jbl_pthreads_creat_thread(jbl_pthreads *this,void *(*func)(void
 }
 jbl_pthreads * jbl_pthreads_stop(jbl_pthreads *this)
 {
-    jbl_pthreads *thi=jbl_refer_pull_wrlock(this);
+	if(!this)return NULL;
+    jbl_pthreads *thi;this=jbl_pthreads_extend_to(this,0,1,&thi);
     for(jbl_pthreads_size_type i=0;i<thi->len;++i)
         pthread_cancel(thi->threads[i].thread),
         pthread_join(thi->threads[i].thread,NULL);
@@ -111,7 +116,8 @@ jbl_pthreads * jbl_pthreads_stop(jbl_pthreads *this)
 }
 jbl_pthreads * jbl_pthreads_wait(jbl_pthreads *this)
 {
-    jbl_pthreads *thi=jbl_refer_pull_wrlock(this);
+	if(!this)return NULL;
+    jbl_pthreads *thi;this=jbl_pthreads_extend_to(this,0,1,&thi);
     for(jbl_pthreads_size_type i=0;i<thi->len;++i)
         pthread_join(thi->threads[i].thread,NULL);
     thi->len=0;
