@@ -129,7 +129,7 @@ jbl_string * jbl_rand_string(jbl_string *this,jbl_string_size_type len,unsigned 
 {
 	this=jbl_string_extend(this,len);
 	jbl_string * thi=jbl_refer_pull(this);
-	for(jbl_string_size_type i=0,n=jbl_strlen(s);i<len;jbl_string_add_char_force(thi,s[jbl_rand_between(0,n-1)]),++i);
+	for(jbl_string_size_type i=0,n=jbl_strlen(s);i<len;jbl_string_add_char_force(thi,s[jbl_rand_between(0,(jbl_uint32)(n-1))]),++i);
 	return this;
 }
 #endif 

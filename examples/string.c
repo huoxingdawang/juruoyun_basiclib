@@ -6,7 +6,7 @@ int main()
 	jbl_start();
 //	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL,*s4=NULL;
-    s1=jbl_string_add_char(s1,'c');
+//  s1=jbl_string_add_char(s1,'c');
 /*
 //	jbl_string *s4=jbl_refer(&s1);
 	s1=jbl_string_add_const(s1,UC"-123");

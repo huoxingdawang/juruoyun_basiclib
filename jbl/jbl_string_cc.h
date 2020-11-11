@@ -42,6 +42,8 @@ extern			const jbl_stream_operater 			jbl_stream_gb2312_to_utf8_operators;				//
 #endif
 
 
-
+#else
+#define jbl_string_cc_start()
+#define jbl_string_cc_stop()
 #endif
 #endif

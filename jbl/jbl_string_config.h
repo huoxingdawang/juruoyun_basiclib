@@ -21,14 +21,14 @@
 #endif
 
 #define JBL_STRING_MIN_LENGTH						8		//最小长度
-#define JBL_STRING_USE_CACHE						1		//是否使用缓冲,依赖于ht的sys模式
+#define JBL_STRING_USE_CACHE						0		//是否使用缓冲,依赖于ht的sys模式
 #define JBL_STRING_USE_CACHE_WHEN_JSON_DECODE		1		//JSONdecode时是否使用缓冲
 #define JBL_STRING_CACHE_MAX_LENGTH					128		//参与缓冲字符串最大长度
 #define JBL_STRING_CACHE_DEBUG						1		//调试模式
 
-#define JBL_STRING_CC_ENABLE						1		//jbl_string_cc.c
+#define JBL_STRING_CC_ENABLE						0		//jbl_string_cc.c
 #define JBL_STRING_CC_DEBUG							1		//jbl_string_cc.c
-#define JBL_STRING_CC_INNER_DB_ENABLE				0		//使用内联表
+#define JBL_STRING_CC_INNER_DB_ENABLE				1		//使用内联表
 #define JBL_STRING_CC_OUT_DB_DIR					"jbl/jbl_string_cc_table.db"		//加载表的地址
 
 #endif

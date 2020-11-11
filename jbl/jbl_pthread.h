@@ -17,9 +17,33 @@
 #define						jbl_pthread_lock_rdlock(this)	pthread_rwlock_rdlock(&((this)->__rwlock))
 #define						jbl_pthread_lock_wrlock(this)	pthread_rwlock_wrlock(&((this)->__rwlock))
 #define						jbl_pthread_lock_unlock(this)	pthread_rwlock_unlock(&((this)->__rwlock))
-
-
-
+#include "jbl_gc.h"
+#include "jbl_var.h"
+typedef struct __jbl_pthread
+{
+	pthread_t thread;
+    void *(*func)(void *);
+    void *data;
+    jbl_pthreads_size_type i;
+    const char *name;
+}jbl_pthread;
+typedef struct __jbl_pthreads
+{
+	jbl_gc 					gc;
+	jbl_var_ops_define		;
+	jbl_pthread_lock_define	;
+	jbl_pthreads_size_type	len;
+	jbl_pthreads_size_type	size;
+	jbl_pthread             threads[];
+}jbl_pthreads;
+void             jbl_pthread_check_exit         ();
+jbl_pthreads *   jbl_pthreads_new               (jbl_pthreads_size_type size);
+jbl_pthreads *   jbl_pthreads_free              (jbl_pthreads *this);
+jbl_pthreads *   jbl_pthreads_copy              (jbl_pthreads *that);
+jbl_pthreads *   __jbl_pthreads_creat_thread    (jbl_pthreads *this,void *(*func)(void *),jbl_pthreads_size_type n,const char * name,void * data);
+jbl_pthreads *   jbl_pthreads_stop              (jbl_pthreads *this);
+jbl_pthreads *   jbl_pthreads_wait              (jbl_pthreads *this);
+#define          jbl_pthreads_creat_thread(this,func,n,data)    __jbl_pthreads_creat_thread(this,(void*(*)(void*))(func),n,#func,data)
 
 
 #else

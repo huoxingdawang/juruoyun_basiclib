@@ -122,8 +122,10 @@ stream:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)stream.o        examples$(H)stream.c     $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)stream      tmp$(H)$(pre)stream.o     tmp$(H)$(pre)jbl.a $(EXLIB)
 string:
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)string.o        examples$(H)string.c         $(EXLIB)
-	$(CC) $(BITS) -o exes$(H)string      tmp$(H)$(pre)string.o     tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)string.o            examples$(H)string.c         $(EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)string_threads.o  examples$(H)string_threads.c         $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)string           tmp$(H)$(pre)string.o            tmp$(H)$(pre)jbl.a $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)string_threads   tmp$(H)$(pre)string_threads.o    tmp$(H)$(pre)jbl.a $(EXLIB)
 sha1:
 	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)sha1.o          examples$(H)sha1.c       $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)sha1        tmp$(H)$(pre)sha1.o       tmp$(H)$(pre)jbl.a $(EXLIB)

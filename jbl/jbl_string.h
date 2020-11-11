@@ -58,8 +58,8 @@ void					jbl_string_stop							();																		//关闭string
 jbl_string *			jbl_string_new							();																		//新建一个字符串
 jbl_string *			jbl_string_free							(jbl_string *this);														//释放一个字符串
 jbl_string *			jbl_string_copy							(jbl_string *that);														//复制一个字符串
-#define					jbl_string_extend(a,b)					jbl_string_extend_to((a),(b),1,NULL)				//扩展字符串ab字节
-jbl_string *			jbl_string_extend_to					(jbl_string *this,jbl_string_size_type size,jbl_uint8 add,jbl_string **pth);							//扩展字符串this到size字节
+#define					jbl_string_extend(a,b)					jbl_string_extend_to((a),(b),1,NULL)			                    	//扩展字符串ab字节
+jbl_string *			jbl_string_extend_to					(jbl_string *this,jbl_string_size_type size,jbl_uint8 add,jbl_string **pth);				//扩展字符串this到size字节,注意，pth不为NULL时不会开锁
 jbl_string *			jbl_string_clear						(jbl_string *this);														//清空一个字符串
 /*******************************************************************************************/
 /*                            以下函数实现字符串的缓冲操作                               */
