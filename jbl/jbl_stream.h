@@ -108,8 +108,13 @@ extern			jbl_stream *						jbl_stream_stdin_link;
 #define			jbl_stream_stop()
 #include <stdio.h>
 #define			pchars(x)							printf("%s",(x))
+#ifdef _WIN32
+#define			pint(x)								printf("%I64d",(long long)(x))
+#define			puint(x)							printf("%I64d",(unsigned long long)(x))
+#elif defined(__APPLE__) || defined(__linux__)
 #define			pint(x)								printf("%lld",(long long)(x))
 #define			puint(x)							printf("%lld",(unsigned long long)(x))
+#endif
 #define			pchar(x)							printf("%c",(x))
 #define			pdouble(x)							printf("%lf",(x))
 #define			phex(x)								printf("%llX",(x))
