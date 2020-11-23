@@ -110,7 +110,7 @@ JBL_INLINE jbl_string *jbl_string_copy(jbl_string *that)
 jbl_string *jbl_string_extend_to(jbl_string *this,jbl_string_size_type size,jbl_uint8 add,jbl_string **pthi)
 {
 	if(!this)this=jbl_string_new();		
-	jbl_reference *ref=NULL;jbl_string *thi=jbl_refer_pull_keep_father_rwlock(this,&ref);
+	jbl_reference *ref=NULL;jbl_string *thi=jbl_refer_pull_keep_father_wrlock(this,&ref);
 	size+=thi->len*(add&1);
 	//[0,JBL_STRING_MIN_LENGTH]=>JBL_STRING_MIN_LENGTH,[JBL_STRING_MIN_LENGTH,4K]=>2倍增,(4k,+oo)=>4k对齐
 	size=(size<=JBL_STRING_MIN_LENGTH?JBL_STRING_MIN_LENGTH:(1ULL<<(jbl_highbit(size-1)+1)));

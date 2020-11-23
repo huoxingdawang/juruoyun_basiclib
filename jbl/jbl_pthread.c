@@ -12,6 +12,31 @@
 #include "jbl_ying.h"
 #include "jbl_malloc.h"
 #include "jbl_gc.h"
+static struct
+{
+	jbl_pthread_lock_define	;
+    jbl_pthreads            *head;
+}__jbl_pthreads_polls;
+void jbl_pthread_start()
+{
+	jbl_pthread_lock_init(&__jbl_pthreads_polls);
+    __jbl_pthreads_polls.head=NULL;
+}
+void jbl_pthread_stop()
+{
+	jbl_pthread_lock_wrlock(&__jbl_pthreads_polls);
+#if defined(__APPLE__) || defined(__linux__)
+    for(jbl_pthreads* thi=__jbl_pthreads_polls.head;thi;thi=thi->nxt)
+    {
+        jbl_pthread_lock_wrlock(thi);
+        for(jbl_pthreads_size_type i=0;i<thi->len;++i)
+            pthread_cancel(thi->threads[i].thread),
+            pthread_join(thi->threads[i].thread,NULL);
+        thi->len=0;
+    }
+#endif
+}
+
 void jbl_pthread_check_exit()
 {
     pthread_testcancel();    
@@ -27,7 +52,14 @@ jbl_pthreads * jbl_pthreads_new(jbl_pthreads_size_type size)
 	jbl_pthread_lock_init(this);
 	this->len=0;
 	this->size=size;
-	return this;	
+	this->pre=NULL;
+    
+	jbl_pthread_lock_wrlock(&__jbl_pthreads_polls);
+	this->nxt=__jbl_pthreads_polls.head;
+    __jbl_pthreads_polls.head=this;
+	jbl_pthread_lock_unlock(&__jbl_pthreads_polls);
+	
+    return this;	
 }
 jbl_pthreads* jbl_pthreads_free(jbl_pthreads *this)
 {
@@ -42,9 +74,29 @@ jbl_pthreads* jbl_pthreads_free(jbl_pthreads *this)
         {
             for(jbl_pthreads_size_type i=0;i<this->len;++i)
                 pthread_cancel(this->threads[i].thread),pthread_join(this->threads[i].thread,NULL);            
+            if(this->pre)
+            {
+                jbl_pthread_lock_wrlock(this->pre);
+                this->pre->nxt=this->nxt;
+                jbl_pthread_lock_unlock(this->pre);
+            }
+            else
+            {
+                jbl_pthread_lock_wrlock(&__jbl_pthreads_polls);
+                __jbl_pthreads_polls.head=this->nxt;
+                jbl_pthread_lock_unlock(&__jbl_pthreads_polls);
+            }
+            if(this->nxt)
+            {
+                jbl_pthread_lock_wrlock(this->nxt);
+                this->nxt->pre=this->pre;
+                jbl_pthread_lock_unlock(this->nxt);
+            }
 		}
         jbl_free(this);
 	}
+    else
+        jbl_pthread_lock_unlock(this);
 	return NULL;
 }
 JBL_INLINE jbl_pthreads *jbl_pthreads_copy(jbl_pthreads *that)
@@ -63,7 +115,7 @@ jbl_pthreads *jbl_pthreads_extend_to(jbl_pthreads *this,jbl_pthreads_size_type s
         if(pthi)	*pthi=this;
         return this;
 	}
-    jbl_reference *ref=NULL;jbl_pthreads *thi=jbl_refer_pull_keep_father_rwlock(this,&ref);
+    jbl_reference *ref=NULL;jbl_pthreads *thi=jbl_refer_pull_keep_father_wrlock(this,&ref);
 	size+=thi->len*(add&1);
     if(size==0)size=8;
 	size=1U<<(jbl_highbit(size-1)+1);
@@ -125,5 +177,11 @@ jbl_pthreads * jbl_pthreads_wait(jbl_pthreads *this)
     return this;
 }
 #else
-
+jbl_pthreads * __jbl_pthreads_creat_thread(jbl_pthreads *this,void *(*func)(void *),jbl_pthreads_size_type n,const char * name,void * data)
+{
+    name++;
+    for(jbl_pthreads_size_type i=0;i<n;++i)
+        func(data);
+    return this;
+}
 #endif

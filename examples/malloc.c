@@ -47,21 +47,12 @@ void * do_malloc(do_malloc_data *data)
 	jbl_free(a);a=NULL;
     return NULL;
 }
-#if JBL_PTHREAD_ENABLE==1
 jbl_pthreads * threads;
-void exit_malloc()
-{
-#if defined(__APPLE__) || defined(__linux__)
-    threads=jbl_pthreads_free(threads);
-#endif
-}
-#endif
 
 int main()
 {
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-    jbl_exception_add_exit_function(exit_malloc);
 	jbl_uint32 seed=((jbl_uint32)time(0));
     jbl_rand_srand(seed);
 	printf("seed=%d\n",seed);
@@ -73,16 +64,12 @@ int main()
 	t1=jbl_time_now(t1);
 #endif
 //	pl();
-#if JBL_PTHREAD_ENABLE==1
     do_malloc_data data={slot,(1ULL<<base)/thread_cnt,small,large,huge};
     threads=jbl_pthreads_new(thread_cnt);
 	threads=jbl_pthreads_creat_thread(threads,do_malloc,thread_cnt,&data);
 	threads=jbl_pthreads_wait(threads);
     threads=jbl_pthreads_free(threads);
-#else
-    do_malloc_data data={slot,(1ULL<<base),small,large,huge};
-	do_malloc(&data);	
-#endif
+
 #if JBL_TIME_ENABLE ==1
 	pchars("\nmalloc used time:");puint(jbl_time_minus((t2=jbl_time_now(t2)),t1));pchars("ms\n");
 	t1=jbl_time_free(t1);t2=jbl_time_free(t2);	

@@ -25,9 +25,11 @@ void jbl_start()
 	jbl_string_start();
 	jbl_stream_start();
 	jbl_rand_start();
+	jbl_pthread_start();
 }
 void jbl_stop()
 {
+	jbl_pthread_stop();
 	jbl_string_stop();
 	jbl_stream_stop();
 	jbl_log_stop();

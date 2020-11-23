@@ -10,9 +10,9 @@
 #ifndef __JBL_PTHREAD_CONFIG_H
 #define __JBL_PTHREAD_CONFIG_H
 #include "jbl_config.h"
-#if JBL_PTHREAD_ENABLE==1
 #include "jbl_ying.h"
 typedef jbl_uint32 jbl_pthreads_size_type;
+#if JBL_PTHREAD_ENABLE==1
 
 
 #endif

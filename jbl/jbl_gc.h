@@ -13,6 +13,7 @@
 #if JBL_GC_ENABLE==1
 #include "jbl_ying.h"
 typedef jbl_uint32 jbl_gc;
+#define	jbl_gc_define	jbl_gc gc
 #include "jbl_var.h"
 #include "jbl_pthread.h"
 typedef struct
@@ -55,13 +56,13 @@ void *			jbl_gc_minus				(void *this);
 void *			jbl_refer_pull_wrlock				(void *ptr);
 void *			jbl_refer_pull_rdlock				(void *ptr);
 void *			jbl_refer_pull_unlock				(void *ptr);
-void *			jbl_refer_pull_keep_father_rwlock	(void *ptr,jbl_reference** ref);
+void *			jbl_refer_pull_keep_father_wrlock	(void *ptr,jbl_reference** ref);
 void *			jbl_refer_pull_keep_father_rdlock	(void *ptr,jbl_reference** ref);
 #else
 #define			jbl_refer_pull_wrlock(ptr)					jbl_refer_pull(ptr)
 #define			jbl_refer_pull_rdlock(ptr)					jbl_refer_pull(ptr)
 #define			jbl_refer_pull_unlock(ptr)
-#define			jbl_refer_pull_keep_father_rwlock(ptr,ref)	jbl_refer_pull_keep_father(ptr,ref)
+#define			jbl_refer_pull_keep_father_wrlock(ptr,ref)	jbl_refer_pull_keep_father(ptr,ref)
 #define			jbl_refer_pull_keep_father_rdlock(ptr,ref)	jbl_refer_pull_keep_father(ptr,ref)	
 #endif
 
