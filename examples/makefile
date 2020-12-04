@@ -10,7 +10,6 @@
 CC = gcc
 BITS = -g -m64
 EXLIB = $(JBL_EXLIB)
-complain_re2c = jbl
 ifeq ($(shell uname),Linux)
 	system = linux
 else
