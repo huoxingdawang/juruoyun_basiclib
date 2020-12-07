@@ -21,6 +21,7 @@ jbl_uint32 get_size(do_malloc_data *data)
 }
 void * do_malloc(do_malloc_data *data)
 {
+    puint(jbl_pthread_get_id());pn();pf();
 	char **a=jbl_malloc(data->slot*sizeof(char*));
 	for(jbl_uint32 i=0;i<data->slot;a[i]=NULL,++i);
 	for(jbl_uint64 i=0;i<data->n;++i)

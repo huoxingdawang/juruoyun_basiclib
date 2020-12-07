@@ -36,11 +36,8 @@ void jbl_pthread_stop()
     }
 #endif
 }
-
-void jbl_pthread_check_exit()
-{
-    pthread_testcancel();    
-}
+jbl_uint64  jbl_pthread_get_id    (){return (jbl_uint64)pthread_self();}
+void        jbl_pthread_check_exit(){pthread_testcancel();}
 jbl_pthreads * jbl_pthreads_new(jbl_pthreads_size_type size)
 {
     if(size==0)size=8;

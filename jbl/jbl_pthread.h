@@ -39,6 +39,7 @@ typedef struct __jbl_pthreads
 }jbl_pthreads;
 void             jbl_pthread_start              ();
 void             jbl_pthread_stop               ();
+jbl_uint64       jbl_pthread_get_id             ();
 void             jbl_pthread_check_exit         ();
 jbl_pthreads *   jbl_pthreads_new               (jbl_pthreads_size_type size);
 jbl_pthreads *   jbl_pthreads_free              (jbl_pthreads *this);
