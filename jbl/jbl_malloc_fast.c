@@ -162,7 +162,7 @@ void jbl_malloc_start()
 }
 void jbl_malloc_stop()
 {
-    jbl_pthread_lock_wrlock(&__jbl_malloc_heap);
+    jbl_pthread_lock_rdlock(&__jbl_malloc_heap);
 //输出内存统计
     pchars(UC"\n\n");
 #if JBL_MALLOC_COUNT==1
@@ -192,6 +192,8 @@ void jbl_malloc_stop()
     for(;__jbl_malloc_heap.huge_list;__jbl_free_huge(__jbl_malloc_heap.huge_list->ptr));
     for(void*ptr;__jbl_malloc_heap.main_chunk;ptr=__jbl_malloc_heap.main_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.main_chunk,0X200000),__jbl_malloc_heap.main_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/);
     for(void*ptr;__jbl_malloc_heap.cached_chunk;ptr=__jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.cached_chunk,0X200000),__jbl_malloc_heap.cached_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/);
+    jbl_pthread_lock_unrdlock(&__jbl_malloc_heap);
+    jbl_pthread_lock_free(&__jbl_malloc_heap);
 }
 /*******************************************************************************************/
 /*                            fast内存管理实现                                                   */
@@ -206,7 +208,7 @@ void* jbl_malloc(jbl_malloc_size_type size)
     if(size<=3072)                       ptr=__jbl_malloc_small((jbl_uint16)size);   //small
     else if(size<=(2*1024*1024-4*1024))  ptr=__jbl_malloc_large(size);               //large (2M-4K)
     else                                 ptr=__jbl_malloc_huge(size);                //huge
-    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
+    jbl_pthread_lock_unwrlock(&__jbl_malloc_heap);
 //printf("%d\t0X%llX\n",__LINE__,ptr);
     jbl_log(UC "addr:0X%X\twant:%d\tsize:%d",ptr,size,jbl_malloc_size(ptr));
     return ptr;
@@ -233,7 +235,7 @@ jbl_malloc_size_type jbl_malloc_size(void* ptr)
     else 
         size=(chunk->map[i]&0X1FFU)<<12;
 exit:;
-    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
+    jbl_pthread_lock_unrdlock(&__jbl_malloc_heap);
     return size;//large
 }
 void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
@@ -266,10 +268,10 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
             for(jbl_uint16 j=0;j<page;++j)
                 chunk->map[i+j]=tmp|((jbl_uint32)(j<<10));//[30,29]U[19,10]U[9,0]
             jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr,jbl_malloc_size(ptr));
-            jbl_pthread_lock_unlock(&__jbl_malloc_heap);
+            jbl_pthread_lock_unwrlock(&__jbl_malloc_heap);
             return ptr;
         }
-        jbl_pthread_lock_unlock(&__jbl_malloc_heap);
+        jbl_pthread_lock_unwrlock(&__jbl_malloc_heap);
     }    
     void * ptr2=jbl_malloc(size);
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
@@ -286,7 +288,7 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
         __jbl_free_large(ptr);
     else//huge
         __jbl_free_huge(ptr);
-    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
+    jbl_pthread_lock_unwrlock(&__jbl_malloc_heap);
     return ptr2;    
 }
 void jbl_free(void * ptr)
@@ -311,7 +313,7 @@ void jbl_free(void * ptr)
         else                                __jbl_free_large(ptr);
     }
 exit:;
-    jbl_pthread_lock_unlock(&__jbl_malloc_heap);
+    jbl_pthread_lock_unwrlock(&__jbl_malloc_heap);
 }
 //申请一段mmap
 void* __jbl_malloc_mmap(jbl_malloc_size_type size)

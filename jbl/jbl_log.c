@@ -64,6 +64,7 @@ void jbl_log_stop()
 	jbl_stream_do(__jbl_logs.fs,jbl_stream_force);
 	__jbl_logs.fs=jbl_stream_free(__jbl_logs.fs);
 #endif
+	jbl_pthread_lock_free(&__jbl_logs);
 }
 
 void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigned char *s,...)
@@ -104,7 +105,7 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 	++__jbl_logs.cnt;
 	if((__jbl_logs.cnt+10)>=JBL_LOG_MAX_LENGTH||(__jbl_logs.pcnt+40)>=JBL_LOG_MAX_LENGTH*4)
 		__jbl_log_save(0);
-	jbl_pthread_lock_unlock(&__jbl_logs);
+	jbl_pthread_lock_unwrlock(&__jbl_logs);
 }
 #include <stdio.h>
 
@@ -165,7 +166,7 @@ static void __jbl_log_save(jbl_uint8 lock)
 	__jbl_logs.start&=(~0x02);
 	__jbl_logs.cnt=0;
 	__jbl_logs.pcnt=0;
-	if(lock)jbl_pthread_lock_unlock(&__jbl_logs);
+	if(lock)jbl_pthread_lock_unwrlock(&__jbl_logs);
 }
 
 #endif

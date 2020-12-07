@@ -12,11 +12,14 @@
 #include "jbl_pthread_config.h"
 #if JBL_PTHREAD_ENABLE==1
 #include <pthread.h>
-#define				jbl_pthread_lock_define			pthread_rwlock_t __rwlock
-#define				jbl_pthread_lock_init(this)		pthread_rwlock_init(&((this)->__rwlock),NULL)
-#define				jbl_pthread_lock_rdlock(this)	pthread_rwlock_rdlock(&((this)->__rwlock))
-#define				jbl_pthread_lock_wrlock(this)	pthread_rwlock_wrlock(&((this)->__rwlock))
-#define				jbl_pthread_lock_unlock(this)	pthread_rwlock_unlock(&((this)->__rwlock))
+void __jbl_pthread_lock_init(pthread_mutex_t *lock);
+#define				jbl_pthread_lock_define			pthread_mutex_t __lock
+#define				jbl_pthread_lock_init(this)		__jbl_pthread_lock_init(&((this)->__lock))
+#define				jbl_pthread_lock_rdlock(this)	pthread_mutex_lock(&((this)->__lock))
+#define				jbl_pthread_lock_wrlock(this)	pthread_mutex_lock(&((this)->__lock))
+#define				jbl_pthread_lock_unrdlock(this)	pthread_mutex_unlock(&((this)->__lock))
+#define				jbl_pthread_lock_unwrlock(this)	pthread_mutex_unlock(&((this)->__lock))
+#define				jbl_pthread_lock_free(this)	    pthread_mutex_destroy(&((this)->__lock))
 #include "jbl_gc.h"
 #include "jbl_var.h"
 typedef struct __jbl_pthread
@@ -47,7 +50,7 @@ jbl_pthreads *   jbl_pthreads_copy              (jbl_pthreads *that);
 jbl_pthreads *   jbl_pthreads_stop              (jbl_pthreads *this);
 jbl_pthreads *   jbl_pthreads_wait              (jbl_pthreads *this);
 jbl_pthreads *   __jbl_pthreads_creat_thread    (jbl_pthreads *this,void *(*func)(void *),jbl_pthreads_size_type n,const char * name,void * data);
-#define          jbl_pthreads_creat_thread(this,func,n,data)    __jbl_pthreads_creat_thread(this,(void*(*)(void*))(func),n,#func,data)
+#define          jbl_pthreads_creat_thread(this,func,n,data)    __jbl_pthreads_creat_thread(this,((void*(*)(void*))(func)),n,#func,data)
 
 
 #else

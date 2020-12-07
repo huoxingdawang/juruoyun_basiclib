@@ -91,6 +91,7 @@ void jbl_malloc_start()
 }
 void jbl_malloc_stop()
 {
+	jbl_pthread_lock_rdlock(&jbl_malloc_heap);
 #if JBL_STREAM_ENABLE==1
 #if JBL_MALLOC_COUNT==1
 //输出内存统计
@@ -102,6 +103,8 @@ void jbl_malloc_stop()
 	jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
 	jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
 #endif
+	jbl_pthread_lock_unrdlock(&jbl_malloc_heap);
+	jbl_pthread_lock_free(&jbl_malloc_heap);
 }
 /*******************************************************************************************/
 /*                            以下函数完成内存管理组件基本操作                           */
@@ -119,7 +122,7 @@ JBL_INLINE void* jbl_malloc(jbl_malloc_size_type size)
 #if JBL_MALLOC_COUNT ==1
 	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size+=jbl_malloc_size(ptr),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
-	jbl_pthread_lock_unlock(&jbl_malloc_heap);
+	jbl_pthread_lock_unwrlock(&jbl_malloc_heap);
 #endif
 	return ptr;
 }
@@ -152,7 +155,7 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size-=size_old;
 	jbl_malloc_heap.size+=_msize(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);	
-	jbl_pthread_lock_unlock(&jbl_malloc_heap);
+	jbl_pthread_lock_unwrlock(&jbl_malloc_heap);
 #endif
 	jbl_min_update(size_old,size);
 	jbl_memory_copy(ptr2,ptr,size_old);
@@ -163,7 +166,7 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 #if JBL_MALLOC_COUNT ==1
 	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
-	jbl_pthread_lock_unlock(&jbl_malloc_heap);
+	jbl_pthread_lock_unwrlock(&jbl_malloc_heap);
 #endif
 	void *ptr2=realloc(ptr,size);
 #if JBL_MALLOC_NULL_PTR_CHECK ==1
@@ -172,7 +175,7 @@ void* jbl_realloc(void* ptr,jbl_malloc_size_type size)
 #if JBL_MALLOC_COUNT ==1
 	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size+=jbl_malloc_size(ptr2),jbl_max_update(jbl_malloc_heap.peak,jbl_malloc_heap.size);
-	jbl_pthread_lock_unlock(&jbl_malloc_heap);
+	jbl_pthread_lock_unwrlock(&jbl_malloc_heap);
 #endif
 	jbl_log(UC "addr:0X%X\tto addr:0X%X\tsize:%d",ptr,ptr2,jbl_malloc_size(ptr2));
 	return ptr2;
@@ -187,7 +190,7 @@ JBL_INLINE void jbl_free(void * ptr)
 #if JBL_MALLOC_COUNT ==1
 	jbl_pthread_lock_wrlock(&jbl_malloc_heap);
 	jbl_malloc_heap.size-=jbl_malloc_size(ptr);
-	jbl_pthread_lock_unlock(&jbl_malloc_heap);
+	jbl_pthread_lock_unwrlock(&jbl_malloc_heap);
 #endif
 	free(ptr);
 }

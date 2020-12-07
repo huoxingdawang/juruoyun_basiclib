@@ -79,8 +79,8 @@ jbl_string *			jbl_string_add_const_length				(jbl_string *this,const unsigned c
 #define					jbl_string_add_chars(x,y)				jbl_string_add_chars_length(x,y,jbl_strlen(y))							//添加一个char*字符串
 jbl_string *			jbl_string_add_chars_length				(jbl_string *this,const unsigned char *in,jbl_string_size_type len);	//添加一个长度已知的char*字符串
 jbl_string *			jbl_string_add_string					(jbl_string *this,jbl_string *in);										//添加一个string
-jbl_string *			jbl_string_add_char						(jbl_string *this,const char c);										//添加一个char
-#define					jbl_string_add_char_force(this,in)		(this->s[this->len++]=(in))												//强制添加一个char，当字符串为NULL或引用类型时将直接导致RE
+jbl_string *			jbl_string_add_char						(jbl_string *this,const unsigned char c);								//添加一个char
+#define					jbl_string_add_char_force(this,in)		(this->s[this->len++]=((const unsigned char)in))						//强制添加一个char，当字符串为NULL或引用类型时将直接导致RE
 #define					jbl_string_add_int(this,in)				jbl_string_add_int_length(this,in,0,0)									//添加一个64位整数
 jbl_string *			jbl_string_add_int_length				(jbl_string *this,jbl_int64 in,jbl_uint8 len,char c);					//添加一个length位的64位整数，不足用c补齐	
 #define					jbl_string_add_uint(this,in)			jbl_string_add_uint_length(this,in,0,0)									//添加一个64位无符号整数
@@ -121,9 +121,9 @@ jbl_uint64				jbl_string_get_hex_start_len			(jbl_string *this,jbl_string_size_t
 /*******************************************************************************************/
 /*                            以下函数实现字符串的比较类操作                             */
 /*******************************************************************************************/
-char					jbl_string_space_ship					(jbl_string *this_,jbl_string *that_);						//太空船操作符，参见php的太空船操作符
-char					jbl_string_space_ship_chars				(jbl_string *this,const char *that);								//和char*字符串的太空船操作符，参见php的太空船操作符
-char					jbl_string_if_equal						(jbl_string *this_,jbl_string *that_);						//判断两个字符串是否相等，这里使用了hash进行判断(如果存在)
+char					jbl_string_space_ship					(jbl_string *this,jbl_string *that);						            //太空船操作符，参见php的太空船操作符
+char					jbl_string_space_ship_chars				(jbl_string *this,const char *that);								    //和char*字符串的太空船操作符，参见php的太空船操作符
+char					jbl_string_if_equal						(jbl_string *this,jbl_string *that);					            	//判断两个字符串是否相等，这里使用了hash进行判断(如果存在)
 #define					jbl_string_if_big(x,y)					(jbl_string_space_ship(x,y)>0)											//判断this是否>that
 #define					jbl_string_if_small(x,y)				(jbl_string_space_ship(x,y)<0)											//判断this是否<that
 #define					jbl_string_if_equal_small(x,y)			(jbl_string_space_ship(x,y)<=0)											//判断this是否>=that

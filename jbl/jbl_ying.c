@@ -20,15 +20,16 @@ void jbl_start()
 	signal(SIGINT,jbl_signal_callback);
 	signal(SIGTERM,jbl_signal_callback);	
 	jbl_exception_add_exit_function(jbl_stop);
+	jbl_pthread_start();
 	jbl_log_start();
 	jbl_malloc_start();
 	jbl_string_start();
 	jbl_stream_start();
 	jbl_rand_start();
-	jbl_pthread_start();
 }
 void jbl_stop()
 {
+	jbl_rand_stop();
 	jbl_pthread_stop();
 	jbl_string_stop();
 	jbl_stream_stop();

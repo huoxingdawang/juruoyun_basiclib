@@ -30,7 +30,7 @@ void jbl_exception_add_exit_function(void (*func)(void))
 {
     jbl_pthread_lock_wrlock(&__jbl_exdata);
 	__jbl_exdata.ef[__jbl_exdata.fc++]=func;
-    jbl_pthread_lock_unlock(&__jbl_exdata);
+    jbl_pthread_lock_unwrlock(&__jbl_exdata);
 }
 void jbl_exit(int x)
 {
