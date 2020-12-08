@@ -196,10 +196,10 @@ jbl_string *jbl_string_clear(jbl_string *this)
 jbl_string *jbl_string_add_const_length(jbl_string *this,const unsigned char *in,jbl_string_size_type len)
 {
 	if(!in)return this;
-    jbl_pthread_lock_wrlock(this);
-	if(this&&(jbl_gc_is_ref(this)||this->s))
+	if(jbl_refer_pull_wrlock(this)&&(jbl_gc_is_ref(this)||this->s))
     {
         this=jbl_string_add_chars_length(this,in,len);
+        jbl_refer_pull_unwrlock(this);
 	}
     else
     {
@@ -208,7 +208,6 @@ jbl_string *jbl_string_add_const_length(jbl_string *this,const unsigned char *in
         this->size=0;
         this->len=len;
 	}
-    jbl_refer_pull_unwrlock(this);
     return this;
 }
 jbl_string *jbl_string_add_chars_length(jbl_string *this,const unsigned char *in,jbl_string_size_type len)
