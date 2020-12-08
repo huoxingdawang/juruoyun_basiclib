@@ -98,7 +98,7 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 		jbl_free(this);
 	}
     else
-        jbl_pthread_lock_unwrlock(this);
+        {jbl_pthread_lock_unwrlock(this);}
 	return NULL;
 }
 void jbl_stream_get_buf(jbl_stream *thi) 

@@ -190,8 +190,8 @@ void jbl_malloc_stop()
     jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
 #endif    
     for(;__jbl_malloc_heap.huge_list;__jbl_free_huge(__jbl_malloc_heap.huge_list->ptr));
-    for(void*ptr;__jbl_malloc_heap.main_chunk;ptr=__jbl_malloc_heap.main_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.main_chunk,0X200000),__jbl_malloc_heap.main_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/);
-    for(void*ptr;__jbl_malloc_heap.cached_chunk;ptr=__jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.cached_chunk,0X200000),__jbl_malloc_heap.cached_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/);
+    for(void*ptr;__jbl_malloc_heap.main_chunk;ptr=__jbl_malloc_heap.main_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.main_chunk,0X200000),__jbl_malloc_heap.main_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/){}
+    for(void*ptr;__jbl_malloc_heap.cached_chunk;ptr=__jbl_malloc_heap.cached_chunk->next,__jbl_free_aligned(__jbl_malloc_heap.cached_chunk,0X200000),__jbl_malloc_heap.cached_chunk=ptr/*,__jbl_malloc_heap.applied_size-=0X200000*/){}
     jbl_pthread_lock_unrdlock(&__jbl_malloc_heap);
     jbl_pthread_lock_free(&__jbl_malloc_heap);
 }

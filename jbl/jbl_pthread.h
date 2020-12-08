@@ -65,6 +65,7 @@ typedef void jbl_pthreads;
 #define			jbl_pthread_lock_unwrlock(this)
 #define			jbl_pthread_lock_free(this)
 #define			jbl_pthread_check_exit()
+#define			jbl_pthread_get_id()            (0)
 #define			jbl_pthreads_new(n)             (NULL)
 #define			jbl_pthreads_free(this)         (NULL)
 #define			jbl_pthreads_copy(this)         (NULL)
