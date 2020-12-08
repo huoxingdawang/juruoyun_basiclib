@@ -12,7 +12,7 @@
 #include "jbl_string_config.h"
 #if JBL_STRING_ENABLE==1
 /*******************************************************************************************/
-/*                            依赖 jbl_gc jbl_malloc jbl_ying jbl_exception               */
+/*                            依赖 jbl_gc jbl_malloc jbl_ying jbl_exception jbl_pthread    */
 /*******************************************************************************************/
 #include "jbl_exception.h"
 #include "jbl_gc.h"
@@ -34,9 +34,9 @@ typedef	struct	__jbl_ll			jbl_ll;
 /*******************************************************************************************/
 typedef struct __jbl_string
 {
-	jbl_gc 					gc;		//gc结构
-	jbl_var_ops_define			;
-	jbl_pthread_lock_define		;
+	jbl_gc_define           ;		//gc结构
+	jbl_var_ops_define      ;
+	jbl_pthread_lock_define	;
 	jbl_string_size_type	len;	//当前字符串长度
 	jbl_string_size_type	size;	//当前已申请内存长度,如果size<len则该字符串是const,应及时扩容
 	jbl_string_hash_type	h;		//hash值缓冲
@@ -86,9 +86,9 @@ jbl_string *			jbl_string_add_int_length				(jbl_string *this,jbl_int64 in,jbl_u
 #define					jbl_string_add_uint(this,in)			jbl_string_add_uint_length(this,in,0,0)									//添加一个64位无符号整数
 jbl_string *			jbl_string_add_uint_length				(jbl_string *this,jbl_uint64 in,jbl_uint8 len,char c);					//添加一个length位64位无符号整数，不足用c补齐
 #define					jbl_string_add_double(this,in)			jbl_string_add_double_length(this,in,5)									//添加一个浮点数
-jbl_string *			jbl_string_add_double_length			(jbl_string *this,double in,unsigned char len);							//添加一个浮点数，保留len位小数
-jbl_string *			jbl_string_add_hex						(jbl_string *this,jbl_uint64 in);										//把一个64位无符号整数以16进制形式添加(无前导0)
-jbl_string *			jbl_string_add_hex_8bits				(jbl_string *this,jbl_uint8 in);										//把一个 8位无符号整数以16进制形式添加(有前导0)
+jbl_string *			jbl_string_add_double_length			(jbl_string *this,double in,jbl_uint8 len); 							//添加一个浮点数，保留len位小数
+jbl_string *			jbl_string_add_hex						(jbl_string *this,jbl_uint64 in);										//添加一个16进制形式的64位无符号整数(无前导0)
+jbl_string *			jbl_string_add_hex_8bits				(jbl_string *this,jbl_uint8 in);										//添加一个16进制形式的 8位无符号整数(有前导0)
 //TODO END
 /*******************************************************************************************/
 /*                            以下函数实现字符串的设置类操作                             */

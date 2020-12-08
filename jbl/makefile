@@ -17,65 +17,65 @@ endif
 jbl                       :jbl/jbl_aes jbl/jbl_array jbl/jbl_base64 jbl/jbl_bitset jbl/jbl_cmd jbl/jbl_exception jbl/jbl_endian jbl/jbl_file jbl/jbl_gc jbl/jbl_ht jbl/jbl_json jbl/jbl_ll jbl/jbl_log jbl/jbl_malloc jbl/jbl_md5 jbl/jbl_pthread jbl/jbl_rand jbl/jbl_scanner jbl/jbl_sha1 jbl/jbl_stream jbl/jbl_string jbl/jbl_time jbl/jbl_var jbl/jbl_ying 
 	ar  rc tmp$(H)$(pre)jbl.a tmp$(H)$(pre)jbl_*.o
 jbl/jbl_aes            :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes.o         jbl$(H)jbl_aes.c         -I jbl $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes_soft.o    jbl$(H)jbl_aes_soft.c    -I jbl $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_aes_hard.o    jbl$(H)jbl_aes_hard.c    -I jbl $(JBL_EXLIB) -maes
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_aes.o         jbl$(H)jbl_aes.c         $(EXDIR) $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_aes_soft.o    jbl$(H)jbl_aes_soft.c    $(EXDIR) $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_aes_hard.o    jbl$(H)jbl_aes_hard.c    $(EXDIR) $(JBL_EXLIB) -maes
 jbl/jbl_array          :
-	$(CC) $(BITS) -c       -o tmp$(H)$(pre)jbl_array.o       jbl$(H)jbl_array.c       -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_array.o       jbl$(H)jbl_array.c       $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_base64         :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_base64.o      jbl$(H)jbl_base64.c      -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_base64.o      jbl$(H)jbl_base64.c      $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_bitset         :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_bitset.o      jbl$(H)jbl_bitset.c      $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_bitset.o      jbl$(H)jbl_bitset.c      $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_cmd            :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_cmd.o         jbl$(H)jbl_cmd.c         -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_cmd.o         jbl$(H)jbl_cmd.c         $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_endian         :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_endian.o      jbl$(H)jbl_endian.c      $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_endian.o      jbl$(H)jbl_endian.c      $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_exception      :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_exception.o   jbl$(H)jbl_exception.c   $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_exception.o   jbl$(H)jbl_exception.c   $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_file           :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_file.o        jbl$(H)jbl_file.c        -I jbl $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_file_ct.o     jbl$(H)jbl_file_ct.c     -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_file.o        jbl$(H)jbl_file.c        $(EXDIR) $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_file_ct.o     jbl$(H)jbl_file_ct.c     $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_gc             :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_gc.o          jbl$(H)jbl_gc.c          $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_gc.o          jbl$(H)jbl_gc.c          $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_ht             :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_ht.o          jbl$(H)jbl_ht.c          -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_ht.o          jbl$(H)jbl_ht.c          $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_json           :
 ifeq ($(system),$(filter $(system),linux macos))
 	re2c -f -c jbl$(H)jbl_json.l -o tmp$(H)jbl_json.c
 endif
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_json.o        tmp$(H)jbl_json.c        -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_json.o        tmp$(H)jbl_json.c        $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_ll             :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_ll.o          jbl$(H)jbl_ll.c          -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_ll.o          jbl$(H)jbl_ll.c          $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_log             :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_log.o         jbl$(H)jbl_log.c         -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_log.o         jbl$(H)jbl_log.c         $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_malloc         :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_malloc.o      jbl$(H)jbl_malloc.c      $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_malloc_fast.o jbl$(H)jbl_malloc_fast.c $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_malloc.o      jbl$(H)jbl_malloc.c      $(EXDIR) $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_malloc_fast.o jbl$(H)jbl_malloc_fast.c $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_md5            :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_md5.o         jbl$(H)jbl_md5.c         -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_md5.o         jbl$(H)jbl_md5.c         $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_pthread        :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_pthread.o     jbl$(H)jbl_pthread.c     $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_pthread.o     jbl$(H)jbl_pthread.c     $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_rand           :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_rand.o        jbl$(H)jbl_rand.c        $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_rand.o        jbl$(H)jbl_rand.c        $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_scanner           :
 ifeq ($(system),$(filter $(system),linux macos))
 	re2c -o tmp$(H)jbl_scanner.c jbl$(H)jbl_scanner.l
 endif
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_scanner.o     tmp$(H)jbl_scanner.c     -I jbl $(JBL_EXLIB)  
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_scanner.o     tmp$(H)jbl_scanner.c     $(EXDIR) $(JBL_EXLIB)  
 jbl/jbl_sha1           :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_sha1.o        jbl$(H)jbl_sha1.c        -I jbl $(JBL_EXLIB)    
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_sha1.o        jbl$(H)jbl_sha1.c        $(EXDIR) $(JBL_EXLIB)    
 jbl/jbl_stream         :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_stream.o      jbl$(H)jbl_stream.c      -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_stream.o      jbl$(H)jbl_stream.c      $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_string         :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string.o      jbl$(H)jbl_string.c      $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string_cc.o   jbl$(H)jbl_string_cc.c   $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string.o      jbl$(H)jbl_string.c      $(EXDIR) $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_string_cc.o   jbl$(H)jbl_string_cc.c   $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_time           :
 ifeq ($(system),$(filter $(system),linux macos))
 	re2c -o tmp$(H)jbl_time.c jbl$(H)jbl_time.l
 endif
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_time.o        tmp$(H)jbl_time.c        -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_time.o        tmp$(H)jbl_time.c        $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_var            :
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_var.o         jbl$(H)jbl_var.c         -I jbl $(JBL_EXLIB)
-	$(CC) $(BITS) -c -Wall -o tmp$(H)$(pre)jbl_var_data.o    jbl$(H)jbl_var_data.c    -I jbl $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_var.o         jbl$(H)jbl_var.c         $(EXDIR) $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_var_data.o    jbl$(H)jbl_var_data.c    $(EXDIR) $(JBL_EXLIB)
 jbl/jbl_ying           :
-	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_ying.o       jbl$(H)jbl_ying.c        $(JBL_EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)jbl_ying.o        jbl$(H)jbl_ying.c        $(EXDIR) $(JBL_EXLIB)

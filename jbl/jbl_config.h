@@ -31,7 +31,7 @@
 #define JBL_RAND_ENABLE			1	//need 
 #define JBL_SCANNER_ENABLE		0	//
 #define JBL_SHA1_ENABLE			0	//need ying bitset malloc string
-#define JBL_STREAM_ENABLE		0	//need ying bitset malloc gc
+#define JBL_STREAM_ENABLE		1	//need ying bitset malloc gc
 #define JBL_STRING_ENABLE		1	//need ying bitset malloc gc
 #define JBL_TIME_ENABLE			0	//developing N/A
 #define JBL_VAR_ENABLE			0	//need ying bitset malloc	

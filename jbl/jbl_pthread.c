@@ -42,7 +42,11 @@ void __jbl_pthread_lock_init(pthread_mutex_t *lock)
 {
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
+#if defined(_WIN32) || defined(__linux__)
     pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE_NP);
+#elif defined(__APPLE__)
+    pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+#endif
     pthread_mutex_init(lock,&attr);  
     pthread_mutexattr_destroy(&attr);
 }

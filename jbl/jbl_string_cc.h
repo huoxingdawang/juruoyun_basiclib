@@ -30,18 +30,13 @@ jbl_string *			jbl_string_add_utf8_from_unicode		(jbl_string *this,jbl_uint32 un
 /*******************************************************************************************/
 /*                            以下函数实现stream的转码操作                                     */
 /*******************************************************************************************/
-extern			const jbl_stream_operater			jbl_stream_utf8_to_gb2312_operators;				//utf8到gb2312转码流处理器
-extern			const jbl_stream_operater 			jbl_stream_gb2312_to_utf8_operators;				//gb2312到utf8转码流处理器
-#define			jbl_stream_utf8_to_gb2312_new()		jbl_stream_new(&jbl_stream_utf8_to_gb2312_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建utf8到gb2312转码流处理器
-#define			jbl_stream_gb2312_to_utf8_new()		jbl_stream_new(&jbl_stream_gb2312_to_utf8_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建gb2312到utf8转码流处理器
-#if JBL_VAR_ENABLE == 1
-#define			jbl_Vstream_utf8_to_gb2312_new()	jbl_Vstream_new(&jbl_stream_utf8_to_gb2312_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建var格式的utf8到gb2312转码流处理器
-#define			jbl_Vstream_gb2312_to_utf8_new()	jbl_Vstream_new(&jbl_stream_gb2312_to_utf8_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建var格式的gb2312到utf8转码流处理器
-#endif
+extern			const jbl_stream_operater			jbl_stream_utf8_to_gb2312_operators;				    //utf8到gb2312转码流处理器
+extern			const jbl_stream_operater 			jbl_stream_gb2312_to_utf8_operators;				    //gb2312到utf8转码流处理器
+#define			jbl_stream_utf8_to_gb2312_new()		jbl_stream_new(&jbl_stream_utf8_to_gb2312_operators)	//新建utf8到gb2312转码流处理器
+#define			jbl_stream_gb2312_to_utf8_new()		jbl_stream_new(&jbl_stream_gb2312_to_utf8_operators)	//新建gb2312到utf8转码流处理器
+
 
 #endif
-
-
 #else
 #define jbl_string_cc_start()
 #define jbl_string_cc_stop()

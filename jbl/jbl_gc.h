@@ -18,9 +18,9 @@ typedef jbl_uint32 jbl_gc;
 #include "jbl_pthread.h"
 typedef struct
 {
-	jbl_gc gc;
-	jbl_var_ops_define;
-	jbl_pthread_lock_define;
+	jbl_gc_define           ;
+	jbl_var_ops_define      ;
+	jbl_pthread_lock_define ;
 	void * ptr;
 }jbl_reference;
 void *			jbl_refer					(void *ptr);						//引用一个变量，********************特别的该函数必须传入一个二级指针********************

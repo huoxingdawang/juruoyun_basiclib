@@ -58,32 +58,32 @@ jbl_uint8 __jbl_string_utu8(unsigned char *s,jbl_uint32 unicode)//unicode to utf
 {
 	jbl_uint8 len=0;
 	if(unicode<=0x7F)
-		s[len]=(unicode&0x7F)				,++len;
+		s[len]=(jbl_uint8)(unicode&0x7F)              ,++len;
 	else if(unicode>=0x80&&unicode<=0x7FF)
-		s[len]=(((unicode>>6)&0x1F)|0xC0)	,++len,
-		s[len]=((unicode&0x3F)|0x80)		,++len;
+		s[len]=(jbl_uint8)(((unicode>>6)&0x1F)|0xC0)  ,++len,
+		s[len]=(jbl_uint8)((unicode&0x3F)|0x80)       ,++len;
 	else if(unicode>=0x800&&unicode<=0xFFFF)
-		s[len]=(((unicode>>12)&0x0F)|0xE0)	,++len,
-		s[len]=(((unicode>>6)&0x3F)|0x80)	,++len,
-		s[len]=((unicode&0x3F)|0x80)		,++len;
+		s[len]=(jbl_uint8)(((unicode>>12)&0x0F)|0xE0) ,++len,
+		s[len]=(jbl_uint8)(((unicode>>6)&0x3F)|0x80)  ,++len,
+		s[len]=(jbl_uint8)((unicode&0x3F)|0x80)       ,++len;
 	else if(unicode>=0x10000&&unicode<=0x10FFFF)
-		s[len]=(((unicode>>18)&0x7)|0xF0)	,++len,
-		s[len]=(((unicode>>12)&0x3F)|0x80)	,++len,
-		s[len]=(((unicode>>6)&0x3F)|0x80)	,++len,
-		s[len]=((unicode&0x3F)|0x80)		,++len;
+		s[len]=(jbl_uint8)(((unicode>>18)&0x7)|0xF0)  ,++len,
+		s[len]=(jbl_uint8)(((unicode>>12)&0x3F)|0x80) ,++len,
+		s[len]=(jbl_uint8)(((unicode>>6)&0x3F)|0x80)  ,++len,
+		s[len]=(jbl_uint8)((unicode&0x3F)|0x80)       ,++len;
 	else if(unicode>=0x200000&&unicode<=0x3FFFFFF)
-		s[len]=(((unicode>>24)&0x3)|0xF8)	,++len,
-		s[len]=(((unicode>>18)&0x3F)|0x80)	,++len,
-		s[len]=(((unicode>>12)&0x3F)|0x80)	,++len,
-		s[len]=(((unicode>>6)&0x3F)|0x80)	,++len,
-		s[len]=((unicode&0x3F)|0x80)		,++len;
+		s[len]=(jbl_uint8)(((unicode>>24)&0x3)|0xF8)  ,++len,
+		s[len]=(jbl_uint8)(((unicode>>18)&0x3F)|0x80) ,++len,
+		s[len]=(jbl_uint8)(((unicode>>12)&0x3F)|0x80) ,++len,
+		s[len]=(jbl_uint8)(((unicode>>6)&0x3F)|0x80)  ,++len,
+		s[len]=(jbl_uint8)((unicode&0x3F)|0x80)       ,++len;
 	else if(unicode>=0x4000000&&unicode<=0x7FFFFFFF)
-		s[len]=(((unicode>>30)&0x1)|0xFC)	,++len,
-		s[len]=(((unicode>>24)&0x3F)|0x80)	,++len,
-		s[len]=(((unicode>>18)&0x3F)|0x80)	,++len,
-		s[len]=(((unicode>>12)&0x3F)|0x80)	,++len,
-		s[len]=(((unicode>>6)&0x3F)|0x80)	,++len,
-		s[len]=((unicode&0x3F)|0x80)		,++len;
+		s[len]=(jbl_uint8)(((unicode>>30)&0x1)|0xFC)  ,++len,
+		s[len]=(jbl_uint8)(((unicode>>24)&0x3F)|0x80) ,++len,
+		s[len]=(jbl_uint8)(((unicode>>18)&0x3F)|0x80) ,++len,
+		s[len]=(jbl_uint8)(((unicode>>12)&0x3F)|0x80) ,++len,
+		s[len]=(jbl_uint8)(((unicode>>6)&0x3F)|0x80)  ,++len,
+		s[len]=(jbl_uint8)((unicode&0x3F)|0x80)		  ,++len;
 	return len;
 }
 jbl_uint32 __jbl_string_u8tu(const unsigned char *s,jbl_uint8 *start,jbl_uint8 len)//utf8 to unicode
@@ -164,7 +164,7 @@ jbl_uint32  jbl_string_get_unicode_from_utf8_start(jbl_string *this,jbl_string_s
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_string *thi=jbl_refer_pull(this);
 	jbl_uint8 i=0;
-	jbl_uint32 uni=__jbl_string_u8tu(thi->s+(start?(*start):0),&i,jbl_min(6,thi->len));
+	jbl_uint32 uni=__jbl_string_u8tu(thi->s+(start?(*start):0),&i,(jbl_uint8)jbl_min(6,thi->len));
 	start?(*start+=i):0;
 	return uni;
 }
@@ -177,7 +177,7 @@ jbl_string* jbl_string_to_gb2312_from_utf8(jbl_string* this,jbl_string* that)
 	{
 		jbl_uint32 uni=jbl_string_get_unicode_from_utf8_start(that,&i);
 		if(i==j)break;
-		uni=__jbl_string_utg(uni);
+		uni=__jbl_string_utg((jbl_uint16)uni);
 		if((uni>>8))this=jbl_string_add_char(this,(uni>>8)&0XFF);
 		this=jbl_string_add_char(this,uni&0XFF);
 	}
@@ -194,7 +194,7 @@ jbl_string* jbl_string_to_utf8_from_gb2312(jbl_string* this,jbl_string* that)
 			jbl_string_add_char(this,tha->s[i]),++i;
 		else
 		{
-			jbl_uint16 gb=(tha->s[i]<<8)|tha->s[i+1];i+=2;
+			jbl_uint16 gb=(jbl_uint16)((tha->s[i]<<8)|tha->s[i+1]);i+=2;
 			gb=__jbl_string_gtu(gb);
 			this=jbl_string_add_utf8_from_unicode(this,gb);
 		}
@@ -205,70 +205,71 @@ jbl_string* jbl_string_to_utf8_from_gb2312(jbl_string* this,jbl_string* that)
 /*******************************************************************************************/
 /*                            以下函数实现stream的转码操作                                     */
 /*******************************************************************************************/
-void __jbl_string_u8tgso(jbl_stream* this,jbl_uint8 flags)//utf8_to_gb2312_stream_operater
+void __jbl_string_u8tgso(jbl_stream* thi,jbl_uint8 force)//utf8_to_gb2312_stream_operater
 {
-	if(!this)jbl_exception("NULL POINTER");	
-	this=jbl_refer_pull(this);
-	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);	
-	jbl_uint8 *s=this->buf;
-	if(nxt&&(!this->stop))
+	if(!thi)jbl_exception("NULL POINTER");	
+	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
+	if(nxt&&(!thi->stop)&&thi->buf)
 	{
-		jbl_stream_buf_size_type i=0,len=this->en;
-		for(;(i+6)<len;)
-		{
-			if((nxt->en+2)>nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
-			jbl_uint8 j=0;
-			jbl_uint32 uni=__jbl_string_u8tu(s+i,&j,jbl_min(6,len-i));
-			if(j==0)break;
-			i+=j;
-			uni=__jbl_string_utg(uni);
-			if((uni>>8))nxt->buf[nxt->en]=(uni>>8)&0XFF,++nxt->en;
-			nxt->buf[nxt->en]=uni&0XFF,++nxt->en;
-		}
-		if((flags&jbl_stream_force))
-		{
-			for(;i<len;nxt->buf[nxt->en++]=s[i++])
-				if((nxt->en+1)>nxt->size)
-					{jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
-			this->en=0;
-			jbl_stream_do(nxt,flags);
-//			this->stop=1;
-			goto backup;
-		}
-backup:;
-		jbl_memory_copy(this->buf,this->buf+i,this->en=len-i);
-	}
-}
-void __jbl_string_gtu8so(jbl_stream* this,jbl_uint8 flags)//gb2312_to_utf8_stream_operater
-{
-	if(!this)jbl_exception("NULL POINTER");	
-	this=jbl_refer_pull(this);
-	jbl_stream *nxt=(this->nxt!=NULL?jbl_refer_pull(this->nxt):NULL);	
-	jbl_uint8 *s=this->buf;
-	if(nxt&&(!this->stop))
-	{
-		jbl_stream_buf_size_type i=0,len=this->en;
+        jbl_stream_get_buf(nxt);
+		jbl_stream_buf_size_type i=0,len=thi->buf->len;
 		for(;i<len;)
 		{
-			if(s[i]<0x80){nxt->buf[nxt->en++]=s[i++];continue;}
-			if((i+2)>len)break;
-			jbl_uint16 gb=(s[i]<<8)|s[i+1];i+=2;
-			gb=__jbl_string_gtu(gb);
-			if((nxt->en+6)>=nxt->size){jbl_stream_do(nxt,0);if(1==(this->stop=nxt->stop))goto backup;}
-			nxt->en+=__jbl_string_utu8(nxt->buf+nxt->en,gb);
+			if((nxt->buf->len+2)>nxt->buf->size){nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
+			jbl_uint8 j=0;
+			jbl_uint32 uni=__jbl_string_u8tu(thi->buf->s+i,&j,(jbl_uint8)(len-i));
+			if(j==0)break;
+			i+=j;
+			uni=__jbl_string_utg((jbl_uint16)uni);
+			if((uni>>8))nxt->buf->s[nxt->buf->len]=(uni>>8)&0XFF,++nxt->buf->len;
+			nxt->buf->s[nxt->buf->len]=uni&0XFF,++nxt->buf->len;
 		}
-		if((flags&jbl_stream_force))
+		if(force)
 		{
-			jbl_stream_do(nxt,flags);
-//			this->stop=1;
+			for(;i<len;nxt->buf->s[nxt->buf->len]=thi->buf->s[i],++nxt->buf->len,++i)
+				if((nxt->buf->len+1)>nxt->buf->size)
+					{nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
+			thi->buf->len=0;
+			nxt->op->op(nxt,force);
 			goto backup;
 		}
 backup:;
-		jbl_memory_copy(this->buf,this->buf+i,this->en=len-i);
+		jbl_memory_copy(thi->buf->s,thi->buf->s+i,thi->buf->len=len-i);
+	}
+    jbl_refer_pull_unwrlock(thi->nxt);
+}
+void __jbl_string_gtu8so(jbl_stream* thi,jbl_uint8 force)//gb2312_to_utf8_stream_operater
+{
+	if(!thi)jbl_exception("NULL POINTER");	
+	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
+	if(nxt&&(!thi->stop)&&thi->buf)
+	{
+        jbl_stream_get_buf(nxt);
+        jbl_stream_buf_size_type i=0,len=thi->buf->len;		
+		for(;i<len;)
+		{
+			if(thi->buf->s[i]<0x80){nxt->buf->s[nxt->buf->len++]=thi->buf->s[i++];continue;}
+			if((i+2)>len)break;
+			jbl_uint16 gb=(jbl_uint16)((thi->buf->s[i]<<8)|thi->buf->s[i+1]);i+=2;
+			gb=__jbl_string_gtu(gb);
+			if((nxt->buf->len+6)>=nxt->buf->size){nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
+			nxt->buf->len+=__jbl_string_utu8(nxt->buf->s+nxt->buf->len,gb);
+		}
+		if(force)
+		{
+            for(;i<len;nxt->buf->s[nxt->buf->len]=thi->buf->s[i],++nxt->buf->len,++i)
+				if((nxt->buf->len+1)>nxt->buf->size)
+					{nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
+			thi->buf->len=0;
+			nxt->op->op(nxt,force);
+			goto backup;
+		}
+backup:;
+		jbl_memory_copy(thi->buf->s,thi->buf->s+i,thi->buf->len=len-i);
 	}
 }
-jbl_stream_operators_new(jbl_stream_utf8_to_gb2312_operators,__jbl_string_u8tgso,NULL,NULL);
-jbl_stream_operators_new(jbl_stream_gb2312_to_utf8_operators,__jbl_string_gtu8so,NULL,NULL);
+jbl_stream_operators_new(jbl_stream_utf8_to_gb2312_operators,__jbl_string_u8tgso,NULL,NULL,NULL,16,0);
+jbl_stream_operators_new(jbl_stream_gb2312_to_utf8_operators,__jbl_string_gtu8so,NULL,NULL,NULL,16,0);
 #endif
 
 

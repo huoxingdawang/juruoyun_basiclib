@@ -98,6 +98,8 @@ jbl_string* jbl_string_free(jbl_string *this)
         jbl_pthread_lock_free(this);
 		jbl_free(this);
 	}
+    else
+        jbl_pthread_lock_unwrlock(this);
 	return NULL;
 }
 JBL_INLINE jbl_string *jbl_string_copy(jbl_string *that)
@@ -143,7 +145,7 @@ jbl_string *jbl_string_extend_to(jbl_string *this,jbl_string_size_type size,jbl_
 	if(ref)		ref->ptr=thi;
 	else		this=thi;
 	if(pthi)	*pthi=thi;
-    else        jbl_refer_pull_unwrlock(this);
+    else        {jbl_refer_pull_unwrlock(this);}
 	return this;
 }
 jbl_string *jbl_string_clear(jbl_string *this)
@@ -260,7 +262,7 @@ jbl_string * jbl_string_add_uint_length(jbl_string *this,jbl_uint64 in,jbl_uint8
     jbl_refer_pull_unwrlock(this);
     return this;
 }
-jbl_string * jbl_string_add_double_length(jbl_string *this,double in,unsigned char len)
+jbl_string * jbl_string_add_double_length(jbl_string *this,double in,jbl_uint8 len)
 {
     jbl_refer_pull_wrlock(this);
 	this=jbl_string_add_int(this,(jbl_int64)in);
@@ -290,7 +292,7 @@ jbl_string * jbl_string_add_hex(jbl_string *this,jbl_uint64 in)
 	while((in>>(n<<2)))++n;
 	jbl_string *thi;this=jbl_string_extend_to(this,n+1,1,&thi);jbl_string_hash_clear(thi);
 	const unsigned char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-	for(;n--;thi->s[thi->len]=(hex[(in>>(n<<2))&15]),++thi->len);
+	for(;n--;thi->s[thi->len]=(hex[(in>>(n<<2))&15]),++thi->len){}
     jbl_refer_pull_unwrlock(this);
 	return this;
 }
@@ -330,7 +332,7 @@ jbl_int64 jbl_string_get_int_start(jbl_string *this,jbl_string_size_type *start)
     if(i>=thi->len){jbl_refer_pull_unrdlock(this);return 0;}
 	unsigned char c,f;jbl_int64 x=0;
 	for(f=0;((c=thi->s[i])<'0'||c>'9')&&i<thi->len;f=c=='-',++i);
-	for(x=(jbl_uint64)(c-'0'),++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
+	for(x=(jbl_int64)(c-'0'),++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
 	start?(*start=i):0;
 	jbl_refer_pull_unrdlock(this);
 	return f?-x:x;	
@@ -383,6 +385,8 @@ double jbl_string_get_double_start(jbl_string *this,jbl_string_size_type *start)
 	jbl_refer_pull_unrdlock(this);
 	return (-((((double)y)/((double)ji))+(double)(x)))*(f?-1:1);
 }
+static jbl_uint8  ok16 (jbl_uint8 c){return ((c>='0'&&c<='9')||(c>='a'&&c<='f')||(c>='A'&&c<='F'));}
+static jbl_uint64 get16(jbl_uint8 c){return (jbl_uint64)((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0')));}
 jbl_uint64 jbl_string_get_hex_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
@@ -390,10 +394,8 @@ jbl_uint64 jbl_string_get_hex_start(jbl_string *this,jbl_string_size_type *start
 	jbl_string_size_type i=start?(*start):0; 	
     if(i>=thi->len){jbl_refer_pull_unrdlock(this);return 0;}
 	jbl_uint64 x=0;
-    jbl_uint8  ok (jbl_uint8 c){return ((c>='0'&&c<='9')||(c>='a'&&c<='f')||(c>='A'&&c<='F'));}
-    jbl_uint64 get(jbl_uint8 c){return (jbl_uint64)((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0')));}
-	for(;i<thi->len&&(!ok(thi->s[i]));++i);
-	for(x=get(thi->s[i]),++i;i<thi->len&&ok(thi->s[i]);x=(x<<4)+get(thi->s[i]),++i);
+	for(;i<thi->len&&(!ok16(thi->s[i]));++i);
+	for(x=get16(thi->s[i]),++i;i<thi->len&&ok16(thi->s[i]);x=(x<<4)+get16(thi->s[i]),++i){}
 	start?(*start=i):0;
 	jbl_refer_pull_unrdlock(this);
 	return x;
@@ -405,10 +407,8 @@ jbl_uint64 jbl_string_get_hex_start_len(jbl_string *this,jbl_string_size_type *s
 	jbl_string_size_type i=start?(*start):0;
     if(i>=thi->len){jbl_refer_pull_unrdlock(this);return 0;}
 	jbl_uint64 x=0;
-    jbl_uint8  ok (jbl_uint8 c){return ((c>='0'&&c<='9')||(c>='a'&&c<='f')||(c>='A'&&c<='F'));}
-    jbl_uint64 get(jbl_uint8 c){return (jbl_uint64)((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0')));}
-	for(;i<thi->len&&(!ok(thi->s[i]));++i);
-	for(x=get(thi->s[i]),++i;(--len)&&i<thi->len&&ok(thi->s[i]);x=(x<<4)+get(thi->s[i]),++i);
+	for(;i<thi->len&&(!ok16(thi->s[i]));++i);
+	for(x=get16(thi->s[i]),++i;(--len)&&i<thi->len&&ok16(thi->s[i]);x=(x<<4)+get16(thi->s[i]),++i){}
 	start?(*start=i):0;
 	jbl_refer_pull_unrdlock(this);
 	return x;
@@ -477,7 +477,7 @@ jbl_string_size_type jbl_string_find_char_start(jbl_string *this,unsigned char i
 {
 	if(!this)jbl_exception("NULL POINTER");	
 	jbl_string *thi=jbl_refer_pull_rdlock(this);			
-	for(;start<thi->len&&thi->s[start]!=in;++start);
+	for(;start<thi->len&&thi->s[start]!=in;++start){}
     jbl_refer_pull_unrdlock(this);
 	return (start);
 }
@@ -660,12 +660,12 @@ jbl_string * jbl_string_to_lower_case(jbl_string *this)
 // jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
 // {
 	// jbl_stream_push_chars(jbl_stream_stdout,c);
-	// jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
+	// jbl_stream_do(jbl_stream_stdout,true);
 	// if(!this)this=jbl_string_new();
 	// this=jbl_string_extend(this,0);
 	// jbl_stream *tmp=jbl_string_stream_new(this);
 	// jbl_stream_connect(jbl_stream_stdin_link,tmp);
-	// jbl_stream_do(jbl_stream_stdin,jbl_stream_force);
+	// jbl_stream_do(jbl_stream_stdin,true);
 	// tmp->data=NULL;
 	// tmp=jbl_stream_free(tmp);
 	// return this;

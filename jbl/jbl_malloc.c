@@ -31,12 +31,13 @@ jbl_uint64 __jbl_malloc_get_ignore_size()//该函数获取了输出流所占空�
 #if JBL_STREAM_ENABLE==1
 	jbl_stream* tmp=jbl_stream_stdout;
 start:;
-	size+=jbl_malloc_size(tmp);
 	while(jbl_gc_is_ref(tmp))
 	{
-		tmp=((jbl_reference *)tmp)->ptr;
 		size+=jbl_malloc_size(tmp);
+		tmp=((jbl_reference *)tmp)->ptr;
 	}
+	size+=jbl_malloc_size(tmp);
+    size+=jbl_malloc_size(tmp->buf);
 	if(tmp->nxt){tmp=tmp->nxt;goto start;}
 #endif
 	return size;
@@ -100,7 +101,7 @@ void jbl_malloc_stop()
 	jbl_stream_push_chars(jbl_stream_stdout,UC"Max memory        :");jbl_stream_push_uint(jbl_stream_stdout,jbl_malloc_heap.peak);jbl_stream_push_chars(jbl_stream_stdout,UC"B(");jbl_stream_push_double(jbl_stream_stdout,(double)jbl_malloc_heap.peak/1048576);jbl_stream_push_chars(jbl_stream_stdout,UC"M)\n");	
 #endif
 //统计完成关流
-	jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
+	jbl_stream_do(jbl_stream_stdout,true);
 	jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
 #endif
 	jbl_pthread_lock_unrdlock(&jbl_malloc_heap);

@@ -13,14 +13,14 @@
 #if JBL_STREAM_ENABLE==1
 #include "jbl_ying.h"
 
-#define JBL_STREAM_EXCEED_LENGTH	64
 #define JBL_VIEW_DEFAULT_TABS		1
 #define JBL_VIEW_NAME_LENGTH		16
-#define JBL_VIEW_DISPLAY_VARNAME	0
+#define JBL_VIEW_DISPLAY_VARNAME	1
 #define JBL_VIEW_DISPLAY_FUNC		1
 #define JBL_VIEW_DISPLAY_FILE		1
 #define JBL_VIEW_DISPLAY_LINE		1
 typedef jbl_uint32 jbl_stream_buf_size_type;
+typedef jbl_uint8 jbl_stream_data_size_type;
 
 //#define JBL_STREAM_STDOUT	fopen("tmp/out.tmp","wb")
 #define JBL_STREAM_STDIN	stdin

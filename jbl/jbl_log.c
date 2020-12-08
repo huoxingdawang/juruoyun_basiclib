@@ -61,7 +61,7 @@ void jbl_log_stop()
 {
 	__jbl_log_save(1);
 #if JBL_STREAM_ENABLE==1 && JBL_FILE_ENABLE ==1
-	jbl_stream_do(__jbl_logs.fs,jbl_stream_force);
+	jbl_stream_do(__jbl_logs.fs,true);
 	__jbl_logs.fs=jbl_stream_free(__jbl_logs.fs);
 #endif
 	jbl_pthread_lock_free(&__jbl_logs);

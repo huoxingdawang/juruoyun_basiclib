@@ -186,7 +186,7 @@ void jbl_malloc_stop()
 #endif
 #if JBL_STREAM_ENABLE==1
 //统计完成关流
-    jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
+    jbl_stream_do(jbl_stream_stdout,true);
     jbl_stream_stdout=jbl_stream_free(jbl_stream_stdout);//强推，关闭
 #endif    
     for(;__jbl_malloc_heap.huge_list;__jbl_free_huge(__jbl_malloc_heap.huge_list->ptr));

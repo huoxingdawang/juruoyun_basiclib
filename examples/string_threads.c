@@ -26,7 +26,6 @@ int main()
 {
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-#if JBL_PTHREAD_ENABLE==1
     jbl_string *s1=jbl_string_new();
     jbl_pthreads * threads=jbl_pthreads_new(thread_cnt);
 	threads=jbl_pthreads_creat_thread(threads,do_string,thread_cnt,s1);
@@ -36,7 +35,6 @@ int main()
 //    printf("\n\n\n%lld",s1->len);
 //    jbl_string_view(s1);
     s1=jbl_string_free(s1);
-#endif
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
 	return 0;

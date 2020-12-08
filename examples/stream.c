@@ -1,18 +1,20 @@
 #include "main.h"
-#if JBL_PTHREAD_ENABLE==1
-void * do_thread(void * a)
+#define thread_cnt 100
+void *do_stream(void * p)
 {
-	for(int i=0;i<100;++i){louts();pchars("juruoyun\n");ulouts();}
-	return NULL;
+    for(int i=0;i<100;++i)
+    {
+lo();
+        puint(jbl_pthread_get_id());    pt();
+        pchars((char *)p);              pt();
+        phex(i);                        pt();
+        pint(i);                        pt();
+        pint(-i);                       pt();
+        pchars((char *)p);              pn();
+ulo(); 
+    }
+    return NULL;
 }
-void * do_thread2(void * a)
-{
-	for(int i=0;i<100;++i){louts();pchar('1');pchar('\n');ulouts();}
-
-	return NULL;
-}
-#define thread 100
-#endif
 int main()
 {
 	jbl_start();
@@ -26,19 +28,10 @@ int main()
 //	s1=jbl_string_read(s1,UC"Input something else:");
 //	jbl_string_view(s1);
 //	s1=jbl_string_free(s1);
-	for(int i=0;i<10;++i)pchars("juruoyun\n");
-#if JBL_PTHREAD_ENABLE==1
-	pl();
-	pthread_t t[thread];
-	{
-		int i=0;
-		for(;i<thread/2;pthread_create(&t[i],NULL,do_thread,NULL),++i);
-		for(;i<thread;pthread_create(&t[i],NULL,do_thread2,NULL),++i);
-	}
-	for(int i=0;i<thread;pthread_join(t[i],NULL),++i);	
-	pl();
-#endif
-
+    jbl_pthreads * threads=jbl_pthreads_new(thread_cnt);
+	threads=jbl_pthreads_creat_thread(threads,do_stream,thread_cnt,"juruoyun蒟蒻云");
+	threads=jbl_pthreads_wait(threads);
+    threads=jbl_pthreads_free(threads);
 
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 	

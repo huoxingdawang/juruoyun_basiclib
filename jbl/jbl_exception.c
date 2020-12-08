@@ -40,7 +40,7 @@ void jbl_exit(int x)
 	{
 		jbl_stream_push_chars(jbl_stream_stdout,UC"\n\n-------------------------------------------------------\n");
 		jbl_stream_push_chars(jbl_stream_stdout,UC"EXIT!\n");
-		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
+		jbl_stream_do(jbl_stream_stdout,true);
 	}
 #endif
 	while(__jbl_exdata.fc--)__jbl_exdata.ef[__jbl_exdata.fc]();
@@ -67,7 +67,7 @@ void __jbl_exception(const char * function,const char * file,int line,char * x)
 		jbl_stream_push_chars(jbl_stream_stdout,UC"At file:");
 		jbl_stream_push_chars(jbl_stream_stdout,UC file);
 		jbl_stream_push_chars(jbl_stream_stdout,UC"\nOn line:");
-		jbl_stream_push_uint (jbl_stream_stdout,line);
+		jbl_stream_push_int  (jbl_stream_stdout,line);
 		jbl_stream_push_chars(jbl_stream_stdout,UC"\nIn function:");
 		jbl_stream_push_chars(jbl_stream_stdout,UC function);
 		if(x)
@@ -76,7 +76,7 @@ void __jbl_exception(const char * function,const char * file,int line,char * x)
 			jbl_stream_push_chars(jbl_stream_stdout,UC x);
 		}
 		jbl_stream_push_chars(jbl_stream_stdout,UC"\n");
-		jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
+		jbl_stream_do(jbl_stream_stdout,true);
 	}
 #endif
 	while(__jbl_exdata.fc--)__jbl_exdata.ef[__jbl_exdata.fc]();
