@@ -1,12 +1,10 @@
 #include "main.h"
-#if JBL_PTHREAD_ENABLE==1
-void * do_thread(void * a)
+#define thread_cnt 100
+void * do_log(void * a)
 {
 	for(int i=0;i<100;++i){jbl_log(UC "%d",i);}
 	return NULL;
 }
-#define thread 100
-#endif
 int main()
 {
 	printf("--------------------------------" __FILE__ "--------------------------------\n");
@@ -21,10 +19,10 @@ int main()
 #endif	
 #if JBL_PTHREAD_ENABLE==1
 	pl();
-	pthread_t t[thread];
-	for(int i=0;i<thread;pthread_create(&t[i],NULL,do_thread,NULL),++i);
-	for(int i=0;i<thread;pthread_join(t[i],NULL),++i);	
-	pl();
+    jbl_pthreads * threads=jbl_pthreads_new(thread_cnt);
+	threads=jbl_pthreads_creat_thread(threads,do_log,thread_cnt,NULL);
+	threads=jbl_pthreads_wait(threads);
+    threads=jbl_pthreads_free(threads);
 #endif	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 	

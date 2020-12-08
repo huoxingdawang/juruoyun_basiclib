@@ -17,6 +17,7 @@
 #include <stdarg.h>
 static struct
 {
+    jbl_pthread_lock_define;
 	jbl_uint32 cnt;
 	jbl_uint32 pcnt;
 	jbl_uint8 start;	
@@ -32,8 +33,8 @@ static struct
 	}d[JBL_LOG_MAX_LENGTH];
 	union
 	{
-		jbl_uint64 u;
-		jbl_uint32 i;
+		jbl_uint64  u;
+		jbl_int64   i;
 		double d;
 		char c;
 		char* s;
@@ -42,16 +43,15 @@ static struct
 #if JBL_STREAM_ENABLE==1 && JBL_FILE_ENABLE ==1
 	jbl_stream* fs;
 #endif
-	jbl_pthread_lock_define		;
 }__jbl_logs;
 
 static void __jbl_log_save(jbl_uint8 lock);
 void jbl_log_start()
 {
+    jbl_pthread_lock_init(&__jbl_logs);
 	__jbl_logs.cnt=0;
 	__jbl_logs.start=1;
 	__jbl_logs.pcnt=0;
-	jbl_pthread_lock_init(&__jbl_logs);
 #if JBL_TIME_ENABLE==1
 	for(jbl_uint32 i=0;i<JBL_LOG_MAX_LENGTH;++i)
 		jbl_time_init(&__jbl_logs.d[i].t);
@@ -87,7 +87,7 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 			case JBL_SCANNER_KEY_INT					:__jbl_logs.p[__jbl_logs.pcnt].i=va_arg(arg_ptr,jbl_int64)	;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_UINT					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_DOUBLE					:__jbl_logs.p[__jbl_logs.pcnt].d=va_arg(arg_ptr,double)		;++__jbl_logs.pcnt	;break;
-			case JBL_SCANNER_KEY_CHAR					:__jbl_logs.p[__jbl_logs.pcnt].c=va_arg(arg_ptr,int)		;++__jbl_logs.pcnt	;break;//类型提升
+			case JBL_SCANNER_KEY_CHAR					:__jbl_logs.p[__jbl_logs.pcnt].c=(char)va_arg(arg_ptr,int)		;++__jbl_logs.pcnt	;break;//类型提升
 			case JBL_SCANNER_KEY_CHARS					:__jbl_logs.p[__jbl_logs.pcnt].s=va_arg(arg_ptr,char *)		;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_HEX					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_ERRSTR					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
@@ -163,7 +163,7 @@ static void __jbl_log_save(jbl_uint8 lock)
 	jbl_stream_do(__jbl_logs.fs,1);
 #endif
 #endif	
-	__jbl_logs.start&=(~0x02);
+	__jbl_logs.start&=(jbl_uint8)(~0x02);
 	__jbl_logs.cnt=0;
 	__jbl_logs.pcnt=0;
 	if(lock)jbl_pthread_lock_unwrlock(&__jbl_logs);

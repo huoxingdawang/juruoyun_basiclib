@@ -10,8 +10,8 @@
 #include "jbl_scanner.h"
 #if JBL_SCANNER_ENABLE==1
 #if JBL_VAR_ENABLE == 0
-#define JBL_SCANNER_KEY_VAR JBL_SCANNER_KEY_UNDEFINED
-#define JBL_SCANNER_KEY_JSON JBL_SCANNER_KEY_UNDEFINED
+#define JBL_SCANNER_KEY_VAR     JBL_SCANNER_KEY_UNDEFINED
+#define JBL_SCANNER_KEY_JSON    JBL_SCANNER_KEY_UNDEFINED
 #endif
 jbl_scanner_key jbl_scanner(unsigned char * YYCURSOR,unsigned char **addr)
 {
