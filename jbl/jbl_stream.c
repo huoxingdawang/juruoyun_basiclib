@@ -277,10 +277,10 @@ void jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)
 	thi->buf->s[thi->buf->len]=hex[in&15]       ;++thi->buf->len;    
     jbl_pthread_lock_unwrlock(this);
 }
-/*
 JBL_INLINE char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
 	if(!out)jbl_exception("NULL POINTER");
+    jbl_refer_pull_wrlock(out);
 	if(format)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
 	if(!this)typename=UC"null";
 	jbl_stream_push_chars(out,typename);
@@ -299,18 +299,19 @@ JBL_INLINE char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_
 #if JBL_VIEW_DISPLAY_LINE == 1
 	if(format&&file)jbl_stream_push_chars(out,UC" on line:"),jbl_stream_push_uint(out,line);
 #endif
-	return this?0:1;
+	return this?1:0;
 }
 #if JBL_JSON_ENABLE==1
-JBL_INLINE char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
-{
-	if(!out)jbl_exception("NULL POINTER");
-	if(format&1)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
-	if(!this)return jbl_stream_push_chars(out,UC"null"),1;
-	return 0;
-}
+// JBL_INLINE char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
+// {
+	// if(!out)jbl_exception("NULL POINTER");
+    // jbl_refer_pull_wrlock(out);
+	// if(format&1)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
+	// if(!this)jbl_stream_push_chars(out,UC"null");
+    // jbl_refer_pull_unwrlock(out);
+	// return this?1:0;
+// }
 #endif
-*/
 static void __sfo(jbl_stream* thi,jbl_uint8 force)
 {
 	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);

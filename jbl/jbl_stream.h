@@ -125,13 +125,13 @@ void			            jbl_stream_push_hex_8bits			(jbl_stream * this,jbl_uint8 in);
 #define                     ulo()                               jbl_refer_pull_unwrlock(jbl_stream_stdout)
 #define                     li()                                jbl_refer_pull_wrlock(jbl_stream_stdin)
 #define                     uli()                               jbl_refer_pull_unwrlock(jbl_stream_stdin)
-
-/*
-char			            jbl_stream_view_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);
+/*******************************************************************************************/
+/*                            以下函实现流处理器格式化操作                               */
+/*******************************************************************************************/
+char			            jbl_stream_view_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);         //注意！out只加锁不解锁
 #if JBL_JSON_ENABLE==1
-char			            jbl_stream_json_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
+//char			            jbl_stream_json_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
 #endif
-*/
 
 #else
 #define			jbl_stream_start()

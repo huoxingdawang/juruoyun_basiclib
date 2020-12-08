@@ -196,11 +196,8 @@ jbl_string *jbl_string_clear(jbl_string *this)
 jbl_string *jbl_string_add_const_length(jbl_string *this,const unsigned char *in,jbl_string_size_type len)
 {
 	if(!in)return this;
-	if(jbl_refer_pull_wrlock(this)&&(jbl_gc_is_ref(this)||this->s))
-    {
+	if(this&&(jbl_gc_is_ref(this)||this->s))
         this=jbl_string_add_chars_length(this,in,len);
-        jbl_refer_pull_unwrlock(this);
-	}
     else
     {
         if(!this)this=jbl_string_new();
@@ -412,9 +409,9 @@ jbl_uint64 jbl_string_get_hex_start_len(jbl_string *this,jbl_string_size_type *s
 	jbl_refer_pull_unrdlock(this);
 	return x;
 }
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的比较类操作                             */
-// /*******************************************************************************************/
+/*******************************************************************************************/
+/*                            以下函数实现字符串的比较类操作                             */
+/*******************************************************************************************/
 char jbl_string_space_ship(jbl_string *this,jbl_string *that)
 {
     char ans=0;
@@ -469,9 +466,9 @@ exit:;
     jbl_refer_pull_unrdlock(that);
 	return ans;
 }
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的查找类操作                             */
-// /*******************************************************************************************/
+/*******************************************************************************************/
+/*                            以下函数实现字符串的查找类操作                             */
+/*******************************************************************************************/
 jbl_string_size_type jbl_string_find_char_start(jbl_string *this,unsigned char in,jbl_string_size_type start)
 {
 	if(!this)jbl_exception("NULL POINTER");	
@@ -480,9 +477,9 @@ jbl_string_size_type jbl_string_find_char_start(jbl_string *this,unsigned char i
     jbl_refer_pull_unrdlock(this);
 	return (start);
 }
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的hash操作                               */
-// /*******************************************************************************************/
+/*******************************************************************************************/
+/*                            以下函数实现字符串的hash操作                               */
+/*******************************************************************************************/
 jbl_string_hash_type jbl_string_hash(jbl_string *this)
 {
 	if(!this)       return 0;
@@ -491,9 +488,9 @@ jbl_string_hash_type jbl_string_hash(jbl_string *this)
     jbl_refer_pull_unrdlock(this);
 	return thi->h;
 }
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的修改操作                               */
-// /*******************************************************************************************/
+/*******************************************************************************************/
+/*                            以下函数实现字符串的修改操作                               */
+/*******************************************************************************************/
 jbl_string * jbl_string_to_upper_case(jbl_string *this)
 {
 	jbl_string *thi;this=jbl_string_extend_to(this,0,1,&thi);jbl_string_hash_clear(thi);
@@ -583,24 +580,29 @@ jbl_string * jbl_string_to_lower_case(jbl_string *this)
 // }
 // #endif
 // #endif
-// #if JBL_STREAM_ENABLE==1
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的浏览操作                               */
-// /*******************************************************************************************/
-// jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
-// {
-	// jbl_string *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_string",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
-	// jbl_stream_push_chars(out,UC" size:");
-	// jbl_stream_push_uint(out,thi->size);
-	// jbl_stream_push_chars(out,UC"\tlen:");
-	// jbl_stream_push_uint(out,thi->len);
-	// jbl_stream_push_chars(out,UC"\ts:");	
-	// for(jbl_string_size_type i=0;i<thi->len;++i)
-		// jbl_stream_push_char(out,thi->s[i]);
-	// jbl_stream_push_char(out,'\n');
-	// return this;
-// }
-// #endif
+#if JBL_STREAM_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函数实现字符串的浏览操作                               */
+/*******************************************************************************************/
+jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
+{
+	jbl_string *thi=jbl_refer_pull_rdlock(this);
+    if(jbl_stream_view_put_format(thi,out,format,tabs,UC"jbl_string",line,varname,func,file))
+    {
+        jbl_stream_push_chars(out,UC" size:");
+        jbl_stream_push_uint(out,thi->size);
+        jbl_stream_push_chars(out,UC"\tlen:");
+        jbl_stream_push_uint(out,thi->len);
+        jbl_stream_push_chars(out,UC"\ts:");	
+        for(jbl_string_size_type i=0;i<thi->len;++i)
+            jbl_stream_push_char(out,thi->s[i]);
+    }
+    jbl_stream_push_char(out,'\n');
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+	return this;
+}
+#endif
 // #if JBL_STREAM_ENABLE==1
 // /*******************************************************************************************/
 // /*                            以下函数实现字符串的STREAM操作                             */
