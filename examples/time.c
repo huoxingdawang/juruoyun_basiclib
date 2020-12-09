@@ -54,8 +54,9 @@ int main()
 	
 	
 	jbl_time_view(t1);
-	
+#if JBL_JSON_ENABLE==1	
 	jbl_time_json_put(t1,jbl_stream_stdout,1,1);pn();
+#endif
 		
 	t1=jbl_time_free(t1);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");

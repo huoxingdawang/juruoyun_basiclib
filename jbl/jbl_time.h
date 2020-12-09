@@ -42,8 +42,10 @@ typedef struct __jbl_time
 }jbl_time;										//蒟蒻云基础库时间结构
 typedef struct __jbl_time_decoded
 {
-	int year,ms;	//格式化的时间，各变量为字面含义
-	jbl_uint8 week,dom,day,hour,month,minute,second,isleap;
+	jbl_int32  year;
+    jbl_uint32 ms;	//格式化的时间，各变量为字面含义
+    jbl_uint16 day;
+	jbl_uint8  week,dom,hour,month,minute,second,isleap;
 }jbl_time_decoded;								//蒟蒻云基础库格式化时间结构
 typedef enum
 {
@@ -104,20 +106,20 @@ extern jbl_int8		jbl_time_time_zone;			//处理的并不好
 jbl_time *			jbl_time_new					();																		//新建一个时间
 jbl_time *			jbl_time_init					(jbl_time *this);														//初始化一个时间
 jbl_time *			jbl_time_free					(jbl_time *this);														//释放一个时间
-jbl_time *			jbl_time_set					(jbl_time *that,jbl_uint64 time);										//设置一个unix时间戳
+jbl_time *			jbl_time_set					(jbl_time *that,jbl_int64 time);										//设置一个unix时间戳
+jbl_int64			jbl_time_get					(jbl_time *that);               										//获取一个unix时间戳
 jbl_time *			jbl_time_copy					(jbl_time *that);														//复制一个时间
 /*******************************************************************************************/
 /*                            以下函实现时间获取操作                                     */
 /*******************************************************************************************/
 jbl_time *			jbl_time_now					(jbl_time *this);														//把this设置为当前时间
-#define				jbl_time_to_unix(x)				(((jbl_time *)(jbl_refer_pull(x)))->t)									//转换为unix实践出
 void				jbl_time_decode					(jbl_time *this,jbl_time_decoded *tt);									//格式化一个时间戳
 
 /*******************************************************************************************/
 /*                            以下函实现时间差操作                                        */
 /*******************************************************************************************/
-jbl_time *			jbl_time_add_second				(jbl_time * this,jbl_uint64 second);									//加ys
-#define				jbl_time_minus(x,y)				(jbl_time_to_unix(x)-jbl_time_to_unix(y))								//计算两个时间的差
+jbl_time *			jbl_time_add_second				(jbl_time * this,jbl_int64 second);									//加ys
+#define				jbl_time_minus(x,y)				(jbl_time_get(x)-jbl_time_get(y))								//计算两个时间的差
 /*******************************************************************************************/
 /*                            以下函实现时间比较操作                                      */
 /*******************************************************************************************/
@@ -130,10 +132,10 @@ char				jbl_time_space_ship				(jbl_time *this,jbl_time *that);										//比�
 /*******************************************************************************************/
 /*                            以下函实现特殊时间判断操作                                 */
 /*******************************************************************************************/
-jbl_uint8			jbl_time_if_leap_year			(jbl_uint32 year);														//判断year是不是闰年
-jbl_uint8			jbl_time_get_day_of_month		(jbl_uint8 month,jbl_uint32 year);										//获取一个月份的天数
-jbl_uint8			jbl_time_get_weekday			(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year);						//获取今天是周几
-jbl_uint8			jbl_time_if_dst					(jbl_uint8 day,jbl_uint8 month,jbl_uint32 year);						//判断夏令时
+jbl_uint8			jbl_time_if_leap_year			(jbl_int32 year);														//判断year是不是闰年
+jbl_uint8			jbl_time_get_day_of_month		(jbl_uint8 month,jbl_int32 year);										//获取一个月份的天数
+jbl_uint8			jbl_time_get_weekday			(jbl_uint16 day,jbl_uint8 month,jbl_int32 year);						//获取今天是周几
+jbl_uint8			jbl_time_if_dst					(jbl_uint16 day,jbl_uint8 month,jbl_int32 year);						//判断夏令时
 
 #if JBL_STRING_ENABLE==1
 /*******************************************************************************************/

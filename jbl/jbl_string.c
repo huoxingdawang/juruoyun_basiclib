@@ -98,8 +98,7 @@ jbl_string* jbl_string_free(jbl_string *this)
         jbl_pthread_lock_free(this);
 		jbl_free(this);
 	}
-    else
-        {jbl_pthread_lock_unwrlock(this);}
+    else{jbl_pthread_lock_unwrlock(this);}
 	return NULL;
 }
 JBL_INLINE jbl_string *jbl_string_copy(jbl_string *that)
