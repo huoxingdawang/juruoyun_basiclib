@@ -1,7 +1,5 @@
 #include "main.h"
-
-
-       
+#if JBL_STRING_ENABLE ==1
 #define thread_cnt 10
 void *do_string(jbl_string * s1)
 {
@@ -25,8 +23,10 @@ void *do_string(jbl_string * s1)
     }
     return NULL;
 }
+#endif
 int main()
 {
+#if JBL_STRING_ENABLE ==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
     jbl_string *s1=jbl_string_new();
@@ -37,5 +37,5 @@ int main()
     s1=jbl_string_free(s1);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
-	return 0;
+#endif
 }

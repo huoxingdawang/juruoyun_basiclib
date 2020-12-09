@@ -29,10 +29,12 @@
 typedef struct __jbl_stream jbl_stream;
 typedef struct __jbl_stream_buf
 {
+	jbl_stream_buf_size_type	sta;
 	jbl_stream_buf_size_type	len;
 	jbl_stream_buf_size_type	size;
-    jbl_uint8 *                 s;
+    jbl_uint8                   forthis;
 	void                        (*free_buf)           (struct __jbl_stream_buf*);      //释放buf
+    jbl_uint8 *                 s;
 }jbl_stream_buf;
 typedef union
 {
@@ -45,8 +47,7 @@ typedef struct
 //所有函数直接响应加锁脱引用op
 	void                        (*op)                 (jbl_stream*,jbl_uint8);      //主操作器
 	void                        (*free)               (jbl_stream*);                //辅助释放函数
-	jbl_stream_buf *            (*provide_buf)        (jbl_stream*);          //提供buf，为null表示不方便提供
-	void                        (*free_buf)           (jbl_stream_buf*);      //释放buf
+	jbl_stream_buf *            (*provide_buf)        (jbl_stream*,jbl_uint8);      //提供buf，为null表示不方便提供
     jbl_stream_buf_size_type    except_buf_size;
     jbl_stream_data_size_type   except_data_size;
 }jbl_stream_operater;
@@ -63,12 +64,11 @@ typedef struct __jbl_stream
 	jbl_uint8					stop:1;
 	jbl_stream_extra_struct		data[0];
 }jbl_stream;
-#define			jbl_stream_operators_new(name,op,free,pb,fb,ebs,eds)	\
+#define			jbl_stream_operators_new(name,op,free,pb,ebs,eds)	\
 				const jbl_stream_operater name={	\
 					op,								\
 					free,				            \
 					pb,							    \
-					fb,							    \
 					ebs,							\
 					eds,							\
 				}
@@ -88,12 +88,15 @@ void			            jbl_stream_stop						();                                     
 /*******************************************************************************************/
 jbl_stream *	            jbl_stream_new						(const jbl_stream_operater *op);        //新建一个流处理器
 jbl_stream * 	            jbl_stream_free						(jbl_stream* this);                     //释放一个流处理器
-void                        jbl_stream_get_buf                  (jbl_stream *thi);                      //确保一个流处理器的buf存在
+void                        jbl_stream_get_buf                  (jbl_stream *thi,jbl_uint8 checknxt);   //确保一个流处理器的buf存在
 jbl_stream_buf *            jbl_stream_free_buf                 (jbl_stream_buf * buf);                 //释放一个流处理器的buf
 jbl_stream * 	            jbl_stream_copy						(jbl_stream* this);                     //复制一个流处理器			            jbl_stream_do						(jbl_stream* this,jbl_uint8 flag);      //
 void                        jbl_stream_do                       (jbl_stream* this,jbl_uint8 force);     //处理一个流处理器
 jbl_stream *	            jbl_stream_connect					(jbl_stream* this,jbl_stream* next);    //连接一个流处理器
 jbl_stream *	            jbl_stream_disconnect				(jbl_stream* this);                     //断开一个流处理器
+#define                     jbl_stream_move_unhandle_buf(buf)   {if((buf)->sta)jbl_memory_copy((buf)->s,(buf)->s+(buf)->sta,(buf)->len-=(buf)->sta);(buf)->sta=0;}
+#define                     jbl_stream_push_down(thi,n)         {if((thi)->buf->len+n>(thi)->buf->size)(thi)->op->op((thi),0);}
+#define                     jbl_stream_push_char_force(thi,c)   (thi)->buf->s[(thi)->buf->len]=(jbl_uint8)(c),++(thi)->buf->len
 /*******************************************************************************************/
 /*                            以下函实现流处理器推入操作                                 */
 /*******************************************************************************************/

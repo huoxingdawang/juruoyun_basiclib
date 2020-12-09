@@ -28,6 +28,7 @@ void * jbl_refer(void *ptr)
 	jbl_gc_plus(this);//增加引用计数
 	jbl_gc_plus(this);//增加引用计数
 	jbl_gc_set_ref(this);
+	jbl_pthread_lock_init(this);
 	jbl_var_set_operators(this,jbl_var_get_operators(pptr));
 	this->ptr=pptr;
 	(*((jbl_reference**)(ptr)))=this;

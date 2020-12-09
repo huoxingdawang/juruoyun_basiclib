@@ -3,24 +3,23 @@
 
 int main()
 {
+#if JBL_STRING_ENABLE ==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-    jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL,*s4=NULL;
+    jbl_string *s1=jbl_string_new(),*s2=NULL,*s3=NULL,*s4=NULL,*s5=NULL;
     s1=jbl_string_add_char(s1,'c');
-/*
-//	jbl_string *s4=jbl_refer(&s1);
+//	s5=jbl_refer(&s1);
 	s1=jbl_string_add_const(s1,UC"-123");
 	jbl_string_view(s1);
-//	jbl_string_view(s4);
-*/
+//	jbl_string_view(s5);
+
 	s2=jbl_string_copy(s1);
-//	jbl_string_view(s2);
+	jbl_string_view(s2);
 	pchars("Space ship test:"),pint(jbl_string_space_ship(s1,s2)),pchar('\n');
-	s1=jbl_string_add_chars(s1,UC"456");
-//	jbl_string_view(s1);
+	s1=jbl_string_add_chars(s1,UC"4.56");
+	jbl_string_view(s1);
 	pchars("Space ship test:"),pint(jbl_string_space_ship(s1,s2)),pchar('\n');
-/*
-	s1=jbl_derefer(s1);
+//	s1=jbl_derefer(s1);
 
 	s3=jbl_string_add_double(jbl_string_add_string(jbl_string_add_chars(jbl_string_copy(s1),UC" 0000"),s2),-89789.01234);
 	s3=jbl_string_add_char(s3,'\n');
@@ -36,11 +35,11 @@ int main()
 	jbl_string_view(s2);
 	jbl_string_view(s3);
 	
-	jbl_stream_push_uint(jbl_stream_stdout,jbl_string_get_uint(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
-	jbl_stream_push_int(jbl_stream_stdout,jbl_string_get_int(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
-	jbl_stream_push_double(jbl_stream_stdout,jbl_string_get_double(s3));jbl_stream_push_char(jbl_stream_stdout,'\n');
-	jbl_stream_do(jbl_stream_stdout,jbl_stream_force);
-	
+	jbl_stream_push_uint(jbl_stream_stdout,jbl_string_get_uint(s3));pn();
+	jbl_stream_push_int(jbl_stream_stdout,jbl_string_get_int(s3));pn();
+	jbl_stream_push_double(jbl_stream_stdout,jbl_string_get_double(s3));pn();
+	jbl_string_view(s1);
+    jbl_stream_push_string_start_end(jbl_stream_stdout,s3,2,3);pn();
 	
 	
 	s1=jbl_string_read(s1,UC"input:");
@@ -49,8 +48,6 @@ int main()
 	jbl_string_view(s1);
 	s1=jbl_string_to_lower_case(s1);
 	jbl_string_view(s1);
-	
-*/
 #if JBL_JSON_ENABLE==1
 	s4=jbl_string_json_encode(s1,NULL,0,0);
 	jbl_string_view(s4);
@@ -66,8 +63,9 @@ exit:
 	s2=jbl_string_free(s2);
 	s3=jbl_string_free(s3);
 	s4=jbl_string_free(s4);
+	s5=jbl_string_free(s5);
 
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
-	return 0;
+#endif
 }

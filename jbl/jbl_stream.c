@@ -90,9 +90,10 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 			jbl_stream_free((jbl_stream*)(((jbl_reference*)this)->ptr));
 		else
 		{
-            this->op->op(this,1);            
-            this->buf=jbl_stream_free_buf(this->buf);
+            this->op->op(this,1);
 			jbl_stream_free(this->nxt);
+            this->buf=jbl_stream_free_buf(this->buf);
+            if(this->op->free)this->op->free(this);
 		}
         jbl_pthread_lock_free(this);
 		jbl_free(this);
@@ -101,38 +102,39 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
         {jbl_pthread_lock_unwrlock(this);}
 	return NULL;
 }
-void jbl_stream_get_buf(jbl_stream *thi) 
+void jbl_stream_get_buf(jbl_stream *thi,jbl_uint8 checknxt) 
 {
     if(!thi)return;
+    if(checknxt&&(!thi->nxt))return;
     jbl_stream_buf *buf=NULL;
-    if(thi->buf)buf=thi->buf;
+    if(checknxt)
+        {if(thi->nxt->buf)buf=thi->nxt->buf;}
+    else
+        {if(thi->buf)buf=thi->buf;}
     if((!buf)&&thi->op->provide_buf)
-    {
-        buf=thi->op->provide_buf(thi);
-        buf->free_buf=thi->op->free_buf;
-    }
+        buf=thi->op->provide_buf(thi,false);
     jbl_stream_buf_size_type size=1024;
     size=jbl_max(size,thi->op->except_buf_size);
-    if(thi->nxt)
+    if(checknxt&&thi->nxt)
     {
-        jbl_stream* tha=jbl_refer_pull_rdlock(thi->nxt);
-        size=jbl_max(size,tha->op->except_buf_size);
-        if((!buf)&&tha->op->provide_buf)
-        {
-            buf=tha->op->provide_buf(tha);
-            buf->free_buf=tha->op->free_buf;
-        }
+        jbl_stream* nxt=jbl_refer_pull_rdlock(thi->nxt);
+        size=jbl_max(size,nxt->op->except_buf_size);
+        if((!buf)&&nxt->op->provide_buf)
+            buf=nxt->op->provide_buf(nxt,true);
         jbl_refer_pull_unrdlock(thi->nxt);
     }
     if(!buf)
     {
         buf=jbl_malloc(sizeof(jbl_stream_buf)+(sizeof(jbl_uint8)*size));
         buf->len=0;
+        buf->sta=0;
+        buf->forthis=0;
         buf->size=size;
         buf->free_buf=NULL;
         buf->s=((jbl_uint8*)buf)+sizeof(jbl_stream_buf);
     }
-    thi->buf=buf;
+    if(checknxt)    thi->nxt->buf=buf;
+    else            thi->buf=buf;
 }
 jbl_stream_buf * jbl_stream_free_buf(jbl_stream_buf * buf)
 {
@@ -180,10 +182,10 @@ void jbl_stream_push_char(jbl_stream* this,unsigned char c)
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull_wrlock(this);
 	if(thi->stop)goto exit;
-    jbl_stream_get_buf(thi);
-	thi->buf->s[thi->buf->len]=c;
-	++thi->buf->len;
-	if(thi->buf->len>=thi->buf->size)thi->op->op(thi,0);
+    jbl_stream_get_buf(thi,0);
+    jbl_stream_push_down(thi,1);
+    jbl_stream_move_unhandle_buf(thi->buf);
+    jbl_stream_push_char_force(thi,c);
 exit:;
     jbl_pthread_lock_unwrlock(this);
 }
@@ -193,11 +195,12 @@ void jbl_stream_push_chars(jbl_stream* this,const unsigned char *str)
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull_wrlock(this);
 	if(thi->stop)goto exit;
-    jbl_stream_get_buf(thi);
+    jbl_stream_get_buf(thi,0);
 	for(;*str;)
 	{
-		for(;*str&&thi->buf->len<thi->buf->size;thi->buf->s[thi->buf->len]=*str,++str,++thi->buf->len);
+		for(;*str&&thi->buf->len<thi->buf->size;jbl_stream_push_char_force(thi,*str),++str);
 		thi->op->op(thi,0);
+        jbl_stream_move_unhandle_buf(thi->buf);
         if(thi->stop)goto exit;;
 	}
 exit:;
@@ -209,11 +212,12 @@ void jbl_stream_push_chars_length(jbl_stream* this,const unsigned char *str,jbl_
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_stream*thi=jbl_refer_pull_wrlock(this);
 	if(thi->stop)goto exit;
-    jbl_stream_get_buf(thi);
+    jbl_stream_get_buf(thi,0);
 	for(jbl_uint64 i=0;i<n;++i)
 	{
-		for(;i<n&&thi->buf->len<thi->buf->size;thi->buf->s[thi->buf->len]=str[i],++i,++thi->buf->len);
+		for(;i<n&&thi->buf->len<thi->buf->size;jbl_stream_push_char_force(thi,str[i]),++i);
 		thi->op->op(thi,0);
+        jbl_stream_move_unhandle_buf(thi->buf);
         if(thi->stop)goto exit;;
 	}
 exit:;
@@ -266,15 +270,17 @@ void jbl_stream_push_hex(jbl_stream *this,jbl_uint64 in)
     jbl_uint8 n=1;
 	while((in>>(n<<2)))++n;
 	const unsigned char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-	for(;n--;thi->buf->s[thi->buf->len]=hex[(in>>(n<<2))&15],++thi->buf->len){}
+    jbl_stream_push_down(thi,n);jbl_stream_move_unhandle_buf(thi->buf);
+	for(;n--;jbl_stream_push_char_force(thi,hex[(in>>(n<<2))&15])){}
     jbl_pthread_lock_unwrlock(this);
 }
 void jbl_stream_push_hex_8bits(jbl_stream *this,jbl_uint8 in)
 {
 	jbl_stream*thi=jbl_refer_pull_wrlock(this);
 	const unsigned char hex[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-	thi->buf->s[thi->buf->len]=hex[(in>>4)&15]  ;++thi->buf->len;
-	thi->buf->s[thi->buf->len]=hex[in&15]       ;++thi->buf->len;    
+    jbl_stream_push_down(thi,2);jbl_stream_move_unhandle_buf(thi->buf);
+	jbl_stream_push_char_force(thi,hex[(in>>4)&15]);
+	jbl_stream_push_char_force(thi,hex[in&15]);
     jbl_pthread_lock_unwrlock(this);
 }
 JBL_INLINE char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
@@ -318,23 +324,21 @@ static void __sfo(jbl_stream* thi,jbl_uint8 force)
 	if(nxt)
 		for(;!force;)
 		{
-            jbl_stream_get_buf(nxt);
-			if((nxt->buf->len+1)>nxt->buf->size){nxt->op->op(nxt,false);if(nxt->stop)break;}
-			int c=fgetc((FILE*)thi->data[0].p);
-			if(c==EOF||(c=='\n'&&((FILE*)thi->data[0].p)==stdin)){nxt->op->op(nxt,force);break;}
-			nxt->buf->s[nxt->buf->len]=(jbl_uint8)c;
-            ++nxt->buf->len;
+            jbl_stream_get_buf(thi,1);
+            jbl_stream_push_down(nxt,1);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(nxt->stop)break;
+            int c=fgetc((FILE*)thi->data[0].p);
+            if(c==EOF||(c=='\n'&&((FILE*)thi->data[0].p)==stdin)){nxt->op->op(nxt,force);break;}
+			jbl_stream_push_char_force(nxt,c);
 		}
 	else
 	{
         if(thi->buf)
-        {
-            fwrite(thi->buf->s,1,thi->buf->len,(FILE*)thi->data[0].p);
-            thi->buf->len=0;
-        }
+            thi->buf->sta+=(jbl_stream_buf_size_type)fwrite(thi->buf->s+thi->buf->sta,1,thi->buf->len-thi->buf->sta,(FILE*)thi->data[0].p);
 	}
     jbl_refer_pull_unwrlock(thi->nxt);
 }
-static void __sff(jbl_stream* thi){fclose((FILE*)thi->data[0].u);}
-static jbl_stream_operators_new(__sfos,__sfo,__sff,NULL,NULL,512,1);
+static void __sff(jbl_stream* thi){fclose((FILE*)thi->data[0].p);}
+static jbl_stream_operators_new(__sfos,__sfo,__sff,NULL,512,1);
 #endif

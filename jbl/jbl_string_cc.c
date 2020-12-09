@@ -211,30 +211,32 @@ void __jbl_string_u8tgso(jbl_stream* thi,jbl_uint8 force)//utf8_to_gb2312_stream
 	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
 	if(nxt&&(!thi->stop)&&thi->buf)
 	{
-        jbl_stream_get_buf(nxt);
-		jbl_stream_buf_size_type i=0,len=thi->buf->len;
-		for(;i<len;)
+        jbl_stream_get_buf(thi,1);
+		for(;thi->buf->sta<thi->buf->len;)
 		{
-			if((nxt->buf->len+2)>nxt->buf->size){nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
+            if(1==(thi->stop=nxt->stop))break;
 			jbl_uint8 j=0;
-			jbl_uint32 uni=__jbl_string_u8tu(thi->buf->s+i,&j,(jbl_uint8)(len-i));
+			jbl_uint32 uni=__jbl_string_u8tu(thi->buf->s+thi->buf->sta,&j,(jbl_uint8)(thi->buf->len-thi->buf->sta));
 			if(j==0)break;
-			i+=j;
+			thi->buf->sta+=j;
 			uni=__jbl_string_utg((jbl_uint16)uni);
-			if((uni>>8))nxt->buf->s[nxt->buf->len]=(uni>>8)&0XFF,++nxt->buf->len;
-			nxt->buf->s[nxt->buf->len]=uni&0XFF,++nxt->buf->len;
+            jbl_stream_push_down(nxt,2);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(1==(thi->stop=nxt->stop))break;
+			if((uni>>8))jbl_stream_push_char_force(nxt,(uni>>8)&0XFF);
+            jbl_stream_push_char_force(nxt,uni&0XFF);            
 		}
 		if(force)
 		{
-			for(;i<len;nxt->buf->s[nxt->buf->len]=thi->buf->s[i],++nxt->buf->len,++i)
-				if((nxt->buf->len+1)>nxt->buf->size)
-					{nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
-			thi->buf->len=0;
+			for(;thi->buf->sta<thi->buf->len;jbl_stream_push_char_force(nxt,thi->buf->s[thi->buf->sta]),++thi->buf->sta)
+            {
+                jbl_stream_push_down(nxt,0);
+                jbl_stream_move_unhandle_buf(nxt->buf);
+                if(1==(thi->stop=nxt->stop))break;
+			}
 			nxt->op->op(nxt,force);
-			goto backup;
+            jbl_stream_move_unhandle_buf(nxt->buf);
 		}
-backup:;
-		jbl_memory_copy(thi->buf->s,thi->buf->s+i,thi->buf->len=len-i);
 	}
     jbl_refer_pull_unwrlock(thi->nxt);
 }
@@ -244,32 +246,41 @@ void __jbl_string_gtu8so(jbl_stream* thi,jbl_uint8 force)//gb2312_to_utf8_stream
 	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
 	if(nxt&&(!thi->stop)&&thi->buf)
 	{
-        jbl_stream_get_buf(nxt);
-        jbl_stream_buf_size_type i=0,len=thi->buf->len;		
-		for(;i<len;)
+        jbl_stream_get_buf(thi,1);
+		for(;thi->buf->sta<thi->buf->len;)
 		{
-			if(thi->buf->s[i]<0x80){nxt->buf->s[nxt->buf->len++]=thi->buf->s[i++];continue;}
-			if((i+2)>len)break;
-			jbl_uint16 gb=(jbl_uint16)((thi->buf->s[i]<<8)|thi->buf->s[i+1]);i+=2;
+			if(thi->buf->s[thi->buf->sta]<0x80)
+            {
+                jbl_stream_push_down(nxt,1);
+                jbl_stream_move_unhandle_buf(nxt->buf);
+                if(1==(thi->stop=nxt->stop))break;
+                jbl_stream_push_char_force(nxt,thi->buf->s[thi->buf->sta]);
+                ++thi->buf->sta;
+                continue;
+            }
+			if((thi->buf->sta+2)>thi->buf->len)break;
+			jbl_uint16 gb=(jbl_uint16)((thi->buf->s[thi->buf->sta]<<8)|thi->buf->s[thi->buf->sta+1]);thi->buf->sta+=2;
 			gb=__jbl_string_gtu(gb);
-			if((nxt->buf->len+6)>=nxt->buf->size){nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
+            jbl_stream_push_down(nxt,6);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(1==(thi->stop=nxt->stop))break;
 			nxt->buf->len+=__jbl_string_utu8(nxt->buf->s+nxt->buf->len,gb);
 		}
 		if(force)
 		{
-            for(;i<len;nxt->buf->s[nxt->buf->len]=thi->buf->s[i],++nxt->buf->len,++i)
-				if((nxt->buf->len+1)>nxt->buf->size)
-					{nxt->op->op(nxt,0);if(1==(thi->stop=nxt->stop))goto backup;}
-			thi->buf->len=0;
+			for(;thi->buf->sta<thi->buf->len;jbl_stream_push_char_force(nxt,thi->buf->s[thi->buf->sta]),++thi->buf->sta)
+            {
+                jbl_stream_push_down(nxt,0);
+                jbl_stream_move_unhandle_buf(nxt->buf);
+                if(1==(thi->stop=nxt->stop))break;
+			}
 			nxt->op->op(nxt,force);
-			goto backup;
+            jbl_stream_move_unhandle_buf(nxt->buf);
 		}
-backup:;
-		jbl_memory_copy(thi->buf->s,thi->buf->s+i,thi->buf->len=len-i);
 	}
 }
-jbl_stream_operators_new(jbl_stream_utf8_to_gb2312_operators,__jbl_string_u8tgso,NULL,NULL,NULL,16,0);
-jbl_stream_operators_new(jbl_stream_gb2312_to_utf8_operators,__jbl_string_gtu8so,NULL,NULL,NULL,16,0);
+jbl_stream_operators_new(jbl_stream_utf8_to_gb2312_operators,__jbl_string_u8tgso,NULL,NULL,16,0);
+jbl_stream_operators_new(jbl_stream_gb2312_to_utf8_operators,__jbl_string_gtu8so,NULL,NULL,16,0);
 #endif
 
 

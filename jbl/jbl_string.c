@@ -301,17 +301,18 @@ JBL_INLINE jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
     jbl_refer_pull_unwrlock(this);
 	return this;
 }
-// JBL_INLINE jbl_string* jbl_string_set_tail(jbl_string *this)
-// {
-	// if(!this)return NULL;
-	// jbl_string* thi=jbl_refer_pull(this);
-	// if(thi->s&&thi->size&&thi->len<thi->size)
-		// thi->s[thi->len]=0;
-	// return this;
-// }
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的获取类操作                             */
-// /*******************************************************************************************/
+JBL_INLINE jbl_string* jbl_string_set_tail(jbl_string *this)
+{
+	if(!this)return NULL;
+	jbl_string* thi=jbl_refer_pull_wrlock(this);
+	if(thi->s&&thi->size&&thi->len<thi->size)
+		thi->s[thi->len]=0;
+    jbl_refer_pull_unwrlock(this);
+	return this;
+}
+/*******************************************************************************************/
+/*                            以下函数实现字符串的获取类操作                             */
+/*******************************************************************************************/
 JBL_INLINE unsigned char jbl_string_get(jbl_string *this,jbl_string_size_type i)
 {
 	if(!this)return 0;
@@ -603,75 +604,126 @@ jbl_string* jbl_string_view_put(jbl_string* this,jbl_stream *out,jbl_uint8 forma
 	return this;
 }
 #endif
-// #if JBL_STREAM_ENABLE==1
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的STREAM操作                             */
-// /*******************************************************************************************/
-// jbl_stream * jbl_string_stream_new(jbl_string *str)
-// {
-	// jbl_string *st;str=jbl_string_extend_to(str,128,1,&st);
-	// return jbl_stream_new(&jbl_stream_string_operators,str,st->size-st->len,st->s+st->len,1);
-// }
-// void __jbl_string_stream_operater(jbl_stream* this,jbl_uint8 flags)
-// {
-	// if(!this)jbl_exception("NULL POINTER");	
-	// this=jbl_refer_pull(this);
-	// jbl_stream* nxt=jbl_refer_pull(this->nxt);
-	// jbl_string *str;this->data=jbl_string_extend_to(((jbl_string*)this->data),128+this->en,1,&str);jbl_string_hash_clear(str);
-	// str->len+=this->en;
-	// this->buf=str->s+str->len;
-	// this->size=str->size-str->len;
-	// this->en=0;
-	// if(nxt)
-	// {
-		// while(this->extra[0].u<str->len)
-		// {
-			// jbl_stream_buf_size_type len=jbl_min((str->len-this->extra[0].u),(nxt->size-nxt->en));	
-			// jbl_memory_copy(nxt->buf+nxt->en,str->s+this->extra[0].u,len);
-			// this->extra[0].u+=len;
-			// nxt->en+=len;
-			// {jbl_stream_do(nxt,0);if(nxt->stop)return;}
-		// }
-		// jbl_stream_do(nxt,flags);
-	// }
-// }
-// void jbl_string_update_stream_buf(jbl_stream* this)
-// {
-	// this=jbl_refer_pull(this);
-	// jbl_string *st;this->data=jbl_string_extend_to((jbl_string*)this->data,128,1,&st);
-	// this->buf=st->s+st->len;
-// }
-// jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operater,jbl_string_free,jbl_string_update_stream_buf);
-// jbl_string*  jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end)
-// {
-	// if(!out)jbl_exception("NULL POINTER");
-	// if(!this)return this;
-	// out=jbl_refer_pull(out);
-	// jbl_string *thi=jbl_refer_pull(this);
-	// for(jbl_min_update(end,thi->len);i<end;)
-	// {
-		// jbl_stream_buf_size_type len=jbl_min((end-i),(out->size-out->en));	
-		// jbl_memory_copy(out->buf+out->en,thi->s+i,len);
-		// i+=len;
-		// out->en+=len;
-		// {jbl_stream_do(out,0);if(out->stop)return this;}
-	// }
-	// return this;
-// }
-// jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
-// {
-	// jbl_stream_push_chars(jbl_stream_stdout,c);
-	// jbl_stream_do(jbl_stream_stdout,true);
-	// if(!this)this=jbl_string_new();
-	// this=jbl_string_extend(this,0);
-	// jbl_stream *tmp=jbl_string_stream_new(this);
-	// jbl_stream_connect(jbl_stream_stdin_link,tmp);
-	// jbl_stream_do(jbl_stream_stdin,true);
-	// tmp->data=NULL;
-	// tmp=jbl_stream_free(tmp);
-	// return this;
-// }
-// #endif
+#if JBL_STREAM_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函数实现字符串的STREAM操作                             */
+/*******************************************************************************************/
+jbl_stream * jbl_string_stream_new(jbl_string *str)
+{
+	jbl_stream * stream=jbl_stream_new(&jbl_stream_string_operators);
+    stream->data[0].p=jbl_string_copy(str);
+    return stream;
+}
+static void __fb(jbl_stream_buf* thi){jbl_free(thi);}
+void __jbl_string_stream_operater(jbl_stream* thi,jbl_uint8 force)
+{
+	if(!thi)jbl_exception("NULL POINTER");
+	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
+    if(thi->buf)
+    {
+        if(thi->buf->forthis)
+        {
+            jbl_string_size_type len=thi->buf->len-thi->buf->sta;
+            if(thi->buf->free_buf==__fb)
+            {
+                jbl_string *str;thi->data[0].p=jbl_string_extend_to((jbl_string*)thi->data[0].p,128+len,1,&str);jbl_string_hash_clear(str);
+                str->len+=len;
+                thi->buf->size=(jbl_stream_buf_size_type)(str->size-str->len);
+                thi->buf->s=str->s+str->len;
+                thi->buf->sta=0;
+                thi->buf->len=0;
+            }
+            else
+            {
+                thi->data[0].p=jbl_string_add_chars_length((jbl_string*)thi->data[0].p,thi->buf->s+thi->buf->sta,len);
+                thi->buf->sta=thi->buf->len;
+            }
+        }
+        else if(nxt)
+        {
+            jbl_string *str;thi->data[0].p=jbl_string_extend_to((jbl_string*)thi->data[0].p,0,1,&str);
+            if(thi->buf->free_buf==__fb)
+            {
+                thi->data[1].u+=nxt->buf->sta;
+                thi->buf->sta=0;
+                nxt->buf->size=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
+                nxt->buf->len=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
+                nxt->buf->s=str->s+thi->data[1].u;
+            }
+            else
+            {
+                while(thi->data[1].u<str->len)
+                {
+                    jbl_stream_buf_size_type len=(jbl_stream_buf_size_type)jbl_min((str->len-thi->data[1].u),(nxt->buf->size-nxt->buf->len));	
+                    jbl_memory_copy(nxt->buf->s+nxt->buf->len,str->s+thi->data[1].u,len);
+                    thi->data[1].u+=len;
+                    nxt->buf->len+=len;
+                    jbl_stream_push_down(nxt,0);
+                    jbl_stream_move_unhandle_buf(nxt->buf);
+                    if(1==(thi->stop=nxt->stop))break;
+                }
+            }
+            nxt->op->op(nxt,force);
+        }        
+    }
+    jbl_refer_pull_unwrlock(thi->nxt);
+}
+static void __sff(jbl_stream* thi){jbl_string_free((jbl_string*)thi->data[0].p);}
+static jbl_stream_buf * __pb(jbl_stream* thi,jbl_uint8 forthis)
+{
+ 	jbl_string *str;thi->data[0].p=jbl_string_extend_to((jbl_string*)thi->data[0].p,128*(forthis?1:0),1,&str);
+    jbl_stream_buf *buf=jbl_malloc(sizeof(jbl_stream_buf));
+    buf->sta=0;
+    buf->free_buf=__fb;
+    buf->forthis=forthis;
+    if(buf->forthis)
+    {
+        buf->size=(jbl_stream_buf_size_type)(str->size-str->len);
+        buf->len=0;
+        buf->s=str->s+str->len;
+    }
+    else
+    {
+        buf->size=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
+        buf->len=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
+        buf->s=str->s+thi->data[1].u;
+    }
+    jbl_refer_pull_unwrlock((jbl_string*)thi->data[0].p);   
+    return buf;
+}
+jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operater,__sff,__pb,128,2);
+jbl_string*  jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end)
+{
+	if(!this)return this;
+ 	jbl_string *thi=jbl_refer_pull_rdlock(this);
+    jbl_min_update(end,thi->len);
+    jbl_min_update(i,end);
+    jbl_stream_push_chars_length(out,thi->s+i,end-i);
+    jbl_refer_pull_unrdlock(this);	
+	return this;
+}
+jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
+{
+    jbl_refer_pull_wrlock(jbl_stream_stdout);
+    jbl_refer_pull_wrlock(jbl_stream_stdin);
+	jbl_stream_push_chars(jbl_stream_stdout,c);
+	jbl_stream_do(jbl_stream_stdout,true);
+	if(!this)this=jbl_string_new();
+    jbl_refer_pull_wrlock(this);
+	jbl_stream *tmp=jbl_string_stream_new(this);
+    this=jbl_string_free(this);
+	jbl_stream_connect(jbl_stream_stdin_link,tmp);
+	jbl_stream_do(jbl_stream_stdin,false);
+	jbl_stream_do(tmp,true);
+	jbl_stream_disconnect(jbl_stream_stdin_link);
+    this=jbl_string_copy((jbl_string *)tmp->data[0].p);
+	tmp=jbl_stream_free(tmp);
+    jbl_refer_pull_unwrlock(this);
+    jbl_refer_pull_unwrlock(jbl_stream_stdout);
+    jbl_refer_pull_unwrlock(jbl_stream_stdin);
+	return this;
+}
+#endif
 // #if JBL_VAR_ENABLE==1
 // /*******************************************************************************************/
 // /*                            以下函数实现字符串的var操作                                */
