@@ -32,7 +32,7 @@ void __jbl_sha1_process(jbl_uint32 hb[5],jbl_uint32 *mbc,jbl_uint8 mb[64])
 	hb[0]+=A,hb[1]+=B,hb[2]+=C,hb[3]+=D,hb[4]+=E;
 	(*mbc)=0;
 }
-jbl_string* jbl_sha1(jbl_string* out,jbl_string* this,jbl_uint8 raw)
+jbl_string* jbl_sha1(jbl_string* this,jbl_string* out,jbl_uint8 raw)
 {
 	if(!this)return out;
 	jbl_string *		    thi=jbl_refer_pull_rdlock(this);	

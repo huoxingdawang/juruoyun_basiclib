@@ -6,7 +6,7 @@ void *do_sha1(jbl_string * s2)
 {
     for(int i=0;i<100;++i)
     {
-        s2=jbl_sha1(s2,s1,false);
+        s2=jbl_sha1(s1,s2,false);
         s2=jbl_string_add_char(s2,'\n');
     }
     return NULL;
