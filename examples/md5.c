@@ -6,7 +6,7 @@ void *do_md5(jbl_string * s2)
 {
     for(int i=0;i<100;++i)
     {
-        s2=jbl_md5(s2,s1);
+        s2=jbl_md5(s1,s2);
         s2=jbl_string_add_char(s2,'\n');
     }
     return NULL;

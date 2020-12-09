@@ -76,7 +76,7 @@ void __jbl_md5_init(const jbl_uint8* input,jbl_string_size_type len,jbl_uint32 s
 		i = 0;
 	jbl_memory_copy(&buffer[index],&input[i],len-i);
 }
-jbl_string* jbl_md5(jbl_string* out,jbl_string* this)
+jbl_string* jbl_md5(jbl_string* this,jbl_string* out)
 {
 	if(!this)return out;
 	jbl_uint32 state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
