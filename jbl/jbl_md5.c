@@ -22,7 +22,7 @@
 #define G(x,y,z) (((x)&(z))|((y)&(~z)))
 #define H(x,y,z) ((x)^(y)^(z))
 #define I(x,y,z) ((y)^((x)|(~z)))
-#define RL(num,n) ((((jbl_uint64)(num))<<(n))|(((jbl_uint64)(num))>>(32-(n))))
+#define RL(num,n) ((((jbl_uint32)(num))<<(n))|(((jbl_uint32)(num))>>(32-(n))))
 #define FF(a,b,c,d,x,s,ac) {(a)+=F((b),(c),(d))+(x)+ac;(a)=RL((a),(s));(a)+=(b);}
 #define GG(a,b,c,d,x,s,ac) {(a)+=G((b),(c),(d))+(x)+ac;(a)=RL((a),(s));(a)+=(b);}
 #define HH(a,b,c,d,x,s,ac) {(a)+=H((b),(c),(d))+(x)+ac;(a)=RL((a),(s));(a)+=(b);}
@@ -31,7 +31,7 @@ void __jbl_md5_transform(jbl_uint32 state[4],const jbl_uint8 block[64])
 {
 	jbl_uint32 a=state[0],b=state[1],c=state[2],d=state[3];
 	jbl_uint32 x[16];
-	for(jbl_uint8 i=0,j=0;j<64;++i,j+=4)
+	for(jbl_uint32 i=0,j=0;j<64;++i,j+=4)
 		x[i]=((jbl_uint32)block[j])|(((jbl_uint32)block[j+1])<<8)|(((jbl_uint32)block[j+2])<<16)|(((jbl_uint32)block[j+3])<<24);
 	FF(a,b,c,d,x[ 0], 7,0xd76aa478);FF(d,a,b,c,x[ 1],12,0xe8c7b756);FF(c,d,a,b,x[ 2],17,0x242070db);FF(b,c,d,a,x[ 3],22,0xc1bdceee);
 	FF(a,b,c,d,x[ 4], 7,0xf57c0faf);FF(d,a,b,c,x[ 5],12,0x4787c62a);FF(c,d,a,b,x[ 6],17,0xa8304613);FF(b,c,d,a,x[ 7],22,0xfd469501);
@@ -76,15 +76,14 @@ void __jbl_md5_init(const jbl_uint8* input,jbl_string_size_type len,jbl_uint32 s
 		i = 0;
 	jbl_memory_copy(&buffer[index],&input[i],len-i);
 }
-jbl_string* jbl_md5(jbl_string* this,jbl_string* out)
+jbl_string* jbl_md5(jbl_string* out,jbl_string* this)
 {
-	if(this==NULL)jbl_exception("NULL POINTER");
+	if(!this)jbl_exception("NULL POINTER");
 	jbl_uint32 state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
 	jbl_uint8  padding[64]={0x80};
 	jbl_uint8  buffer[64],digest[16];
-	jbl_string *		thi=jbl_refer_pull(this);
-	jbl_string_size_type	len=jbl_string_get_length_force(thi);
-	__jbl_md5_init(jbl_string_get_chars_force(thi),len,state,count,buffer);
+	jbl_string *		    thi=jbl_refer_pull_rdlock(this);
+	__jbl_md5_init(jbl_string_get_chars_force(thi),jbl_string_get_length_force(thi),state,count,buffer);
 	jbl_uint8 bits[8];
 	jbl_uint32  index,padlen;
 	__jbl_md5_encode(count,bits,8);
@@ -93,9 +92,12 @@ jbl_string* jbl_md5(jbl_string* this,jbl_string* out)
 	__jbl_md5_init(padding,padlen,state,count,buffer);
 	__jbl_md5_init(bits,8,state,count,buffer);
 	__jbl_md5_encode(state,digest,16);
+    jbl_refer_pull_unrdlock(this);
+    jbl_refer_pull_wrlock(out);
 	out=jbl_string_extend(out,32);
 	for (jbl_string_size_type i=0;i<16;++i)
 		out=jbl_string_add_hex_8bits(out,digest[i]);
+    jbl_refer_pull_unwrlock(out);
 	return out;
 }
 #endif

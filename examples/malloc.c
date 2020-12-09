@@ -55,9 +55,6 @@ int main()
 #if JBL_MALLOC_ENABLE ==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_uint32 seed=((jbl_uint32)time(0));
-    jbl_rand_srand(seed);
-	printf("seed=%d\n",seed);
 	pchars("Input slot and base\n");pf();
 	pchars("Slot:");pint(slot);pt();pchars("Base:");pint(base);pn();pf();
 	pchars("Small:");pdouble(small*100.0/(small+large+huge));pchar('%');pt();pchars("Large:");pdouble(large*100.0/(small+large+huge));pchar('%');pt();pchars("Huge:");pdouble(huge*100.0/(small+large+huge));pchar('%');pn();pf();
