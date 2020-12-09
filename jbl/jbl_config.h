@@ -16,7 +16,7 @@
 #define JBL_ARRAY_ENABLE		0	//not using
 #define JBL_BASE64_ENABLE		0	//need ying bitset malloc string
 #define JBL_BITSET_ENABLE		1	//need ying exception
-#define JBL_CMD_ENABLE			0	//need ying bitset malloc string
+#define JBL_CMD_ENABLE			1	//need ying bitset malloc string
 #define JBL_ENDIAN_ENABLE		1	//need ying 
 #define JBL_EXCEPTION_ENABLE	1	//need ying 
 #define JBL_FILE_ENABLE			0	//developing N/A
