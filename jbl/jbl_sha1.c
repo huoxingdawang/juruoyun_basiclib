@@ -22,7 +22,7 @@ void __jbl_sha1_process(jbl_uint32 hb[5],jbl_uint32 *mbc,jbl_uint8 mb[64])
 {
 	const jbl_uint32 K[]={0x5A827999,0x6ED9EBA1,0x8F1BBCDC,0xCA62C1D6};
 	jbl_uint32 W[80],A,B,C,D,E,tmp;
-	for(register jbl_uint8 t=0;t<16;W[t]=mb[t*4]<<24,W[t]|=mb[t*4+1]<<16,W[t]|=mb[t*4+2]<<8,W[t]|=mb[t*4+3],++t);
+	for(register jbl_uint8 t=0;t<16;W[t]=(jbl_uint32)((mb[t*4]<<24)|(mb[t*4+1]<<16)|(mb[t*4+2]<<8)|mb[t*4+3]),++t);
 	for(register jbl_uint8 t=16;t<80;tmp=W[t-3]^W[t-8]^W[t-14]^W[t-16],W[t]=((tmp<<1)|(tmp>>31)),++t);
 	A=hb[0],B=hb[1],C=hb[2],D=hb[3],E=hb[4];
 	for(register jbl_uint8 t=0 ;t<20;tmp=((A<<5)|(A>>27))+((B&C)|((~B)&D))+E+W[t]+K[0]   ,E=D,D=C,C=((B<<30)|(B>>2)),B=A,A=tmp,++t);	
@@ -32,12 +32,12 @@ void __jbl_sha1_process(jbl_uint32 hb[5],jbl_uint32 *mbc,jbl_uint8 mb[64])
 	hb[0]+=A,hb[1]+=B,hb[2]+=C,hb[3]+=D,hb[4]+=E;
 	(*mbc)=0;
 }
-jbl_string* jbl_sha1(jbl_string* this,jbl_string* out,jbl_uint8 raw)
+jbl_string* jbl_sha1(jbl_string* out,jbl_string* this,jbl_uint8 raw)
 {
-	if(this==NULL)jbl_exception("NULL POINTER");
-	jbl_string *		thi=jbl_refer_pull(this);	
-	jbl_string_size_type	len=jbl_string_get_length(thi);
-	jbl_uint8 *				input=jbl_string_get_chars(thi),mb[64];
+	if(!this)return out;
+	jbl_string *		    thi=jbl_refer_pull_rdlock(this);	
+	jbl_string_size_type	len=jbl_string_get_length_force(thi);
+	jbl_uint8 *				input=jbl_string_get_chars_force(thi),mb[64];
 	jbl_uint32				hb[5]={0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0},mbc=0,ll=0,lh=0;
 	while(len--)
 	{
@@ -49,6 +49,7 @@ jbl_string* jbl_sha1(jbl_string* this,jbl_string* out,jbl_uint8 raw)
 			__jbl_sha1_process(hb,&mbc,mb);
 		input++;
 	}
+    jbl_refer_pull_unrdlock(this);
 	if(mbc>55)
 	{
 		mb[mbc++]=0x80;
@@ -64,10 +65,11 @@ jbl_string* jbl_sha1(jbl_string* this,jbl_string* out,jbl_uint8 raw)
 		while(mbc<56)
 			mb[mbc++]=0;
 	}
-	mb[56]=lh>>24,mb[57]=lh>>16,mb[58]=lh>>8,mb[59]=lh;
-	mb[60]=ll>>24,mb[61]=ll>>16,mb[62]=ll>>8,mb[63]=ll;
+	mb[56]=(jbl_uint8)(lh>>24),mb[57]=(jbl_uint8)(lh>>16),mb[58]=(jbl_uint8)(lh>>8),mb[59]=(jbl_uint8)(lh);
+	mb[60]=(jbl_uint8)(ll>>24),mb[61]=(jbl_uint8)(ll>>16),mb[62]=(jbl_uint8)(ll>>8),mb[63]=(jbl_uint8)(ll);
 	__jbl_sha1_process(hb,&mbc,mb);
-	if(raw)
+	jbl_refer_pull_wrlock(out);
+    if(raw)
 	{
 		out=jbl_string_extend(out,20);
 		for(register jbl_uint8 i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),out=jbl_string_add_char(out,(jbl_uint8)mbc),++i);
@@ -75,8 +77,9 @@ jbl_string* jbl_sha1(jbl_string* this,jbl_string* out,jbl_uint8 raw)
 	else
 	{
 		out=jbl_string_extend(out,40);
-		for(register jbl_uint8 i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),out=jbl_string_add_hex_8bits(out,mbc),++i);
+		for(register jbl_uint8 i=0;i<20;mbc=hb[i>>2]>>8*(3-(i&0x03)),out=jbl_string_add_hex_8bits(out,(jbl_uint8)mbc),++i);
 	}
+	jbl_refer_pull_unrdlock(out);
 	return out;
 }
 

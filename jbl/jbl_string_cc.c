@@ -90,32 +90,32 @@ jbl_uint32 __jbl_string_u8tu(const unsigned char *s,jbl_uint8 *start,jbl_uint8 l
 {
 	jbl_uint8 i=0;
 	jbl_uint32 uni=0;
-	if(5<len&&(s[i]&0XFC)==0xFC)
+	if(6<=len&&(s[i]&0XFC)==0xFC)
 		uni|=(((jbl_uint32)s[i])&0x01)<<30	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<24	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<18	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<12	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<6	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)		,++i;
-	else if(4<len&&(s[i]&0XF8)==0xF8)
+	else if(5<=len&&(s[i]&0XF8)==0xF8)
 		uni|=(((jbl_uint32)s[i])&0x03)<<24	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<18	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<12	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<6	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)		,++i;
-	else if(3<len&&(s[i]&0XF0)==0xF0)
+	else if(4<=len&&(s[i]&0XF0)==0xF0)
 		uni|=(((jbl_uint32)s[i])&0x07)<<18	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<12	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<6	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)		,++i;
-	else if(2<len&&(s[i]&0XE0)==0xE0)
+	else if(3<=len&&(s[i]&0XE0)==0xE0)
 		uni|=(((jbl_uint32)s[i])&0x0F)<<12	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)<<6	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)		,++i;
-	else if(1<len&&(s[i]&0XC0)==0xC0)
+	else if(2<=len&&(s[i]&0XC0)==0xC0)
 		uni|=(((jbl_uint32)s[i])&0x1F)<<6	,++i,
 		uni|=(((jbl_uint32)s[i])&0x3F)		,++i;
-	else if(0<len)
+	else if(1<=len)
 		uni|=(((jbl_uint32)s[i])&0x7F)		,++i;
 	start?(*start=i):0;
 	return uni;
@@ -214,9 +214,8 @@ void __jbl_string_u8tgso(jbl_stream* thi,jbl_uint8 force)//utf8_to_gb2312_stream
         jbl_stream_get_buf(thi,1);
 		for(;thi->buf->sta<thi->buf->len;)
 		{
-            if(1==(thi->stop=nxt->stop))break;
 			jbl_uint8 j=0;
-			jbl_uint32 uni=__jbl_string_u8tu(thi->buf->s+thi->buf->sta,&j,(jbl_uint8)(thi->buf->len-thi->buf->sta));
+			jbl_uint32 uni=__jbl_string_u8tu(thi->buf->s+thi->buf->sta,&j,(jbl_uint8)jbl_min(255,(thi->buf->len-thi->buf->sta)));
 			if(j==0)break;
 			thi->buf->sta+=j;
 			uni=__jbl_string_utg((jbl_uint16)uni);

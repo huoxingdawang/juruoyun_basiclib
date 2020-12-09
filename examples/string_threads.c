@@ -30,6 +30,7 @@ int main()
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
     jbl_string *s1=jbl_string_new();
+    jbl_string_free(jbl_refer(&s1));
     jbl_pthreads * threads=jbl_pthreads_new(thread_cnt);
 	threads=jbl_pthreads_creat_thread(threads,do_string,thread_cnt,s1);
 	threads=jbl_pthreads_wait(threads);

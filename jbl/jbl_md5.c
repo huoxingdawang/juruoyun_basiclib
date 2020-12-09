@@ -78,12 +78,13 @@ void __jbl_md5_init(const jbl_uint8* input,jbl_string_size_type len,jbl_uint32 s
 }
 jbl_string* jbl_md5(jbl_string* out,jbl_string* this)
 {
-	if(!this)jbl_exception("NULL POINTER");
+	if(!this)return out;
 	jbl_uint32 state[4]={0x67452301,0xefcdab89,0x98badcfe,0x10325476},count[2]={0,0};
 	jbl_uint8  padding[64]={0x80};
 	jbl_uint8  buffer[64],digest[16];
 	jbl_string *		    thi=jbl_refer_pull_rdlock(this);
 	__jbl_md5_init(jbl_string_get_chars_force(thi),jbl_string_get_length_force(thi),state,count,buffer);
+    jbl_refer_pull_unrdlock(this);
 	jbl_uint8 bits[8];
 	jbl_uint32  index,padlen;
 	__jbl_md5_encode(count,bits,8);
@@ -92,7 +93,6 @@ jbl_string* jbl_md5(jbl_string* out,jbl_string* this)
 	__jbl_md5_init(padding,padlen,state,count,buffer);
 	__jbl_md5_init(bits,8,state,count,buffer);
 	__jbl_md5_encode(state,digest,16);
-    jbl_refer_pull_unrdlock(this);
     jbl_refer_pull_wrlock(out);
 	out=jbl_string_extend(out,32);
 	for (jbl_string_size_type i=0;i<16;++i)
