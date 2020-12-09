@@ -1,6 +1,7 @@
 #include "main.h"
 int main()
 {
+#if JBL_SHA1_ENABLE ==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_string *s1=jbl_string_add_chars(NULL,UC"juruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyunjuruoyun");
@@ -15,4 +16,5 @@ int main()
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 
 	return 0;
+#endif
 }

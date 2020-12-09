@@ -2,6 +2,7 @@
 
 int main()
 {
+#if JBL_VAR_ENABLE ==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_var_data *v1=jbl_Vuint_set(NULL,100);
@@ -27,5 +28,5 @@ int main()
 	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
-	return 0;
+#endif
 }

@@ -1,14 +1,17 @@
 #include "main.h"
+#if JBL_LOG_ENABLE ==1
 #define thread_cnt 100
 void * do_log(void * a)
 {
 	for(int i=0;i<100;++i){jbl_log(UC "%d",i);}
 	return NULL;
 }
+#endif
 int main()
 {
-	printf("--------------------------------" __FILE__ "--------------------------------\n");
+#if JBL_LOG_ENABLE ==1
 	jbl_start();
+	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_log(UC "%d",1);
 	jbl_log(UC "test %d%d%d %s %X %c juruoyun",1,123,456,"123123123121",0XFE,'a');
 	jbl_log(UC "%errstr",1);
@@ -26,4 +29,5 @@ int main()
 #endif	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 	
+#endif
 }

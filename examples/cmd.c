@@ -2,6 +2,7 @@
 
 int main()
 {
+#if JBL_CMD_ENABLE==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_string *cmd=jbl_string_add_chars(NULL,UC"php testfiles/cmd.php 123456781234567812345678");
@@ -10,4 +11,5 @@ int main()
 	s1=jbl_string_free(s1);cmd=jbl_string_free(cmd);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 	
+#endif
 }

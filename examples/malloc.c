@@ -1,5 +1,5 @@
 #include "main.h"
-#include <time.h>
+#if JBL_MALLOC_ENABLE ==1
 jbl_uint32 slot=2048,base=19;
 jbl_uint32 small=90;
 jbl_uint32 large=5;
@@ -48,10 +48,11 @@ void * do_malloc(do_malloc_data *data)
 	jbl_free(a);a=NULL;
     return NULL;
 }
-jbl_pthreads * threads;
+#endif
 
 int main()
 {
+#if JBL_MALLOC_ENABLE ==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_uint32 seed=((jbl_uint32)time(0));
@@ -66,7 +67,7 @@ int main()
 #endif
 //	pl();
     do_malloc_data data={slot,(1ULL<<base)/thread_cnt,small,large,huge};
-    threads=jbl_pthreads_new(thread_cnt);
+    jbl_pthreads * threads=jbl_pthreads_new(thread_cnt);
 	threads=jbl_pthreads_creat_thread(threads,do_malloc,thread_cnt,&data);
 	threads=jbl_pthreads_wait(threads);
     threads=jbl_pthreads_free(threads);
@@ -77,5 +78,5 @@ int main()
 #endif
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop();
-	return 0;
+#endif
 }

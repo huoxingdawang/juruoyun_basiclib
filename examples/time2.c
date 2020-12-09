@@ -1,8 +1,7 @@
 #include "main.h"
-//TODO
-#include <time.h>
 int main()
 {
+#if JBL_TIME_ENABLE ==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 
@@ -25,4 +24,5 @@ int main()
 	
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_stop(); 	
+#endif
 }

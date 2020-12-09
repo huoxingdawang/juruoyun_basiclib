@@ -36,8 +36,7 @@ ifeq ($(system),macos)
 	rm = rm -f
 	pre = macos_
 endif
-# all:jbl aes array base64 bitset cmd file json ht ll malloc md5 rand stream string time sha1 test2 var
-all:jbl aes base64 bitset cmd file ht json ll log malloc md5 rand sha1 stream string time test2 var
+all:jbl aes array base64 bitset cmd file ht json ll log malloc md5 rand sha1 stream string time test2 var
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
@@ -56,26 +55,28 @@ ifeq ($(system),macos)
 	sudo gcc tools/pause.c -o /bin/pause
 endif
 run:
-	exes$(H)aes         && pause
-	exes$(H)aes_big     && pause
-	exes$(H)aes_stream  && pause
-#	exes$(H)array       && pause
-	exes$(H)base64      && pause
-	exes$(H)bitset      && pause
-	exes$(H)cmd         && pause
-	exes$(H)file        && pause
-	exes$(H)ht          && pause
-	exes$(H)json        && pause
-	exes$(H)ll          && pause
-	exes$(H)log         && pause
-	exes$(H)malloc      && pause
-	exes$(H)md5         && pause
-	exes$(H)rand        && pause
-	exes$(H)sha1        && pause
-	exes$(H)stream      && pause
-	exes$(H)string      && pause
-	exes$(H)time        && pause
-	exes$(H)time2       && pause
+	exes$(H)aes              && pause
+	exes$(H)aes_big          && pause
+	exes$(H)aes_stream       && pause
+	exes$(H)array            && pause
+	exes$(H)base64           && pause
+	exes$(H)bitset           && pause
+	exes$(H)cmd              && pause
+	exes$(H)file             && pause
+	exes$(H)ht               && pause
+	exes$(H)json             && pause
+	exes$(H)ll               && pause
+	exes$(H)log              && pause
+	exes$(H)malloc           && pause
+	exes$(H)md5              && pause
+	exes$(H)rand             && pause
+	exes$(H)sha1             && pause
+	exes$(H)stream           && pause
+	exes$(H)string           && pause
+	exes$(H)string_threads   && pause
+	exes$(H)test2            && pause
+	exes$(H)time             && pause
+	exes$(H)time2            && pause
 	exes$(H)var         
 #examples
 aes:
@@ -85,6 +86,9 @@ aes:
 	$(CC) $(BITS) -o exes$(H)aes                   tmp$(H)$(pre)aes.o               tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)aes_big               tmp$(H)$(pre)aes_big.o           tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)aes_stream            tmp$(H)$(pre)aes_stream.o        tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
+array:
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)array.o             examples$(H)array.c            $(EXDIR) $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)array                 tmp$(H)$(pre)array.o             tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
 base64:
 	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)base64.o            examples$(H)base64.c            $(EXDIR) $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)base64                tmp$(H)$(pre)base64.o            tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)

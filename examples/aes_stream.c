@@ -2,6 +2,7 @@
 //TODO
 int main()
 {
+#if JBL_AES_128_ENABLE==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_aes_128_key *key=jbl_aes_128_key_set(NULL,UC"0CoJUm6Qyw8W8jud");
@@ -155,5 +156,6 @@ int main()
 	
 	key=jbl_aes_128_key_free(key);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_stop();	
+	jbl_stop();
+#endif	
 }

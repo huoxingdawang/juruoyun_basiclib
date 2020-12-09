@@ -2,6 +2,7 @@
 
 int main()
 {
+#if JBL_FILE_ENABLE==1
 	jbl_start();
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_file * f1=jbl_file_new();
@@ -32,6 +33,6 @@ pl();
 
 	f1=jbl_file_free(f1);
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
-	jbl_stop(); 
-	
+	jbl_stop();
+#endif
 }
