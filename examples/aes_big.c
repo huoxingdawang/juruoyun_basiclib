@@ -7,7 +7,7 @@ int main()
 	pchars("--------------------------------" __FILE__ "--------------------------------\n");
 	jbl_aes_128_key *key=jbl_aes_128_key_set(NULL,UC"0CoJUm6Qyw8W8jud");
 	jbl_file *f1=jbl_file_open_chars(NULL,UC"tmp/bigfile.tmp",JBL_FILE_READ);
-	jbl_string *s0=jbl_file_read(f1,NULL,0,-1);
+	jbl_string *s0=jbl_file_read(f1,NULL,0,-1ULL);
 	jbl_string *s1=jbl_string_copy(s0);
 	f1=jbl_file_free(f1);
 	
@@ -22,14 +22,14 @@ int main()
 	t1=jbl_time_free(t1);
 	t2=jbl_time_free(t2);
 	
-	f1=jbl_file_open_chars(NULL,UC"testfiles/aes_128_cbc_encode.out",JBL_FILE_WRITE);
+	f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_cbc_encode.out",JBL_FILE_WRITE);
 	f1=jbl_file_write(f1,s3);
 	f1=jbl_file_free(f1);	
 	
 	jbl_string *sr=jbl_execute_cmd_chars(UC "php testfiles/aes128cbc.php  tmp/bigfile.tmp",NULL);
 		
-	f1=jbl_file_open_chars(NULL,UC"testfiles/aes_128_cbc_encode.ans",JBL_FILE_READ);
-	s1=jbl_file_read(f1,NULL,0,-1);
+	f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_cbc_encode.ans",JBL_FILE_READ);
+	s1=jbl_file_read(f1,NULL,0,-1ULL);
 	f1=jbl_file_free(f1);	
 	puint(jbl_string_if_equal(s1,s3));pchars("\n");pf();
 	s1=jbl_string_free(s1);
@@ -66,14 +66,14 @@ int main()
 	t1=jbl_time_free(t1);
 	t2=jbl_time_free(t2);
 	
-	f1=jbl_file_open_chars(NULL,UC"testfiles/aes_128_ecb_encode.out",JBL_FILE_WRITE);
+	f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_ecb_encode.out",JBL_FILE_WRITE);
 	f1=jbl_file_write(f1,s3);
 	f1=jbl_file_free(f1);	
 	
 	sr=jbl_execute_cmd_chars(UC "php testfiles/aes128ecb.php  tmp/bigfile.tmp",NULL);
 		
-	f1=jbl_file_open_chars(NULL,UC"testfiles/aes_128_ecb_encode.ans",JBL_FILE_READ);
-	s1=jbl_file_read(f1,NULL,0,-1);
+	f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_ecb_encode.ans",JBL_FILE_READ);
+	s1=jbl_file_read(f1,NULL,0,-1ULL);
 	f1=jbl_file_free(f1);	
 	puint(jbl_string_if_equal(s1,s3));pchars("\n");pf();
 	s1=jbl_string_free(s1);

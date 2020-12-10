@@ -9,19 +9,19 @@
 		$start=msectime();		
 		$str=base64_encode(openssl_encrypt($str,"AES-128-ECB","0CoJUm6Qyw8W8jud",OPENSSL_RAW_DATA,""));
 		echo 'PHP AES 128 ECB encode used time:'.((msectime()-$start))."ms\n";
-		$fp=fopen("testfiles/aes_128_ecb_encode.ans","w");
+		$fp=fopen("tmp/aes_128_ecb_encode.ans","w");
 		fwrite($fp,$str);
 		fclose($fp);
 	}
-	if(file_exists("testfiles/aes_128_ecb_encode.out"))
+	if(file_exists("tmp/aes_128_ecb_encode.out"))
 	{
-		$fp=fopen("testfiles/aes_128_ecb_encode.out","r");
-		$str=fread($fp,filesize("testfiles/aes_128_ecb_encode.out"));
+		$fp=fopen("tmp/aes_128_ecb_encode.out","r");
+		$str=fread($fp,filesize("tmp/aes_128_ecb_encode.out"));
 		fclose($fp);
 		$start=msectime();		
 		$str=openssl_decrypt(base64_decode($str),"AES-128-ECB","0CoJUm6Qyw8W8jud",OPENSSL_RAW_DATA,"");
 		echo 'PHP AES 128 ECB decode used time:'.((msectime()-$start))."ms\n";
-//		$fp=fopen("testfiles/aes_128_ecb_decode.ans","w");
-//		fwrite($fp,$str);
-//		fclose($fp);		
+		$fp=fopen("tmp/aes_128_ecb_decode.ans","w");
+		fwrite($fp,$str);
+		fclose($fp);		
 	}

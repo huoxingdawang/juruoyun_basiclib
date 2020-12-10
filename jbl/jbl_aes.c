@@ -119,28 +119,25 @@ static void __128_ecb_seo(jbl_stream* thi,jbl_uint8 force)
 	{
         jbl_stream_get_buf(thi,1);
 		jbl_stream_buf_size_type len=(((thi->buf->len-thi->buf->sta)>>4)<<4)+thi->buf->sta;
-		if((len-thi->buf->sta))
+        while(thi->buf->sta<len)
         {
-			while(thi->buf->sta<len)
-			{
-				jbl_stream_push_down(nxt,16);
-                jbl_stream_move_unhandle_buf(nxt->buf);
-                if(1==(thi->stop=nxt->stop))break;
-				__jbl_aes_128_encode_16(ke->key,thi->buf->s+thi->buf->sta,nxt->buf->s+nxt->buf->len);
-                nxt->buf->len+=16;
-                thi->buf->sta+=16;
-			}
-            if(force)
-            {
-                jbl_stream_push_down(nxt,16);
-                jbl_stream_move_unhandle_buf(nxt->buf);
-                if(1==(thi->stop=nxt->stop))goto exit;
-                jbl_uint8 s[16];
-                for(jbl_uint8 j=0,x=(jbl_uint8)(16-(thi->buf->len&15));j<16;s[j]=x,++j);
-                for(jbl_uint8 j=0;thi->buf->sta<thi->buf->len;s[j]=thi->buf->s[thi->buf->sta],++thi->buf->sta,++j);
-                __jbl_aes_128_encode_16(ke->key,s,nxt->buf->s+nxt->buf->len);
-                nxt->buf->len+=16;
-            }
+            jbl_stream_push_down(nxt,16);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(1==(thi->stop=nxt->stop))break;
+            __jbl_aes_128_encode_16(ke->key,thi->buf->s+thi->buf->sta,nxt->buf->s+nxt->buf->len);
+            nxt->buf->len+=16;
+            thi->buf->sta+=16;
+        }
+        if(force)
+        {
+            jbl_stream_push_down(nxt,16);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(1==(thi->stop=nxt->stop))goto exit;
+            jbl_uint8 s[16];
+            for(jbl_uint8 j=0,x=(jbl_uint8)(16-(thi->buf->len&15));j<16;s[j]=x,++j);
+            for(jbl_uint8 j=0;thi->buf->sta<thi->buf->len;s[j]=thi->buf->s[thi->buf->sta],++thi->buf->sta,++j);
+            __jbl_aes_128_encode_16(ke->key,s,nxt->buf->s+nxt->buf->len);
+            nxt->buf->len+=16;
         }
         nxt->op->op(nxt,force);
 	}
@@ -157,6 +154,7 @@ static void __128_ecb_sdo(jbl_stream* thi,jbl_uint8 force)
 	{
         jbl_stream_get_buf(thi,1);
 		jbl_stream_buf_size_type len=(((thi->buf->len-thi->buf->sta)>>4)<<4)+thi->buf->sta;
+        if(!(len&15)&&!force&&len)len-=16;
 		if((len-thi->buf->sta))
         {
 			while(thi->buf->sta<len)
@@ -176,8 +174,8 @@ static void __128_ecb_sdo(jbl_stream* thi,jbl_uint8 force)
         }
     }
 }
-jbl_stream_operators_new(jbl_stream_aes_128_ecb_encode_operators,__128_ecb_seo,__128_ecb_sff,NULL,16,1);
-jbl_stream_operators_new(jbl_stream_aes_128_ecb_decode_operators,__128_ecb_sdo,__128_ecb_sff,NULL,16,1);
+jbl_stream_operators_new(jbl_stream_aes_128_ecb_encode_operators,__128_ecb_seo,__128_ecb_sff,NULL,64,1);
+jbl_stream_operators_new(jbl_stream_aes_128_ecb_decode_operators,__128_ecb_sdo,__128_ecb_sff,NULL,64,1);
 JBL_INLINE jbl_stream * jbl_stream_aes_128_ecb_encode_new(jbl_aes_128_key *w)
 {
 	jbl_stream *this=jbl_stream_new(&jbl_stream_aes_128_ecb_encode_operators);
@@ -283,20 +281,20 @@ static void __128_cbc_seo(jbl_stream* thi,jbl_uint8 force)
                 nxt->buf->len+=16;
                 thi->buf->sta+=16;
 			}
-            if(force)
-            {
-                jbl_stream_push_down(nxt,16);
-                jbl_stream_move_unhandle_buf(nxt->buf);
-                if(1==(thi->stop=nxt->stop))goto exit;
-                jbl_uint8 s[16];
-                for(jbl_uint8 j=0,x=(jbl_uint8)(16-(thi->buf->len&15));j<16;s[j]=x,++j){}
-                for(jbl_uint8 j=0;thi->buf->sta<thi->buf->len;s[j]=thi->buf->s[thi->buf->sta],++thi->buf->sta,++j){}
-                for(jbl_uint8 j=0;j<16;s[j]^=vii[j],++j){}
-				__jbl_aes_128_encode_16(ke->key,s,nxt->buf->s+nxt->buf->len);
-                jbl_memory_copy(vii,nxt->buf->s+nxt->buf->len,16);
-                nxt->buf->len+=16;
-            }
 		}
+        if(force)
+        {
+            jbl_stream_push_down(nxt,16);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(1==(thi->stop=nxt->stop))goto exit;
+            jbl_uint8 s[16];
+            for(jbl_uint8 j=0,x=(jbl_uint8)(16-(thi->buf->len&15));j<16;s[j]=x,++j){}
+            for(jbl_uint8 j=0;thi->buf->sta<thi->buf->len;s[j]=thi->buf->s[thi->buf->sta],++thi->buf->sta,++j){}
+            for(jbl_uint8 j=0;j<16;s[j]^=vii[j],++j){}
+            __jbl_aes_128_encode_16(ke->key,s,nxt->buf->s+nxt->buf->len);
+            jbl_memory_copy(vii,nxt->buf->s+nxt->buf->len,16);
+            nxt->buf->len+=16;
+        }
         nxt->op->op(nxt,force);
 	}
 exit:;
@@ -312,34 +310,33 @@ static void __128_cbc_sdo(jbl_stream* thi,jbl_uint8 force)
 	if(nxt&&(!thi->stop)&&thi->buf)
 	{
         jbl_stream_get_buf(thi,1);
-		jbl_stream_buf_size_type len=(((thi->buf->len-thi->buf->sta)>>4)<<4)+thi->buf->sta;
-		if((len-thi->buf->sta))
+		jbl_stream_buf_size_type len=(((thi->buf->len-thi->buf->sta)>>4)<<4);
+        if(!(len&15)&&!force&&len)len-=16;
+        len+=thi->buf->sta;
+        while(thi->buf->sta<len)
         {
-			while(thi->buf->sta<len)
-			{
-                jbl_stream_push_down(nxt,16);
-                jbl_stream_move_unhandle_buf(nxt->buf);
-                if(1==(thi->stop=nxt->stop))break;
-				__jbl_aes_128_decode_16(ke->key,thi->buf->s+thi->buf->sta,nxt->buf->s+nxt->buf->len);
-				for(jbl_uint8 j=0;j<16;nxt->buf->s[nxt->buf->len+j]^=vii[j],++j);
-				vii=thi->buf->s+thi->buf->sta;
-                nxt->buf->len+=16;
-                thi->buf->sta+=16;
-            }
-            if(force)
-            {
-                nxt->buf->len-=nxt->buf->s[nxt->buf->len-1];
-                nxt->op->op(nxt,force);
-                jbl_memory_copy((jbl_uint8*)thi->data[1].p,vii,16);
-            }
-		}
+            jbl_stream_push_down(nxt,16);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(1==(thi->stop=nxt->stop))break;
+            __jbl_aes_128_decode_16(ke->key,thi->buf->s+thi->buf->sta,nxt->buf->s+nxt->buf->len);
+            for(jbl_uint8 j=0;j<16;nxt->buf->s[nxt->buf->len+j]^=vii[j],++j);
+            vii=thi->buf->s+thi->buf->sta;
+            nxt->buf->len+=16;
+            thi->buf->sta+=16;
+        }
+        jbl_memory_copy((jbl_uint8*)thi->data[1].p,vii,16);
+        if(force)
+        {
+            nxt->buf->len-=nxt->buf->s[nxt->buf->len-1];
+            nxt->op->op(nxt,force);
+        }
         nxt->op->op(nxt,force);
 	}
     jbl_refer_pull_unwrlock(thi->nxt);
     jbl_refer_pull_unrdlock((jbl_aes_128_key*)thi->data[0].p);
 }
-jbl_stream_operators_new(jbl_stream_aes_128_cbc_encode_operators,__128_cbc_seo,__128_cbc_sff,NULL,16,2);
-jbl_stream_operators_new(jbl_stream_aes_128_cbc_decode_operators,__128_cbc_sdo,__128_cbc_sff,NULL,16,2);
+jbl_stream_operators_new(jbl_stream_aes_128_cbc_encode_operators,__128_cbc_seo,__128_cbc_sff,NULL,64,2);
+jbl_stream_operators_new(jbl_stream_aes_128_cbc_decode_operators,__128_cbc_sdo,__128_cbc_sff,NULL,64,2);
 JBL_INLINE jbl_stream * jbl_stream_aes_128_cbc_encode_new(jbl_aes_128_key *w,const unsigned char * v)
 {
 	jbl_stream *this=jbl_stream_new(&jbl_stream_aes_128_cbc_encode_operators);
