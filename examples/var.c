@@ -18,6 +18,14 @@ int main()
 	jbl_var_view(v4);
 	jbl_var_view(v5);
 	jbl_var_view(v6);
+    
+	jbl_var_json_put(v1,jbl_stream_stdout,1,1);
+	jbl_var_json_put(v2,jbl_stream_stdout,1,1);
+	jbl_var_json_put(v3,jbl_stream_stdout,1,1);
+	jbl_var_json_put(v4,jbl_stream_stdout,1,1);
+	jbl_var_json_put(v5,jbl_stream_stdout,1,1);
+	jbl_var_json_put(v6,jbl_stream_stdout,1,1);
+    
 
 	v1=jbl_var_free(v1);
 	v2=jbl_var_free(v2);

@@ -35,18 +35,21 @@ extern const	jbl_var_operators			jbl_ntf_operators;
 
 jbl_var_data *	jbl_Vuint_new				();													//新建一个var格式的uint
 jbl_var_data *	jbl_Vuint_set				(jbl_var_data * this,jbl_uint64 data);					//设置一个var格式的uint
+jbl_uint64      jbl_Vuint_get               (jbl_var_data * this);
 jbl_var_data *	jbl_Vuint_copy				(jbl_var_data * that);									//复制一个var格式的uint
 char			jbl_Vuint_space_ship		(jbl_var_data * this,jbl_var_data * that);					//比较两个var格式的uint
 #define			Vis_jbl_uint(x)				(jbl_var_get_operators(x)==&jbl_uint_operators)		//判断一个var是不是uint
 
 jbl_var_data *	jbl_Vint_new				();													//新建一个var格式的int
 jbl_var_data *	jbl_Vint_set				(jbl_var_data * this,jbl_int64 data);					//设置一个var格式的int
+jbl_int64       jbl_Vint_get                (jbl_var_data * this);
 jbl_var_data *	jbl_Vint_copy				(jbl_var_data * that);									//复制一个var格式的int
 char			jbl_Vint_space_ship			(jbl_var_data * this,jbl_var_data * that);					//比较两个var格式的int
 #define			Vis_jbl_int(x)				(jbl_var_get_operators(x)==&jbl_int_operators)		//判断一个var是不是int
 
 jbl_var_data *	jbl_Vdouble_new				();													//新建一个var格式的double
 jbl_var_data *	jbl_Vdouble_set				(jbl_var_data * this,double data);						//设置一个var格式的double
+double          jbl_Vdouble_get             (jbl_var_data * this);
 jbl_var_data *	jbl_Vdouble_copy			(jbl_var_data * that);									//复制一个var格式的double
 char			jbl_Vdouble_space_ship		(jbl_var_data * this,jbl_var_data * that);					//比较两个var格式的double
 #define			Vis_jbl_double(x)			(jbl_var_get_operators(x)==&jbl_double_operators)	//判断一个var是不是double
