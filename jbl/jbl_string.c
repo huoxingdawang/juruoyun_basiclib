@@ -638,33 +638,34 @@ void __jbl_string_stream_operater(jbl_stream* thi,jbl_uint8 force)
                 thi->buf->sta=thi->buf->len;
             }
         }
-        else if(nxt)
-        {
-            jbl_string *str;thi->data[0].p=jbl_string_extend_to((jbl_string*)thi->data[0].p,0,1,&str);
-            if(thi->buf->free_buf==__fb)
-            {
-                thi->data[1].u+=nxt->buf->sta;
-                thi->buf->sta=0;
-                nxt->buf->size=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
-                nxt->buf->len=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
-                nxt->buf->s=str->s+thi->data[1].u;
-            }
-            else
-            {
-                while(thi->data[1].u<str->len)
-                {
-                    jbl_stream_buf_size_type len=(jbl_stream_buf_size_type)jbl_min((str->len-thi->data[1].u),(nxt->buf->size-nxt->buf->len));	
-                    jbl_memory_copy(nxt->buf->s+nxt->buf->len,str->s+thi->data[1].u,len);
-                    thi->data[1].u+=len;
-                    nxt->buf->len+=len;
-                    jbl_stream_push_down(nxt,0);
-                    jbl_stream_move_unhandle_buf(nxt->buf);
-                    if(1==(thi->stop=nxt->stop))break;
-                }
-            }
-            nxt->op->op(nxt,force);
-        }        
     }
+    if(nxt)
+    {
+        jbl_stream_get_buf(thi,1);
+        jbl_string *str;thi->data[0].p=jbl_string_extend_to((jbl_string*)thi->data[0].p,0,1,&str);
+        if(nxt->buf->free_buf==__fb)
+        {
+            thi->data[1].u+=nxt->buf->sta;
+            nxt->buf->sta=0;
+            nxt->buf->size=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
+            nxt->buf->len=(jbl_stream_buf_size_type)(str->len-thi->data[1].u);
+            nxt->buf->s=str->s+thi->data[1].u;
+        }
+        else
+        {
+            while(thi->data[1].u<str->len)
+            {
+                jbl_stream_buf_size_type len=(jbl_stream_buf_size_type)jbl_min((str->len-thi->data[1].u),(nxt->buf->size-nxt->buf->len));	
+                jbl_memory_copy(nxt->buf->s+nxt->buf->len,str->s+thi->data[1].u,len);
+                thi->data[1].u+=len;
+                nxt->buf->len+=len;
+                jbl_stream_push_down(nxt,0);
+                jbl_stream_move_unhandle_buf(nxt->buf);
+                if(1==(thi->stop=nxt->stop))break;
+            }
+        }
+        nxt->op->op(nxt,force);
+    }        
     jbl_refer_pull_unwrlock(thi->nxt);
 }
 static void __sff(jbl_stream* thi){jbl_string_free((jbl_string*)thi->data[0].p);}
