@@ -60,6 +60,7 @@ run:
 	exes$(H)aes_stream       && pause
 	exes$(H)array            && pause
 	exes$(H)base64           && pause
+	exes$(H)base64_threads   && pause
 	exes$(H)bitset           && pause
 	exes$(H)cmd              && pause
 	exes$(H)file             && pause
@@ -91,7 +92,9 @@ array:
 	$(CC) $(BITS) -o exes$(H)array                 tmp$(H)$(pre)array.o             tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
 base64:
 	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)base64.o            examples$(H)base64.c            $(EXDIR) $(EXLIB)
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)base64_threads.o    examples$(H)base64_threads.c    $(EXDIR) $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)base64                tmp$(H)$(pre)base64.o            tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)base64_threads        tmp$(H)$(pre)base64_threads.o    tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
 bitset:
 	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)bitset.o            examples$(H)bitset.c            $(EXDIR) $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)bitset                tmp$(H)$(pre)bitset.o            tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)

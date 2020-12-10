@@ -36,8 +36,8 @@ jbl_string *	jbl_base64_decode					(jbl_string *this,jbl_string *result);	//base
 /*******************************************************************************************/
 extern			const jbl_stream_operater			jbl_stream_base64_encode_operators;						//base64加密流处理器
 extern			const jbl_stream_operater 			jbl_stream_base64_decode_operators;						//base64解密流处理器
-#define			jbl_stream_base64_encode_new()		jbl_stream_new(&jbl_stream_base64_encode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建base64加密流
-#define			jbl_stream_base64_decode_new()		jbl_stream_new(&jbl_stream_base64_decode_operators,NULL,JBL_STREAM_EXCEED_LENGTH+8,NULL,0)	//新建base64解密流
+#define			jbl_stream_base64_encode_new()		jbl_stream_new(&jbl_stream_base64_encode_operators)     //新建base64加密流
+#define			jbl_stream_base64_decode_new()		jbl_stream_new(&jbl_stream_base64_decode_operators)     //新建base64解密流
 
 #endif
 
