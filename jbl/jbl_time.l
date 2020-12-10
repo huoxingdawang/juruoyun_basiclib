@@ -399,13 +399,19 @@ void jbl_stream_push_time(jbl_stream *out,jbl_time *this,const unsigned char * f
 /*                            以下函实现时间JSON操作                                      */
 /*******************************************************************************************/
 #if JBL_STRING_ENABLE==1
-JBL_INLINE jbl_string* jbl_time_json_encode(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+jbl_string* jbl_time_json_encode(jbl_time* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
-	out=jbl_string_add_char(out,'"');
-	out=jbl_time_to_string_format(this,out,UC "Y-m-d H:i:s D");
-	out=jbl_string_add_char(out,'"');
-	if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+	jbl_time *thi=jbl_refer_pull_rdlock(this);
+	out=jbl_string_json_put_format(thi,out,format,tabs);
+    if(thi)
+    {
+        out=jbl_string_add_char(out,'"');
+        out=jbl_time_to_string_format(this,out,UC "Y-m-d H:i:s D");
+        out=jbl_string_add_char(out,'"');
+        if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+    }
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
 	return out;
 }
 #endif
@@ -417,9 +423,14 @@ void jbl_time_json_put(jbl_time* this,jbl_stream *out,jbl_uint8 format,jbl_uint3
 	jbl_string_json_put(s1,out,format,tabs);
 	jbl_string_free(s1);	
 #else
-	if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
-	jbl_stream_push_int(out,this->t);
-	if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
+	jbl_time *thi=jbl_refer_pull_rdlock(this);
+	if(jbl_stream_json_put_format(thi,out,format,tabs))
+    {
+        jbl_stream_push_uint(out,thi->t);
+        if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
+    }
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
 #endif
 }
 #endif
