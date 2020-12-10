@@ -19,12 +19,12 @@
 #define JBL_CMD_ENABLE			1	//need ying bitset malloc string
 #define JBL_ENDIAN_ENABLE		1	//need ying 
 #define JBL_EXCEPTION_ENABLE	1	//need ying 
-#define JBL_FILE_ENABLE			0	//developing N/A
+#define JBL_FILE_ENABLE			1	//developing N/A
 #define JBL_GC_ENABLE			1	//need ying 
 #define JBL_HT_ENABLE			0	//need ying bitset malloc string var
 #define JBL_LL_ENABLE			0	//need ying bitset malloc        var					/////////////
 #define JBL_LOG_ENABLE			1	//
-#define JBL_JSON_ENABLE			0	//
+#define JBL_JSON_ENABLE			1	//
 #define JBL_MALLOC_ENABLE		1	//need ying bitset
 #define JBL_MD5_ENABLE			1	//need ying bitset malloc string
 #define JBL_PTHREAD_ENABLE		1	//need ying
@@ -34,7 +34,7 @@
 #define JBL_STREAM_ENABLE		1	//need ying bitset malloc gc
 #define JBL_STRING_ENABLE		1	//need ying bitset malloc gc
 #define JBL_TIME_ENABLE			1	//developing N/A
-#define JBL_VAR_ENABLE			0	//need ying bitset malloc	
+#define JBL_VAR_ENABLE			1	//need ying bitset malloc	
 #define JBL_YING_ENABLE			1	//need 
 
 #endif

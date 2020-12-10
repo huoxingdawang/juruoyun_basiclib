@@ -36,7 +36,7 @@ static struct
 		jbl_uint64  u;
 		jbl_int64   i;
 		double d;
-		char c;
+		unsigned char c;
 		char* s;
 		void *v;
 	}p[JBL_LOG_MAX_LENGTH*4];
@@ -87,7 +87,7 @@ void jbl_log_add_log(const char * file,const char * func,jbl_uint32 line,unsigne
 			case JBL_SCANNER_KEY_INT					:__jbl_logs.p[__jbl_logs.pcnt].i=va_arg(arg_ptr,jbl_int64)	;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_UINT					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_DOUBLE					:__jbl_logs.p[__jbl_logs.pcnt].d=va_arg(arg_ptr,double)		;++__jbl_logs.pcnt	;break;
-			case JBL_SCANNER_KEY_CHAR					:__jbl_logs.p[__jbl_logs.pcnt].c=(char)va_arg(arg_ptr,int)		;++__jbl_logs.pcnt	;break;//类型提升
+			case JBL_SCANNER_KEY_CHAR					:__jbl_logs.p[__jbl_logs.pcnt].c=(unsigned char)va_arg(arg_ptr,int)		;++__jbl_logs.pcnt	;break;//类型提升
 			case JBL_SCANNER_KEY_CHARS					:__jbl_logs.p[__jbl_logs.pcnt].s=va_arg(arg_ptr,char *)		;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_HEX					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
 			case JBL_SCANNER_KEY_ERRSTR					:__jbl_logs.p[__jbl_logs.pcnt].u=va_arg(arg_ptr,jbl_uint64)	;++__jbl_logs.pcnt	;break;
@@ -115,8 +115,12 @@ static void __jbl_log_save()
 	jbl_pthread_lock_wrlock(&__jbl_logs);
 	if((__jbl_logs.start&0x02))return;
 	__jbl_logs.start|=0x02;
-#if JBL_STREAM_ENABLE==1 && JBL_FILE_ENABLE ==1
-	if(!__jbl_logs.fs)__jbl_logs.fs=jbl_file_stream_new(jbl_file_open_chars(NULL,UC JBL_LOG_DIR,JBL_FILE_WRITE));
+#if JBL_STREAM_ENABLE==1
+#if JBL_FILE_ENABLE ==1
+	if(!__jbl_logs.fs)__jbl_logs.fs=jbl_file_stream_new(jbl_gc_minus(jbl_file_open_chars(NULL,UC JBL_LOG_DIR,JBL_FILE_WRITE)));
+#else
+	if(!__jbl_logs.fs)__jbl_logs.fs=jbl_stream_copy(jbl_stream_stdout);
+#endif
 	jbl_uint32 j=0;
 	for(jbl_uint32 i=0;i<__jbl_logs.cnt;++i)
 	{
@@ -154,9 +158,7 @@ static void __jbl_log_save()
 #endif	
 			}
 		}
-		finish:;
-		
-		
+		finish:;		
 		jbl_stream_push_char(__jbl_logs.fs,'\n');
 	}
 #if JBL_LOG_DISABLE_STREAM_CACHE ==1
