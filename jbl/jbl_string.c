@@ -614,7 +614,7 @@ jbl_stream * jbl_string_stream_new(jbl_string *str)
     return stream;
 }
 static void __fb(jbl_stream_buf* thi){jbl_free(thi);}
-void __jbl_string_stream_operater(jbl_stream* thi,jbl_uint8 force)
+void __ssop(jbl_stream* thi,jbl_uint8 force)
 {
 	if(!thi)jbl_exception("NULL POINTER");
 	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
@@ -631,6 +631,7 @@ void __jbl_string_stream_operater(jbl_stream* thi,jbl_uint8 force)
                 thi->buf->s=str->s+str->len;
                 thi->buf->sta=0;
                 thi->buf->len=0;
+                jbl_refer_pull_unwrlock((jbl_string*)thi->data[0].p);
             }
             else
             {
@@ -642,7 +643,7 @@ void __jbl_string_stream_operater(jbl_stream* thi,jbl_uint8 force)
     if(nxt)
     {
         jbl_stream_get_buf(thi,1);
-        jbl_string *str;thi->data[0].p=jbl_string_extend_to((jbl_string*)thi->data[0].p,0,1,&str);
+        jbl_string *str=jbl_refer_pull_rdlock((jbl_string*)thi->data[0].p);
         if(nxt->buf->free_buf==__fb)
         {
             thi->data[1].u+=nxt->buf->sta;
@@ -664,6 +665,7 @@ void __jbl_string_stream_operater(jbl_stream* thi,jbl_uint8 force)
                 if(1==(thi->stop=nxt->stop))break;
             }
         }
+        jbl_refer_pull_unrdlock((jbl_string*)thi->data[0].p);
         nxt->op->op(nxt,force);
     }        
     jbl_refer_pull_unwrlock(thi->nxt);
@@ -691,7 +693,7 @@ static jbl_stream_buf * __pb(jbl_stream* thi,jbl_uint8 forthis)
     jbl_refer_pull_unwrlock((jbl_string*)thi->data[0].p);   
     return buf;
 }
-jbl_stream_operators_new(jbl_stream_string_operators,__jbl_string_stream_operater,__sff,__pb,128,2);
+jbl_stream_operators_new(jbl_stream_string_operators,__ssop,__sff,__pb,128,2);
 jbl_string*  jbl_stream_push_string_start_end(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end)
 {
 	if(!this)return this;
