@@ -54,6 +54,7 @@ void __jbl_pthread_lock_init(pthread_mutex_t *lock)
 
 jbl_uint64  jbl_pthread_get_id    (){return (jbl_uint64)pthread_self();}
 void        jbl_pthread_check_exit(){pthread_testcancel();}
+jbl_var_operators_new(jbl_pthreads_operators,jbl_pthreads_free,jbl_pthreads_copy,NULL,NULL,jbl_pthreads_view_put,NULL);
 jbl_pthreads * jbl_pthreads_new(jbl_pthreads_size_type size)
 {
     if(size==0)size=8;
@@ -186,6 +187,29 @@ jbl_pthreads * jbl_pthreads_wait(jbl_pthreads *this)
     jbl_refer_pull_unwrlock(this);
     return this;
 }
+#if JBL_STREAM_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函数实现文件的浏览操作                               */
+/*******************************************************************************************/
+jbl_pthreads* jbl_pthreads_view_put(jbl_pthreads* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
+{
+	jbl_pthreads *thi=jbl_refer_pull_rdlock(this);
+    if(jbl_stream_view_put_format(thi,out,format,tabs,UC"jbl_pthreads",line,varname,func,file))
+    {
+        jbl_stream_push_char(out,'\n');
+        ++tabs;
+        for(jbl_pthreads_size_type i=0;i<thi->len;++i)
+        {
+            for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC thi->threads[i].name);jbl_stream_push_char(out,'\n');
+        }
+    }
+    else jbl_stream_push_char(out,'\n');
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+	return this;
+}
+#endif
+
 #else
 jbl_pthreads * __jbl_pthreads_creat_thread(jbl_pthreads *this,void *(*func)(void *),jbl_pthreads_size_type n,const char * name,void * data)
 {

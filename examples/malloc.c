@@ -21,7 +21,6 @@ jbl_uint32 get_size(do_malloc_data *data)
 }
 void * do_malloc(do_malloc_data *data)
 {
-    puint(jbl_pthread_get_id());pn();pf();
 	char **a=jbl_malloc(data->slot*sizeof(char*));
 	for(jbl_uint32 i=0;i<data->slot;a[i]=NULL,++i);
 	for(jbl_uint64 i=0;i<data->n;++i)
@@ -66,6 +65,7 @@ int main()
     do_malloc_data data={slot,(1ULL<<base)/thread_cnt,small,large,huge};
     jbl_pthreads * threads=jbl_pthreads_new(thread_cnt);
 	threads=jbl_pthreads_creat_thread(threads,do_malloc,thread_cnt,&data);
+    jbl_pthreads_view(threads);pf();
 	threads=jbl_pthreads_wait(threads);
     threads=jbl_pthreads_free(threads);
 

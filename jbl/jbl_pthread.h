@@ -51,7 +51,10 @@ jbl_pthreads *   jbl_pthreads_stop              (jbl_pthreads *this);
 jbl_pthreads *   jbl_pthreads_wait              (jbl_pthreads *this);
 jbl_pthreads *   __jbl_pthreads_creat_thread    (jbl_pthreads *this,void *(*func)(void *),jbl_pthreads_size_type n,const char * name,void * data);
 #define          jbl_pthreads_creat_thread(this,func,n,data)    __jbl_pthreads_creat_thread(this,((void*(*)(void*))(func)),n,#func,data)
-
+#if JBL_STREAM_ENABLE==1
+jbl_pthreads*		jbl_pthreads_view_put					(jbl_pthreads* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * pthreads);	//从out浏览一个字符串
+#define				jbl_pthreads_view(x)					jbl_pthreads_view_put(x,jbl_stream_stdout,1,JBL_VIEW_DEFAULT_TABS,__LINE__,UC #x,UC __FUNCTION__,UC __FILE__)//浏览一个字符串
+#endif
 
 #else
 #define         jbl_pthread_start()
