@@ -379,7 +379,7 @@ double jbl_string_get_double_start(jbl_string *this,jbl_string_size_type *start)
 	for(c=thi->s[i],y=(jbl_uint64)(c-'0'),++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;y=(y<<3)+(y<<1)+c-'0',ji=(ji<<3)+(ji<<1),++i);
 	start?(*start=i):0;
 	jbl_refer_pull_unrdlock(this);
-	return (-((((double)y)/((double)ji))+(double)(x)))*(f?-1:1);
+	return ((((double)y)/((double)ji))+(double)(x))*(f?-1:1);
 }
 static jbl_uint8  ok16 (jbl_uint8 c){return ((c>='0'&&c<='9')||(c>='a'&&c<='f')||(c>='A'&&c<='F'));}
 static jbl_uint64 get16(jbl_uint8 c){return (jbl_uint64)((c>='A'&&c<='F')?(c-'A'+10):((c>='a'&&c<='f')?(c-'a'+10):(c-'0')));}
@@ -738,38 +738,46 @@ jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
 	return this;
 }
 #endif
-// #if JBL_VAR_ENABLE==1
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的var操作                                */
-// /*******************************************************************************************/
-// jbl_var_data * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *start)
-// {
-	// if(!this||!start)jbl_exception("NULL POINTER");	
-	// jbl_string *thi=jbl_refer_pull(this);		
-	// jbl_string_size_type i=*start;
-	// unsigned char c,f;jbl_uint64 x=0;
-	// jbl_uint64 ji=10,y=0;
-	// if(i>=thi->len)
-		// return NULL;
-	// for(f=0;((c=thi->s[i])<'0'||c>'9')&&i<thi->len;f=c=='-',++i);
-	// for(x=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i);
-	// *start=i;
-	// if(thi->s[i]=='e')
-		// goto e;
-	// if(thi->s[i]!='.'||i==thi->len)
-		// return (f?jbl_Vint_set(NULL,-x):jbl_Vuint_set(NULL,x));
-	// ++i;
-	// for(c=thi->s[i],y=c-'0',++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;y=(y<<3)+(y<<1)+c-'0',ji=(ji<<3)+(ji<<1),++i);
-	// *start=i;
-	// if(thi->s[i]=='e')
-		// goto e;
-	// return jbl_Vdouble_set(NULL,f?(-(((double)y/ji)+x)):(((double)y/ji)+x));
-// e:;
-	// jbl_uint64 e=jbl_string_get_uint_start(this,start),ji2=1;
-	// while(e--)ji2=(ji2<<3)+(ji2<<1);
-	// return jbl_Vdouble_set(NULL,(f?(-(((double)y/ji)+x)):(((double)y/ji)+x))*ji2);
-// }
-// #endif
+#if JBL_VAR_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函数实现字符串的var操作                                */
+/*******************************************************************************************/
+jbl_var_data * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *start)
+{
+	if(!this||!start)jbl_exception("NULL POINTER");	
+	jbl_string *thi=jbl_refer_pull_unrdlock(this);
+	jbl_string_size_type i=*start;
+	unsigned char c,f;jbl_uint64 x=0;
+	jbl_uint64 ji=10,y=0;
+	if(i>=thi->len)
+    {
+        jbl_refer_pull_unrdlock(this);
+		return NULL;
+    }
+    for(f=0;((c=thi->s[i])<'0'||c>'9')&&i<thi->len;f=c=='-',++i){}
+	for(x=(jbl_uint8)(c-'0'),++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;x=(x<<3)+(x<<1)+c-'0',++i){}
+	*start=i;
+	if(thi->s[i]=='e')
+		goto e;
+	if(thi->s[i]!='.'||i==thi->len)
+    {
+        jbl_refer_pull_unrdlock(this);
+		return (f?jbl_Vint_set(NULL,(jbl_int64)(-x)):jbl_Vuint_set(NULL,x));
+	}
+    ++i;
+	for(c=thi->s[i],y=(jbl_uint8)(c-'0'),++i;(c=thi->s[i])>='0'&&c<='9'&&i<thi->len;y=(y<<3)+(y<<1)+c-'0',ji=(ji<<3)+(ji<<1),++i);
+	*start=i;
+	if(thi->s[i]=='e')
+		goto e;
+    jbl_refer_pull_unrdlock(this);
+	return jbl_Vdouble_set(NULL,((((double)y)/((double)ji))+(double)(x))*(f?-1:1));
+e:;
+	jbl_uint64 e=jbl_string_get_uint_start(this,start),ji2=1;
+	while(e--)ji2=(ji2<<3)+(ji2<<1);
+    jbl_refer_pull_unrdlock(this);
+	return jbl_Vdouble_set(NULL,((((double)y)/((double)ji))+(double)(x))*(f?-1:1)*((double)ji2));
+}
+#endif
 // /*******************************************************************************************/
 // /*                            以下函数实现字符串的切割操作                               */
 // /*******************************************************************************************/
