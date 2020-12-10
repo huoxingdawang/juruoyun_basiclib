@@ -60,14 +60,14 @@ jbl_string *		jbl_file_read						(jbl_file * this,jbl_string*res,jbl_uint64 star
 jbl_file *			jbl_file_write						(jbl_file * this,jbl_string*out);
 jbl_file *			jbl_file_set_offset					(jbl_file * this,jbl_uint64 start);
 jbl_file *			jbl_file_update_status				(jbl_file *this);
-#define				jbl_file_get_dir(this)				(jbl_string_copy(((jbl_file*)jbl_refer_pull(this))->dir))
-#define				jbl_file_get_handle(this)			(((jbl_file*)jbl_refer_pull(this))->handle)
-#define				jbl_file_get_handle_type(this)		(((jbl_file*)jbl_refer_pull(this))->type)
-#define				jbl_file_get_ct(this)				(((jbl_file*)jbl_refer_pull(this))->ctid)
-#define				jbl_file_get_size(this)				(((jbl_file*)jbl_refer_pull(this))->status.size)
-#define				jbl_file_get_time_access(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_access))
-#define				jbl_file_get_time_modify(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_modify))
-#define				jbl_file_get_time_creat(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_creat))
+// #define				jbl_file_get_dir(this)				(jbl_string_copy(((jbl_file*)jbl_refer_pull(this))->dir))
+// #define				jbl_file_get_handle(this)			(((jbl_file*)jbl_refer_pull(this))->handle)
+// #define				jbl_file_get_handle_type(this)		(((jbl_file*)jbl_refer_pull(this))->type)
+// #define				jbl_file_get_ct(this)				(((jbl_file*)jbl_refer_pull(this))->ctid)
+jbl_uint64          jbl_file_get_size                   (jbl_file * this);
+// #define				jbl_file_get_time_access(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_access))
+// #define				jbl_file_get_time_modify(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_modify))
+// #define				jbl_file_get_time_creat(this)		(jbl_time_copy(((jbl_file*)jbl_refer_pull(this))->status.time_creat))
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现问价的浏览操作                                 */
@@ -77,8 +77,8 @@ jbl_file*			jbl_file_view_put					(jbl_file* this,jbl_stream *out,jbl_uint8 form
 #endif
 jbl_stream *		jbl_file_stream_new					(jbl_file *file);
 extern const 		jbl_stream_operater					jbl_file_stream_operators;											//string的流处理器
-#define				jbl_file_stream_set_offset(x,l)		(((jbl_stream*)jbl_refer_pull(x))->extra[0].u=l)
-#define				jbl_file_stream_set_end(x,l)		(((jbl_stream*)jbl_refer_pull(x))->extra[1].u=l)
+#define				jbl_file_stream_set_offset(x,l)		(((jbl_stream*)jbl_refer_pull(x))->data[1].u=l)
+#define				jbl_file_stream_set_end(x,l)		(((jbl_stream*)jbl_refer_pull(x))->data[2].u=l)
 
 
 

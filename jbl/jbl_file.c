@@ -42,6 +42,7 @@ jbl_file * jbl_file_new()
 jbl_file* jbl_file_free(jbl_file *this)
 {
 	if(!this)return NULL;
+    jbl_pthread_lock_wrlock(this);
 	jbl_gc_minus(this);
 	if(!jbl_gc_refcnt(this))
 	{
@@ -49,20 +50,24 @@ jbl_file* jbl_file_free(jbl_file *this)
 			jbl_file_free((jbl_file*)(((jbl_reference*)this)->ptr));
 		else
 			this=jbl_file_close(this);
+        jbl_pthread_lock_free(this);
 		jbl_free(this);
 	}
+    else{jbl_pthread_lock_unwrlock(this);}
 	return NULL;
 }
 JBL_INLINE jbl_file *jbl_file_copy(jbl_file *that)
 {
 	if(!that)return NULL;
+    jbl_pthread_lock_wrlock(that);
 	jbl_gc_plus(that);
+    jbl_pthread_lock_unwrlock(that);    
 	return that;
 }
 jbl_file* jbl_file_close(jbl_file *this)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	jbl_file *thi=jbl_refer_pull(this);	
+	jbl_file *thi=jbl_refer_pull_wrlock(this);	
 	thi->dir					=jbl_string_free(thi->dir);
 	thi->status.size			=0;
 	thi->ctid					=JBL_FILE_CT_UNKNOW;
@@ -77,12 +82,13 @@ jbl_file* jbl_file_close(jbl_file *this)
 #if JBL_FILE_CACHE_GB2312NAME==1 && defined(_WIN32)
 	thi->dir_gb2312				=jbl_string_free(thi->dir_gb2312);
 #endif
+    jbl_refer_pull_unwrlock(this);
 	return this;
 }
 jbl_file* jbl_file_open(jbl_file *this,jbl_string * dir,jbl_file_handle_type type)
 {
 	if(!this)this=jbl_file_new();
-	jbl_file *thi=jbl_refer_pull(this);
+	jbl_file *thi=jbl_refer_pull_wrlock(this);
 	if(thi->dir)thi	=jbl_refer_pull(this=jbl_file_close(this));
 	thi->dir		=jbl_string_copy(dir);
 	thi->dir		=jbl_string_set_tail(thi->dir);	
@@ -92,6 +98,7 @@ jbl_file* jbl_file_open(jbl_file *this,jbl_string * dir,jbl_file_handle_type typ
 	thi->dir_gb2312			=jbl_string_set_tail(thi->dir_gb2312);
 #endif
 	thi=jbl_file_change_handle(thi,type);
+    jbl_refer_pull_unwrlock(this);
 	return this;
 }
 JBL_INLINE jbl_file* jbl_file_open_chars(jbl_file *this,unsigned char * dir,jbl_file_handle_type type)
@@ -101,7 +108,7 @@ JBL_INLINE jbl_file* jbl_file_open_chars(jbl_file *this,unsigned char * dir,jbl_
 jbl_file* jbl_file_change_handle(jbl_file *this,jbl_file_handle_type type)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	jbl_file *thi=jbl_refer_pull(this);
+	jbl_file *thi=jbl_refer_pull_wrlock(this);
 	if(type!=thi->type&&thi->dir&&thi->type<=JBL_FILE_WRITE)
 	{
 		if(thi->handle||this->type!=JBL_FILE_CLOSE)fclose(thi->handle),thi->handle=NULL,this->type=JBL_FILE_CLOSE;
@@ -136,12 +143,13 @@ jbl_file* jbl_file_change_handle(jbl_file *this,jbl_file_handle_type type)
 		jbl_log(UC"open file %j failed",thi->dir);		
 		thi=jbl_file_close(thi);
 	}
+    jbl_refer_pull_unwrlock(this);
 	return this;
 }
 jbl_file* jbl_file_update_status(jbl_file *this)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	jbl_file *thi=jbl_refer_pull(this);
+	jbl_file *thi=jbl_refer_pull_wrlock(this);
 #ifdef _WIN32
 	struct __stat64 buf;
 #if JBL_FILE_CACHE_GB2312NAME==1
@@ -155,7 +163,7 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 		thi->dir=jbl_string_free(thi->dir);
 		gb2312name=jbl_string_free(gb2312name);	
 		jbl_log(UC"open file %j failed with errno %d",thi->dir,errno);
-		return this;
+		goto exit;
 	}
 	gb2312name=jbl_string_free(gb2312name);	
 #elif defined(__APPLE__) || defined(__linux__)
@@ -164,25 +172,27 @@ jbl_file* jbl_file_update_status(jbl_file *this)
 	{
 		jbl_log(UC"open file %j failed with errno %d",thi->dir,errno);
 		thi->dir=jbl_string_free(thi->dir);
-		return this;
+		goto exit;
 	}
 #endif
-	thi->status.size		=buf.st_size;
+	thi->status.size		=(jbl_uint64)buf.st_size;
 #if JBL_TIME_ENABLE==1
 	thi->status.time_access	=jbl_time_set(thi->status.time_access,buf.st_atime*1000);
 	thi->status.time_modify	=jbl_time_set(thi->status.time_modify,buf.st_mtime*1000);
 	thi->status.time_creat	=jbl_time_set(thi->status.time_creat ,buf.st_ctime*1000);
 #endif
+exit:;
+    jbl_refer_pull_unwrlock(this);
 	return this;
 }
 jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_uint64 end)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	this=jbl_file_change_handle(this,JBL_FILE_READ);
-	jbl_file *thi=jbl_refer_pull(this);
+	jbl_file *thi=jbl_refer_pull_wrlock(this);
+	thi=jbl_file_change_handle(thi,JBL_FILE_READ);
 	if(thi->type==JBL_FILE_WRITE||thi->type==JBL_FILE_CLOSE)jbl_exception("Unreadable file");
 	jbl_min_update(end,thi->status.size);
-	if(start==-1)
+	if(start==-1ULL)
 		start=0;
 	else
 	{
@@ -192,29 +202,42 @@ jbl_string * jbl_file_read(jbl_file * this,jbl_string*res,jbl_uint64 start,jbl_u
 	}
 	jbl_string *re;res=jbl_string_extend_to(res,end-start,1,&re);jbl_string_hash_clear(re);
 	re->len+=fread(re->s+re->len,1,end-start,thi->handle);
+    jbl_refer_pull_unwrlock(res);
+    jbl_refer_pull_unwrlock(this);
 	return res;
 }
 jbl_file * jbl_file_write(jbl_file * this,jbl_string*out)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	this=jbl_file_change_handle(this,JBL_FILE_WRITE);
-	jbl_file *thi=jbl_refer_pull(this);
+	jbl_file *thi=jbl_refer_pull_wrlock(this);
+	thi=jbl_file_change_handle(thi,JBL_FILE_WRITE);
 	if(thi->type==JBL_FILE_READ||thi->type==JBL_FILE_CLOSE)jbl_exception("Unwriteable file");
-	out=jbl_refer_pull(out);
-	fwrite(out->s,1,out->len,this->handle);
+	jbl_string * ou=jbl_refer_pull_rdlock(out);
+	fwrite(ou->s,1,ou->len,this->handle);
+    jbl_refer_pull_unrdlock(out);
+    jbl_refer_pull_unwrlock(this);
 	return this;
 }
 JBL_INLINE jbl_file * jbl_file_set_offset(jbl_file * this,jbl_uint64 start)
 {
 	if(!this)jbl_exception("NULL POINTER");
-	jbl_file *thi=jbl_refer_pull(this);	
+	jbl_file *thi=jbl_refer_pull_wrlock(this);	
 	jbl_min_update(start,thi->status.size);
 #ifdef _WIN64
-	_fseeki64(thi->handle,start,SEEK_SET);
+	_fseeki64(thi->handle,(jbl_int64)start,SEEK_SET);
 #else
-	fseek(thi->handle,start,SEEK_SET);
+	fseek(thi->handle,(long int)start,SEEK_SET);
 #endif	
+    jbl_refer_pull_unwrlock(this);
 	return this;
+}
+jbl_uint64 jbl_file_get_size(jbl_file * this)
+{
+	if(!this)return 0;
+	jbl_file *thi=jbl_refer_pull_rdlock(this);
+    jbl_uint64 ans=thi->status.size;
+    jbl_refer_pull_unrdlock(this);
+	return ans;
 }
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
@@ -222,62 +245,71 @@ JBL_INLINE jbl_file * jbl_file_set_offset(jbl_file * this,jbl_uint64 start)
 /*******************************************************************************************/
 jbl_file* jbl_file_view_put(jbl_file* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-pl();
-	jbl_file *thi;if(jbl_stream_view_put_format(thi=jbl_refer_pull(this),out,format,tabs,UC"jbl_file",line,varname,func,file)){jbl_stream_push_char(out,'\n');return this;}
-pl();
-	jbl_stream_push_char(out,'\n');
-	++tabs;
-	char * type		[]={"close","read","write","RW","WR"};
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"handle type  :");jbl_stream_push_chars(out,UC type[thi->type])								;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"dir          :");jbl_stream_push_string(out,thi->dir)										;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"size         :");jbl_stream_push_uint(out,thi->status.size)								;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"content type :");jbl_stream_push_chars(out,jbl_file_get_ct_chars_by_ctid(thi->ctid))		;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"suffix       :");jbl_stream_push_chars(out,jbl_file_get_suffix_chars_by_ctid(thi->ctid))	;jbl_stream_push_char(out,'\n');
+	jbl_file *thi=jbl_refer_pull_rdlock(this);
+    if(jbl_stream_view_put_format(thi,out,format,tabs,UC"jbl_file",line,varname,func,file))
+    {
+        jbl_stream_push_char(out,'\n');
+        ++tabs;
+        char * type		[]={"close","read","write","RW","WR"};
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"handle type  :");jbl_stream_push_chars(out,UC type[thi->type])								;jbl_stream_push_char(out,'\n');
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"dir          :");jbl_stream_push_string(out,thi->dir)										;jbl_stream_push_char(out,'\n');
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"size         :");jbl_stream_push_uint(out,thi->status.size)								;jbl_stream_push_char(out,'\n');
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"content type :");jbl_stream_push_chars(out,jbl_file_get_ct_chars_by_ctid(thi->ctid))		;jbl_stream_push_char(out,'\n');
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"suffix       :");jbl_stream_push_chars(out,jbl_file_get_suffix_chars_by_ctid(thi->ctid))	;jbl_stream_push_char(out,'\n');
 #if JBL_TIME_ENABLE==1
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_creat   :");jbl_stream_push_time(out,thi->status.time_creat ,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_modify  :");jbl_stream_push_time(out,thi->status.time_modify,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
-	for(jbl_int32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_access  :");jbl_stream_push_time(out,thi->status.time_access,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_creat   :");jbl_stream_push_time(out,thi->status.time_creat ,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_modify  :");jbl_stream_push_time(out,thi->status.time_modify,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
+        for(jbl_uint32 j=0;j<tabs;jbl_stream_push_char(out,'\t'),++j){}	jbl_stream_push_chars(out,UC"time_access  :");jbl_stream_push_time(out,thi->status.time_access,UC"Y-m-d H:i:s.u")		;jbl_stream_push_char(out,'\n');
 #endif
-
+    }
+    else jbl_stream_push_char(out,'\n');
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
 	return this;
 }
 jbl_stream * jbl_file_stream_new(jbl_file *file)
 {
-	jbl_stream* this=jbl_stream_new(&jbl_file_stream_operators,(file),JBL_FILE_STREAM_BUF_LENGTH,NULL,2);
-	this->extra[0].u=0;
-	this->extra[1].u=-1;
+	jbl_stream* this=jbl_stream_new(&jbl_file_stream_operators);
+    this->data[0].p=jbl_file_copy(file);
+	this->data[1].u=0;
+	this->data[2].u=-1ULL;
 	return this;
 }
-
-void __jbl_file_stream_operator(jbl_stream* this,jbl_uint8 flags)
+static void __sff(jbl_stream* thi){jbl_file_free((jbl_file*)thi->data[0].p);}
+static void __fso(jbl_stream* thi,jbl_uint8 force)
 {
-	this=jbl_refer_pull(this);
-	jbl_stream* nxt=jbl_refer_pull(this->nxt);
-	jbl_file *file=jbl_refer_pull((jbl_file*)this->data);
-	if(this->en)
+	if(!thi)jbl_exception("NULL POINTER");
+	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
+    jbl_file *file=jbl_refer_pull_wrlock((jbl_file*)thi->data[0].p);
+    if(nxt)
 	{
-		file=jbl_file_change_handle(file,JBL_FILE_WRITE);
-		if(file->type==JBL_FILE_READ||file->type==JBL_FILE_CLOSE)jbl_exception("Unwriteable file");
-		fwrite(this->buf,1,this->en,file->handle);
-		this->en=0;
-	}
-	else if(nxt)
-	{
+        jbl_stream_get_buf(thi,1);
 		file=jbl_file_change_handle(file,JBL_FILE_READ);
 		if(file->type==JBL_FILE_WRITE||file->type==JBL_FILE_CLOSE)jbl_exception("Unreadable file");
-		file=jbl_file_set_offset(file,this->extra[0].u);
-		jbl_min_update(this->extra[1].u,file->status.size);
-		while(this->extra[0].u<this->extra[1].u)
+		jbl_min_update(thi->data[1].u,file->status.size);
+		jbl_min_update(thi->data[2].u,file->status.size);
+		file=jbl_file_set_offset(file,thi->data[1].u);
+		while(thi->data[1].u<thi->data[2].u)
 		{
-			jbl_stream_buf_size_type len=jbl_min((this->extra[1].u-this->extra[0].u),(nxt->size-nxt->en));
-			len=fread((char*)nxt->buf+nxt->en,1,len,file->handle);
-			nxt->en+=len;this->extra[0].u+=len;
-			jbl_stream_do(nxt,0);
-			if(nxt->stop)return;
+			jbl_stream_buf_size_type len=(jbl_stream_buf_size_type)jbl_min((thi->data[2].u-thi->data[1].u),(nxt->buf->size-nxt->buf->len));
+			len=(jbl_stream_buf_size_type)fread((char*)nxt->buf->s+nxt->buf->len,1,len,file->handle);
+			nxt->buf->len+=len;
+            thi->data[1].u+=len;
+			jbl_stream_push_down(nxt,0);
+            jbl_stream_move_unhandle_buf(nxt->buf);
+            if(1==(thi->stop=nxt->stop))break;
 		}
-		jbl_stream_do(nxt,flags);	
+        nxt->op->op(nxt,force);
 	}
+    else if(thi->buf)
+    {
+		file=jbl_file_change_handle(file,JBL_FILE_WRITE);
+		if(file->type==JBL_FILE_READ||file->type==JBL_FILE_CLOSE)jbl_exception("Unwriteable file");
+		thi->buf->sta+=(jbl_stream_buf_size_type)fwrite(thi->buf->s+thi->buf->sta,1,thi->buf->len-thi->buf->sta,file->handle);
+    }
+    jbl_refer_pull_unwrlock((jbl_file*)thi->data[0].p);
+    jbl_refer_pull_unwrlock(thi->nxt);
 }
-jbl_stream_operators_new(jbl_file_stream_operators,__jbl_file_stream_operator,jbl_file_free,NULL);
+jbl_stream_operators_new(jbl_file_stream_operators,__fso,__sff,NULL,1024*1024*4,3);
 #endif
 #endif
