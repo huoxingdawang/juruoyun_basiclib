@@ -205,7 +205,7 @@ jbl_string* jbl_string_to_utf8_from_gb2312(jbl_string* this,jbl_string* that)
 /*******************************************************************************************/
 /*                            以下函数实现stream的转码操作                                     */
 /*******************************************************************************************/
-void __jbl_string_u8tgso(jbl_stream* thi,jbl_uint8 force)//utf8_to_gb2312_stream_operater
+static void __u8tgso(jbl_stream* thi,jbl_uint8 force)//utf8_to_gb2312_stream_operater
 {
 	if(!thi)jbl_exception("NULL POINTER");	
 	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
@@ -239,7 +239,7 @@ void __jbl_string_u8tgso(jbl_stream* thi,jbl_uint8 force)//utf8_to_gb2312_stream
 	}
     jbl_refer_pull_unwrlock(thi->nxt);
 }
-void __jbl_string_gtu8so(jbl_stream* thi,jbl_uint8 force)//gb2312_to_utf8_stream_operater
+static void __gtu8so(jbl_stream* thi,jbl_uint8 force)//gb2312_to_utf8_stream_operater
 {
 	if(!thi)jbl_exception("NULL POINTER");	
 	jbl_stream* nxt=jbl_refer_pull_wrlock(thi->nxt);
@@ -277,9 +277,10 @@ void __jbl_string_gtu8so(jbl_stream* thi,jbl_uint8 force)//gb2312_to_utf8_stream
             jbl_stream_move_unhandle_buf(nxt->buf);
 		}
 	}
+    jbl_refer_pull_unwrlock(thi->nxt);
 }
-jbl_stream_operators_new(jbl_stream_utf8_to_gb2312_operators,__jbl_string_u8tgso,NULL,NULL,16,0);
-jbl_stream_operators_new(jbl_stream_gb2312_to_utf8_operators,__jbl_string_gtu8so,NULL,NULL,16,0);
+jbl_stream_operators_new(jbl_stream_utf8_to_gb2312_operators,__u8tgso,NULL,NULL,16,0);
+jbl_stream_operators_new(jbl_stream_gb2312_to_utf8_operators,__gtu8so,NULL,NULL,16,0);
 #endif
 
 
