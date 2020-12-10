@@ -15,6 +15,7 @@
 #include "jbl_ll.h"
 #include "jbl_ht.h"
 #include "jbl_log.h"
+#if 0
 #if JBL_JSON_DEBUG ==0
 	#undef jbl_log
 	#define jbl_log(x,...)
@@ -302,5 +303,5 @@ inline void * jbl_json_decode_stream_var(jbl_stream* this)
 	return jbl_var_copy(((struct __jbl_json_decode_yy*)(this->extra[0].p))->v);
 }
 
-
+#endif
 #endif

@@ -509,77 +509,89 @@ jbl_string * jbl_string_to_lower_case(jbl_string *this)
     jbl_refer_pull_unwrlock(this);
 	return  this;
 }
-// #if JBL_JSON_ENABLE==1
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的JSON操作                               */
-// /*******************************************************************************************/
-// jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
-// {
-	// out=jbl_string_json_put_format(this=jbl_refer_pull(this),out,format,tabs);if(!this)return out;
-	// out=jbl_string_add_char(out,'"');
-	// for(jbl_string_size_type i=0;i<this->len;++i)
-	// {
-		// if(this->s[i]>31&&this->s[i]!='\"' &&this->s[i]!='\\')
-			// out=jbl_string_add_char(out,this->s[i]);
-		// else
-		// {
-			// out=jbl_string_add_char(out,'\\');
-			// jbl_uint8 token;
-			// switch(token=this->s[i])
-			// {
-				// case '\\':out=jbl_string_add_char(out,'\\');	break;
-				// case '\"':out=jbl_string_add_char(out,'\"');	break;
-				// case '\b':out=jbl_string_add_char(out,'b');	break;
-				// case '\f':out=jbl_string_add_char(out,'f');	break;
-				// case '\n':out=jbl_string_add_char(out,'n');	break;
-				// case '\r':out=jbl_string_add_char(out,'r');	break;
-				// case '\t':out=jbl_string_add_char(out,'t');	break;
-				// default  :out=jbl_string_add_chars_length(out,(unsigned char*)"u00",3),out=jbl_string_add_hex_8bits(out,token);break;
-			// }
-		// }				
-	// }
-	// out=jbl_string_add_char(out,'"');
-	// if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
-	// return out;
-// }
-// jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
-// {
-	// if(!out)out=jbl_string_new();
-	// if(format&1)for(jbl_uint32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);
-	// if(!this)out=jbl_string_add_chars_length(out,UC"null",4);
-	// return out;
-// }
-// #if JBL_STREAM_ENABLE==1
-// void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
-// {
-	// if(jbl_stream_json_put_format(this=jbl_refer_pull(this),out,format,tabs))return;
-	// jbl_stream_push_char(out,'"');
-	// for(jbl_string_size_type i=0;i<this->len;++i)
-	// {
-		// if(this->s[i]>31&&this->s[i]!='\"' &&this->s[i]!='\\')
-			// jbl_stream_push_char(out,this->s[i]);
-		// else
-		// {
-			// jbl_stream_push_char(out,'\\');
-			// jbl_uint8 token;
-			// switch(token=this->s[i])
-			// {
-				// case '\\':jbl_stream_push_char(out,'\\');	break;
-				// case '\"':jbl_stream_push_char(out,'\"');	break;
-				// case '\b':jbl_stream_push_char(out,'b');	break;
-				// case '\f':jbl_stream_push_char(out,'f');	break;
-				// case '\n':jbl_stream_push_char(out,'n');	break;
-				// case '\r':jbl_stream_push_char(out,'r');	break;
-				// case '\t':jbl_stream_push_char(out,'t');	break;
-				// default  :jbl_stream_push_chars(out,UC"u00"),jbl_stream_push_hex_8bits(out,token);break;
-			// }
-		// }		
-	// }
-	// jbl_stream_push_char(out,'"');
-	// if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
-// }
-// #endif
-// #endif
+#if JBL_JSON_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函数实现字符串的JSON操作                               */
+/*******************************************************************************************/
+jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+{
+	jbl_string *thi=jbl_refer_pull_rdlock(this);
+	out=jbl_string_json_put_format(thi,out,format,tabs);
+    if(thi)
+    {
+        out=jbl_string_add_char(out,'"');
+        for(jbl_string_size_type i=0;i<this->len;++i)
+        {
+            if(this->s[i]>31&&this->s[i]!='\"' &&this->s[i]!='\\')
+                out=jbl_string_add_char(out,this->s[i]);
+            else
+            {
+                out=jbl_string_add_char(out,'\\');
+                jbl_uint8 token;
+                switch(token=this->s[i])
+                {
+                    case '\\':out=jbl_string_add_char(out,'\\');	break;
+                    case '\"':out=jbl_string_add_char(out,'\"');	break;
+                    case '\b':out=jbl_string_add_char(out,'b');	break;
+                    case '\f':out=jbl_string_add_char(out,'f');	break;
+                    case '\n':out=jbl_string_add_char(out,'n');	break;
+                    case '\r':out=jbl_string_add_char(out,'r');	break;
+                    case '\t':out=jbl_string_add_char(out,'t');	break;
+                    default  :out=jbl_string_add_chars_length(out,(unsigned char*)"u00",3),out=jbl_string_add_hex_8bits(out,token);break;
+                }
+            }				
+        }
+        out=jbl_string_add_char(out,'"');
+        if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+    }
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+    return out;
+}
+jbl_string* jbl_string_json_put_format(const void* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+{
+	if(!out)out=jbl_string_new();
+    jbl_refer_pull_wrlock(out);
+	if(format&1)for(jbl_uint32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);
+	if(!this)out=jbl_string_add_chars_length(out,UC"null",4);
+	return out;
+}
+#if JBL_STREAM_ENABLE==1
+void jbl_string_json_put(jbl_string* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
+{
+	jbl_string *thi=jbl_refer_pull_rdlock(this);
+	if(jbl_stream_json_put_format(thi,out,format,tabs))
+    {
+        jbl_stream_push_char(out,'"');
+        for(jbl_string_size_type i=0;i<this->len;++i)
+        {
+            if(this->s[i]>31&&this->s[i]!='\"' &&this->s[i]!='\\')
+                jbl_stream_push_char(out,this->s[i]);
+            else
+            {
+                jbl_stream_push_char(out,'\\');
+                jbl_uint8 token;
+                switch(token=this->s[i])
+                {
+                    case '\\':jbl_stream_push_char(out,'\\');	break;
+                    case '\"':jbl_stream_push_char(out,'\"');	break;
+                    case '\b':jbl_stream_push_char(out,'b');	break;
+                    case '\f':jbl_stream_push_char(out,'f');	break;
+                    case '\n':jbl_stream_push_char(out,'n');	break;
+                    case '\r':jbl_stream_push_char(out,'r');	break;
+                    case '\t':jbl_stream_push_char(out,'t');	break;
+                    default  :jbl_stream_push_chars(out,UC"u00"),jbl_stream_push_hex_8bits(out,token);break;
+                }
+            }		
+        }
+        jbl_stream_push_char(out,'"');
+        if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
+    }
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+}
+#endif
+#endif
 #if JBL_STREAM_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函数实现字符串的浏览操作                               */

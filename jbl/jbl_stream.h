@@ -95,7 +95,7 @@ void                        jbl_stream_do                       (jbl_stream* thi
 jbl_stream *	            jbl_stream_connect					(jbl_stream* this,jbl_stream* next);    //连接一个流处理器
 jbl_stream *	            jbl_stream_disconnect				(jbl_stream* this);                     //断开一个流处理器
 #define                     jbl_stream_move_unhandle_buf(buf)   {if((buf)->sta)jbl_memory_copy((buf)->s,(buf)->s+(buf)->sta,(buf)->len-=(buf)->sta);(buf)->sta=0;}
-#define                     jbl_stream_push_down(thi,n)         {if((thi)->buf->len+n>(thi)->buf->size)(thi)->op->op((thi),0);}
+#define                     jbl_stream_push_down(thi,n)         {if((thi)->buf->len+n>=(thi)->buf->size)(thi)->op->op((thi),0);}
 #define                     jbl_stream_push_char_force(thi,c)   (thi)->buf->s[(thi)->buf->len]=(jbl_uint8)(c),++(thi)->buf->len
 /*******************************************************************************************/
 /*                            以下函实现流处理器推入操作                                 */
@@ -133,7 +133,7 @@ void			            jbl_stream_push_hex_8bits			(jbl_stream * this,jbl_uint8 in);
 /*******************************************************************************************/
 char			            jbl_stream_view_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,unsigned char * typename,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file);         //注意！out只加锁不解锁
 #if JBL_JSON_ENABLE==1
-//char			            jbl_stream_json_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
+char			            jbl_stream_json_put_format			(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs);
 #endif
 
 #else

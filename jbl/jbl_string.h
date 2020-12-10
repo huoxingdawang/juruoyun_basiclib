@@ -170,7 +170,7 @@ void jbl_string_update_stream_buf(jbl_stream* this);
 extern const 			jbl_stream_operater						jbl_stream_string_operators;											//string的流处理器
 jbl_stream *			jbl_string_stream_new					(jbl_string *str);														//新建一个字符串流(不进行复制操作)
 #define					jbl_string_stream_free(a)				jbl_stream_free(a)														//释放一个字符串流
-#define					jbl_stream_push_string(out,this)		jbl_stream_push_string_start_end(out,this,0,-1)							//向out推出一个字符串
+#define					jbl_stream_push_string(out,this)		jbl_stream_push_string_start_end(out,this,0,-1ULL)							//向out推出一个字符串
 jbl_string * 			jbl_stream_push_string_start_end		(jbl_stream *out,jbl_string* this,jbl_string_size_type i,jbl_string_size_type end);
 jbl_string *			jbl_string_read							(jbl_string *this,const unsigned char *c);
 

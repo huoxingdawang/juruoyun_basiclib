@@ -90,7 +90,6 @@ jbl_stream * jbl_stream_free(jbl_stream* this)
 			jbl_stream_free((jbl_stream*)(((jbl_reference*)this)->ptr));
 		else
 		{
-            this->op->op(this,1);
 			jbl_stream_free(this->nxt);
             this->buf=jbl_stream_free_buf(this->buf);
             if(this->op->free)this->op->free(this);
@@ -308,15 +307,14 @@ JBL_INLINE char jbl_stream_view_put_format(const void *this,jbl_stream *out,jbl_
 	return this?1:0;
 }
 #if JBL_JSON_ENABLE==1
-// JBL_INLINE char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
-// {
-	// if(!out)jbl_exception("NULL POINTER");
-    // jbl_refer_pull_wrlock(out);
-	// if(format&1)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
-	// if(!this)jbl_stream_push_chars(out,UC"null");
-    // jbl_refer_pull_unwrlock(out);
-	// return this?1:0;
-// }
+JBL_INLINE char jbl_stream_json_put_format(const void *this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
+{
+	if(!out)jbl_exception("NULL POINTER");
+    jbl_refer_pull_wrlock(out);
+	if(format&1)for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
+	if(!this)jbl_stream_push_chars(out,UC"null");
+	return this?1:0;
+}
 #endif
 static void __sfo(jbl_stream* thi,jbl_uint8 force)
 {
@@ -332,11 +330,8 @@ static void __sfo(jbl_stream* thi,jbl_uint8 force)
             if(c==EOF||(c=='\n'&&((FILE*)thi->data[0].p)==stdin)){nxt->op->op(nxt,force);break;}
 			jbl_stream_push_char_force(nxt,c);
 		}
-	else
-	{
-        if(thi->buf)
+	else if(thi->buf)
             thi->buf->sta+=(jbl_stream_buf_size_type)fwrite(thi->buf->s+thi->buf->sta,1,thi->buf->len-thi->buf->sta,(FILE*)thi->data[0].p);
-	}
     jbl_refer_pull_unwrlock(thi->nxt);
 }
 static void __sff(jbl_stream* thi){fclose((FILE*)thi->data[0].p);}
