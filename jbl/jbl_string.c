@@ -159,34 +159,40 @@ jbl_string *jbl_string_clear(jbl_string *this)
 /*                            以下函数实现字符串的缓冲操作                               */
 /*******************************************************************************************/
 #if JBL_HT_ENABLE==1 && JBL_STRING_USE_CACHE==1 && JBL_HT_SYS_ENABLE==1
-// jbl_string *jbl_string_cache_get(const unsigned char *in)
-// {
-	// if(!in)return NULL;
-	// jbl_ht_data *data=jbl_ht_get_ht_data_chars(__jbl_string_cache,in);
-	// if(data)
-	// {
-		// return jbl_string_copy(data->k);
-	// }
-	// jbl_string *str=jbl_string_add_const(NULL,in);
-	// if(str->len<=JBL_STRING_CACHE_MAX_LENGTH)
-		// __jbl_string_cache=jbl_ht_insert_force(__jbl_string_cache,jbl_string_hash(str),str,(void*)1);
-	// return str;
-// }
-// jbl_string *jbl_string_cache_replace(jbl_string *str)
-// {
-	// if(!str)return NULL;
-	// if(jbl_gc_is_ref(str))return str;
-	// if(str->len>JBL_STRING_CACHE_MAX_LENGTH)return str;
-	// jbl_ht_data *data=jbl_ht_get_ht_data(__jbl_string_cache,str);
-	// if(data)
-	// {
-		// jbl_string_free(str);
-		// return jbl_string_copy(data->k);
-	// }
-	// if(str->len<=JBL_STRING_CACHE_MAX_LENGTH)
-		// __jbl_string_cache=jbl_ht_insert_force(__jbl_string_cache,jbl_string_hash(str),str,(void *)1);
-	// return str;
-// }
+jbl_string *jbl_string_cache_get(const unsigned char *in)
+{
+	if(!in)return NULL;
+    jbl_refer_pull_wrlock(__jbl_string_cache);
+	jbl_ht_data *data=jbl_ht_get_ht_data_chars(__jbl_string_cache,in);
+	jbl_string *str=NULL;
+	if(data)
+		str=jbl_string_copy(data->k);
+    else
+    {
+        str=jbl_string_add_const(NULL,in);
+        if(str->len<=JBL_STRING_CACHE_MAX_LENGTH)
+            __jbl_string_cache=jbl_ht_insert_force(__jbl_string_cache,jbl_string_hash(str),str,(void*)1);
+	}
+    jbl_refer_pull_unwrlock(__jbl_string_cache);
+    return str;
+}
+jbl_string *jbl_string_cache_replace(jbl_string *str)
+{
+	if(!str)return NULL;
+	if(jbl_gc_is_ref(str))return str;
+	if(jbl_string_get_length(str)>JBL_STRING_CACHE_MAX_LENGTH)return str;
+    jbl_refer_pull_wrlock(__jbl_string_cache);
+	jbl_ht_data *data=jbl_ht_get_ht_data(__jbl_string_cache,str);
+	if(data)
+	{
+		str=jbl_string_free(str);
+		str=jbl_string_copy(data->k);
+	}
+    else
+        __jbl_string_cache=jbl_ht_insert_force(__jbl_string_cache,jbl_string_hash(str),str,(void *)1);
+    jbl_refer_pull_unwrlock(__jbl_string_cache);
+    return str;
+}
 #endif
 /*******************************************************************************************/
 /*                            以下函数实现字符串的增添类操作                             */

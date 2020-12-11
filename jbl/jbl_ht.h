@@ -89,7 +89,7 @@ void *					jbl_ht_get_int				(jbl_ht *this,jbl_string_hash_type h);		//以chars�
 jbl_ht_data *			jbl_ht_get_ht_data			(jbl_ht *this,jbl_string *k);					//获取一个ht_data
 jbl_ht_data *			jbl_ht_get_ht_data_chars	(jbl_ht *this,const jbl_uint8 *chars);		//以chars为key获取一个ht_data
 jbl_ht_data *			jbl_ht_get_ht_data_int		(jbl_ht *this,jbl_string_hash_type h);		//以int为key获取一个ht_data
-#define					jbl_ht_get_length(x)		(((jbl_ht *)jbl_refer_pull(x))->len)				//获取一个hash table的长度
+jbl_ht_size_type        jbl_ht_get_length           (jbl_ht *this);		                		//获取一个hash table的长度
 /*******************************************************************************************/
 /*                            以下函实现哈希表比较操作                                   */
 /*******************************************************************************************/

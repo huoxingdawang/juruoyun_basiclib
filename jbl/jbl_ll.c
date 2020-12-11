@@ -168,20 +168,22 @@ jbl_ll *jbl_ll_merge(jbl_ll *this,jbl_ll *that)
 	if(!that)return this;
 	jbl_ll * tha=jbl_refer_pull_rdlock(that);
 	jbl_ll_foreach(tha,i)
-		jbl_ll_add(this,i->v);
+		this=jbl_ll_add(this,i->v);
     jbl_refer_pull_unrdlock(that);
 	return this;
 }
 #if JBL_HT_ENABLE==1
-// jbl_ll *jbl_ll_merge_ht(jbl_ll *this,jbl_ht *that)
-// {
-// #if JBL_HT_SYS_ENABLE==1
-	// if(!that||jbl_ht_is_sys(that))return this;
-// #endif
-	// jbl_ht_foreach(that,i)
-		// this=jbl_ll_add(this,i->v);	
-	// return this;
-// }
+jbl_ll *jbl_ll_merge_ht(jbl_ll *this,jbl_ht *that)
+{
+	jbl_ll * tha=jbl_refer_pull_rdlock(that);
+#if JBL_HT_SYS_ENABLE==1
+	if(tha&&!jbl_ht_is_sys(tha))
+#endif
+	jbl_ht_foreach(tha,i)
+		this=jbl_ll_add(this,i->v);	
+    jbl_refer_pull_unrdlock(that);
+	return this;
+}
 #endif
 /*******************************************************************************************/
 /*                            以下函实现链表删除操作                                     */
@@ -190,6 +192,8 @@ jbl_ll * jbl_ll_delete(jbl_ll *this,jbl_ll_node *node)
 {
 	if(!node)return this;
 	jbl_ll *thi;this=jbl_ll_extend(this,&node,NULL,&thi);
+    if(node==NULL)node=thi->head;
+    if(node==((void *)-1))node=thi->tail;
 	jbl_ll_node_delete(thi,node);
     jbl_refer_pull_unwrlock(this);
 	return this;
@@ -197,6 +201,14 @@ jbl_ll * jbl_ll_delete(jbl_ll *this,jbl_ll_node *node)
 /*******************************************************************************************/
 /*                            以下函实现链表获取操作                                      */
 /*******************************************************************************************/
+JBL_INLINE jbl_ll_size_type jbl_ll_get_length(jbl_ll *this)
+{
+    jbl_ll_size_type ans=0;
+	jbl_ll * thi=jbl_refer_pull_rdlock(this);
+	if(thi)ans=thi->len;
+    jbl_refer_pull_unrdlock(this);
+    return ans;
+}
 JBL_INLINE void* jbl_llv(jbl_ll_node *node){return node->v;}
 /*******************************************************************************************/
 /*                            以下函实现链表交换操作                                     */
@@ -261,7 +273,7 @@ jbl_string* jbl_ll_json_encode(jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl
 #if JBL_STREAM_ENABLE==1
 void jbl_ll_json_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
 {
-	jbl_string *thi=jbl_refer_pull_rdlock(this);
+	jbl_ll *thi=jbl_refer_pull_rdlock(this);
 	if(jbl_stream_json_put_format(thi,out,format,tabs))
     {
         jbl_stream_push_char(out,'[');
@@ -288,7 +300,7 @@ void jbl_ll_json_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 ta
 #if JBL_STREAM_ENABLE==1
 jbl_ll*jbl_ll_view_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	jbl_string *thi=jbl_refer_pull_rdlock(this);
+	jbl_ll *thi=jbl_refer_pull_rdlock(this);
     if(jbl_stream_view_put_format(thi,out,format,tabs,UC"jbl_ll",line,varname,func,file))
     {
         jbl_stream_push_chars(out,UC"\tlen:");jbl_stream_push_uint(out,thi->len);
