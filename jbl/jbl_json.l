@@ -268,7 +268,7 @@ start:;
 jbl_stream *jbl_json_decode_stream_new()
 {
 	jbl_stream * this=jbl_stream_new(&jbl_json_decode_stream_operaters);
-	this->data[0].p=this->data[1].p=__jbl_json_decode_yy_new();
+	this->data[0].p=__jbl_json_decode_yy_new();
 	return this;
 }
 static void __jdeop(jbl_stream* thi,jbl_uint8 force)
@@ -278,20 +278,21 @@ static void __jdeop(jbl_stream* thi,jbl_uint8 force)
     {
         thi->buf->s[thi->buf->len]=0;
         jbl_string_size_type i=0; 
-        thi->data[1].p=__jbl_json_decode((struct __jbl_json_decode_yy*)thi->data[1].p,thi->buf->s+thi->buf->sta,thi->buf->s+thi->buf->len,&i);
-        if(((struct __jbl_json_decode_yy*)thi->data[1].p)->cond==-2)
+        thi->data[0].p=__jbl_json_decode((struct __jbl_json_decode_yy*)thi->data[0].p,thi->buf->s+thi->buf->sta,thi->buf->s+thi->buf->len,&i);
+        if(((struct __jbl_json_decode_yy*)thi->data[0].p)->cond==-2)
         {
             jbl_log(UC"%v",((struct __jbl_json_decode_yy*)thi->data[0].p)->v);
             thi->data[0].p=__jbl_json_decode_yy_free((struct __jbl_json_decode_yy*)thi->data[0].p);
-            thi->data[0].p=thi->data[1].p=__jbl_json_decode_yy_new();
+            thi->data[0].p=__jbl_json_decode_yy_new();
             thi->stop=1;
             return;
         }
-        if((((struct __jbl_json_decode_yy*)thi->data[1].p)->cond==-1)&&(thi->data[0].p==thi->data[1].p)){thi->stop=1;return;}
+        if(((struct __jbl_json_decode_yy*)thi->data[0].p)->cond==-1){thi->stop=1;return;}
     }
+    if(force)force=0;
 }
 static void __sff(jbl_stream* thi){__jbl_json_decode_yy_free((struct __jbl_json_decode_yy*)thi->data[0].p);}
-jbl_stream_operators_new(jbl_json_decode_stream_operaters,__jdeop,__sff,NULL,64,2);
+jbl_stream_operators_new(jbl_json_decode_stream_operaters,__jdeop,__sff,NULL,64,1);
 inline void * jbl_json_decode_stream_var(jbl_stream* this)
 {
 	this=jbl_refer_pull(this);
