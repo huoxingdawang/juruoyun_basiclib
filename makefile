@@ -36,7 +36,7 @@ ifeq ($(system),macos)
 	rm = rm -f
 	pre = macos_
 endif
-all:jbl aes array base64 bitset cmd file ht json ll log malloc md5 rand sha1 stream string time test2 var
+all:jbl aes array base64 bitset cmd file ht json ll log malloc md5 pthread rand sha1 stream string time test2 var
 clean:
 	$(rm) tmp$(H)* /s /Q
 	$(rm) exes$(H)* /s /Q
@@ -70,6 +70,7 @@ run:
 	exes$(H)log              && pause
 	exes$(H)malloc           && pause
 	exes$(H)md5              && pause
+	exes$(H)pthread          && pause
 	exes$(H)rand             && pause
 	exes$(H)sha1             && pause
 	exes$(H)stream           && pause
@@ -122,6 +123,9 @@ malloc:
 md5:
 	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)md5.o               examples$(H)md5.c               $(EXDIR) $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)md5                   tmp$(H)$(pre)md5.o               tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
+pthread:
+	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)pthread.o           examples$(H)pthread.c           $(EXDIR) $(EXLIB)
+	$(CC) $(BITS) -o exes$(H)pthread               tmp$(H)$(pre)pthread.o           tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
 rand:
 	$(CC) $(BITS) -c -Wall -Wextra -Wconversion -o tmp$(H)$(pre)rand.o              examples$(H)rand.c              $(EXDIR) $(EXLIB)
 	$(CC) $(BITS) -o exes$(H)rand                  tmp$(H)$(pre)rand.o              tmp$(H)$(pre)jbl.a              $(EXDIR) $(EXLIB)
