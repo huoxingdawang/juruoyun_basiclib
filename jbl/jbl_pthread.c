@@ -62,8 +62,8 @@ jbl_pthreads * jbl_pthreads_new(jbl_pthreads_size_type size)
 	jbl_pthreads * this=jbl_malloc(sizeof(jbl_pthreads)+sizeof(jbl_pthread)*size);
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数
-	jbl_var_set_operators(this,&jbl_pthreads_operators);
 	jbl_pthread_lock_init(this);
+	jbl_var_set_operators(this,&jbl_pthreads_operators);
 	this->len=0;
 	this->size=size;
 	this->pre=NULL;

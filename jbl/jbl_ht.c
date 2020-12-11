@@ -70,8 +70,8 @@ jbl_ht * jbl_ht_new()
 	jbl_ht * this=jbl_malloc(sizeof(jbl_ht));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
-	jbl_var_set_operators(this,&jbl_ht_operators);
 	jbl_pthread_lock_init(this);
+	jbl_var_set_operators(this,&jbl_ht_operators);
 	this->size=this->len=this->nxt=0;
 	this->data=NULL;
 	return this;

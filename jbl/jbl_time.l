@@ -39,8 +39,8 @@ JBL_INLINE jbl_time * jbl_time_init(jbl_time *this)
 	if(!this)jbl_exception("NULL POINTER");
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
-	jbl_var_set_operators(this,&jbl_time_operators);
 	jbl_pthread_lock_init(this);
+	jbl_var_set_operators(this,&jbl_time_operators);
 	this->t=0;
 	return this;
 }

@@ -69,8 +69,8 @@ jbl_stream * jbl_stream_new(const jbl_stream_operater *op)
 	jbl_stream* this=jbl_malloc((sizeof(jbl_stream))+(sizeof(jbl_stream_extra_struct)*(op->except_data_size)));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数		
-	jbl_var_set_operators(this,&jbl_stream_operators);
 	jbl_pthread_lock_init(this);
+	jbl_var_set_operators(this,&jbl_stream_operators);
 	this->op	=op;
 	this->nxt	=NULL;
 	this->buf	=NULL;

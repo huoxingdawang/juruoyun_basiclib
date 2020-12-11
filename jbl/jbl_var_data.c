@@ -28,8 +28,8 @@ jbl_var_data * __jbl_var_data_new(const jbl_var_operators *ops)
 	jbl_var_data *this=(jbl_var_data*)(((char*)(jbl_malloc((sizeof(jbl_var_data))+(sizeof(jbl_var_data))))+(sizeof(jbl_var_data))));
 	jbl_gc_init(((jbl_var_data*)this));
 	jbl_gc_plus(((jbl_var_data*)this));//增加引用计数
-	jbl_var_set_operators(this,ops);
 	jbl_pthread_lock_init(((jbl_var_data*)this));
+	jbl_var_set_operators(this,ops);
 	return this;
 }
 JBL_INLINE jbl_var_data * jbl_Vuint_new(){return __jbl_var_data_new(&jbl_uint_operators);}

@@ -76,8 +76,8 @@ jbl_string * jbl_string_new()
 	jbl_string * this=jbl_malloc(sizeof(jbl_string));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数
-	jbl_var_set_operators(this,&jbl_string_operators);
 	jbl_pthread_lock_init(this);
+	jbl_var_set_operators(this,&jbl_string_operators);
 	this->len=0;
 	this->h=0;
 	this->size=0;

@@ -33,8 +33,8 @@ jbl_aes_128_key* jbl_aes_128_key_new()
 	jbl_aes_128_key * this=jbl_malloc(sizeof(jbl_aes_128_key));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);
-	jbl_var_set_operators(this,&jbl_aes_128_key_operators);
 	jbl_pthread_lock_init(this);
+	jbl_var_set_operators(this,&jbl_aes_128_key_operators);
 	return this;
 }
 JBL_INLINE jbl_aes_128_key *jbl_aes_128_key_copy(jbl_aes_128_key *that)

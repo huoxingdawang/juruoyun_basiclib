@@ -22,8 +22,8 @@ jbl_file * jbl_file_new()
 	jbl_file * this=jbl_malloc(sizeof(jbl_file));
 	jbl_gc_init(this);
 	jbl_gc_plus(this);//增加引用计数
-	jbl_var_set_operators(this,&jbl_file_operators);
 	jbl_pthread_lock_init(this);
+	jbl_var_set_operators(this,&jbl_file_operators);
 	this->dir					=NULL;
 	this->handle				=NULL;
 	this->type					=JBL_FILE_CLOSE;
