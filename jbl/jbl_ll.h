@@ -60,7 +60,7 @@ jbl_ll  *		jbl_ll_extend				(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll
 /*                            以下函实现链表插入操作                                     */
 /*******************************************************************************************/
 jbl_ll  *		jbl_ll_insert				(jbl_ll *this,void *var,jbl_ll_node *after);					//在after后面插入一个var
-#define			jbl_ll_add(x,y)				jbl_ll_insert(x,y,x?((jbl_ll *)jbl_refer_pull(x))->tail:NULL)	//在link list最后插入一个var
+#define			jbl_ll_add(x,y)				jbl_ll_insert(x,y,((void *)-1))                             	//在link list最后插入一个var
 /*******************************************************************************************/
 /*                            以下函实现链表合并操作                                     */
 /*******************************************************************************************/

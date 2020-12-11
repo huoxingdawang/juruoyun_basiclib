@@ -129,8 +129,7 @@ jbl_string *jbl_string_extend_to(jbl_string *this,jbl_string_size_type size,jbl_
 	}
 	else
 	{
-		jbl_string *tmp;
-		tmp=jbl_string_new();
+		jbl_string *tmp=jbl_string_new();
         jbl_pthread_lock_wrlock(tmp);
 		tmp->size=size;
 		tmp->len=thi->len;
@@ -778,26 +777,28 @@ e:;
 	return jbl_Vdouble_set(NULL,((((double)y)/((double)ji))+(double)(x))*(f?-1:1)*((double)ji2));
 }
 #endif
-// /*******************************************************************************************/
-// /*                            以下函数实现字符串的切割操作                               */
-// /*******************************************************************************************/
-// #if JBL_LL_ENABLE==1
-// jbl_string *jbl_string_delete(jbl_string *this,jbl_string_size_type start,jbl_string_size_type end)
-// {
-	// if(start>=end)return this;
-	// jbl_string *thi;this=jbl_string_extend_to(this,0,1,&thi);jbl_string_hash_clear(thi);
-	// jbl_min_update(end,thi->len);
-	// for(jbl_string_size_type j=end,i=start;j<thi->len;thi->s[i]=thi->s[j],++j,++i);
-	// thi->len-=(end-start);
-	// return this;
-// }
-// jbl_ll * jbl_string_cut_start(jbl_string *this,jbl_ll *list,char cut,jbl_string_size_type start)
-// {
-	// if(!this)return list;
-	// this=jbl_refer_pull(this);
-	// for(jbl_string *v=NULL;start<this->len;((jbl_string_get_length(v)!=0)?list=jbl_ll_add(list,v):0),v=jbl_var_free(v),++start)
-		// for(v=jbl_string_new();start<this->len&&this->s[start]!=cut;jbl_string_add_char(v,this->s[start]),++start);
-	// return (list);	
-// }
-// #endif
+/*******************************************************************************************/
+/*                            以下函数实现字符串的切割操作                               */
+/*******************************************************************************************/
+#if JBL_LL_ENABLE==1
+jbl_string *jbl_string_delete(jbl_string *this,jbl_string_size_type start,jbl_string_size_type end)
+{
+	if(start>=end)return this;
+	jbl_string *thi;this=jbl_string_extend_to(this,0,1,&thi);jbl_string_hash_clear(thi);
+	jbl_min_update(end,thi->len);
+	for(jbl_string_size_type j=end,i=start;j<thi->len;thi->s[i]=thi->s[j],++j,++i);
+	thi->len-=(end-start);
+    jbl_refer_pull_unwrlock(this);
+	return this;
+}
+jbl_ll * jbl_string_cut_start(jbl_string *this,jbl_ll *list,char cut,jbl_string_size_type start)
+{
+	if(!this)return list;
+	this=jbl_refer_pull_rdlock(this);
+	for(jbl_string *v=NULL;start<this->len;(v?list=jbl_ll_add(list,v):0),v=jbl_var_free(v),++start)
+		for(;start<this->len&&this->s[start]!=cut;v=jbl_string_add_char(v,this->s[start]),++start);
+    jbl_refer_pull_unrdlock(this);
+	return (list);	
+}
+#endif
 #endif
