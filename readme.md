@@ -123,6 +123,158 @@
 "%j"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_JSON;}
 ```
 
+### 变量组织结构
+每一个变量都应该首先包含如下三部分。
+```
+	jbl_gc_define           ;
+	jbl_var_ops_define      ;
+	jbl_pthread_lock_define ;
+```
+这三部分的顺序不可颠倒或调换。
+
+这三部分主要实现了统一的gc、var、lock封装，是保证代码正确运行的不可分割的部分。
+
+jbl及其衍生库的变量支持引用操作，引用的使用在`jbl_gc`一节中介绍，但是在这里应当强调，由于引用的存在，函数的传入的指针可能只是引用结构的指针，在编写和测试的过程中必须对这种情况加以处理，一般的处理方式是在各组件扩容的同时进行解引用操作。
+
+jbl封装了统一的var结构，包括一些列必要的函数，用于容器类类型操作，其具体定义在`jbl_var`一节中展示。其使用参考`jbl_ll`一节。
+
+jbl封装了统一的锁结构，在操作时自动加锁。虽然上文已经提到了，但在这里仍需再次强调：**多线程功能已基本开发完成，但是在多线程下，加锁与浅拷贝冲突，在代码合理的情况下，有100%的几率造成死锁，固不建议开启多线程。如果一定要开启，请尽量避免在多个线程中对全局变量进行扩容、复制、引用操作。**
+
+### jbl_gc
+
+#### 简介
+
+jbl_gc实现了浅拷贝，引用的操作。并未后期的自动垃圾回收预留了接口。
+
+#### 函数接口
+
+##### jbl_refer
+
+输入：`void *ptr`
+
+返回：`void *`
+
+作用：引用ptr所指向的结构。该函数会返回一个指针，其指向一个如下定义的结构体。
+```
+typedef struct
+{
+	jbl_gc_define           ;
+	jbl_var_ops_define      ;
+	jbl_pthread_lock_define ;
+	void * ptr;
+}jbl_reference;
+```
+特别的，该结构体`gc`中的`ref`标志位会被置位，以此表示这是一个引用。`ptr`指针指向引用的对象。我们所说的脱引用就是递归访问每一个ptr，直到`gc`中的`ref`标志位未置位时认为解引用完成。
+
+**特别的该函数必须传入一个二级指针，而且执行完毕后ptr也会变成引用类型**
+
+##### jbl_derefer
+
+输入：`void *ptr`
+
+返回：`void *`
+
+作用：取消引用一个变量
+
+##### jbl_refer_pull
+
+输入：`void *ptr`
+
+返回：`void *`
+
+作用：解引用
+
+##### jbl_refer_pull_keep_father
+
+输入：
+- `void *ptr`
+
+- `jbl_reference** ref`
+
+返回：`void *`
+
+作用：解引用,同时把引用的祖先放到ref中。
+
+##### jbl_gc_init
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：0，无实际意义。
+
+作用：初始化gc结构。
+
+##### jbl_gc_plus
+
+输入：`void *this`
+
+返回：`void*`
+
+作用：引用计数加一。
+
+##### jbl_gc_minus
+
+输入：`void *this`
+
+返回：`void*`
+
+作用：引用计数减一。
+
+##### jbl_gc_refcnt
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：当前结构被引用了几次。
+
+作用：当前结构被引用了几次。
+
+##### jbl_gc_set_ref
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：无实际意义。
+
+作用：设置引用标记。
+
+##### jbl_gc_reset_ref
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：无实际意义。
+
+作用：清除引用标记。
+
+##### jbl_gc_is_ref
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：当前结构是否为引用结构。
+
+作用：判断结构是否为引用结构。
+
+##### jbl_gc_set_user1
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：无实际意义。
+
+作用：设置user1标记。该标记在gc中未定义用法。
+
+##### jbl_gc_reset_user1
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：无实际意义。
+
+作用：清除user1标记。
+
+##### jbl_gc_is_user1
+
+输入：这是一个宏定义，应当直接传入指向结构的指针。
+
+返回：当前结构是否有user1标记。
+
+作用：判断结构是否有user1标记。
+
 ### jbl_string
 
 #### 简介
@@ -148,7 +300,7 @@ jbl_string实现了字符串的操作
 
 作用：停止string 
 
-#### jbl_string_new
+##### jbl_string_new
 
 输入：无
 
@@ -162,13 +314,13 @@ jbl_string实现了字符串的操作
 jbl_string *s1=jbl_string_new();
 ```
 
-#### jbl_string_free
+##### jbl_string_free
 
 输入：`jbl_string* this`
 
 返回：`jbl_string*`
 
-作用：释放this指向字符串，如果成功释放，则返回NULL。
+作用：释放this指向的字符串，如果成功释放，则返回NULL。
 
 示例：
 
@@ -177,7 +329,7 @@ jbl_string *s1=jbl_string_new();  //新建一个字符串
 s1=jbl_string_free(s1);           //释放一个字符串
 ```
 
-#### jbl_string_copy
+##### jbl_string_copy
 
 输入：`jbl_string* this`
 
@@ -193,4 +345,85 @@ jbl_string *s2=s2=jbl_string_copy(s1);//复制一个字符串
 s1=jbl_string_free(s1);               //释放一个字符串
 s2=jbl_string_free(s2);               //释放一个字符串
 ```
-									//清空一个字符串
+
+### jbl_ll
+
+#### 简介
+
+jbl_ll实现了链表的操作
+
+#### 函数接口
+
+##### jbl_ll_new
+
+输入：无
+
+输出：`jbl_ll*`
+
+返回：新建一个链表，并返回一个指向该链表的指针。
+
+示例：
+
+```
+jbl_ll * l1=jbl_ll_new();
+```
+
+##### jbl_ll_free
+
+输入：`jbl_ll* this`
+
+返回：`jbl_ll*`
+
+作用：释放this指向的链表，如果成功释放，则返回NULL。
+
+示例：
+
+```
+jbl_ll * l1=jbl_ll_new();  //新建一个链表
+l1=jbl_ll_free(l1);        //释放一个链表
+```
+
+##### jbl_ll_copy
+
+输入：`jbl_ll* this`
+
+返回：`jbl_ll*`
+
+作用：复制this指向的链表并返回。
+
+示例：
+
+```
+jbl_ll * l1=jbl_ll_new();   //新建一个链表
+jbl_ll * l2=jbl_ll_copy(l1);//复制一个链表
+l1=jbl_ll_free(l1);         //释放一个链表
+l2=jbl_ll_free(l2);         //释放一个链表
+```
+
+##### jbl_ll_extend
+
+输入：
+
+- `jbl_ll* this`
+
+- `jbl_ll_node **a`
+
+- `jbl_ll_node **b`
+
+- `jbl_ll **pthi`
+
+返回：`jbl_ll*`
+
+作用：对this所指向的链表进行扩容并返回。扩容的同时可以对节点的指针a,b进行替换，以确保这两个指针指向新的链表而非旧的链表。同时可以把解引用后的链表保存在pthi中以减少冗余的解引用操作。特别的a,b,pthi都可以为NULL。特别的this为NULL时将新建一个链表并返回。
+
+示例：
+
+```
+jbl_ll * jbl_ll_insert(jbl_ll *this,void *var,jbl_ll_node *after)
+{
+    jbl_ll *thi;this=jbl_ll_extend(this,&after,NULL,&thi);//完成对this的扩容，并同步移动after指针，并将解引用后的链表保存在pthi中。
+    //省略若干细节
+    return this;
+}
+```
+
