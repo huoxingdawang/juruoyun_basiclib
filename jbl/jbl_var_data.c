@@ -305,7 +305,7 @@ jbl_string* jbl_Vntf_json_encode(jbl_var_data* this,jbl_string *out,jbl_uint8 fo
 #if JBL_STREAM_ENABLE==1
 jbl_var_data* jbl_Vntf_view_put(jbl_var_data* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
 {
-	switch(((jbl_var_data*)jbl_refer_pull_unrdlock(this))->u)
+	switch(((jbl_var_data*)jbl_refer_pull_rdlock(this))->u)
 	{
 		case 0: jbl_stream_view_put_format(this,out,format,tabs,UC"null",line,varname,func,file)	;break;
 		case 2: jbl_stream_view_put_format(this,out,format,tabs,UC"true",line,varname,func,file)	;break;

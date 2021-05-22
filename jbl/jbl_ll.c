@@ -26,23 +26,23 @@
 /*******************************************************************************************/
 /*                            以下函实现链节点基本操作                                   */
 /*******************************************************************************************/
-jbl_ll_node * jbl_ll_node_init(jbl_ll_node *node)
+static jbl_ll_node * node_init(jbl_ll_node *node)
 {
 	node->pre=NULL;
 	node->nxt=NULL;
 	node->v=NULL;
 	return node;
 }
-jbl_ll_node * jbl_ll_node_new()
+static jbl_ll_node * node_new()
 {
-	return jbl_ll_node_init(jbl_malloc(sizeof(jbl_ll_node)));
+	return node_init(jbl_malloc(sizeof(jbl_ll_node)));
 }
-void jbl_ll_node_free(jbl_ll_node *node)
+static void node_free(jbl_ll_node *node)
 {
 	node->v=jbl_var_free(node->v);
 	jbl_free(node);
 }
-void jbl_ll_node_delink(jbl_ll *this,jbl_ll_node *node)
+static void node_delink(jbl_ll *this,jbl_ll_node *node)
 {
 	if(node->nxt==NULL)	this->tail=node->pre;
 	else				node->nxt->pre=node->pre;
@@ -51,7 +51,7 @@ void jbl_ll_node_delink(jbl_ll *this,jbl_ll_node *node)
 	--this->len;
 	node->nxt=NULL,node->pre=NULL;
 }
-void jbl_ll_node_insert(jbl_ll *this,jbl_ll_node *node,jbl_ll_node *after)
+static void node_insert(jbl_ll *this,jbl_ll_node *node,jbl_ll_node *after)
 {
     if(after==((void *)-1))after=this->tail;
 	if(after==NULL)
@@ -72,10 +72,10 @@ void jbl_ll_node_insert(jbl_ll *this,jbl_ll_node *node,jbl_ll_node *after)
 	}	
 	++this->len;
 }
-void jbl_ll_node_delete(jbl_ll *this,jbl_ll_node *node)
+static void node_delete(jbl_ll *this,jbl_ll_node *node)
 {
-	jbl_ll_node_delink(this,node);
-	jbl_ll_node_free(node);
+	node_delink(this,node);
+	node_free(node);
 }
 
 
@@ -107,7 +107,7 @@ jbl_ll* jbl_ll_free(jbl_ll *this)
 			jbl_ll_free((jbl_ll*)(((jbl_reference*)this)->ptr));
 		else
 			jbl_ll_foreach_del(this,i,j)
-				jbl_ll_node_delete(this,i);	
+				node_delete(this,i);	
         jbl_pthread_lock_free(this);
 		jbl_free(this);
 	}
@@ -132,11 +132,11 @@ jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi
         jbl_pthread_lock_wrlock(tmp);
         jbl_ll_foreach(thi,i)
         {
-            jbl_ll_node *node=jbl_ll_node_new();
+            jbl_ll_node *node=node_new();
             node->v=jbl_var_copy(i->v);
             if(a&&(*a==i))*a=node;
             if(b&&(*b==i))*b=node;
-            jbl_ll_node_insert(tmp,node,tmp->tail);		
+            node_insert(tmp,node,tmp->tail);		
         }
         jbl_pthread_lock_unwrlock(thi);
         jbl_ll_free(thi);
@@ -154,9 +154,9 @@ jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi
 jbl_ll * jbl_ll_insert(jbl_ll *this,void *var,jbl_ll_node *after)
 {
 	jbl_ll *thi;this=jbl_ll_extend(this,&after,NULL,&thi);
-	jbl_ll_node *node=jbl_ll_node_new();
+	jbl_ll_node *node=node_new();
 	node->v=(var?jbl_var_copy(var):jbl_Vnull_new());
-	jbl_ll_node_insert(thi,node,after);
+	node_insert(thi,node,after);
     jbl_refer_pull_unwrlock(this);
 	return this;
 }
@@ -194,7 +194,7 @@ jbl_ll * jbl_ll_delete(jbl_ll *this,jbl_ll_node *node)
 	jbl_ll *thi;this=jbl_ll_extend(this,&node,NULL,&thi);
     if(node==NULL)node=thi->head;
     if(node==((void *)-1))node=thi->tail;
-	jbl_ll_node_delete(thi,node);
+	node_delete(thi,node);
     jbl_refer_pull_unwrlock(this);
 	return this;
 }

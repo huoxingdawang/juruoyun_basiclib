@@ -751,7 +751,7 @@ jbl_string *jbl_string_read(jbl_string *this,const unsigned char *c)
 jbl_var_data * jbl_string_get_number_start(jbl_string *this,jbl_string_size_type *start)
 {
 	if(!this||!start)jbl_exception("NULL POINTER");	
-	jbl_string *thi=jbl_refer_pull_unrdlock(this);
+	jbl_string *thi=jbl_refer_pull_rdlock(this);
 	jbl_string_size_type i=*start;
 	unsigned char c,f;jbl_uint64 x=0;
 	jbl_uint64 ji=10,y=0;

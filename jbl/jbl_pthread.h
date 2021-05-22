@@ -74,6 +74,7 @@ typedef void jbl_pthreads;
 #define			jbl_pthreads_copy(this)         (NULL)
 #define		    jbl_pthreads_stop(this)         (NULL)
 #define		    jbl_pthreads_wait(this)         (NULL)
+#define		    jbl_pthreads_view(this)         (NULL)
 jbl_pthreads *  __jbl_pthreads_creat_thread     (jbl_pthreads *this,void *(*func)(void *),jbl_pthreads_size_type n,const char * name,void * data);
 #define         jbl_pthreads_creat_thread(this,func,n,data)     __jbl_pthreads_creat_thread(this,(void*(*)(void*))(func),n,#func,data)
 

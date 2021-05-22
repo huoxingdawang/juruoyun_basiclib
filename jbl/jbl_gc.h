@@ -68,6 +68,5 @@ void *			jbl_refer_pull_keep_father_rdlock	(void *ptr,jbl_reference** ref);
 #define			jbl_refer_pull_keep_father_rdlock(ptr,ref)	jbl_refer_pull_keep_father(ptr,ref)	
 #endif
 
-
 #endif
 #endif
