@@ -122,3 +122,75 @@
 "%v"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_VAR;}
 "%j"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_JSON;}
 ```
+
+### jbl_string
+
+#### 简介
+
+jbl_string实现了字符串的操作
+
+#### 函数接口
+
+##### jbl_string_start
+
+输入：无
+
+返回：无
+
+作用：启动string 
+
+
+##### jbl_string_stop
+
+输入：无
+
+返回：无
+
+作用：停止string 
+
+#### jbl_string_new
+
+输入：无
+
+输出：`jbl_string*`
+
+返回：新建一个字符串，并返回一个指向该字符串的指针。
+
+示例：
+
+```
+jbl_string *s1=jbl_string_new();
+```
+
+#### jbl_string_free
+
+输入：`jbl_string* this`
+
+返回：`jbl_string*`
+
+作用：释放this指向字符串，如果成功释放，则返回NULL。
+
+示例：
+
+```
+jbl_string *s1=jbl_string_new();  //新建一个字符串
+s1=jbl_string_free(s1);           //释放一个字符串
+```
+
+#### jbl_string_copy
+
+输入：`jbl_string* this`
+
+返回：`jbl_string*`
+
+作用：复制this指向的字符串并返回。
+
+示例：
+
+```
+jbl_string *s1=jbl_string_new();      //新建一个字符串
+jbl_string *s2=s2=jbl_string_copy(s1);//复制一个字符串
+s1=jbl_string_free(s1);               //释放一个字符串
+s2=jbl_string_free(s2);               //释放一个字符串
+```
+									//清空一个字符串
