@@ -11,7 +11,7 @@ ifeq ($(SYSTEM),linux)
 	JBL_SRC:=$(shell find jbl/ -name "*.[cl]")
 	JBL_EXLIB = -lpthread -maes
 else ifeq ($(SYSTEM),macos)
-	JBL_SRC:=$(shell find jbl/ -name "*.[cl]")
+	JBL_SRC:=$(shell find jbl -name "*.[cl]")
 	JBL_EXLIB = -maes
 else ifeq ($(SYSTEM),windows)
 	JBL_SRC:=$(shell dir /b jbl\*.c jbl\*.l)
@@ -45,22 +45,22 @@ $(TMPDIR)$(PRE)%.d:jbl/%.c
 ifeq ($(SYSTEM),$(filter $(SYSTEM),linux macos))
 	@echo $(TMPDIR)$(PRE)$(shell $(CC) -MM $< $(EXDIR) $(EXLIB))>$@
 	@echo "\t@$(CC) $(BITS) -Wall -Wextra -Wconversion -c $< -o $(@:%.d=%.o) $(EXDIR) $(EXLIB)">>$@
-	@echo "\t@echo 'compling   $@'">>$@
+	@echo "\t@echo 'Compling   $@'">>$@
 else ifeq ($(SYSTEM),windows)
 	@echo $(TMPDIR)$(PRE)$(subst \,,$(shell $(CC) -MM $< $(EXDIR) $(EXLIB))>$@)
 	@echo 	@$(CC) $(BITS) -Wall -Wextra -Wconversion -c $< -o $(@:%.d=%.o) $(EXDIR) $(EXLIB)>>$@
-	@echo 	@echo compling   $@>>$@
+	@echo 	@echo Compling   $@>>$@
 endif
 $(TMPDIR)$(PRE)%.d:$(TMPDIR)%.c
 	@echo Generating $@
 ifeq ($(SYSTEM),$(filter $(SYSTEM),linux macos))
 	@echo $(TMPDIR)$(PRE)$(shell $(CC) -MM $< $(EXDIR) $(EXLIB))>$@
 	@echo "\t@$(CC) $(BITS) -Wall -Wextra -Wconversion -c $< -o $(@:%.d=%.o) $(EXDIR) $(EXLIB)">>$@
-	@echo "\t@echo 'compling   $@'">>$@
+	@echo "\t@echo 'Compling   $@'">>$@
 else ifeq ($(SYSTEM),windows)
 	@echo $(TMPDIR)$(PRE)$(subst \,,$(shell $(CC) -MM $< $(EXDIR) $(EXLIB))>$@)
 	@echo 	@$(CC) $(BITS) -Wall -Wextra -Wconversion -c $< -o $(@:%.d=%.o) $(EXDIR) $(EXLIB)>>$@
-	@echo 	@echo compling   $@>>$@
+	@echo 	@echo Compling   $@>>$@
 endif
 
 $(TMPDIR)$(PRE)jbl.a:$(JBL_SRC:jbl/%.c=$(TMPDIR)$(PRE)%.o) $(JBL_SRC:jbl/%.l=$(TMPDIR)$(PRE)%.o)

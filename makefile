@@ -13,21 +13,24 @@ BITS = -O2 -m64
 EXDIR = -I jbl/
 EXLIB = $(JBL_EXLIB)
 TMPDIR = tmp/
-OUTDIR = exes/
 ifeq ($(shell uname),Linux)
 	SYSTEM = linux
 	PRE = linux_
+	OUTDIR = exes/
 else ifeq ($(shell uname),Darwin)
 	SYSTEM = macos
 	PRE = macos_
+	OUTDIR = exes/
 else	
 	SYSTEM = windows
 	PRE = win_
+	OUTDIR = exes\\
 endif
-all:tmp/win_jbl.a
+all:tmp/$(PRE)jbl.a ___
 .SECONDARY:
 include jbl/makefile
-
+include examples/makefile
+___:$(EXAMPLES_SRC:examples/%.c=%)
 clean:
 ifeq ($(SYSTEM),$(filter $(SYSTEM),linux macos))
 	find $(TMPDIR) -name "*.*"  | xargs rm -f

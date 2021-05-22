@@ -98,7 +98,8 @@ jbl_string* jbl_string_free(jbl_string *this)
         jbl_pthread_lock_free(this);
 		jbl_free(this);
 	}
-    else{jbl_pthread_lock_unwrlock(this);}
+    else
+    {jbl_pthread_lock_unwrlock(this);}
 	return NULL;
 }
 JBL_INLINE jbl_string *jbl_string_copy(jbl_string *that)
@@ -308,10 +309,10 @@ JBL_INLINE jbl_string * jbl_string_add_hex_8bits(jbl_string *this,jbl_uint8 in)
 JBL_INLINE jbl_string* jbl_string_set_tail(jbl_string *this)
 {
 	if(!this)return NULL;
-	jbl_string* thi=jbl_refer_pull_wrlock(this);
+	jbl_string* thi=jbl_refer_pull_rdlock(this);
 	if(thi->s&&thi->size&&thi->len<thi->size)
 		thi->s[thi->len]=0;
-    jbl_refer_pull_unwrlock(this);
+    jbl_refer_pull_unrdlock(this);
 	return this;
 }
 /*******************************************************************************************/

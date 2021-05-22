@@ -67,11 +67,13 @@ int main()
             cbcde   =jbl_stream_free(cbcde);
             
         }
+        //PHP CBC加解密
         {
             jbl_string *sr=jbl_execute_cmd_chars(UC "php testfiles/aes128cbc.php  tmp/bigfile.tmp",NULL);
             jbl_stream_push_string(jbl_stream_stdout,sr);
             sr=jbl_string_free(sr);	
         }
+        //比较加密结果
         {
             jbl_file   *f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_cbc_encode.out",JBL_FILE_READ);
             jbl_file   *f2=jbl_file_open_chars(NULL,UC"tmp/aes_128_cbc_encode.ans",JBL_FILE_READ);
@@ -84,6 +86,7 @@ int main()
             f1      =jbl_file_free  (f1);
             f2      =jbl_file_free  (f2);
         }
+        //比较解密结果
         {
             jbl_file   *f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_cbc_decode.out",JBL_FILE_READ);
             jbl_file   *f2=jbl_file_open_chars(NULL,UC"tmp/aes_128_cbc_decode.ans",JBL_FILE_READ);
@@ -95,7 +98,7 @@ int main()
             s2      =jbl_string_free(s2);
             f1      =jbl_file_free  (f1);
             f2      =jbl_file_free  (f2);
-        }
+        } 
         
     }
     {
@@ -159,11 +162,13 @@ int main()
             cbcde   =jbl_stream_free(cbcde);
             
         }
+        //PHP ECB加解密
         {
             jbl_string *sr=jbl_execute_cmd_chars(UC "php testfiles/aes128ecb.php  tmp/bigfile.tmp",NULL);
             jbl_stream_push_string(jbl_stream_stdout,sr);
             sr=jbl_string_free(sr);	
         }
+        //比较加密结果
         {
             jbl_file   *f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_ecb_encode.out",JBL_FILE_READ);
             jbl_file   *f2=jbl_file_open_chars(NULL,UC"tmp/aes_128_ecb_encode.ans",JBL_FILE_READ);
@@ -176,6 +181,7 @@ int main()
             f1      =jbl_file_free  (f1);
             f2      =jbl_file_free  (f2);
         }
+        //比较解密结果
         {
             jbl_file   *f1=jbl_file_open_chars(NULL,UC"tmp/aes_128_ecb_decode.out",JBL_FILE_READ);
             jbl_file   *f2=jbl_file_open_chars(NULL,UC"tmp/aes_128_ecb_decode.ans",JBL_FILE_READ);
@@ -188,7 +194,6 @@ int main()
             f1      =jbl_file_free  (f1);
             f2      =jbl_file_free  (f2);
         }
-        
     }
 
 
