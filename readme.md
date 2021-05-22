@@ -144,7 +144,7 @@ jbl封装了统一的锁结构，在操作时自动加锁。虽然上文已经�
 
 #### 简介
 
-jbl_gc实现了浅拷贝，引用的操作。并未后期的自动垃圾回收预留了接口。
+jbl_gc实现了浅拷贝，引用的操作。并为后期的自动垃圾回收预留了接口。
 
 #### 函数接口
 
@@ -426,4 +426,124 @@ jbl_ll * jbl_ll_insert(jbl_ll *this,void *var,jbl_ll_node *after)
     return this;
 }
 ```
+
+##### jbl_ll_insert
+
+输入：
+
+- `jbl_ll* this`
+
+- `void *var`
+
+- `jbl_ll_node *after`
+
+返回：`jbl_ll*`
+
+作用：在this所指向的链表的after的后面插入var所指向的结构，特别的after是NULL时代表在头部插入,after是-1时表示在末尾插入。
+
+示例：
+
+```
+jbl_ll * l1=jbl_ll_new();
+jbl_string * v1=jbl_string_add_chars(NULL,UC"juruoyun");
+l1=jbl_ll_insert(l1,v1,NULL);//链表插入
+l1=jbl_ll_free(l1);
+v1=jbl_var_free(v1);
+```
+
+##### jbl_ll_add
+
+输入：
+
+- `jbl_ll* this`
+
+- `void *var`
+
+返回：`jbl_ll*`
+
+作用：在this所指向的链表的最后插入var所指向的结构。
+
+示例：
+
+```
+jbl_ll * l1=jbl_ll_new();
+jbl_string * v1=jbl_string_add_chars(NULL,UC"juruoyun");
+l1=jbl_ll_insert(l1,v1,NULL);//链表插入
+l1=jbl_ll_add(l1,v1);
+v1=jbl_var_free(v1);
+```
+
+##### jbl_ll_merge
+
+输入：
+
+- `jbl_ll* this`
+
+- `jbl_ll *that`
+
+返回：`jbl_ll*`
+
+作用：把that指向的链表插到this所指向的链表的后面。
+
+示例：
+
+```
+jbl_ll * l1=jbl_ll_new();
+jbl_ll * l2=jbl_ll_copy(l1);
+l1=jbl_ll_merge(l1,l2);
+l1=jbl_ll_free(l1);
+l2=jbl_ll_free(l2);
+```
+
+##### jbl_ll_merge_ht
+
+输入：
+
+- `jbl_ll* this`
+
+- `jbl_ll *that`
+
+返回：`jbl_ll*`
+
+作用：把that指向的哈希表插到this所指向的链表的后面。
+
+示例：
+
+```
+jbl_ht *ht1=jbl_ht_new();
+jbl_ll * l1=jbl_ll_merge_ht(NULL,ht1);
+jbl_ll_view(l1);
+l1=jbl_ll_free(l1);
+ht1=jbl_ht_free(ht1);
+```
+
+##### jbl_ll_delete
+
+输入：
+
+- `jbl_ll* this`
+
+- `jbl_ll_node *node`
+
+返回：`jbl_ll*`
+
+作用：删除node所指向的节点。node为NULL时删除头结点，node为-1时删除尾节点。
+
+##### jbl_ll_delete_head
+
+输入：`jbl_ll* this`
+
+返回：`jbl_ll*`
+
+作用：删除this指向的链表的头结点
+
+##### jbl_ll_delete_tail
+
+输入：`jbl_ll* this`
+
+返回：`jbl_ll*`
+
+作用：删除this指向的链表的尾结点
+
+
 
