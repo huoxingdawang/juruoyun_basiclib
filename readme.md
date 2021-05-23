@@ -427,6 +427,34 @@ jbl_ll * jbl_ll_insert(jbl_ll *this,void *var,jbl_ll_node *after)
 }
 ```
 
+##### jbl_ll_foreach
+
+输入：
+
+- `x`
+
+- `y`
+
+返回：无意义
+
+作用：这是一个宏定义，是对于for封装，以y作为枚举变量遍历x指向的链表。y会被自动定义为`jbl_ll_node`类型的指针。应当在其后按照for循环的格式继续编写代码。对于foreach，比较正常的做法是定义一个函数进行操作，但是由于C不支持匿名函数，为了减小函数命名的负担，优化代码逻辑，所以直接宏定义封装for。
+**特别注意，在该循环中对x指向的链表进行删除有可能导致RE，如果要删除请使用jbl_ll_foreach_del**
+
+##### jbl_ll_foreach_del
+
+输入：
+
+- `x`
+
+- `y`
+
+- `z`
+
+返回：无意义
+
+作用：这是一个宏定义，是对于for封装，以y作为枚举变量遍历x指向的链表。y会被自动定义为`jbl_ll_node`类型的指针。应当在其后按照for循环的格式继续编写代码。
+需要注意的是，z同样会被声明为`jbl_ll_node`类型的指针用于支持删除操作，但用户无需理会。
+
 ##### jbl_ll_insert
 
 输入：
@@ -544,6 +572,148 @@ ht1=jbl_ht_free(ht1);
 返回：`jbl_ll*`
 
 作用：删除this指向的链表的尾结点
+
+##### jbl_ll_get_length
+
+输入：`jbl_ll* this`
+
+返回：`jbl_ll_size_type`
+
+作用：删除this指向的链表的长度
+
+##### jbl_llv
+
+输入：`jbl_ll_node *node`
+
+返回：`void *`
+
+作用：返回node所指向的节点的载荷
+
+##### jbl_ll_swap_node
+
+输入：
+- `jbl_ll *this`
+- `jbl_ll_node *a`
+- `jbl_ll_node *b`
+
+返回：`jbl_ll *`
+
+作用：交换AB指向的节点
+
+##### jbl_ll_space_ship
+
+输入：
+- `jbl_ll *this`
+- `jbl_ll *that`
+
+返回：`char`
+
+作用：比较this和that。当this小于that时返回-1,this等于that时返回0，this大于that时返回1。比较时将首先比较长度，长度不同时，谁长谁大；长度相同时，将依次比较各个节点。
+
+##### jbl_ll_if_big
+
+输入：
+- `jbl_ll *this`
+- `jbl_ll *that`
+
+返回：`char`
+
+作用：判断this是否大于that，大于时返回1。
+
+##### jbl_ll_if_equal
+
+输入：
+- `jbl_ll *this`
+- `jbl_ll *that`
+
+返回：`char`
+
+作用：判断this是否等于that，等于时返回1。
+
+##### jbl_ll_if_small
+
+输入：
+- `jbl_ll *this`
+- `jbl_ll *that`
+
+返回：`char`
+
+作用：判断this是否小于that，小于时返回1。
+
+##### jbl_ll_if_equal_small
+
+输入：
+- `jbl_ll *this`
+- `jbl_ll *that`
+
+返回：`char`
+
+作用：判断this是否小于等于that，小于等于时返回1。
+
+##### jbl_ll_if_equal_big
+
+输入：
+- `jbl_ll *this`
+- `jbl_ll *that`
+
+返回：`char`
+
+作用：判断this是否大于等于that，大于等于时返回1。
+
+##### jbl_ll_json_encode
+
+输入：
+- `jbl_ll* this`
+- `jbl_string *out`
+- `jbl_uint8 format`
+- `jbl_uint32 tabs`
+
+返回：`jbl_string*`
+
+作用：对this指向的ll进行JSON编码，并追加在字符串out后面。format中保存了一些关于格式化的信息，例如换行,tab等，一般而言，只需要传入1(格式化)和0(不格式化)即可。tabs记录了当前应该输出多少个tab，一般传入1。
+
+##### jbl_ll_json_put
+
+输入：
+- `jbl_ll* this`
+- `jbl_stream *out`
+- `jbl_uint8 format`
+- `jbl_uint32 tabs`
+
+返回：`jbl_string*`
+
+作用：对this指向的ll进行JSON编码，并推入流out。format中保存了一些关于格式化的信息，例如换行,tab等，一般而言，只需要传入1(格式化)和0(不格式化)即可。tabs记录了当前应该输出多少个tab，一般传入1。
+
+##### jbl_ll_view_put
+
+输入：
+- `jbl_ll* this`
+- `jbl_stream *out`
+- `jbl_uint8 format`
+- `jbl_uint32 tabs`
+- `jbl_uint32 line`
+- `unsigned char * varname`
+- `unsigned char * func`
+- `unsigned char * file`
+
+返回：`jbl_ll*`
+
+作用：浏览this指向的链表并返回。**一般而言应当直接调用jbl_ll_view而非本函数**
+
+
+##### jbl_ll_view
+
+输入：`jbl_ll* this`
+
+返回：`jbl_ll*`
+
+作用：浏览this指向的链表并返回。
+
+
+
+
+
+
 
 
 
