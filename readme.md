@@ -953,7 +953,7 @@ void jbl_ll_json_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 ta
 ```
 
 当然由于链表需要对下级进行递归操作，编写起来比较复杂。下面给出字符串编码的例子。
-```
+```C
 jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
 {
 	jbl_string *thi=jbl_refer_pull_rdlock(this);
@@ -997,3 +997,29 @@ jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 fo
 
 如果结构体不支持显示操作，或者没有在操作器集合中显式声明显示操作器，那么在显示的时候将输出"unprintable var"。下面给出一个例子。
 
+
+```C
+jbl_ll*jbl_ll_view_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs,jbl_uint32 line,unsigned char * varname,unsigned char * func,unsigned char * file)
+{
+    jbl_ll *thi=jbl_refer_pull_rdlock(this);
+    if(jbl_stream_view_put_format(thi,out,format,tabs,UC"jbl_ll",line,varname,func,file))
+    {
+        jbl_stream_push_chars(out,UC"\tlen:");jbl_stream_push_uint(out,thi->len);
+        jbl_stream_push_char(out,'\n');
+        jbl_ll_size_type j=0;
+        ++tabs;
+        jbl_ll_foreach(thi,i)
+        {
+            for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
+            jbl_stream_push_uint(out,j++);
+            jbl_stream_push_char(out,':');
+            jbl_var_view_put(i->v,out,0,tabs,0,NULL,NULL,NULL);
+        }
+    }
+    else
+        jbl_stream_push_char(out,'\n');
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+    return this;
+}
+```
