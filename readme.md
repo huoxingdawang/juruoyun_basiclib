@@ -110,7 +110,7 @@
 对于大括号，应当另起一行书写，除非以下几种情况。
 
 1. 多个if else嵌套或者switch case语句，每一个分支内代码长度较短，功能相近的，可以不写大括号直接在一行内完成。例如下面的代码，被认为是符合格式的。
-```
+```C
 [^]			{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_UNDEFINED;}	
 [\x00]		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_END;}	
 "%d"		{if(addr)*addr=YYCURSOR;return JBL_SCANNER_KEY_INT;}	
@@ -125,7 +125,7 @@
 
 ### 变量组织结构
 每一个变量都应该首先包含如下三部分。
-```
+```C
 	jbl_gc_define           ;
 	jbl_var_ops_define      ;
 	jbl_pthread_lock_define ;
@@ -155,7 +155,7 @@ jbl_gc实现了浅拷贝，引用的操作。并为后期的自动垃圾回收�
 返回：`void *`
 
 作用：引用ptr所指向的结构。该函数会返回一个指针，其指向一个如下定义的结构体。
-```
+```C
 typedef struct
 {
 	jbl_gc_define           ;
@@ -310,7 +310,7 @@ jbl_string实现了字符串的操作
 
 示例：
 
-```
+```C
 jbl_string *s1=jbl_string_new();
 ```
 
@@ -324,7 +324,7 @@ jbl_string *s1=jbl_string_new();
 
 示例：
 
-```
+```C
 jbl_string *s1=jbl_string_new();  //新建一个字符串
 s1=jbl_string_free(s1);           //释放一个字符串
 ```
@@ -339,7 +339,7 @@ s1=jbl_string_free(s1);           //释放一个字符串
 
 示例：
 
-```
+```C
 jbl_string *s1=jbl_string_new();      //新建一个字符串
 jbl_string *s2=s2=jbl_string_copy(s1);//复制一个字符串
 s1=jbl_string_free(s1);               //释放一个字符串
@@ -364,7 +364,7 @@ jbl_ll实现了链表的操作
 
 示例：
 
-```
+```C
 jbl_ll * l1=jbl_ll_new();
 ```
 
@@ -378,7 +378,7 @@ jbl_ll * l1=jbl_ll_new();
 
 示例：
 
-```
+```C
 jbl_ll * l1=jbl_ll_new();  //新建一个链表
 l1=jbl_ll_free(l1);        //释放一个链表
 ```
@@ -393,7 +393,7 @@ l1=jbl_ll_free(l1);        //释放一个链表
 
 示例：
 
-```
+```C
 jbl_ll * l1=jbl_ll_new();   //新建一个链表
 jbl_ll * l2=jbl_ll_copy(l1);//复制一个链表
 l1=jbl_ll_free(l1);         //释放一个链表
@@ -418,7 +418,7 @@ l2=jbl_ll_free(l2);         //释放一个链表
 
 示例：
 
-```
+```C
 jbl_ll * jbl_ll_insert(jbl_ll *this,void *var,jbl_ll_node *after)
 {
     jbl_ll *thi;this=jbl_ll_extend(this,&after,NULL,&thi);//完成对this的扩容，并同步移动after指针，并将解引用后的链表保存在pthi中。
@@ -471,7 +471,7 @@ jbl_ll * jbl_ll_insert(jbl_ll *this,void *var,jbl_ll_node *after)
 
 示例：
 
-```
+```C
 jbl_ll * l1=jbl_ll_new();
 jbl_string * v1=jbl_string_add_chars(NULL,UC"juruoyun");
 l1=jbl_ll_insert(l1,v1,NULL);//链表插入
@@ -493,7 +493,7 @@ v1=jbl_var_free(v1);
 
 示例：
 
-```
+```C
 jbl_ll * l1=jbl_ll_new();
 jbl_string * v1=jbl_string_add_chars(NULL,UC"juruoyun");
 l1=jbl_ll_insert(l1,v1,NULL);//链表插入
@@ -515,7 +515,7 @@ v1=jbl_var_free(v1);
 
 示例：
 
-```
+```C
 jbl_ll * l1=jbl_ll_new();
 jbl_ll * l2=jbl_ll_copy(l1);
 l1=jbl_ll_merge(l1,l2);
@@ -537,7 +537,7 @@ l2=jbl_ll_free(l2);
 
 示例：
 
-```
+```C
 jbl_ht *ht1=jbl_ht_new();
 jbl_ll * l1=jbl_ll_merge_ht(NULL,ht1);
 jbl_ll_view(l1);
@@ -726,7 +726,7 @@ ht1=jbl_ht_free(ht1);
 #### 结构头的定义
 为了试您编写的结构能够与库中其他部分兼容，您编写的结构的应该具备特定格式的结构头。结构头包括三部分，这一点在《变量组织结构》一节已经提到。下面是一个例子。
 
-```
+```C
 typedef struct __jbl_ll
 {
     jbl_gc               gc;            //gc结构
@@ -740,7 +740,7 @@ typedef struct __jbl_ll
 
 为了使得您的结构能够被容器类结构正常操作，应当使用`jbl_var_operators_new`显式制定各个操作器。
 下面是一个例子;
-```
+```C
 jbl_var_operators_new(jbl_ll_operators,jbl_ll_free,jbl_ll_copy,jbl_ll_space_ship,jbl_ll_json_encode,jbl_ll_view_put,jbl_ll_json_put);
 ```
 
@@ -748,7 +748,7 @@ jbl_var_operators_new(jbl_ll_operators,jbl_ll_free,jbl_ll_copy,jbl_ll_space_ship
 
 值得注意的是，您的结构初始化时应当手动对这三个部分进行初始化。下面是一个例子。
 
-```
+```C
 jbl_ll * jbl_ll_new()
 {
     jbl_ll *this=jbl_malloc(sizeof(jbl_ll));
@@ -767,7 +767,7 @@ jbl_ll * jbl_ll_new()
 
 正如上文所说，jbl及其衍生库支持引用，所以在释放的时候需要考虑引用的问题。下面是一个例子。
 
-```
+```C
 jbl_ll* jbl_ll_free(jbl_ll *this)
 {
     if(!this)return NULL;
@@ -793,7 +793,7 @@ jbl_ll* jbl_ll_free(jbl_ll *this)
 
 正如上文所说，jbl及其衍生库支持浅拷贝，所以在复制的时候可以考虑使用浅拷贝。下面是一个例子。
 
-```
+```C
 JBL_INLINE jbl_ll *jbl_ll_copy(jbl_ll *that)
 {
     if(!that)return NULL;
@@ -806,7 +806,7 @@ JBL_INLINE jbl_ll *jbl_ll_copy(jbl_ll *that)
 
 当然也可以直接拷贝。下面是一个例子。
 
-```
+```C
 JBL_INLINE jbl_time * jbl_time_copy(jbl_time * that)
 {
     if(!that)return NULL;
@@ -819,7 +819,7 @@ JBL_INLINE jbl_time * jbl_time_copy(jbl_time * that)
 #### 结构体的扩容与写时分离
 
 对于容器类结构体，在空间不够的时候应当进行扩容；对于浅拷贝的结构体，此时应当进行写时分离。下面是一个例子。
-```
+```C
 jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi)
 {
     if(!this){this=jbl_ll_new();if(pthi)*pthi=this;return this;}
@@ -852,7 +852,7 @@ jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi
 
 由于链表自身的特性，决定了其不需要扩容。下面再给出一个需要扩容的例子。
 
-```
+```C
 jbl_string *jbl_string_extend_to(jbl_string *this,jbl_string_size_type size,jbl_uint8 add,jbl_string **pthi)
 {
 	if(!this)this=jbl_string_new();		
@@ -896,7 +896,7 @@ jbl_string *jbl_string_extend_to(jbl_string *this,jbl_string_size_type size,jbl_
 
 #### 结构体的JSON操作
 如果结构体不支持JSON操作，或者没有在操作器集合中显式声明JSON格式化器，那么在JSON格式化的时候将被直接忽略。下面给出一个例子。
-```
+```C
 #if JBL_JSON_ENABLE==1
 /*******************************************************************************************/
 /*                            以下函实现链表JSON操作                                      */
