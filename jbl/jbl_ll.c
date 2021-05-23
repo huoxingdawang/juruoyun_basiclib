@@ -111,7 +111,7 @@ jbl_ll* jbl_ll_free(jbl_ll *this)
         jbl_pthread_lock_free(this);
         jbl_free(this);
     }
-        else{jbl_pthread_lock_unwrlock(this);}
+    else{jbl_pthread_lock_unwrlock(this);}
     return NULL;    
 }
 JBL_INLINE jbl_ll *jbl_ll_copy(jbl_ll *that)

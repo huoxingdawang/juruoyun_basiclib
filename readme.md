@@ -717,3 +717,283 @@ ht1=jbl_ht_free(ht1);
 
 
 
+
+
+### 扩展指北
+
+正如上文所说，jbl是一个低性能C语言库，其封装了多种数据结构和基本操作，如此拉跨的库当然支持扩展，本节将介绍如何扩展。
+
+#### 结构头的定义
+为了试您编写的结构能够与库中其他部分兼容，您编写的结构的应该具备特定格式的结构头。结构头包括三部分，这一点在《变量组织结构》一节已经提到。下面是一个例子。
+
+```
+typedef struct __jbl_ll
+{
+    jbl_gc               gc;            //gc结构
+    jbl_var_ops_define     ;
+    jbl_pthread_lock_define;
+	//省略其余定义
+}jbl_ll;
+```
+
+#### 操作器集合的定义
+
+为了使得您的结构能够被容器类结构正常操作，应当使用`jbl_var_operators_new`显式制定各个操作器。
+下面是一个例子;
+```
+jbl_var_operators_new(jbl_ll_operators,jbl_ll_free,jbl_ll_copy,jbl_ll_space_ship,jbl_ll_json_encode,jbl_ll_view_put,jbl_ll_json_put);
+```
+
+#### 结构体的初始化
+
+值得注意的是，您的结构初始化时应当手动对这三个部分进行初始化。下面是一个例子。
+
+```
+jbl_ll * jbl_ll_new()
+{
+    jbl_ll *this=jbl_malloc(sizeof(jbl_ll));
+    jbl_gc_init(this);
+    jbl_gc_plus(this);    
+    jbl_pthread_lock_init(this);
+    jbl_var_set_operators(this,&jbl_ll_operators);
+    //省略其余初始化步骤
+    return this;
+}
+```
+
+您也可以不适用`jbl_malloc`进行内存管理，但是这可能会导致内存泄露或者内存容量估计方面的问题。
+
+#### 结构体的释放
+
+正如上文所说，jbl及其衍生库支持引用，所以在释放的时候需要考虑引用的问题。下面是一个例子。
+
+```
+jbl_ll* jbl_ll_free(jbl_ll *this)
+{
+    if(!this)return NULL;
+    jbl_pthread_lock_wrlock(this);
+    jbl_gc_minus(this);
+    if(!jbl_gc_refcnt(this))
+    {
+        if(jbl_gc_is_ref(this))
+            jbl_ll_free((jbl_ll*)(((jbl_reference*)this)->ptr));
+        else
+		{
+            //此处释放自身的内容
+		}
+        jbl_pthread_lock_free(this);
+        jbl_free(this);
+    }
+    else{jbl_pthread_lock_unwrlock(this);}
+    return NULL;    
+}
+```
+
+#### 结构体的复制
+
+正如上文所说，jbl及其衍生库支持浅拷贝，所以在复制的时候可以考虑使用浅拷贝。下面是一个例子。
+
+```
+JBL_INLINE jbl_ll *jbl_ll_copy(jbl_ll *that)
+{
+    if(!that)return NULL;
+    jbl_pthread_lock_wrlock(that);
+    jbl_gc_plus(that);
+    jbl_pthread_lock_unwrlock(that);    
+    return that;
+}
+```
+
+当然也可以直接拷贝。下面是一个例子。
+
+```
+JBL_INLINE jbl_time * jbl_time_copy(jbl_time * that)
+{
+    if(!that)return NULL;
+    return jbl_time_set(NULL,jbl_time_get(that));
+}
+```
+
+使用浅拷贝最大的优势是可以节省额外的内存复制过程，进而提高开销。
+
+#### 结构体的扩容与写时分离
+
+对于容器类结构体，在空间不够的时候应当进行扩容；对于浅拷贝的结构体，此时应当进行写时分离。下面是一个例子。
+```
+jbl_ll *jbl_ll_extend(jbl_ll *this,jbl_ll_node **a,jbl_ll_node **b,jbl_ll **pthi)
+{
+    if(!this){this=jbl_ll_new();if(pthi)*pthi=this;return this;}
+    jbl_reference *ref=NULL;jbl_ll *thi=jbl_refer_pull_keep_father_wrlock(this,&ref);
+    if((jbl_gc_refcnt(thi)>1))
+    {
+        //下面的代码实现了对于链表的写时分离
+        jbl_ll *tmp=jbl_ll_new();
+        jbl_pthread_lock_wrlock(tmp);
+        jbl_ll_foreach(thi,i)
+        {
+            jbl_ll_node *node=node_new();
+            node->v=jbl_var_copy(i->v);
+            if(a&&(*a==i))*a=node;
+            if(b&&(*b==i))*b=node;
+            node_insert(tmp,node,tmp->tail);        
+        }
+        jbl_pthread_lock_unwrlock(thi);
+        jbl_ll_free(thi);
+        thi=tmp;
+    }
+    if(ref) ref->ptr=thi;
+    else    this=thi;
+    if(pthi)*pthi=thi;
+    else    {jbl_refer_pull_unwrlock(this);}
+    return this;
+}
+
+```
+
+由于链表自身的特性，决定了其不需要扩容。下面再给出一个需要扩容的例子。
+
+```
+jbl_string *jbl_string_extend_to(jbl_string *this,jbl_string_size_type size,jbl_uint8 add,jbl_string **pthi)
+{
+	if(!this)this=jbl_string_new();		
+	jbl_reference *ref=NULL;jbl_string *thi=jbl_refer_pull_keep_father_wrlock(this,&ref);
+	size+=thi->len*(add&1);
+	//[0,JBL_STRING_MIN_LENGTH]=>JBL_STRING_MIN_LENGTH,[JBL_STRING_MIN_LENGTH,4K]=>2倍增,(4k,+oo)=>4k对齐
+	size=(size<=JBL_STRING_MIN_LENGTH?JBL_STRING_MIN_LENGTH:(1ULL<<(jbl_highbit(size-1)+1)));
+	if(jbl_gc_refcnt(thi)==1)
+	{
+        //扩容
+		if(thi->size<thi->len)//如果this->size<thi->len,则该字符串是常量,必须扩容
+		{
+			unsigned char *s=thi->s;
+			thi->s=(unsigned char *)jbl_malloc(thi->size=size);
+			jbl_memory_copy(thi->s,s,thi->len);
+		}
+		else if(size>thi->size)
+			thi->size=size,thi->s=(thi->s?(unsigned char *)jbl_realloc(thi->s,thi->size):(unsigned char *)jbl_malloc(thi->size));		
+	}
+	else
+	{
+        //写时分离
+		jbl_string *tmp=jbl_string_new();
+        jbl_pthread_lock_wrlock(tmp);
+		tmp->size=size;
+		tmp->len=thi->len;
+		tmp->h=thi->h;
+		tmp->s=(unsigned char *)jbl_malloc(tmp->size);
+		jbl_memory_copy(tmp->s,thi->s,thi->len);
+        jbl_pthread_lock_unwrlock(thi);
+		jbl_string_free(thi);
+		thi=tmp;
+	}
+	if(ref)		ref->ptr=thi;
+	else		this=thi;
+	if(pthi)	*pthi=thi;
+    else        {jbl_refer_pull_unwrlock(this);}
+	return this;
+}
+```
+
+#### 结构体的JSON操作
+如果结构体不支持JSON操作，或者没有在操作器集合中显式声明JSON格式化器，那么在JSON格式化的时候将被直接忽略。下面给出一个例子。
+```
+#if JBL_JSON_ENABLE==1
+/*******************************************************************************************/
+/*                            以下函实现链表JSON操作                                      */
+/*******************************************************************************************/
+#if JBL_STRING_ENABLE==1
+jbl_string* jbl_ll_json_encode(jbl_ll* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+{
+    jbl_ll *thi=jbl_refer_pull_rdlock(this);
+    out=jbl_string_json_put_format(thi,out,format,tabs);
+    if(thi)
+    {
+        out=jbl_string_add_char(out,'[');
+        if((format&1)||(format&4))out=jbl_string_add_char(out,'\n');
+        ++tabs;
+        jbl_uint8 format2=(jbl_uint8)((format&4)|((format&1)<<2));
+        jbl_ll_foreach(this,i)
+        {
+            if(format){for(jbl_uint32 i=0;i<tabs;out=jbl_string_add_char(out,'\t'),++i);}
+            out=jbl_var_json_encode(i->v,out,(jbl_uint8)(format2|((i!=this->tail)<<1)),tabs);
+        }
+        --tabs;if((format&1)||(format&4))for(jbl_uint32 j=0;j<tabs;out=jbl_string_add_char(out,'\t'),++j);//格式化的\t
+        out=jbl_string_add_char(out,']');
+        if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}   
+    }
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+    return out;
+}
+#endif
+#if JBL_STREAM_ENABLE==1
+void jbl_ll_json_put(jbl_ll* this,jbl_stream *out,jbl_uint8 format,jbl_uint32 tabs)
+{
+    jbl_ll *thi=jbl_refer_pull_rdlock(this);
+    if(jbl_stream_json_put_format(thi,out,format,tabs))
+    {
+        jbl_stream_push_char(out,'[');
+        if((format&1)||(format&4))jbl_stream_push_char(out,'\n');
+        ++tabs;
+        jbl_uint8 format2=(jbl_uint8)((format&4)|((format&1)<<2));
+        jbl_ll_foreach(this,i)
+        {
+            if((format&1)||(format&4))for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
+            jbl_var_json_put(i->v,out,(jbl_uint8)(format2|((i!=this->tail)<<1)),tabs);
+        }    
+        --tabs;if((format&1)||(format&4))for(jbl_uint32 i=0;i<tabs;jbl_stream_push_char(out,'\t'),++i);
+        jbl_stream_push_char(out,']');
+        if(format&2){jbl_stream_push_char(out,',');}if((format&1)||(format&4)){jbl_stream_push_char(out,'\n');}
+    }
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+}
+#endif
+#endif
+```
+
+当然由于链表需要对下级进行递归操作，编写起来比较复杂。下面给出字符串编码的例子。
+```
+jbl_string* jbl_string_json_encode(jbl_string* this,jbl_string *out,jbl_uint8 format,jbl_uint32 tabs)
+{
+	jbl_string *thi=jbl_refer_pull_rdlock(this);
+	out=jbl_string_json_put_format(thi,out,format,tabs);
+    if(thi)
+    {
+		//具体编码过程
+        out=jbl_string_add_char(out,'"');
+        for(jbl_string_size_type i=0;i<this->len;++i)
+        {
+            if(this->s[i]>31&&this->s[i]!='\"' &&this->s[i]!='\\')
+                out=jbl_string_add_char(out,this->s[i]);
+            else
+            {
+                out=jbl_string_add_char(out,'\\');
+                jbl_uint8 token;
+                switch(token=this->s[i])
+                {
+                    case '\\':out=jbl_string_add_char(out,'\\');	break;
+                    case '\"':out=jbl_string_add_char(out,'\"');	break;
+                    case '\b':out=jbl_string_add_char(out,'b');	break;
+                    case '\f':out=jbl_string_add_char(out,'f');	break;
+                    case '\n':out=jbl_string_add_char(out,'n');	break;
+                    case '\r':out=jbl_string_add_char(out,'r');	break;
+                    case '\t':out=jbl_string_add_char(out,'t');	break;
+                    default  :out=jbl_string_add_chars_length(out,(unsigned char*)"u00",3),out=jbl_string_add_hex_8bits(out,token);break;
+                }
+            }				
+        }
+        out=jbl_string_add_char(out,'"');
+		//维护格式
+        if(format&2){out=jbl_string_add_char(out,',');}if((format&1)||(format&4)){out=jbl_string_add_char(out,'\n');}
+    }
+    jbl_refer_pull_unwrlock(out);
+    jbl_refer_pull_unrdlock(this);
+    return out;
+}
+```
+
+#### 结构的显示
+
+如果结构体不支持显示操作，或者没有在操作器集合中显式声明显示操作器，那么在显示的时候将输出"unprintable var"。下面给出一个例子。
+
