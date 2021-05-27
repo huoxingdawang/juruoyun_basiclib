@@ -1,0 +1,3 @@
+[submodule "jbl"]
+	path = jbl
+	url = https://gitee.com/huoxingdawang/juruoyun_basiclib_lib_only.git
